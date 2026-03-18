@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -117,8 +119,8 @@ class MftfGlobals
         if (!self::$webApiBaseUrl) {
             try {
                 $webapiHost = getenv('MAGENTO_RESTAPI_SERVER_HOST');
-                $webapiPort = getenv("MAGENTO_RESTAPI_SERVER_PORT");
-                $webapiProtocol = getenv("MAGENTO_RESTAPI_SERVER_PROTOCOL");
+                $webapiPort = getenv('MAGENTO_RESTAPI_SERVER_PORT');
+                $webapiProtocol = getenv('MAGENTO_RESTAPI_SERVER_PROTOCOL');
 
                 if ($webapiHost && $webapiProtocol) {
                     $baseUrl = UrlFormatter::format(

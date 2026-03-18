@@ -1,10 +1,11 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Magento\FunctionalTestingFramework\Util\Env;
 
@@ -46,7 +47,7 @@ class EnvProcessor
         private readonly string $envFile = ''
     ) {
         $this->envExists = file_exists($this->envFile);
-        $this->envExampleFile = realpath(FilePathFormatter::format(FW_BP) . "etc/config/.env.example");
+        $this->envExampleFile = realpath(FilePathFormatter::format(FW_BP) . 'etc/config/.env.example');
     }
 
     /**

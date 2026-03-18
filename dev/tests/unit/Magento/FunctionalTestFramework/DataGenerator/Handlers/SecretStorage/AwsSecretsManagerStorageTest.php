@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -6,11 +8,11 @@
 
 namespace tests\unit\Magento\FunctionalTestFramework\DataGenerator\Handlers\SecretStorage;
 
+use Aws\Result;
 use Aws\SecretsManager\SecretsManagerClient;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\SecretStorage\AwsSecretsManagerStorage;
-use Aws\Result;
-use tests\unit\Util\MagentoTestCase;
 use ReflectionClass;
+use tests\unit\Util\MagentoTestCase;
 
 class AwsSecretsManagerStorageTest extends MagentoTestCase
 {
@@ -27,7 +29,7 @@ class AwsSecretsManagerStorageTest extends MagentoTestCase
         $testValue = 'myValue';
         $data = [
             'Name' => 'mftf/magento/' . $testShortKey,
-            'SecretString' => json_encode([$testShortKey => $testValue])
+            'SecretString' => json_encode([$testShortKey => $testValue]),
         ];
         /**
  * @var Result

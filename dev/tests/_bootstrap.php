@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -31,7 +33,7 @@ $TEST_ENVS = [
     'MAGENTO_ADMIN_USERNAME' => 'admin',
     'MAGENTO_ADMIN_PASSWORD' => 'admin123',
     'DEFAULT_TIMEZONE' => 'America/Los_Angeles',
-    'WAIT_TIMEOUT' => '10'
+    'WAIT_TIMEOUT' => '10',
 ];
 
 foreach ($TEST_ENVS as $key => $value) {
@@ -50,27 +52,29 @@ $RELATIVE_TESTS_MODULE_PATH = DIRECTORY_SEPARATOR . 'verification';
 defined('TESTS_BP') || define('TESTS_BP', __DIR__);
 defined('TESTS_MODULE_PATH') || define('TESTS_MODULE_PATH', TESTS_BP . $RELATIVE_TESTS_MODULE_PATH);
 defined('MAGENTO_BP') || define('MAGENTO_BP', __DIR__);
-define('DOCS_OUTPUT_DIR',
+define(
+    'DOCS_OUTPUT_DIR',
     FW_BP .
     DIRECTORY_SEPARATOR .
-    "dev" .
+    'dev' .
     DIRECTORY_SEPARATOR .
-    "tests" .
+    'tests' .
     DIRECTORY_SEPARATOR .
-    "unit" .
+    'unit' .
     DIRECTORY_SEPARATOR .
-    "_output"
+    '_output'
 );
-define('RESOURCE_DIR',
+define(
+    'RESOURCE_DIR',
     FW_BP .
     DIRECTORY_SEPARATOR .
-    "dev" .
+    'dev' .
     DIRECTORY_SEPARATOR .
-    "tests" .
+    'tests' .
     DIRECTORY_SEPARATOR .
-    "unit" .
+    'unit' .
     DIRECTORY_SEPARATOR .
-    "Resources"
+    'Resources'
 );
 
 $utilDir = DIRECTORY_SEPARATOR . 'Util'. DIRECTORY_SEPARATOR . '*.php';

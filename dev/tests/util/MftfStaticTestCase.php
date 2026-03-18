@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -12,17 +14,17 @@ use Symfony\Component\Console\Input\InputInterface;
 
 class MftfStaticTestCase extends TestCase
 {
-    const STATIC_RESULTS_DIR  = TESTS_MODULE_PATH .
-    DIRECTORY_SEPARATOR .
-    '_output' .
-    DIRECTORY_SEPARATOR .
-    'static-results';
+    public const STATIC_RESULTS_DIR  = TESTS_MODULE_PATH .
+        DIRECTORY_SEPARATOR .
+        '_output' .
+        DIRECTORY_SEPARATOR .
+        'static-results';
 
-    const RESOURCES_PATH =   TESTS_MODULE_PATH .
-    DIRECTORY_SEPARATOR .
-    "Resources" .
-    DIRECTORY_SEPARATOR .
-    'StaticChecks';
+    public const RESOURCES_PATH =   TESTS_MODULE_PATH .
+        DIRECTORY_SEPARATOR .
+        'Resources' .
+        DIRECTORY_SEPARATOR .
+        'StaticChecks';
 
     /**
      * Sets input interface

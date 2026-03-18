@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -58,7 +60,7 @@ class ActionObjectExtractorTest extends MagentoTestCase
                 '/Line \d*: Invalid ordering configuration in test/',
                 [
                     'test' => 'TestWithSelfReferencingStepKey',
-                    'stepKey' => ['invalidTestAction1']
+                    'stepKey' => ['invalidTestAction1'],
                 ]
             );
 
@@ -89,7 +91,7 @@ class ActionObjectExtractorTest extends MagentoTestCase
             [
                 'test' => 'AmbiguousRefTest',
                 'stepKey' => 'testAction1',
-                'ref' => ['testAction2', 'testAction3']
+                'ref' => ['testAction2', 'testAction3'],
             ]
         );
     }
@@ -100,7 +102,7 @@ class ActionObjectExtractorTest extends MagentoTestCase
     public function testEmptyStepKey()
     {
         $this->expectExceptionMessage("StepKeys cannot be empty.	Action='sampleAction'");
-        $this->testActionObjectExtractor->extractActions($this->createBasicActionObjectArray(""));
+        $this->testActionObjectExtractor->extractActions($this->createBasicActionObjectArray(''));
     }
 
     /**
@@ -115,10 +117,10 @@ class ActionObjectExtractorTest extends MagentoTestCase
     {
         $baseArray = [
             $stepKey => [
-                "nodeName" => "sampleAction",
-                "stepKey" => $stepKey,
-                "someAttribute" => "someAttributeValue"
-            ]
+                'nodeName' => 'sampleAction',
+                'stepKey' => $stepKey,
+                'someAttribute' => 'someAttributeValue',
+            ],
         ];
 
         if ($before) {

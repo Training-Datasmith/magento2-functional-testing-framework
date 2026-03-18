@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -24,8 +26,7 @@ class BooleanUtils
          * Expressions that mean boolean FALSE
          */
         private readonly array $falseValues = [false, 0, 'false', '0']
-    )
-    {
+    ) {
     }
 
     /**

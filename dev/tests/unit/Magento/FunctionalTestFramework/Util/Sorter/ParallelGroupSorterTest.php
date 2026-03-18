@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -35,7 +36,7 @@ class ParallelGroupSorterTest extends MagentoTestCase
             'test7' => 250,
             'test8' => 1,
             'test9' => 80,
-            'test10' => 25
+            'test10' => 25,
         ];
 
         $expectedResult = [
@@ -43,7 +44,7 @@ class ParallelGroupSorterTest extends MagentoTestCase
             2 => ['test7'],
             3 => ['test6', 'test4', 'test8'],
             4 => ['test1', 'test9'],
-            5 => ['test3', 'test5', 'test10']
+            5 => ['test3', 'test5', 'test10'],
         ];
 
         $testSorter = new ParallelGroupSorter();
@@ -73,12 +74,12 @@ class ParallelGroupSorterTest extends MagentoTestCase
             'test2' => 300,
             'test3' => 500,
             'test4' => 60,
-            'test5' => 125
+            'test5' => 125,
         ];
 
         // create mock suite references
         $sampleSuiteArray = [
-            'mockSuite1' => ['mockTest1', 'mockTest2']
+            'mockSuite1' => ['mockTest1', 'mockTest2'],
         ];
 
         // perform sort
@@ -130,7 +131,7 @@ class ParallelGroupSorterTest extends MagentoTestCase
             'test18' => 34,
             'test19' => 45,
             'test20' => 58,
-            'test21' => 9
+            'test21' => 9,
         ];
 
         $expectedResult = [
@@ -164,7 +165,7 @@ class ParallelGroupSorterTest extends MagentoTestCase
             'test2' => 300,
             'test3' => 50,
             'test4' => 60,
-            'test5' => 25
+            'test5' => 25,
         ];
 
         $expectedResult = [
@@ -172,7 +173,7 @@ class ParallelGroupSorterTest extends MagentoTestCase
             2 => ['test1'],
             3 => ['test4'],
             4 => ['test3'],
-            5 => ['test5']
+            5 => ['test5'],
         ];
 
         $testSorter = new ParallelGroupSorter();
@@ -202,7 +203,7 @@ class ParallelGroupSorterTest extends MagentoTestCase
         ];
 
         $expectedResult = [
-            1 => ['test2', 'test1', 'test4', 'test3', 'test5']
+            1 => ['test2', 'test1', 'test4', 'test3', 'test5'],
         ];
 
         $testSorter = new ParallelGroupSorter();
@@ -260,12 +261,12 @@ class ParallelGroupSorterTest extends MagentoTestCase
             'test30' => 93,
             'test31' => 330,
             'test32' => 85,
-            'test33' => 291
+            'test33' => 291,
         ];
 
         // create mock suite references
         $sampleSuiteArray = [
-            'mockSuite1' => ['mockTest1', 'mockTest2']
+            'mockSuite1' => ['mockTest1', 'mockTest2'],
         ];
 
         // perform sort
@@ -289,7 +290,7 @@ class ParallelGroupSorterTest extends MagentoTestCase
             12 => ['test28', 'test2', 'test15'],
             13 => ['test19', 'test16', 'test20'],
             14 => ['mockSuite1_0_G'],
-            15 => ['mockSuite1_1_G']
+            15 => ['mockSuite1_1_G'],
         ];
 
         foreach ($actualResult as $groupNum => $group) {
@@ -312,12 +313,12 @@ class ParallelGroupSorterTest extends MagentoTestCase
         $sampleTestArray = [
             'test1' => 275,
             'test2' => 190,
-            'test3' => 200
+            'test3' => 200,
         ];
 
         // create mock suite references
         $sampleSuiteArray = [
-            'mockSuite1' => ['mockTest1', 'mockTest2']
+            'mockSuite1' => ['mockTest1', 'mockTest2'],
         ];
 
         // perform sort
@@ -354,12 +355,12 @@ class ParallelGroupSorterTest extends MagentoTestCase
         $sampleTestArray = [
             'test1' => 1,
             'test2' => 125,
-            'test3' => 35
+            'test3' => 35,
         ];
 
         // create mock suite references
         $sampleSuiteArray = [
-            'mockSuite1' => ['mockTest1', 'mockTest2']
+            'mockSuite1' => ['mockTest1', 'mockTest2'],
         ];
 
         // perform sort
@@ -371,7 +372,7 @@ class ParallelGroupSorterTest extends MagentoTestCase
         $expectedResults =  [
             1 => ['test2', 'test3', 'test1'],
             2 => ['mockSuite1_0_G'],
-            3 => ['mockSuite1_1_G']
+            3 => ['mockSuite1_1_G'],
         ];
 
         foreach ($actualResult as $groupNum => $group) {
@@ -395,7 +396,7 @@ class ParallelGroupSorterTest extends MagentoTestCase
         $sampleTestArray = [
             'test1' => 1,
             'test2' => 125,
-            'test3' => 35
+            'test3' => 35,
         ];
 
         // create mock suite references
@@ -413,7 +414,7 @@ class ParallelGroupSorterTest extends MagentoTestCase
         $expectedResults =  [
             1 => ['test2'],
             2 => ['test3'],
-            3 => ['test1']
+            3 => ['test1'],
         ];
 
         foreach ($actualResult as $groupNum => $group) {
@@ -435,7 +436,7 @@ class ParallelGroupSorterTest extends MagentoTestCase
         $sampleTestArray = [
             'test1' => 1,
             'test2' => 125,
-            'test3' => 35
+            'test3' => 35,
         ];
         // create mock suite references
         $sampleSuiteArray = [
@@ -474,7 +475,7 @@ class ParallelGroupSorterTest extends MagentoTestCase
         $sampleTestArray = [
             'test1' => 1,
             'test2' => 125,
-            'test3' => 35
+            'test3' => 35,
         ];
         // create mock suite references
         $sampleSuiteArray = [

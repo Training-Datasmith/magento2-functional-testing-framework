@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -48,8 +49,8 @@ class PersistedObjectHandlerTest extends MagentoTestCase
         $entityStepKey = 'StepKey';
         $scope = PersistedObjectHandler::TEST_SCOPE;
 
-        $exceptionMessage = "Entity \"" . $entityName . "\" does not exist." .
-            "\nException occurred executing action at StepKey \"" . $entityStepKey . "\"";
+        $exceptionMessage = 'Entity "' . $entityName . '" does not exist.' .
+            "\nException occurred executing action at StepKey \"" . $entityStepKey . '"';
 
         $this->expectException(TestReferenceException::class);
         $this->expectExceptionMessage($exceptionMessage);
@@ -84,15 +85,15 @@ class PersistedObjectHandlerTest extends MagentoTestCase
                     'data' => [
                         0 => [
                             'key' => $dataKey,
-                            'value' => $dataValue
-                        ]
-                    ]
-                ]
-            ]
+                            'value' => $dataValue,
+                        ],
+                    ],
+                ],
+            ],
         ];
-        $jsonResponse = "
+        $jsonResponse = '
             {
-               \"" . strtolower($dataKey) . "\" : \"{$dataValue}\"
+               "' . strtolower($dataKey) . "\" : \"{$dataValue}\"
             }
         ";
 
@@ -131,15 +132,15 @@ class PersistedObjectHandlerTest extends MagentoTestCase
                     'data' => [
                         0 => [
                             'key' => $dataKey,
-                            'value' => $dataValue
-                        ]
-                    ]
-                ]
-            ]
+                            'value' => $dataValue,
+                        ],
+                    ],
+                ],
+            ],
         ];
-        $jsonResponse = "
+        $jsonResponse = '
             {
-               \"" . strtolower($dataKey) . "\" : \"{$dataValue}\"
+               "' . strtolower($dataKey) . "\" : \"{$dataValue}\"
             }
         ";
 
@@ -184,15 +185,15 @@ class PersistedObjectHandlerTest extends MagentoTestCase
                     'data' => [
                         0 => [
                             'key' => $dataKey,
-                            'value' => $dataValue
-                        ]
-                    ]
-                ]
-            ]
+                            'value' => $dataValue,
+                        ],
+                    ],
+                ],
+            ],
         ];
-        $jsonResponse = "
+        $jsonResponse = '
             {
-               \"" . strtolower($dataKey) . "\" : \"{$dataValue}\"
+               "' . strtolower($dataKey) . "\" : \"{$dataValue}\"
             }
         ";
 
@@ -235,29 +236,29 @@ class PersistedObjectHandlerTest extends MagentoTestCase
                     'data' => [
                         0 => [
                             'key' => $dataKey,
-                            'value' => $dataValue
-                        ]
-                    ]
+                            'value' => $dataValue,
+                        ],
+                    ],
                 ],
                 $updateName => [
                     'type' => 'testType',
                     'data' => [
                         0 => [
                             'key' => $dataKey,
-                            'value' => $updateValue
-                        ]
-                    ]
-                ]
-            ]
+                            'value' => $updateValue,
+                        ],
+                    ],
+                ],
+            ],
         ];
-        $jsonResponse = "
+        $jsonResponse = '
             {
-               \"" . strtolower($dataKey) . "\" : \"{$dataValue}\"
+               "' . strtolower($dataKey) . "\" : \"{$dataValue}\"
             }
         ";
-        $updatedResponse = "
+        $updatedResponse = '
             {
-               \"" . strtolower($dataKey) . "\" : \"{$updateValue}\"
+               "' . strtolower($dataKey) . "\" : \"{$updateValue}\"
             }
         ";
 
@@ -270,7 +271,7 @@ class PersistedObjectHandlerTest extends MagentoTestCase
             $entityName
         );
         $this->mockCurlHandler($updatedResponse, $parserOutput);
-        
+
         // Call method
         $handler->updateEntity(
             $entityStepKey,
@@ -311,43 +312,43 @@ class PersistedObjectHandlerTest extends MagentoTestCase
                     'data' => [
                         0 => [
                             'key' => $dataKeyOne,
-                            'value' => $dataValueOne
-                        ]
-                    ]
+                            'value' => $dataValueOne,
+                        ],
+                    ],
                 ],
                 $entityNameTwo => [
                     'type' => 'testType',
                     'data' => [
                         0 => [
                             'key' => $dataKeyTwo,
-                            'value' => $dataValueTwo
-                        ]
-                    ]
+                            'value' => $dataValueTwo,
+                        ],
+                    ],
                 ],
                 $entityNameThree => [
                     'type' => 'testType',
                     'data' => [
                         0 => [
                             'key' => $dataKeyThree,
-                            'value' => $dataValueThree
-                        ]
-                    ]
-                ]
-            ]
+                            'value' => $dataValueThree,
+                        ],
+                    ],
+                ],
+            ],
         ];
-        $jsonResponseOne = "
+        $jsonResponseOne = '
             {
-               \"" . strtolower($dataKeyOne) . "\" : \"{$dataValueOne}\"
+               "' . strtolower($dataKeyOne) . "\" : \"{$dataValueOne}\"
             }
         ";
-        $jsonReponseTwo = "
+        $jsonReponseTwo = '
             {
-               \"" . strtolower($dataKeyTwo) . "\" : \"{$dataValueTwo}\"
+               "' . strtolower($dataKeyTwo) . "\" : \"{$dataValueTwo}\"
             }
         ";
-        $jsonReponseThree = "
+        $jsonReponseThree = '
             {
-               \"" . strtolower($dataKeyThree) . "\" : \"{$dataValueThree}\"
+               "' . strtolower($dataKeyThree) . "\" : \"{$dataValueThree}\"
             }
         ";
 
@@ -426,15 +427,15 @@ class PersistedObjectHandlerTest extends MagentoTestCase
                     'data' => [
                         0 => [
                             'key' => $key,
-                            'value' => $value
-                        ]
-                    ]
-                ]
-            ]
+                            'value' => $value,
+                        ],
+                    ],
+                ],
+            ],
         ];
-        $jsonResponseOne = "
+        $jsonResponseOne = '
             {
-               \"" . strtolower($key) . "\" : \"{$value}\"
+               "' . strtolower($key) . "\" : \"{$value}\"
             }
         ";
 
@@ -482,15 +483,15 @@ class PersistedObjectHandlerTest extends MagentoTestCase
                     'data' => [
                         0 => [
                             'key' => $key,
-                            'value' => $value
-                        ]
-                    ]
-                ]
-            ]
+                            'value' => $value,
+                        ],
+                    ],
+                ],
+            ],
         ];
-        $jsonResponseOne = "
+        $jsonResponseOne = '
             {
-               \"" . strtolower($key) . "\" : \"{$value}\"
+               "' . strtolower($key) . "\" : \"{$value}\"
             }
         ";
 
@@ -520,7 +521,7 @@ class PersistedObjectHandlerTest extends MagentoTestCase
         return [
             ['Entity1', 'testKey1', 'testValue1', 'testType', PersistedObjectHandler::HOOK_SCOPE, 'StepKey1'],
             ['Entity2', 'testKey2', 'testValue2', 'testType', PersistedObjectHandler::SUITE_SCOPE, 'StepKey2'],
-            ['Entity3', 'testKey3', 'testValue3', 'testType', PersistedObjectHandler::TEST_SCOPE, 'StepKey3']
+            ['Entity3', 'testKey3', 'testValue3', 'testType', PersistedObjectHandler::TEST_SCOPE, 'StepKey3'],
         ];
     }
 
@@ -585,7 +586,7 @@ class PersistedObjectHandlerTest extends MagentoTestCase
         parent::tearDownAfterClass();
 
         // Clear out Singleton between tests
-        $persistedObjectHandlerProperty = new ReflectionProperty(PersistedObjectHandler::class, "INSTANCE");
+        $persistedObjectHandlerProperty = new ReflectionProperty(PersistedObjectHandler::class, 'INSTANCE');
         $persistedObjectHandlerProperty->setValue(null, null);
 
         $objectManagerProperty = new ReflectionProperty(ObjectManager::class, 'instance');

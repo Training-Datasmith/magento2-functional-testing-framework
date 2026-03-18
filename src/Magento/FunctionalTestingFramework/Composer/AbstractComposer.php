@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -13,28 +15,28 @@ use Composer\IO\BufferIO;
  */
 abstract class AbstractComposer
 {
-    const TEST_MODULE_PACKAGE_TYPE = 'magento2-functional-test-module';
-    const MAGENTO_MODULE_PACKAGE_TYPE = 'magento2-module';
+    public const TEST_MODULE_PACKAGE_TYPE = 'magento2-functional-test-module';
+    public const MAGENTO_MODULE_PACKAGE_TYPE = 'magento2-module';
 
-    const MODULE_NAME_IN_SUGGEST_REGEX_INDEX = 'module_name';
-    const MODULE_NAME_IN_SUGGEST_REGEX = '/type:\s*'
-    . self::MAGENTO_MODULE_PACKAGE_TYPE
-    . '\s*,\s*name:\s*(?<'
-    . self::MODULE_NAME_IN_SUGGEST_REGEX_INDEX
-    . '>[^,\s]+_[^,\s]+)/';
+    public const MODULE_NAME_IN_SUGGEST_REGEX_INDEX = 'module_name';
+    public const MODULE_NAME_IN_SUGGEST_REGEX = '/type:\s*'
+        . self::MAGENTO_MODULE_PACKAGE_TYPE
+        . '\s*,\s*name:\s*(?<'
+        . self::MODULE_NAME_IN_SUGGEST_REGEX_INDEX
+        . '>[^,\s]+_[^,\s]+)/';
 
     /**#@+
      * Composer package array keys
      */
-    const PACKAGE_NAME = 'name';
-    const PACKAGE_TYPE = 'type';
-    const PACKAGE_VERSION = 'version';
-    const PACKAGE_DESCRIPTION = 'description';
-    const PACKAGE_INSTALLEDPATH = 'installedPath';
-    const PACKAGE_REQUIRES = 'requires';
-    const PACKAGE_DEVREQUIRES = 'devRequires';
-    const PACKAGE_SUGGESTS = 'suggests';
-    const PACKAGE_SUGGESTED_MAGENTO_MODULES = 'suggestedMagentoModules';
+    public const PACKAGE_NAME = 'name';
+    public const PACKAGE_TYPE = 'type';
+    public const PACKAGE_VERSION = 'version';
+    public const PACKAGE_DESCRIPTION = 'description';
+    public const PACKAGE_INSTALLEDPATH = 'installedPath';
+    public const PACKAGE_REQUIRES = 'requires';
+    public const PACKAGE_DEVREQUIRES = 'devRequires';
+    public const PACKAGE_SUGGESTS = 'suggests';
+    public const PACKAGE_SUGGESTED_MAGENTO_MODULES = 'suggestedMagentoModules';
     /**#@-*/
 
     /**

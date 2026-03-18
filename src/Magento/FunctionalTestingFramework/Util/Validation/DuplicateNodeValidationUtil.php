@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -7,7 +9,6 @@
 namespace Magento\FunctionalTestingFramework\Util\Validation;
 
 use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
-use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 
 /**
  * Class DuplicateNodeValidationUtil
@@ -29,8 +30,7 @@ class DuplicateNodeValidationUtil
          * ExceptionColletor used to catch errors.
          */
         private $exceptionCollector
-    )
-    {
+    ) {
     }
 
     /**
@@ -60,11 +60,11 @@ class DuplicateNodeValidationUtil
 
         if (count($withoutDuplicates) !== count($keyValues)) {
             $duplicates = array_diff_assoc($keyValues, $withoutDuplicates);
-            $keyError = "";
+            $keyError = '';
             foreach ($duplicates as $duplicateValue) {
                 $keyError .= "\t{$this->uniqueKey}: {$duplicateValue} is used more than once.";
                 if ($parentKey !== null) {
-                    $keyError .=" (Parent: {$parentKey})";
+                    $keyError .= " (Parent: {$parentKey})";
                 }
                 $keyError .= "\n";
             }

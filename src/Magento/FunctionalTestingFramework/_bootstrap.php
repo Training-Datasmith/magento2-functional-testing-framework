@@ -1,20 +1,20 @@
 <?php
+
+declare(strict_types=1);
 // @codingStandardsIgnoreFile
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
 
-
 // define framework basepath for schema pathing
-use Symfony\Component\Dotenv\Exception\PathException;
 
 defined('FW_BP') || define('FW_BP', realpath(__DIR__ . '/../../../'));
 // get the root path of the project
 $projectRootPath = substr(FW_BP, 0, strpos(FW_BP, DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR));
 if (empty($projectRootPath)) {
     // If ProjectRootPath is empty, we are not under vendor and are executing standalone.
-    require_once (realpath(FW_BP . "/dev/tests/functional/standalone_bootstrap.php"));
+    require_once(realpath(FW_BP . '/dev/tests/functional/standalone_bootstrap.php'));
     return;
 }
 defined('PROJECT_ROOT') || define('PROJECT_ROOT', $projectRootPath);
@@ -66,10 +66,9 @@ if (file_exists(ENV_FILE_PATH . '.env')) {
     try {
         new DateTimeZone(DEFAULT_TIMEZONE);
     } catch (\Exception) {
-        throw new \Exception("Invalid DEFAULT_TIMEZONE in .env: " . DEFAULT_TIMEZONE . PHP_EOL);
+        throw new \Exception('Invalid DEFAULT_TIMEZONE in .env: ' . DEFAULT_TIMEZONE . PHP_EOL);
     }
 }
-
 
 defined('MAGENTO_BP') || define('MAGENTO_BP', realpath(PROJECT_ROOT));
 // TODO REMOVE THIS CODE ONCE WE HAVE STOPPED SUPPORTING dev/tests/acceptance PATH

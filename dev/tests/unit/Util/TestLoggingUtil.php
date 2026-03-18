@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -12,8 +13,8 @@ use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 use Magento\FunctionalTestingFramework\Util\Logger\MftfLogger;
 use Monolog\Handler\TestHandler;
 use PHPUnit\Framework\Assert;
-use ReflectionProperty;
 use ReflectionClass;
+use ReflectionProperty;
 
 class TestLoggingUtil
 {
@@ -58,17 +59,17 @@ class TestLoggingUtil
         $testLogger = new MftfLogger('testLogger');
         $testLogger->pushHandler($this->testLogHandler);
 
-        $mockLoggingUtil = new class($testLogger) extends LoggingUtil {
+        $mockLoggingUtil = new class ($testLogger) extends LoggingUtil {
             /**
              * @var MftfLogger
              */
             private $testLogger;
-            
+
             public function __construct($testLogger)
             {
                 $this->testLogger = $testLogger;
             }
-            
+
             public function getLogger($className): MftfLogger
             {
                 return $this->testLogger;
@@ -102,7 +103,7 @@ class TestLoggingUtil
     public function validateMockLogStatement(string $type, string $message, array $context): void
     {
         $records = $this->testLogHandler->getRecords();
-        $record = $records[count($records)-1]; // we assume the latest record is what requires validation
+        $record = $records[count($records) - 1]; // we assume the latest record is what requires validation
         Assert::assertEquals(strtoupper($type), $record['level_name']);
         Assert::assertEquals($message, $record['message']);
         Assert::assertEquals($context, $record['context']);
@@ -120,7 +121,7 @@ class TestLoggingUtil
     public function validateMockLogStatmentRegex(string $type, string $regex, array $context): void
     {
         $records = $this->testLogHandler->getRecords();
-        $record = $records[count($records)-1]; // we assume the latest record is what requires validation
+        $record = $records[count($records) - 1]; // we assume the latest record is what requires validation
         Assert::assertEquals(strtoupper($type), $record['level_name']);
         Assert::assertMatchesRegularExpression($regex, $record['message']);
         Assert::assertEquals($context, $record['context']);

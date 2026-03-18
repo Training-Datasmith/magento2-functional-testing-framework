@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -104,7 +106,7 @@ class ExtendedGenerationTest extends MftfTestCase
         $cestFile = $test->getExportDir() .
             DIRECTORY_SEPARATOR .
             $testObject->getCodeceptionName() .
-            ".php";
+            '.php';
 
         $this->assertFalse(file_exists($cestFile));
     }

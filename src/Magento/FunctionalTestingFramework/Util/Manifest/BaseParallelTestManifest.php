@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2021 Adobe
  * All Rights Reserved.
@@ -6,7 +8,6 @@
 
 namespace Magento\FunctionalTestingFramework\Util\Manifest;
 
-use Magento\Framework\Exception\RuntimeException;
 use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
 use Magento\FunctionalTestingFramework\Util\Filesystem\DirSetupUtil;
 use Magento\FunctionalTestingFramework\Util\Sorter\ParallelGroupSorter;
@@ -133,10 +134,10 @@ abstract class BaseParallelTestManifest extends BaseTestManifest
      */
     protected function generateGroupSummaryFile(array $groups)
     {
-        $fileResource = fopen($this->dirPath . DIRECTORY_SEPARATOR . "mftf_group_summary.txt", 'w');
-        $contents = "Total Number of Groups: " . count($groups) . PHP_EOL;
+        $fileResource = fopen($this->dirPath . DIRECTORY_SEPARATOR . 'mftf_group_summary.txt', 'w');
+        $contents = 'Total Number of Groups: ' . count($groups) . PHP_EOL;
         foreach ($groups as $key => $value) {
-            $contents .= $key . " - ". $value . " tests" .PHP_EOL;
+            $contents .= $key . ' - '. $value . ' tests' .PHP_EOL;
         }
         fwrite($fileResource, $contents);
         fclose($fileResource);

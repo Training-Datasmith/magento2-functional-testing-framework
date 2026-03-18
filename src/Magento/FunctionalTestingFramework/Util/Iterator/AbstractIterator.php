@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -47,12 +49,12 @@ abstract class AbstractIterator implements \Iterator, \Countable
     /**
      * Check if current element is valid
      */
-    abstract protected function isValid() : bool;
+    abstract protected function isValid(): bool;
 
     /**
      * Initialize Data Array
      */
-    public function rewind() : void
+    public function rewind(): void
     {
         reset($this->data);
         if (!$this->isValid()) {
@@ -63,7 +65,7 @@ abstract class AbstractIterator implements \Iterator, \Countable
     /**
      * Seek to next valid row
      */
-    public function next() : void
+    public function next(): void
     {
         $this->current = next($this->data);
 
@@ -79,7 +81,7 @@ abstract class AbstractIterator implements \Iterator, \Countable
     /**
      * Check if current position is valid
      */
-    public function valid() : bool
+    public function valid(): bool
     {
         $current = current($this->data);
         if ($current === false || $current === null) {
@@ -103,7 +105,7 @@ abstract class AbstractIterator implements \Iterator, \Countable
     /**
      * To make iterator countable
      */
-    public function count() : int
+    public function count(): int
     {
         return count($this->data);
     }

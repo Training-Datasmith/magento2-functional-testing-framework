@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -17,7 +19,7 @@ class Dom extends \Magento\FunctionalTestingFramework\Config\Reader\Filesystem
     /**
      * Name of an attribute that stands for data type of node values
      */
-    const TYPE_ATTRIBUTE = 'xsi:type';
+    public const TYPE_ATTRIBUTE = 'xsi:type';
 
     /**
      * Dom constructor.
@@ -36,7 +38,7 @@ class Dom extends \Magento\FunctionalTestingFramework\Config\Reader\Filesystem
             '/config/preference' => 'for',
             '/config/(type|virtualType)' => 'name',
             '/config/(type|virtualType)/arguments/argument' => 'name',
-            '/config/(type|virtualType)/arguments/argument(/item)+' => 'name'
+            '/config/(type|virtualType)/arguments/argument(/item)+' => 'name',
         ],
         $domDocumentClass = \Magento\FunctionalTestingFramework\Config\Dom::class,
         $defaultScope = 'etc'

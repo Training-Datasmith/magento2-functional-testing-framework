@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2022 Adobe
  * All Rights Reserved.
@@ -6,27 +8,15 @@
 
 namespace Magento\FunctionalTestingFramework\StaticCheck;
 
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use InvalidArgumentException;
 use Exception;
+use InvalidArgumentException;
+use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Exceptions\XmlException;
-use Magento\FunctionalTestingFramework\Page\Objects\SectionObject;
-use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
-use Magento\FunctionalTestingFramework\Page\Objects\ElementObject;
-use Magento\FunctionalTestingFramework\Test\Objects\ActionGroupObject;
-use Magento\FunctionalTestingFramework\Page\Objects\PageObject;
-use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
+use Magento\FunctionalTestingFramework\Util\Script\ScriptUtil;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Finder\Finder;
-use Magento\FunctionalTestingFramework\Util\Script\ScriptUtil;
-use Magento\FunctionalTestingFramework\DataGenerator\Handlers\OperationDefinitionObjectHandler;
-use Magento\FunctionalTestingFramework\DataGenerator\Objects\OperationDefinitionObject;
-use Magento\FunctionalTestingFramework\DataGenerator\Handlers\DataObjectHandler;
-use Magento\FunctionalTestingFramework\DataGenerator\Objects\EntityDataObject;
 use Symfony\Component\Finder\SplFileInfo;
-use DOMNodeList;
-use DOMElement;
 
 /**
  * Class CreatedDataFromOutsideActionGroupCheck
@@ -35,14 +25,14 @@ use DOMElement;
  */
 class CreatedDataFromOutsideActionGroupCheck implements StaticCheckInterface
 {
-    const ACTIONGROUP_REGEX_PATTERN = '/\$(\$)*([\w.]+)(\$)*\$/';
-    const ERROR_LOG_FILENAME = 'create-data-from-outside-action-group';
-    const ERROR_MESSAGE = 'Created Data From Outside Action Group';
+    public const ACTIONGROUP_REGEX_PATTERN = '/\$(\$)*([\w.]+)(\$)*\$/';
+    public const ERROR_LOG_FILENAME = 'create-data-from-outside-action-group';
+    public const ERROR_MESSAGE = 'Created Data From Outside Action Group';
 
     /**
        * Array containing all errors found after running the execute() function
        */
-      private array $errors = [];
+    private array $errors = [];
 
     /**
      * String representing the output summary found after running the execute() function
@@ -128,7 +118,7 @@ class CreatedDataFromOutsideActionGroupCheck implements StaticCheckInterface
 
         // These files can contain references to other entities
         $this->actionGroupXmlFile = $this->scriptUtil->getModuleXmlFilesByScope($modulePaths, 'ActionGroup');
-      
+
         if (empty($this->actionGroupXmlFile)) {
             if ($path) {
                 throw new InvalidArgumentException(
@@ -165,18 +155,18 @@ class CreatedDataFromOutsideActionGroupCheck implements StaticCheckInterface
         return $testErrors;
     }
 
-     /**
-     * Build and return error output for violating references
-     *
-     * @param SplFileInfo $path
-     * @return \non-empty-list<\non-falsy-string>[]
-     */
+    /**
+    * Build and return error output for violating references
+    *
+    * @param SplFileInfo $path
+    * @return \non-empty-list<\non-falsy-string>[]
+    */
     private function setErrorOutput(array $actionGroupReferences, $path): array
     {
         $testErrors = [];
-        $errorOutput = "";
+        $errorOutput = '';
         $filePath = StaticChecksList::getFilePath($path->getRealPath());
-       
+
         foreach ($actionGroupReferences as $actionGroupReferencesData) {
             foreach ($actionGroupReferencesData as $actionGroupReferencesDataResult) {
                 $errorOutput .= "\nFile \"{$filePath}\" contains: ". "\n\t 

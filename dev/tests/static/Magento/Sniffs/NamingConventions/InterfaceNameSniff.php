@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -6,12 +8,12 @@
 
 namespace Magento\Sniffs\NamingConventions;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class InterfaceNameSniff implements Sniff
 {
-    const INTERFACE_SUFFIX = 'Interface';
+    public const INTERFACE_SUFFIX = 'Interface';
 
     /**
      * {@inheritdoc}

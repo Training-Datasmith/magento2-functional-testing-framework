@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -6,7 +8,6 @@
 
 namespace Magento\FunctionalTestingFramework\Suite\Generators;
 
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
 use Magento\FunctionalTestingFramework\Suite\Objects\SuiteObject;
 use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
@@ -18,25 +19,25 @@ use Mustache_Loader_FilesystemLoader;
 
 class GroupClassGenerator
 {
-    const MUSTACHE_TEMPLATE_NAME = 'SuiteClass';
-    const SUITE_NAME_TAG = 'suiteName';
-    const TEST_COUNT_TAG = 'testCount';
-    const BEFORE_MUSTACHE_KEY = 'before';
-    const AFTER_MUSTACHE_KEY = 'after';
-    const ENTITY_NAME_TAG = 'entityName';
-    const ENTITY_MERGE_KEY = 'stepKey';
-    const REQUIRED_ENTITY_KEY = 'requiredEntities';
-    const LAST_REQUIRED_ENTITY_TAG = 'last';
-    const MUSTACHE_VAR_TAG = 'var';
-    const MAGENTO_CLI_COMMAND_COMMAND = 'command';
-    const REPLACEMENT_ACTIONS = [
-        'comment' => 'print'
+    public const MUSTACHE_TEMPLATE_NAME = 'SuiteClass';
+    public const SUITE_NAME_TAG = 'suiteName';
+    public const TEST_COUNT_TAG = 'testCount';
+    public const BEFORE_MUSTACHE_KEY = 'before';
+    public const AFTER_MUSTACHE_KEY = 'after';
+    public const ENTITY_NAME_TAG = 'entityName';
+    public const ENTITY_MERGE_KEY = 'stepKey';
+    public const REQUIRED_ENTITY_KEY = 'requiredEntities';
+    public const LAST_REQUIRED_ENTITY_TAG = 'last';
+    public const MUSTACHE_VAR_TAG = 'var';
+    public const MAGENTO_CLI_COMMAND_COMMAND = 'command';
+    public const REPLACEMENT_ACTIONS = [
+        'comment' => 'print',
     ];
-    const GROUP_DIR_NAME = 'Group';
-    const FUNCTION_PLACEHOLDER = 'PLACEHOLDER';
-    const FUNCTION_START = 'this->getModuleForAction("';
-    const FUNCTION_END = '")';
-    const FUNCTION_REPLACE_REGEX = '/(PLACEHOLDER->([^\(]+))\(/';
+    public const GROUP_DIR_NAME = 'Group';
+    public const FUNCTION_PLACEHOLDER = 'PLACEHOLDER';
+    public const FUNCTION_START = 'this->getModuleForAction("';
+    public const FUNCTION_END = '")';
+    public const FUNCTION_REPLACE_REGEX = '/(PLACEHOLDER->([^\(]+))\(/';
 
     /**
      * Mustache_Engine instance for template loading
@@ -57,10 +58,10 @@ class GroupClassGenerator
     public function __construct()
     {
         $this->mustacheEngine = new Mustache_Engine([
-            'loader' => new Mustache_Loader_FilesystemLoader(dirname(__DIR__) . DIRECTORY_SEPARATOR . "views"),
+            'loader' => new Mustache_Loader_FilesystemLoader(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'views'),
             'partials_loader' => new Mustache_Loader_FilesystemLoader(
-                dirname(__DIR__) . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "partials"
-            )
+                dirname(__DIR__) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'partials'
+            ),
         ]);
     }
 
@@ -78,7 +79,7 @@ class GroupClassGenerator
         $filePath = self::getGroupDirPath() . $suiteObject->getName() . '.php';
         file_put_contents($filePath, $classContent);
 
-        return  str_replace(DIRECTORY_SEPARATOR, "\\", $configEntry);
+        return  str_replace(DIRECTORY_SEPARATOR, '\\', $configEntry);
     }
 
     /**
@@ -136,7 +137,7 @@ class GroupClassGenerator
                 $mustacheHookArray['helpers'][] = $action->getCustomActionAttributes()['class'];
             }
             //deleteData contains either url or createDataKey, if it contains the former it needs special formatting
-            if ($action->getType() !== "createData"
+            if ($action->getType() !== 'createData'
                 && !array_key_exists(TestGenerator::REQUIRED_ENTITY_REFERENCE, $action->getCustomActionAttributes())) {
                 $actions = $this->buildModuleActionsMustacheArray($action, $actions);
                 continue;
@@ -176,7 +177,7 @@ class GroupClassGenerator
             TestGenerator::SUITE_SCOPE,
             self::FUNCTION_PLACEHOLDER
         );
-        $rawPhp = str_replace(["\t"], "", $step);
+        $rawPhp = str_replace(["\t"], '', $step);
         $multipleCommands = explode(PHP_EOL, $rawPhp, -1);
         $multipleCommands = array_filter($multipleCommands);
         foreach ($multipleCommands as $command) {
@@ -211,7 +212,7 @@ class GroupClassGenerator
                 $end = self::FUNCTION_END;
                 $resultingStep = preg_replace_callback(
                     self::FUNCTION_REPLACE_REGEX,
-                    fn($matches) => str_replace($placeholder, $begin . $matches[2] . $end, $matches[1]) . '(',
+                    fn ($matches) => str_replace($placeholder, $begin . $matches[2] . $end, $matches[1]) . '(',
                     $formattedStep
                 );
                 $actionEntries[] = ['action' => $resultingStep];
@@ -268,7 +269,7 @@ class GroupClassGenerator
         }
 
         //append "last" attribute to final entry for mustache template (omit trailing comma)
-        $requiredEntities[count($requiredEntities)-1][self::LAST_REQUIRED_ENTITY_TAG] = true;
+        $requiredEntities[count($requiredEntities) - 1][self::LAST_REQUIRED_ENTITY_TAG] = true;
 
         return $requiredEntities;
     }

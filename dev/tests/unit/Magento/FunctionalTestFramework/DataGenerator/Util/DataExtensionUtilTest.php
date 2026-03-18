@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -29,11 +30,11 @@ class DataExtensionUtilTest extends MagentoTestCase
                     'data' => [
                         0 => [
                             'key' => 'testKey',
-                            'value' => 'testValue'
-                        ]
-                    ]
-                ]
-            ]
+                            'value' => 'testValue',
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->setMockEntities($extendedDataObject);
@@ -48,16 +49,16 @@ class DataExtensionUtilTest extends MagentoTestCase
             'entity' => [
                 'extended' => [
                     'type' => 'testType',
-                    'extends' => 'parent'
+                    'extends' => 'parent',
                 ],
                 'parent' => [
                     'type' => 'type',
-                    'extends' => 'grandparent'
+                    'extends' => 'grandparent',
                 ],
                 'grandparent' => [
-                    'type' => 'grand'
-                ]
-            ]
+                    'type' => 'grand',
+                ],
+            ],
         ];
 
         $this->setMockEntities($extendedDataObjects);
@@ -74,7 +75,7 @@ class DataExtensionUtilTest extends MagentoTestCase
             'entity' => [
                 'extended' => [
                     'type' => 'testType',
-                    'extends' => 'parent'
+                    'extends' => 'parent',
                 ],
                 'parent' => [
                     'type' => 'type',
@@ -82,11 +83,11 @@ class DataExtensionUtilTest extends MagentoTestCase
                         'someOtherEntity' => [
                             'entityType' => 'someOtherEntity',
                             'entityKey' => 'id',
-                            'key' => 'someOtherEntity'
-                        ]
-                    ]
-                ]
-            ]
+                            'key' => 'someOtherEntity',
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $this->setMockEntities($extendedDataObjects);
@@ -101,22 +102,22 @@ class DataExtensionUtilTest extends MagentoTestCase
             'entity' => [
                 'extended' => [
                     'type' => 'testType',
-                    'extends' => 'parent'
+                    'extends' => 'parent',
                 ],
                 'parent' => [
                     'type' => 'type',
                     'requiredEntity' => [
                         'linkedEntity1' => [
                             'type' => 'linkedEntityType',
-                            'value' => 'linkedEntity1'
+                            'value' => 'linkedEntity1',
                         ],
                         'linkedEntity2' => [
                             'type' => 'otherEntityType',
-                            'value' => 'linkedEntity2'
+                            'value' => 'linkedEntity2',
                         ],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $this->setMockEntities($extendedDataObjects);

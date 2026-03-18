@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -21,14 +23,14 @@ class MagentoAssert extends \Codeception\Module
      *
      * @param string $sortOrder
      */
-    public function assertArrayIsSorted(array $data, $sortOrder = "asc"): void
+    public function assertArrayIsSorted(array $data, $sortOrder = 'asc'): void
     {
         $elementTotal = count($data);
         $message = null;
 
         // If value can be converted to a date and it isn't 1.1 number (strtotime is overzealous)
         if (strtotime((string) $data[0]) !== false && !is_numeric($data[0])) {
-            $message = "Array of dates converted to unix timestamp for comparison";
+            $message = 'Array of dates converted to unix timestamp for comparison';
             $data = array_map(strtotime(...), $data);
         } else {
             $data = array_map(strtolower(...), $data);
@@ -37,12 +39,12 @@ class MagentoAssert extends \Codeception\Module
         if ($sortOrder === 'asc') {
             for ($i = 1; $i < $elementTotal; $i++) {
                 // $i >= $i-1
-                $this->assertLessThanOrEqual($data[$i], $data[$i-1], $message);
+                $this->assertLessThanOrEqual($data[$i], $data[$i - 1], $message);
             }
         } else {
             for ($i = 1; $i < $elementTotal; $i++) {
                 // $i <= $i-1
-                $this->assertGreaterThanOrEqual($data[$i], $data[$i-1], $message);
+                $this->assertGreaterThanOrEqual($data[$i], $data[$i - 1], $message);
             }
         }
     }

@@ -1,10 +1,11 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Magento\FunctionalTestingFramework\Console;
 
@@ -14,9 +15,9 @@ use Symfony\Component\Process\Process;
 
 class RunTestFailedCommand extends BaseGenerateCommand
 {
-    const DEFAULT_TEST_GROUP = 'default';
+    public const DEFAULT_TEST_GROUP = 'default';
 
-    private string $testsReRunFile = "rerun_tests";
+    private string $testsReRunFile = 'rerun_tests';
 
     private array $failedList = [];
 
@@ -42,7 +43,7 @@ class RunTestFailedCommand extends BaseGenerateCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->testsFailedFile = $this->getTestsOutputDir() . self::FAILED_FILE;
-        $this->testsReRunFile = $this->getTestsOutputDir() . "rerun_tests";
+        $this->testsReRunFile = $this->getTestsOutputDir() . 'rerun_tests';
 
         $failedTests = $this->readFailedTestFile($this->testsFailedFile);
         $testManifestList = $this->filterTestsForExecution($failedTests);
@@ -103,12 +104,12 @@ class RunTestFailedCommand extends BaseGenerateCommand
                 $this->writeFailedTestToFile($test, $this->testsReRunFile);
                 $testInfo = explode(DIRECTORY_SEPARATOR, (string) $test);
                 $suiteName = $testInfo[count($testInfo) - 2];
-                [$testPath] = explode(":", (string) $test);
+                [$testPath] = explode(':', (string) $test);
 
                 if ($suiteName === self::DEFAULT_TEST_GROUP) {
                     $testsOrGroupsToRerun[] = $testPath;
                 } else {
-                    $group = "-g " . $suiteName;
+                    $group = '-g ' . $suiteName;
                     if (!in_array($group, $testsOrGroupsToRerun)) {
                         $testsOrGroupsToRerun[] = $group;
                     }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -17,13 +19,13 @@ use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
  */
 class EntityDataObject
 {
-    const NO_UNIQUE_PROCESS = 0;
-    const SUITE_UNIQUE_VALUE = 1;
-    const CEST_UNIQUE_VALUE = 2;
-    const SUITE_UNIQUE_NOTATION = 3;
-    const CEST_UNIQUE_NOTATION = 4;
-    const SUITE_UNIQUE_FUNCTION = 'msqs';
-    const CEST_UNIQUE_FUNCTION = 'msq';
+    public const NO_UNIQUE_PROCESS = 0;
+    public const SUITE_UNIQUE_VALUE = 1;
+    public const CEST_UNIQUE_VALUE = 2;
+    public const SUITE_UNIQUE_NOTATION = 3;
+    public const CEST_UNIQUE_NOTATION = 4;
+    public const SUITE_UNIQUE_FUNCTION = 'msqs';
+    public const CEST_UNIQUE_FUNCTION = 'msq';
 
     /**
      * Array of data name and its uniqueness attribute value.
@@ -147,13 +149,13 @@ class EntityDataObject
     {
         if (MftfApplicationConfig::getConfig()->verboseEnabled()) {
             LoggingUtil::getInstance()->getLogger(EntityDataObject::class)
-                ->debug("Fetching data field from entity", ["entity" => $this->getName(), "field" => $name]);
+                ->debug('Fetching data field from entity', ['entity' => $this->getName(), 'field' => $name]);
         }
 
         if (!$this->isValidUniqueDataFormat($uniquenessFormat)) {
             $exceptionMessage = sprintf("Invalid unique data format value: %s \n", $uniquenessFormat);
             LoggingUtil::getInstance()->getLogger(EntityDataObject::class)
-                ->error($exceptionMessage, ["entity" => $this->getName(), "field" => $name]);
+                ->error($exceptionMessage, ['entity' => $this->getName(), 'field' => $name]);
             throw new TestFrameworkException($exceptionMessage);
         }
 
@@ -374,7 +376,7 @@ class EntityDataObject
                 self::SUITE_UNIQUE_VALUE,
                 self::CEST_UNIQUE_VALUE,
                 self::SUITE_UNIQUE_NOTATION,
-                self::CEST_UNIQUE_NOTATION
+                self::CEST_UNIQUE_NOTATION,
             ],
             true
         );

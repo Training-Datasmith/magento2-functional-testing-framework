@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -7,8 +9,8 @@
 namespace Magento\FunctionalTestingFramework\Module;
 
 use Codeception\Module as CodeceptionModule;
-use Magento\FunctionalTestingFramework\DataGenerator\Handlers\PersistedObjectHandler;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\CredentialStore;
+use Magento\FunctionalTestingFramework\DataGenerator\Handlers\PersistedObjectHandler;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 
 /**

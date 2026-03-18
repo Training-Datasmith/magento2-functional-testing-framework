@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2021 Adobe
  * All Rights Reserved.
@@ -17,7 +18,7 @@ use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
  */
 class ExcludeGroup implements FilterInterface
 {
-    const ANNOTATION_TAG = 'group';
+    public const ANNOTATION_TAG = 'group';
 
     /**
      * @var array

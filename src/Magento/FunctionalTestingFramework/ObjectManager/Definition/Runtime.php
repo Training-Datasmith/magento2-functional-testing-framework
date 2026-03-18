@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -28,7 +30,7 @@ class Runtime implements \Magento\FunctionalTestingFramework\ObjectManager\Defin
      */
     public function __construct(?\Magento\FunctionalTestingFramework\Code\Reader\ClassReader $reader = null)
     {
-        $this->reader = $reader ? : new \Magento\FunctionalTestingFramework\Code\Reader\ClassReader();
+        $this->reader = $reader ?: new \Magento\FunctionalTestingFramework\Code\Reader\ClassReader();
     }
 
     /**

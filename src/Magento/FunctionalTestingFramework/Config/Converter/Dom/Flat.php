@@ -1,12 +1,12 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
 
 namespace Magento\FunctionalTestingFramework\Config\Converter\Dom;
-
-use Magento\FunctionalTestingFramework\Config\Dom\ArrayNodeConfig;
 
 /**
  * Universal converter of any XML data to an array representation with no data loss
@@ -21,8 +21,7 @@ class Flat
          * Array node configuration.
          */
         protected \Magento\FunctionalTestingFramework\Config\Dom\ArrayNodeConfig $arrayNodeConfig
-    )
-    {
+    ) {
     }
 
     /**

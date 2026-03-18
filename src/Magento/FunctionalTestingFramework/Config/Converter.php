@@ -1,13 +1,12 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
 
 namespace Magento\FunctionalTestingFramework\Config;
-
-use Magento\FunctionalTestingFramework\ObjectManager\Config\Mapper\ArgumentParser;
-use Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface;
 
 /**
  * Converter for configuration data.
@@ -17,7 +16,7 @@ class Converter implements \Magento\FunctionalTestingFramework\Config\ConverterI
     /**
      * Unique identifier of node.
      */
-    const NAME_ATTRIBUTE = 'name';
+    public const NAME_ATTRIBUTE = 'name';
 
     /**
      * Constructor for Converter object.
@@ -43,8 +42,7 @@ class Converter implements \Magento\FunctionalTestingFramework\Config\ConverterI
          * @var string[]
          */
         protected array $idAttributes = []
-    )
-    {
+    ) {
     }
 
     /**

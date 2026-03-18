@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -80,7 +81,7 @@ class ActionGroupObjectHandlerTest extends MagentoTestCase
                 'actionGroups' => array_merge(
                     $actionGroupOne,
                     $actionGroupTwo
-                )
+                ),
             ]
         );
 

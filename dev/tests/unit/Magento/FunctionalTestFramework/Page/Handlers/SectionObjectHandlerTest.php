@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -43,19 +44,19 @@ class SectionObjectHandlerTest extends MagentoTestCase
                 'element' => [
                     'testElement' => [
                         'type' => 'input',
-                        'selector' => '#element'
-                    ]
-                ]
+                        'selector' => '#element',
+                    ],
+                ],
             ],
 
             'testSection2' => [
                 'element' => [
                     'testElement' => [
                         'type' => 'input',
-                        'selector' => '#element'
-                    ]
-                ]
-            ]
+                        'selector' => '#element',
+                    ],
+                ],
+            ],
         ];
 
         $this->mockSectionObjectHandlerWithData($mockData);
@@ -87,12 +88,12 @@ class SectionObjectHandlerTest extends MagentoTestCase
                     'testElement' => [
                         'type' => 'input',
                         'selector' => '#element',
-                        'deprecated' => 'element deprecation message'
-                    ]
+                        'deprecated' => 'element deprecation message',
+                    ],
                 ],
                 'filename' => 'filename.xml',
-                'deprecated' => 'section deprecation message'
-            ]
+                'deprecated' => 'section deprecation message',
+            ],
         ];
 
         $this->mockSectionObjectHandlerWithData($mockData);
@@ -118,7 +119,7 @@ class SectionObjectHandlerTest extends MagentoTestCase
      */
     private function mockSectionObjectHandlerWithData(array $mockData): void
     {
-        $sectionObjectHandlerProperty = new ReflectionProperty(SectionObjectHandler::class, "INSTANCE");
+        $sectionObjectHandlerProperty = new ReflectionProperty(SectionObjectHandler::class, 'INSTANCE');
         $sectionObjectHandlerProperty->setValue(null, null);
 
         $mockSectionParser = $this->createMock(SectionParser::class);
@@ -157,7 +158,7 @@ class SectionObjectHandlerTest extends MagentoTestCase
     {
         parent::tearDownAfterClass();
 
-        $sectionObjectHandlerProperty = new ReflectionProperty(SectionObjectHandler::class, "INSTANCE");
+        $sectionObjectHandlerProperty = new ReflectionProperty(SectionObjectHandler::class, 'INSTANCE');
         $sectionObjectHandlerProperty->setValue(null, null);
 
         $objectManagerProperty = new ReflectionProperty(ObjectManager::class, 'instance');

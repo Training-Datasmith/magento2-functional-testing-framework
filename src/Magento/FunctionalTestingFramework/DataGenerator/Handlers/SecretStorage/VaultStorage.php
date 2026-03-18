@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -6,10 +8,10 @@
 
 namespace Magento\FunctionalTestingFramework\DataGenerator\Handlers\SecretStorage;
 
+use GuzzleHttp\Client as GuzzleClient;
 use Laminas\Diactoros\RequestFactory;
 use Laminas\Diactoros\StreamFactory;
 use Laminas\Diactoros\Uri;
-use GuzzleHttp\Client as GuzzleClient;
 use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\CredentialStore;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
@@ -21,33 +23,33 @@ class VaultStorage extends BaseStorage
     /**
      * Mftf project path
      */
-    const MFTF_PATH = '/mftf';
+    public const MFTF_PATH = '/mftf';
 
     /**
      * Vault kv version 2 data
      */
-    const KV2_DATA = 'data';
+    public const KV2_DATA = 'data';
 
     /**
      * Default vault token file
      */
-    const TOKEN_FILE = '.vault-token';
+    public const TOKEN_FILE = '.vault-token';
 
     /**
      * Default vault config file
      */
-    const CONFIG_FILE = '.vault';
+    public const CONFIG_FILE = '.vault';
 
     /**
      * Environment variable name for vault config path
      */
-    const CONFIG_PATH_ENV_VAR = 'VAULT_CONFIG_PATH';
+    public const CONFIG_PATH_ENV_VAR = 'VAULT_CONFIG_PATH';
 
     /**
      * Regex to grab token helper script
      */
-    const TOKEN_HELPER_REGEX_GROUP_NAME = 'GROUP_NAME';
-    const TOKEN_HELPER_REGEX = "~\s*token_helper\s*=(?<" . self::TOKEN_HELPER_REGEX_GROUP_NAME . ">.+)$~";
+    public const TOKEN_HELPER_REGEX_GROUP_NAME = 'GROUP_NAME';
+    public const TOKEN_HELPER_REGEX = "~\s*token_helper\s*=(?<" . self::TOKEN_HELPER_REGEX_GROUP_NAME . '>.+)$~';
 
     /**
      * Vault client
@@ -87,7 +89,7 @@ class VaultStorage extends BaseStorage
                 new GuzzleClient([
                     'timeout' => 15,
                     'base_uri' => $baseUrl,
-                    'http_errors' => false
+                    'http_errors' => false,
                 ]),
                 new RequestFactory(),
                 new StreamFactory()
@@ -96,7 +98,7 @@ class VaultStorage extends BaseStorage
         }
         $this->readVaultTokenFromFileSystem();
         if (!$this->authenticated()) {
-            throw new TestFrameworkException("Credential vault is not used: cannot authenticate");
+            throw new TestFrameworkException('Credential vault is not used: cannot authenticate');
         }
     }
 

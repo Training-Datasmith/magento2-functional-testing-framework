@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -21,8 +23,7 @@ class ArrayType implements InterpreterInterface
          * Interpreter of individual array item
          */
         private readonly InterpreterInterface $itemInterpreter
-    )
-    {
+    ) {
     }
 
     /**
@@ -58,7 +59,7 @@ class ArrayType implements InterpreterInterface
             }
             uksort(
                 $indexedItems,
-                fn($firstItemKey, $secondItemKey) => $this->compareItems($firstItemKey, $secondItemKey, $indexedItems)
+                fn ($firstItemKey, $secondItemKey) => $this->compareItems($firstItemKey, $secondItemKey, $indexedItems)
             );
             // Convert array of sorted items back to initial format
             $items = [];

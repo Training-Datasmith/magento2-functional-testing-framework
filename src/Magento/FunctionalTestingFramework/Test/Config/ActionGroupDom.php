@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -6,17 +8,14 @@
 
 namespace Magento\FunctionalTestingFramework\Test\Config;
 
-use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
-use Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUtil;
-
 /**
  * MFTF actionGroup.xml configuration XML DOM utility
  * @package Magento\FunctionalTestingFramework\Test\Config
  */
 class ActionGroupDom extends Dom
 {
-    const ACTION_GROUP_FILE_NAME_ENDING = "ActionGroup.xml";
-    const ACTION_GROUP_META_NAME_ATTRIBUTE = "name";
+    public const ACTION_GROUP_FILE_NAME_ENDING = 'ActionGroup.xml';
+    public const ACTION_GROUP_META_NAME_ATTRIBUTE = 'name';
 
     /**
      * Takes a dom element from xml and appends the filename based on location while also validating the action group
@@ -55,14 +54,14 @@ class ActionGroupDom extends Dom
                     $filename,
                     $actionGroupNode->getAttribute(self::ACTION_GROUP_META_NAME_ATTRIBUTE)
                 );
-                if ($actionGroupNode->getAttribute(self::TEST_MERGE_POINTER_AFTER) !== "") {
+                if ($actionGroupNode->getAttribute(self::TEST_MERGE_POINTER_AFTER) !== '') {
                     $this->appendMergePointerToActions(
                         $actionGroupNode,
                         self::TEST_MERGE_POINTER_AFTER,
                         $actionGroupNode->getAttribute(self::TEST_MERGE_POINTER_AFTER),
                         $filename
                     );
-                } elseif ($actionGroupNode->getAttribute(self::TEST_MERGE_POINTER_BEFORE) !== "") {
+                } elseif ($actionGroupNode->getAttribute(self::TEST_MERGE_POINTER_BEFORE) !== '') {
                     $this->appendMergePointerToActions(
                         $actionGroupNode,
                         self::TEST_MERGE_POINTER_BEFORE,

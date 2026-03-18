@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -6,6 +8,7 @@
 
 namespace Magento\FunctionalTestingFramework\Suite;
 
+use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
 use Magento\FunctionalTestingFramework\Exceptions\FastFailException;
 use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
@@ -21,7 +24,6 @@ use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 use Magento\FunctionalTestingFramework\Util\Manifest\BaseTestManifest;
 use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 use Magento\FunctionalTestingFramework\Util\TestGenerator;
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 
 /**
  * Class SuiteGenerator
@@ -29,12 +31,12 @@ use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
  */
 class SuiteGenerator
 {
-    const YAML_CODECEPTION_DIST_FILENAME = 'codeception.dist.yml';
-    const YAML_CODECEPTION_CONFIG_FILENAME = 'codeception.yml';
-    const YAML_GROUPS_TAG = 'groups';
-    const YAML_EXTENSIONS_TAG = 'extensions';
-    const YAML_ENABLED_TAG = 'enabled';
-    const YAML_COPYRIGHT_TEXT =
+    public const YAML_CODECEPTION_DIST_FILENAME = 'codeception.dist.yml';
+    public const YAML_CODECEPTION_CONFIG_FILENAME = 'codeception.yml';
+    public const YAML_GROUPS_TAG = 'groups';
+    public const YAML_EXTENSIONS_TAG = 'extensions';
+    public const YAML_ENABLED_TAG = 'enabled';
+    public const YAML_COPYRIGHT_TEXT =
         "# Copyright © Magento, Inc. All rights reserved.\n# See COPYING.txt for license details.\n";
 
     /**
@@ -153,7 +155,7 @@ class SuiteGenerator
             foreach ($groupInfo as $testName) {
                 // If file has -g then it is test suite
                 if (str_contains((string) $testName, '-g')) {
-                    $suitename = explode(" ", (string) $testName);
+                    $suitename = explode(' ', (string) $testName);
                     $suitename[1] = trim($suitename[1]);
 
                     if (!empty($suites[$suitename[1]])) {
@@ -200,12 +202,12 @@ class SuiteGenerator
         return $suites;
     }
 
-  /**
-   * Function to read all group* text files inside /groups folder
-   *
-   * @param object $path
-   * @return array $allGroupsContent
-   */
+    /**
+     * Function to read all group* text files inside /groups folder
+     *
+     * @param object $path
+     * @return array $allGroupsContent
+     */
     private function readAllGroupFiles(string $path): array
     {
         // Read all group files
@@ -227,7 +229,7 @@ class SuiteGenerator
         }
         return $allGroupsContent;
     }
-    
+
     /**
      * Function which takes a suite name and a set of test names. The function then generates all relevant supporting
      * files and classes for the suite. The function takes an optional argument for suites which are split by a parallel
@@ -297,7 +299,7 @@ class SuiteGenerator
                 print("suite {$suiteName} generated\n");
             }
             LoggingUtil::getInstance()->getLogger(self::class)->info(
-                "suite generated",
+                'suite generated',
                 ['suite' => $suiteName, 'relative_path' => $relativePath]
             );
         } catch (FastFailException $e) {
@@ -326,12 +328,12 @@ class SuiteGenerator
     {
         $suiteRef = $originalSuiteName ?? $suiteName;
         $possibleTestRef = SuiteObjectHandler::getInstance()->getObject($suiteRef)->getTests();
-        $errorMsg = "Cannot reference tests which are not declared as part of suite";
+        $errorMsg = 'Cannot reference tests which are not declared as part of suite';
 
         $invalidTestRef = array_diff($testsReferenced, array_keys($possibleTestRef));
 
         if (!empty($invalidTestRef)) {
-            $testList = implode("\", \"", $invalidTestRef);
+            $testList = implode('", "', $invalidTestRef);
             $fullError = $errorMsg . " (Suite: \"{$suiteRef}\" Tests: \"{$testList}\")";
             throw new TestReferenceException($fullError, ['suite' => $suiteRef, 'test' => $invalidTestRef]);
         }

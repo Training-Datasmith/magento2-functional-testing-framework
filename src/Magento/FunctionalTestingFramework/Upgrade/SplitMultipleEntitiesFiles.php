@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -18,18 +20,18 @@ use Symfony\Component\Finder\Finder;
  */
 class SplitMultipleEntitiesFiles implements UpgradeInterface
 {
-    const XML_VERSION = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
-    const XML_COPYRIGHT = '<!--' . PHP_EOL
+    public const XML_VERSION = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
+    public const XML_COPYRIGHT = '<!--' . PHP_EOL
         . ' /**' . PHP_EOL
         . '  * Copyright © Magento, Inc. All rights reserved.' . PHP_EOL
         . '  * See COPYING.txt for license details.' . PHP_EOL
         . '  */' . PHP_EOL
         . '-->' . PHP_EOL;
-    const XML_NAMESPACE = 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' . PHP_EOL;
-    const XML_SCHEMA_LOCATION = "\t" . 'xsi:noNamespaceSchemaLocation="urn:magento:mftf:';
+    public const XML_NAMESPACE = 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' . PHP_EOL;
+    public const XML_SCHEMA_LOCATION = "\t" . 'xsi:noNamespaceSchemaLocation="urn:magento:mftf:';
 
-    const FILENAME_BASE = 'base';
-    const FILENAME_SUFFIX = 'type';
+    public const FILENAME_BASE = 'base';
+    public const FILENAME_SUFFIX = 'type';
 
     /**
      * OutputInterface

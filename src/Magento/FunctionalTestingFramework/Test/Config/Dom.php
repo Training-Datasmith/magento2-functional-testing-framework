@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -7,9 +9,6 @@
 namespace Magento\FunctionalTestingFramework\Test\Config;
 
 use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
-use Magento\FunctionalTestingFramework\Exceptions\XmlException;
-use Magento\FunctionalTestingFramework\Config\Dom\NodeMergingConfig;
-use Magento\FunctionalTestingFramework\Config\Dom\NodePathMatcher;
 use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
 use Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUtil;
 use Magento\FunctionalTestingFramework\Util\Validation\SingleNodePerFileValidationUtil;
@@ -20,12 +19,12 @@ use Magento\FunctionalTestingFramework\Util\Validation\SingleNodePerFileValidati
  */
 class Dom extends \Magento\FunctionalTestingFramework\Config\MftfDom
 {
-    const TEST_FILE_NAME_ENDING = 'Test.xml';
-    const TEST_META_FILENAME_ATTRIBUTE = 'filename';
-    const TEST_META_NAME_ATTRIBUTE = 'name';
-    const TEST_HOOK_NAMES = ["after", "before"];
-    const TEST_MERGE_POINTER_BEFORE = "insertBefore";
-    const TEST_MERGE_POINTER_AFTER = "insertAfter";
+    public const TEST_FILE_NAME_ENDING = 'Test.xml';
+    public const TEST_META_FILENAME_ATTRIBUTE = 'filename';
+    public const TEST_META_NAME_ATTRIBUTE = 'name';
+    public const TEST_HOOK_NAMES = ['after', 'before'];
+    public const TEST_MERGE_POINTER_BEFORE = 'insertBefore';
+    public const TEST_MERGE_POINTER_AFTER = 'insertAfter';
 
     /**
      * NodeValidationUtil for test actions
@@ -115,14 +114,14 @@ class Dom extends \Magento\FunctionalTestingFramework\Config\MftfDom
                 /** @var \DOMElement $testNode */
                 $testNode = $dom->getElementsByTagName('test')[0];
                 $testNode->setAttribute(self::TEST_META_FILENAME_ATTRIBUTE, $filename);
-                if ($testNode->getAttribute(self::TEST_MERGE_POINTER_AFTER) !== "") {
+                if ($testNode->getAttribute(self::TEST_MERGE_POINTER_AFTER) !== '') {
                     $this->appendMergePointerToActions(
                         $testNode,
                         self::TEST_MERGE_POINTER_AFTER,
                         $testNode->getAttribute(self::TEST_MERGE_POINTER_AFTER),
                         $filename
                     );
-                } elseif ($testNode->getAttribute(self::TEST_MERGE_POINTER_BEFORE) !== "") {
+                } elseif ($testNode->getAttribute(self::TEST_MERGE_POINTER_BEFORE) !== '') {
                     $this->appendMergePointerToActions(
                         $testNode,
                         self::TEST_MERGE_POINTER_BEFORE,
@@ -143,14 +142,14 @@ class Dom extends \Magento\FunctionalTestingFramework\Config\MftfDom
                     $this->actionsValidationUtil->validateChildUniqueness(
                         $beforeNode,
                         $filename,
-                        $testNode->getAttribute(self::TEST_META_NAME_ATTRIBUTE) . "/before"
+                        $testNode->getAttribute(self::TEST_META_NAME_ATTRIBUTE) . '/before'
                     );
                 }
                 if (isset($afterNode)) {
                     $this->actionsValidationUtil->validateChildUniqueness(
                         $afterNode,
                         $filename,
-                        $testNode->getAttribute(self::TEST_META_NAME_ATTRIBUTE) . "/after"
+                        $testNode->getAttribute(self::TEST_META_NAME_ATTRIBUTE) . '/after'
                     );
                 }
             }
@@ -182,7 +181,7 @@ class Dom extends \Magento\FunctionalTestingFramework\Config\MftfDom
                 continue;
             }
             if ($currentNode->hasAttribute($insertType) && $testNode->hasAttribute($insertType)) {
-                $errorMsg = "Actions cannot have merge pointers if contained in tests that has a merge pointer.";
+                $errorMsg = 'Actions cannot have merge pointers if contained in tests that has a merge pointer.';
                 $errorMsg .= "\n\tstepKey: {$currentNode->getAttribute('stepKey')}\tin file: {$filename}";
                 $this->exceptionCollector->addError($filename, $errorMsg);
             }

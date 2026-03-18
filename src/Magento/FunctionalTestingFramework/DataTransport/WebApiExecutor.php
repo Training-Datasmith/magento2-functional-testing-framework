@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -6,12 +8,12 @@
 
 namespace Magento\FunctionalTestingFramework\DataTransport;
 
+use Magento\FunctionalTestingFramework\DataTransport\Auth\WebApiAuth;
+use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlInterface;
+use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlTransport;
 use Magento\FunctionalTestingFramework\Exceptions\FastFailException;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Util\MftfGlobals;
-use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlInterface;
-use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlTransport;
-use Magento\FunctionalTestingFramework\DataTransport\Auth\WebApiAuth;
 
 /**
  * Curl executor for Magento Web Api requests.
@@ -42,8 +44,8 @@ class WebApiExecutor implements CurlInterface
     public function __construct(/**
      * Store code in API request
      */
-    private readonly ?string $storeCode = null)
-    {
+        private readonly ?string $storeCode = null
+    ) {
         $this->transport = new CurlTransport();
         $this->authorize();
     }

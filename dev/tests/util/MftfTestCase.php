@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -10,20 +12,19 @@ use Magento\FunctionalTestingFramework\ObjectManager;
 use Magento\FunctionalTestingFramework\Suite\Handlers\SuiteObjectHandler;
 use Magento\FunctionalTestingFramework\Suite\SuiteGenerator;
 use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 use Magento\FunctionalTestingFramework\Util\TestGenerator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 abstract class MftfTestCase extends TestCase
 {
-    const RESOURCES_PATH = __DIR__ .
-    DIRECTORY_SEPARATOR .
-    '..' .
-    DIRECTORY_SEPARATOR .
-    'verification' .
-    DIRECTORY_SEPARATOR .
-    'Resources';
+    public const RESOURCES_PATH = __DIR__ .
+        DIRECTORY_SEPARATOR .
+        '..' .
+        DIRECTORY_SEPARATOR .
+        'verification' .
+        DIRECTORY_SEPARATOR .
+        'Resources';
 
     /**
      * Private function which takes a test name, generates the test and compares with a correspondingly named txt file
@@ -40,12 +41,12 @@ abstract class MftfTestCase extends TestCase
         $cestFile = $test->getExportDir() .
             DIRECTORY_SEPARATOR .
             $testObject->getCodeceptionName() .
-            ".php";
+            '.php';
 
         $this->assertTrue(file_exists($cestFile));
 
         $this->assertFileEquals(
-            self::RESOURCES_PATH . DIRECTORY_SEPARATOR . $testObject->getName() . ".txt",
+            self::RESOURCES_PATH . DIRECTORY_SEPARATOR . $testObject->getName() . '.txt',
             $cestFile
         );
     }
@@ -58,7 +59,7 @@ abstract class MftfTestCase extends TestCase
      * @param string $expectedError
      * @throws \Exception
      */
-    public function validateSchemaErrorWithTest($fileContents, $objectType ,$expectedError)
+    public function validateSchemaErrorWithTest($fileContents, $objectType, $expectedError)
     {
         $this->clearHandler();
         $fullTestModulePath = TESTS_MODULE_PATH .
@@ -76,7 +77,7 @@ abstract class MftfTestCase extends TestCase
         }
         try {
             $this->expectExceptionMessage($expectedError);
-            TestObjectHandler::getInstance()->getObject("someTest");
+            TestObjectHandler::getInstance()->getObject('someTest');
         } finally {
             foreach (array_keys($fileContents) as $fileName) {
                 unlink($fullTestModulePath . $fileName);

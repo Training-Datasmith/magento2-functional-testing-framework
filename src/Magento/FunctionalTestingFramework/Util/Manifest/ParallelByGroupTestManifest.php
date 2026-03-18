@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2021 Adobe
  * All Rights Reserved.
@@ -6,15 +8,11 @@
 
 namespace Magento\FunctionalTestingFramework\Util\Manifest;
 
-use Magento\Framework\Exception\RuntimeException;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
-use Magento\FunctionalTestingFramework\Util\Filesystem\DirSetupUtil;
-use Magento\FunctionalTestingFramework\Util\Sorter\ParallelGroupSorter;
 
 class ParallelByGroupTestManifest extends BaseParallelTestManifest
 {
-    const PARALLEL_CONFIG = 'parallelByGroup';
+    public const PARALLEL_CONFIG = 'parallelByGroup';
 
     /**
      * ParallelByGroupTestManifest constructor.

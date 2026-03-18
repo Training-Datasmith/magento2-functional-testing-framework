@@ -1,31 +1,32 @@
 <?php
+
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Magento\FunctionalTestingFramework\Console;
 
 use Codeception\Configuration;
-use Magento\FunctionalTestingFramework\DataTransport\Auth\WebApiAuth;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Codeception\SuiteManager;
 use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
+use Magento\FunctionalTestingFramework\DataTransport\Auth\WebApiAuth;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
+use Magento\FunctionalTestingFramework\Module\MagentoWebDriver;
+use Magento\FunctionalTestingFramework\Module\MagentoWebDriverDoctor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Magento\FunctionalTestingFramework\Module\MagentoWebDriver;
-use Magento\FunctionalTestingFramework\Module\MagentoWebDriverDoctor;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class DoctorCommand extends Command
 {
-    const CODECEPTION_AUTOLOAD_FILE = PROJECT_ROOT . '/vendor/codeception/codeception/autoload.php';
-    const MFTF_CODECEPTION_CONFIG_FILE = ENV_FILE_PATH . 'codeception.yml';
-    const SUITE = 'functional';
+    public const CODECEPTION_AUTOLOAD_FILE = PROJECT_ROOT . '/vendor/codeception/codeception/autoload.php';
+    public const MFTF_CODECEPTION_CONFIG_FILE = ENV_FILE_PATH . 'codeception.yml';
+    public const SUITE = 'functional';
 
     /**
      * Console output style
@@ -56,7 +57,7 @@ class DoctorCommand extends Command
      * @throws TestFrameworkException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    protected function execute(InputInterface $input, OutputInterface $output):int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // For output style
         $this->ioStyle = new SymfonyStyle($input, $output);
@@ -117,7 +118,7 @@ class DoctorCommand extends Command
     {
         $result = false;
         try {
-            $this->ioStyle->text("Requesting API token for admin user through cURL ...");
+            $this->ioStyle->text('Requesting API token for admin user through cURL ...');
             WebApiAuth::getAdminToken();
             $this->ioStyle->success('Successful');
             $result = true;
@@ -128,8 +129,8 @@ class DoctorCommand extends Command
                 $urlVar = 'MAGENTO_BASE_URL';
             }
             $this->ioStyle->error(
-                $e->getMessage() . "\nPlease verify if " . $urlVar . ", "
-                . "MAGENTO_ADMIN_USERNAME and MAGENTO_ADMIN_PASSWORD in .env are valid."
+                $e->getMessage() . "\nPlease verify if " . $urlVar . ', '
+                . 'MAGENTO_ADMIN_USERNAME and MAGENTO_ADMIN_PASSWORD in .env are valid.'
             );
         }
         return $result;

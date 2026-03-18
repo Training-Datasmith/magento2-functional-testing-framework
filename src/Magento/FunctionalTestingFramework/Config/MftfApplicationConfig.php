@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -14,17 +16,17 @@ class MftfApplicationConfig
     /**
      * MFTF Execution Phases
      */
-    const GENERATION_PHASE = "generation";
-    const EXECUTION_PHASE = "execution";
-    const UNIT_TEST_PHASE = "testing";
-    const MFTF_PHASES = [self::GENERATION_PHASE, self::EXECUTION_PHASE, self::UNIT_TEST_PHASE];
+    public const GENERATION_PHASE = 'generation';
+    public const EXECUTION_PHASE = 'execution';
+    public const UNIT_TEST_PHASE = 'testing';
+    public const MFTF_PHASES = [self::GENERATION_PHASE, self::EXECUTION_PHASE, self::UNIT_TEST_PHASE];
 
     /**
      * Mftf debug levels
      */
-    const LEVEL_DEFAULT = "default";
-    const LEVEL_DEVELOPER = "developer";
-    const MFTF_DEBUG_LEVEL = [self::LEVEL_DEFAULT, self::LEVEL_DEVELOPER];
+    public const LEVEL_DEFAULT = 'default';
+    public const LEVEL_DEVELOPER = 'developer';
+    public const MFTF_DEBUG_LEVEL = [self::LEVEL_DEFAULT, self::LEVEL_DEVELOPER];
 
     /**
      * Contains object with test filters.

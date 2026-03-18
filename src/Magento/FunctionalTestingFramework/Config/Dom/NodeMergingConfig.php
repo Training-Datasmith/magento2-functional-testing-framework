@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -23,8 +25,7 @@ class NodeMergingConfig
          * Format: array('/node/path' => '<node_id_attribute>', ...)
          */
         private readonly array $idAttributes
-    )
-    {
+    ) {
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -18,7 +19,7 @@ use Magento\FunctionalTestingFramework\Test\Util\AnnotationExtractor;
  */
 class Severity implements FilterInterface
 {
-    const ANNOTATION_TAG = 'severity';
+    public const ANNOTATION_TAG = 'severity';
 
     /**
      * @var array

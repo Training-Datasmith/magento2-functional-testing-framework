@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -11,6 +12,7 @@ namespace tests\unit\Magento\FunctionalTestFramework\Test\Handlers;
 use Exception;
 use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
+use Magento\FunctionalTestingFramework\Filter\FilterList;
 use Magento\FunctionalTestingFramework\ObjectManager;
 use Magento\FunctionalTestingFramework\ObjectManagerFactory;
 use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
@@ -21,12 +23,11 @@ use Magento\FunctionalTestingFramework\Test\Parsers\TestDataParser;
 use Magento\FunctionalTestingFramework\Test\Util\TestObjectExtractor;
 use Magento\FunctionalTestingFramework\Util\GenerationErrorHandler;
 use Magento\FunctionalTestingFramework\Util\ModuleResolver;
+use Magento\FunctionalTestingFramework\Util\Script\TestDependencyUtil;
 use ReflectionProperty;
 use tests\unit\Util\MagentoTestCase;
 use tests\unit\Util\TestDataArrayBuilder;
 use tests\unit\Util\TestLoggingUtil;
-use Magento\FunctionalTestingFramework\Filter\FilterList;
-use Magento\FunctionalTestingFramework\Util\Script\TestDependencyUtil;
 
 class TestObjectHandlerTest extends MagentoTestCase
 {
@@ -85,17 +86,17 @@ class TestObjectHandlerTest extends MagentoTestCase
         $expectedBeforeHookObject = new TestHookObject(
             TestObjectExtractor::TEST_BEFORE_HOOK,
             $testDataArrayBuilder->testName,
-            ["testActionBefore" => $expectedBeforeActionObject]
+            ['testActionBefore' => $expectedBeforeActionObject]
         );
         $expectedAfterHookObject = new TestHookObject(
             TestObjectExtractor::TEST_AFTER_HOOK,
             $testDataArrayBuilder->testName,
-            ["testActionAfter" => $expectedAfterActionObject]
+            ['testActionAfter' => $expectedAfterActionObject]
         );
         $expectedFailedHookObject = new TestHookObject(
             TestObjectExtractor::TEST_FAILED_HOOK,
             $testDataArrayBuilder->testName,
-            ["saveScreenshot" => $expectedFailedActionObject]
+            ['saveScreenshot' => $expectedFailedActionObject]
         );
 
         $expectedTestActionObject = new ActionObject(
@@ -105,16 +106,16 @@ class TestObjectHandlerTest extends MagentoTestCase
         );
         $expectedTestObject = new TestObject(
             $testDataArrayBuilder->testName,
-            ["testActionInTest" => $expectedTestActionObject],
+            ['testActionInTest' => $expectedTestActionObject],
             [
                 'features' => ['NO MODULE DETECTED'],
                 'group' => ['test'],
-                'description' => ['test_files' => '<h3>Test files</h3>', 'deprecated' => []]
+                'description' => ['test_files' => '<h3>Test files</h3>', 'deprecated' => []],
             ],
             [
                 TestObjectExtractor::TEST_BEFORE_HOOK => $expectedBeforeHookObject,
                 TestObjectExtractor::TEST_AFTER_HOOK => $expectedAfterHookObject,
-                TestObjectExtractor::TEST_FAILED_HOOK => $expectedFailedHookObject
+                TestObjectExtractor::TEST_FAILED_HOOK => $expectedFailedHookObject,
             ],
             null
         );
@@ -143,12 +144,12 @@ class TestObjectHandlerTest extends MagentoTestCase
         // set up mock data with Exclude Test
         $includeTest = (new TestDataArrayBuilder())
             ->withName('includeTest')
-            ->withAnnotations(['group' => [['value' => 'test']], 'title'=>[['value' => 'includeTest']]])
+            ->withAnnotations(['group' => [['value' => 'test']], 'title' => [['value' => 'includeTest']]])
             ->withTestActions()
             ->build();
         $excludeTest = (new TestDataArrayBuilder())
             ->withName('excludeTest')
-            ->withAnnotations(['title'=>[['value' => 'excludeTest']]])
+            ->withAnnotations(['title' => [['value' => 'excludeTest']]])
             ->withTestActions()
             ->build();
 
@@ -173,21 +174,21 @@ class TestObjectHandlerTest extends MagentoTestCase
     public function testGetTestWithModuleName(): void
     {
         // set up Test Data
-        $moduleExpected = "SomeModuleName";
-        $moduleExpectedTest = $moduleExpected . "Test";
+        $moduleExpected = 'SomeModuleName';
+        $moduleExpectedTest = $moduleExpected . 'Test';
         $filepath = DIRECTORY_SEPARATOR .
-            "user" . DIRECTORY_SEPARATOR .
-            "magento2ce" . DIRECTORY_SEPARATOR .
-            "dev" . DIRECTORY_SEPARATOR .
-            "tests" . DIRECTORY_SEPARATOR .
-            "acceptance" . DIRECTORY_SEPARATOR .
-            "tests" . DIRECTORY_SEPARATOR .
-            "functional" . DIRECTORY_SEPARATOR .
-            "Vendor" . DIRECTORY_SEPARATOR .
+            'user' . DIRECTORY_SEPARATOR .
+            'magento2ce' . DIRECTORY_SEPARATOR .
+            'dev' . DIRECTORY_SEPARATOR .
+            'tests' . DIRECTORY_SEPARATOR .
+            'acceptance' . DIRECTORY_SEPARATOR .
+            'tests' . DIRECTORY_SEPARATOR .
+            'functional' . DIRECTORY_SEPARATOR .
+            'Vendor' . DIRECTORY_SEPARATOR .
             $moduleExpectedTest;
         $file = $filepath . DIRECTORY_SEPARATOR .
-            "Test" . DIRECTORY_SEPARATOR .
-            "text.xml";
+            'Test' . DIRECTORY_SEPARATOR .
+            'text.xml';
         // set up mock data
         $testDataArrayBuilder = new TestDataArrayBuilder();
         $mockData = $testDataArrayBuilder
@@ -204,7 +205,7 @@ class TestObjectHandlerTest extends MagentoTestCase
         // Execute Test Method
         $toh = TestObjectHandler::getInstance();
         $actualTestObject = $toh->getObject($testDataArrayBuilder->testName);
-        $moduleName = $actualTestObject->getAnnotations()["features"][0];
+        $moduleName = $actualTestObject->getAnnotations()['features'][0];
         //performAsserts
         $this->assertEquals($moduleExpected, $moduleName);
     }
@@ -232,7 +233,7 @@ class TestObjectHandlerTest extends MagentoTestCase
 
         $toh = TestObjectHandler::getInstance();
         $this->expectException(TestFrameworkException::class);
-        $this->expectExceptionMessage("Mftf Test can not extend from itself: " . "testOne");
+        $this->expectExceptionMessage('Mftf Test can not extend from itself: ' . 'testOne');
 
         $toh->getObject('testOne');
     }
@@ -270,7 +271,7 @@ class TestObjectHandlerTest extends MagentoTestCase
         $toh->getAllObjects();
 
         // assert that no exception for getAllObjects and test generation error is stored in GenerationErrorHandler
-        $errorMessage = '/' . preg_quote("Mftf Test can not extend from itself: " . "testOne") . '/';
+        $errorMessage = '/' . preg_quote('Mftf Test can not extend from itself: ' . 'testOne') . '/';
         TestLoggingUtil::getInstance()->validateMockLogStatmentRegex('error', $errorMessage, []);
         $testErrors = GenerationErrorHandler::getInstance()->getErrorsByType('test');
         $this->assertArrayHasKey('testOne', $testErrors);
@@ -326,19 +327,19 @@ class TestObjectHandlerTest extends MagentoTestCase
         $expectedBeforeHookObject = new TestHookObject(
             TestObjectExtractor::TEST_BEFORE_HOOK,
             $testDataArrayBuilder->testName,
-            ["testActionBefore" => $expectedBeforeActionObject]
+            ['testActionBefore' => $expectedBeforeActionObject]
         );
         $expectedAfterHookObject = new TestHookObject(
             TestObjectExtractor::TEST_AFTER_HOOK,
             $testDataArrayBuilder->testName,
-            ["testActionAfter" => $expectedAfterActionObject]
+            ['testActionAfter' => $expectedAfterActionObject]
         );
         $expectedFailedHookObject = new TestHookObject(
             TestObjectExtractor::TEST_FAILED_HOOK,
             $testDataArrayBuilder->testName,
             [
-                "saveScreenshot" => $expectedFailedActionObject1,
-                "pauseWhenFailed" => $expectedFailedActionObject2,
+                'saveScreenshot' => $expectedFailedActionObject1,
+                'pauseWhenFailed' => $expectedFailedActionObject2,
             ]
         );
 
@@ -349,16 +350,16 @@ class TestObjectHandlerTest extends MagentoTestCase
         );
         $expectedTestObject = new TestObject(
             $testDataArrayBuilder->testName,
-            ["testActionInTest" => $expectedTestActionObject],
+            ['testActionInTest' => $expectedTestActionObject],
             [
                 'features' => ['NO MODULE DETECTED'],
                 'group' => ['test'],
-                'description' => ['test_files' => '<h3>Test files</h3>', 'deprecated' => []]
+                'description' => ['test_files' => '<h3>Test files</h3>', 'deprecated' => []],
             ],
             [
                 TestObjectExtractor::TEST_BEFORE_HOOK => $expectedBeforeHookObject,
                 TestObjectExtractor::TEST_AFTER_HOOK => $expectedAfterHookObject,
-                TestObjectExtractor::TEST_FAILED_HOOK => $expectedFailedHookObject
+                TestObjectExtractor::TEST_FAILED_HOOK => $expectedFailedHookObject,
             ],
             null
         );

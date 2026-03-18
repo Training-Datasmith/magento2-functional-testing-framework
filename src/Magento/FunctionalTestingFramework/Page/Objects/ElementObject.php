@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -13,7 +15,7 @@ use Magento\FunctionalTestingFramework\Exceptions\XmlException;
  */
 class ElementObject
 {
-    const DEFAULT_TIMEOUT_SYMBOL = '-';
+    public const DEFAULT_TIMEOUT_SYMBOL = '-';
 
     /**
      * Section element name
@@ -47,16 +49,16 @@ class ElementObject
     public function __construct($name, /**
      * Section element type
      */
-    private $type, $selector, string $locatorFunction, /**
+        private $type, $selector, string $locatorFunction, /**
      * Section element timeout
      */
-    private $timeout, /**
+        private $timeout, /**
      * Section element locator is parameterized
      */
-    private $parameterized, /**
+        private $parameterized, /**
      * Deprecated message.
      */
-    private $deprecated = null)
+        private $deprecated = null)
     {
         if ($selector !== null && $locatorFunction !== null) {
             throw new XmlException("Element '{$name}' cannot have both a selector and a locatorFunction.");
@@ -68,8 +70,8 @@ class ElementObject
         $this->name = $name;
         $this->selector = $selector;
         $this->locatorFunction = $locatorFunction;
-        if (!str_contains($locatorFunction, "Locator::")) {
-            $this->locatorFunction = "Locator::" . $locatorFunction;
+        if (!str_contains($locatorFunction, 'Locator::')) {
+            $this->locatorFunction = 'Locator::' . $locatorFunction;
         }
     }
 

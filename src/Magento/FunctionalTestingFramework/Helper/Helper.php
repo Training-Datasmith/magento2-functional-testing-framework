@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -11,5 +13,4 @@ namespace Magento\FunctionalTestingFramework\Helper;
  */
 class Helper extends \Codeception\Module
 {
-    //
 }

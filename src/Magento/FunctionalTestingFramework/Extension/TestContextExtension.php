@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -12,16 +14,12 @@ use Codeception\Test\Test;
 use Magento\FunctionalTestingFramework\Allure\AllureHelper;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\PersistedObjectHandler;
 use Magento\FunctionalTestingFramework\Suite\Handlers\SuiteObjectHandler;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
-use Qameta\Allure\Allure;
-use Qameta\Allure\AllureLifecycleInterface;
-use Qameta\Allure\Model\StepResult;
-use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
 use Magento\FunctionalTestingFramework\Test\Objects\ActionGroupObject;
+use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
 use Magento\FunctionalTestingFramework\Util\TestGenerator;
+use Qameta\Allure\Allure;
+use Qameta\Allure\Model\StepResult;
 use Qameta\Allure\Model\TestResult;
-use Qameta\Allure\Model\Status;
-use Magento\FunctionalTestingFramework\Codeception\Subscriber\Console;
 
 /**
  * Class TestContextExtension
@@ -30,8 +28,8 @@ use Magento\FunctionalTestingFramework\Codeception\Subscriber\Console;
  */
 class TestContextExtension extends BaseExtension
 {
-    private const STEP_PASSED = "passed";
-    
+    private const STEP_PASSED = 'passed';
+
     /**
      * Test files cache.
      */
@@ -48,13 +46,13 @@ class TestContextExtension extends BaseExtension
      * Boolean value to indicate if steps are invisible steps
      */
     private bool $atInvisibleSteps = false;
-    const TEST_PHASE_AFTER = "_after";
-    const TEST_PHASE_BEFORE = "_before";
+    public const TEST_PHASE_AFTER = '_after';
+    public const TEST_PHASE_BEFORE = '_before';
 
-    const TEST_FAILED_FILE = 'failed';
-    const TEST_HOOKS = [
+    public const TEST_FAILED_FILE = 'failed';
+    public const TEST_HOOKS = [
         self::TEST_PHASE_AFTER => 'AfterHook',
-        self::TEST_PHASE_BEFORE => 'BeforeHook'
+        self::TEST_PHASE_BEFORE => 'BeforeHook',
     ];
 
     /**
@@ -80,7 +78,7 @@ class TestContextExtension extends BaseExtension
             Events::TEST_START => 'testStart',
             Events::STEP_AFTER => 'afterStep',
             Events::TEST_END => 'testEnd',
-            Events::RESULT_PRINT_AFTER => 'saveFailed'
+            Events::RESULT_PRINT_AFTER => 'saveFailed',
         ];
         self::$events = array_merge(parent::$events, $events);
     }
@@ -97,7 +95,7 @@ class TestContextExtension extends BaseExtension
             $cURLConnection = curl_init();
             curl_setopt_array($cURLConnection, [
                 CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_URL => getenv('MAGENTO_BASE_URL') . "/test.php?test=" . $this->currentTest,
+                CURLOPT_URL => getenv('MAGENTO_BASE_URL') . '/test.php?test=' . $this->currentTest,
             ]);
             curl_exec($cURLConnection);
         }
@@ -116,7 +114,7 @@ class TestContextExtension extends BaseExtension
 
         //Access private TestResultObject to find stack and if there are any errors/failures
         $testResultObject = call_user_func(\Closure::bind(
-            fn() => $cest->getResultAggregator(),
+            fn () => $cest->getResultAggregator(),
             $cest
         ));
 
@@ -167,10 +165,10 @@ class TestContextExtension extends BaseExtension
             function (TestResult $testResult) use ($groupName, $cest): void {
                 $labels = $testResult->getLabels();
                 foreach ($labels as $label) {
-                    if ($groupName !== null && $label->getName() === "parentSuite") {
+                    if ($groupName !== null && $label->getName() === 'parentSuite') {
                         $label->setValue(sprintf('%s\%s', $label->getValue(), $groupName));
                     }
-                    if ($label->getName() === "package") {
+                    if ($label->getName() === 'package') {
                         $className = $cest->getReportFields()['class'];
                         $className = preg_replace('{_[0-9]*_G}', '', $className);
                         $label->setValue($className);
@@ -191,15 +189,15 @@ class TestContextExtension extends BaseExtension
         $exactMatch = in_array($group, $suiteNames);
 
         // if this is an existing suite name we dont' need to worry about changing it
-        if ($exactMatch || !str_contains($group, "_")) {
+        if ($exactMatch || !str_contains($group, '_')) {
             return $group;
         }
 
         // if we can't find this group in the generated suites we have to assume that the group was split for generation
-        $groupNameSplit = explode("_", $group);
+        $groupNameSplit = explode('_', $group);
         array_pop($groupNameSplit);
         array_pop($groupNameSplit);
-        $originalName = implode("_", $groupNameSplit);
+        $originalName = implode('_', $groupNameSplit);
 
         // confirm our original name is one of the existing suite names otherwise just return the original group name
         $originalName = in_array($originalName, $suiteNames) ? $originalName : $group;
@@ -222,8 +220,8 @@ class TestContextExtension extends BaseExtension
                 || str_contains((string) $step->getName(), 'end before hook')
                 || str_contains((string) $step->getName(), 'start after hook')
                 || str_contains((string) $step->getName(), 'end after hook')
-             ) {
-                 $step->setName(strtoupper((string) $step->getName()));
+            ) {
+                $step->setName(strtoupper((string) $step->getName()));
             }
             // Remove all parameters from step because parameters already added in formatted step
             call_user_func(\Closure::bind(
@@ -279,9 +277,9 @@ class TestContextExtension extends BaseExtension
     public function extractContext($trace, $class)
     {
         foreach ($trace as $entry) {
-            $traceClass = $entry["class"] ?? null;
+            $traceClass = $entry['class'] ?? null;
             if (!str_starts_with($traceClass, $class)) {
-                return $entry["function"];
+                return $entry['function'];
             }
         }
         return null;
@@ -381,7 +379,7 @@ class TestContextExtension extends BaseExtension
         $stepName = '';
         $stepName .= '[' . $stepKey . '] ';
         if (empty($stepKey)) {
-            $stepName = "";
+            $stepName = '';
         }
         $stepName .= $stepAction . ' ' . $stepArgs;
         // Strip control characters so that report generation does not fail
@@ -390,9 +388,9 @@ class TestContextExtension extends BaseExtension
             preg_match("/\[(.*?)\]/", (string) $stepName, $matches);
             $stepKeyData = preg_split('/\s+/', ucwords($matches[1]));
             if (count($stepKeyData) > 0) {
-                $this->actionGroupStepKey ??= "";
-                $stepKeyHelper = str_replace($this->actionGroupStepKey, '', lcfirst(implode("", $stepKeyData)));
-                $stepName= '['.$stepKeyHelper.'] '.preg_replace('#\[.*\]#', '', (string) $stepName);
+                $this->actionGroupStepKey ??= '';
+                $stepKeyHelper = str_replace($this->actionGroupStepKey, '', lcfirst(implode('', $stepKeyData)));
+                $stepName = '['.$stepKeyHelper.'] '.preg_replace('#\[.*\]#', '', (string) $stepName);
             }
         }
         return ucfirst($stepName);
@@ -414,7 +412,7 @@ class TestContextExtension extends BaseExtension
         );
         $browserLog = [];
         try {
-            $browserLog = $this->getDriver()->webDriver->manage()->getLog("browser");
+            $browserLog = $this->getDriver()->webDriver->manage()->getLog('browser');
         } catch (\Exception) {
         }
         if (getenv('ENABLE_BROWSER_LOG') === 'true') {
@@ -422,7 +420,7 @@ class TestContextExtension extends BaseExtension
                 $browserLog = BrowserLogUtil::filterLogsOfType($browserLog, $source);
             }
             if (!empty($browserLog)) {
-                AllureHelper::addAttachmentToCurrentStep(json_encode($browserLog, JSON_PRETTY_PRINT), "Browser Log");
+                AllureHelper::addAttachmentToCurrentStep(json_encode($browserLog, JSON_PRETTY_PRINT), 'Browser Log');
             }
         }
         BrowserLogUtil::logErrors($browserLog, $this->getDriver(), $e);
@@ -473,7 +471,7 @@ class TestContextExtension extends BaseExtension
         }
         return $path;
     }
-    
+
     /**
      * Reading stepKey from file.
      *
@@ -487,7 +485,7 @@ class TestContextExtension extends BaseExtension
 
         //If the step's filepath is different from the test, it's a comment action.
         if ($this->getRootDir() . $step->getFilePath() != $filePath) {
-            return "";
+            return '';
         }
 
         if (!array_key_exists($filePath, $this->testFiles)) {

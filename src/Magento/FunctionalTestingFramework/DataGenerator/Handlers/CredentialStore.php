@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -6,21 +8,21 @@
 
 namespace Magento\FunctionalTestingFramework\DataGenerator\Handlers;
 
-use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
+use Magento\FunctionalTestingFramework\DataGenerator\Handlers\SecretStorage\AwsSecretsManagerStorage;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\SecretStorage\BaseStorage;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\SecretStorage\FileStorage;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\SecretStorage\VaultStorage;
-use Magento\FunctionalTestingFramework\DataGenerator\Handlers\SecretStorage\AwsSecretsManagerStorage;
+use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
+use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Util\Path\UrlFormatter;
 
 class CredentialStore
 {
-    const ARRAY_KEY_FOR_VAULT = 'vault';
-    const ARRAY_KEY_FOR_FILE = 'file';
-    const ARRAY_KEY_FOR_AWS_SECRETS_MANAGER = 'aws';
+    public const ARRAY_KEY_FOR_VAULT = 'vault';
+    public const ARRAY_KEY_FOR_FILE = 'file';
+    public const ARRAY_KEY_FOR_AWS_SECRETS_MANAGER = 'aws';
 
-    const CREDENTIAL_STORAGE_INFO = 'You need to configure at least one of these options: '
+    public const CREDENTIAL_STORAGE_INFO = 'You need to configure at least one of these options: '
         . '.credentials file, HashiCorp Vault or AWS Secrets Manager correctly';
 
     /**
@@ -93,7 +95,7 @@ class CredentialStore
         $this->resetExceptionContext();
         throw new TestFrameworkException(
             "{$key} not found. " . self::CREDENTIAL_STORAGE_INFO
-            . " and ensure key, value exists to use _CREDS in tests."
+            . ' and ensure key, value exists to use _CREDS in tests.'
             . $exceptionContexts
         );
     }

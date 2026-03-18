@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -11,11 +13,11 @@ namespace Magento\FunctionalTestingFramework\Test\Objects;
  */
 class ArgumentObject
 {
-    const ARGUMENT_NAME = 'name';
-    const ARGUMENT_DEFAULT_VALUE = 'defaultValue';
-    const ARGUMENT_DATA_TYPE = 'type';
-    const ARGUMENT_DATA_ENTITY = 'entity';
-    const ARGUMENT_DATA_STRING = 'string';
+    public const ARGUMENT_NAME = 'name';
+    public const ARGUMENT_DEFAULT_VALUE = 'defaultValue';
+    public const ARGUMENT_DATA_TYPE = 'type';
+    public const ARGUMENT_DATA_ENTITY = 'entity';
+    public const ARGUMENT_DATA_STRING = 'string';
 
     /**
      * Name of the argument.
@@ -115,7 +117,7 @@ class ArgumentObject
     {
         if ($isInnerArgument) {
             if (preg_match('/{{[\w.\[\]]+}}/', $this->value)) {
-                return ltrim(rtrim($this->value, "}"), "{");
+                return ltrim(rtrim($this->value, '}'), '{');
             } elseif (preg_match('/\${1,2}[\w.\[\]]+\${1,2}/', $this->value)) {
                 return $this->value;
             }

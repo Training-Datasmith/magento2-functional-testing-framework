@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -90,7 +91,7 @@ class UrlFormatterTest extends MagentoTestCase
             [$url8, false, $url9],
             ['https://magento.local/path?', false, 'https://magento.local/path?'],
             ['https://magento.local/path#', false, 'https://magento.local/path#'],
-            ['https://magento.local/path?#', false, 'https://magento.local/path?#']
+            ['https://magento.local/path?#', false, 'https://magento.local/path?#'],
         ];
     }
 
@@ -102,7 +103,7 @@ class UrlFormatterTest extends MagentoTestCase
     public static function formatExceptionDataProvider(): array
     {
         return [
-            ['', null]
+            ['', null],
         ];
     }
 }

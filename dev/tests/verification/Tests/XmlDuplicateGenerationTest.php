@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -12,10 +14,10 @@ use tests\util\MftfTestCase;
 
 class XmlDuplicateGenerationTest extends MftfTestCase
 {
-    const XML_DUPLICATE_TEST = 'XmlDuplicateTest';
-    const XML_DUPLICATE_ACTIONGROUP = 'xmlDuplicateActionGroup';
-    const XML_DUPLICATE_MERGE_TEST = 'BasicDupedActionTest';
-    const RESOURCES_PATH = __DIR__ . '/../Resources';
+    public const XML_DUPLICATE_TEST = 'XmlDuplicateTest';
+    public const XML_DUPLICATE_ACTIONGROUP = 'xmlDuplicateActionGroup';
+    public const XML_DUPLICATE_MERGE_TEST = 'BasicDupedActionTest';
+    public const RESOURCES_PATH = __DIR__ . '/../Resources';
 
     /**
      * Tests flat generation of a hardcoded test file with no external references.

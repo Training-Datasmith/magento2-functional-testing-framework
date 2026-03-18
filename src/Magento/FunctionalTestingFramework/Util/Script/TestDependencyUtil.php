@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2022 Adobe
  * All Rights Reserved.
@@ -6,9 +8,8 @@
 
 namespace Magento\FunctionalTestingFramework\Util\Script;
 
-use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
-use Magento\FunctionalTestingFramework\Filter\FilterList;
 use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
+use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
 
 /**
  * TestDependencyUtil class that contains helper functions for static and upgrade scripts
@@ -35,7 +36,7 @@ class TestDependencyUtil
     {
         $moduleNameToComposerName = [];
         foreach ($moduleNameToPath as $moduleName => $path) {
-            $composerData = json_decode(file_get_contents($path . DIRECTORY_SEPARATOR . "composer.json"));
+            $composerData = json_decode(file_get_contents($path . DIRECTORY_SEPARATOR . 'composer.json'));
             $moduleNameToComposerName[$moduleName] = $composerData->name;
         }
         return $moduleNameToComposerName;
@@ -50,7 +51,7 @@ class TestDependencyUtil
 
         foreach ($moduleNameToPath as $moduleName => $pathToModule) {
             $composerData = json_decode(
-                file_get_contents($pathToModule . DIRECTORY_SEPARATOR . "composer.json"),
+                file_get_contents($pathToModule . DIRECTORY_SEPARATOR . 'composer.json'),
                 true
             );
             $this->allDependencies[$moduleName] = $composerData['require'];
@@ -101,7 +102,7 @@ class TestDependencyUtil
         $filenames = [];
         foreach ($allEntities as $item) {
             // Should it append ALL filenames, including merges?
-            $allFiles = explode(",", (string) $item->getFilename());
+            $allFiles = explode(',', (string) $item->getFilename());
             foreach ($allFiles as $file) {
                 $moduleName = $this->getModuleName($file, $moduleNameToPath);
                 if (isset($moduleComposerName[$moduleName])) {
@@ -120,7 +121,7 @@ class TestDependencyUtil
     {
         $moduleName = null;
         foreach ($moduleNameToPath as $name => $path) {
-            if (str_contains($filePath, $path. "/")) {
+            if (str_contains($filePath, $path. '/')) {
                 $moduleName = $name;
                 break;
             }
@@ -138,30 +139,31 @@ class TestDependencyUtil
     ): array {
         $testObjects = TestObjectHandler::getInstance()->getAllObjects();
         $filters = MftfApplicationConfig::getConfig()->getFilterList()->getFilters();
-        $filteredTestNames = (count($filterList)>0)?$this->getFilteredTestNames($testObjects, $filters):[];
-        $temp_array = array_reverse(array_column($testDependencies, "test_name"), true);
+        $filteredTestNames = (count($filterList) > 0) ? $this->getFilteredTestNames($testObjects, $filters) : [];
+        $temp_array = array_reverse(array_column($testDependencies, 'test_name'), true);
         foreach ($extendedTestMapping as $value) {
-            $key = array_search($value["parent_test_name"], $temp_array);
+            $key = array_search($value['parent_test_name'], $temp_array);
             if ($key !== false) {
                 #if parent test found merge this to child, for doing so just replace test name with child.
-                $testDependencies[$key]["test_name"] = $value["child_test_name"];
+                $testDependencies[$key]['test_name'] = $value['child_test_name'];
             }
         }
         $temp_array = [];
         foreach ($testDependencies as $testDependency) {
-            $temp_array[$testDependency["test_name"]][] = $testDependency;
+            $temp_array[$testDependency['test_name']][] = $testDependency;
         }
         $testDependencies = [];
         foreach ($temp_array as $testDependencyArray) {
             if ((
-                empty($filterList)) ||
-                isset($filteredTestNames[$testDependencyArray[0]["test_name"]])
+                empty($filterList)
+            ) ||
+                isset($filteredTestNames[$testDependencyArray[0]['test_name']])
             ) {
                 $testDependencies[] = [
-                    "file_path" => array_column($testDependencyArray, 'file_path'),
-                    "full_name" => $testDependencyArray[0]["full_name"],
-                    "test_name" => $testDependencyArray[0]["test_name"],
-                    "test_modules" => array_values(
+                    'file_path' => array_column($testDependencyArray, 'file_path'),
+                    'full_name' => $testDependencyArray[0]['full_name'],
+                    'test_name' => $testDependencyArray[0]['test_name'],
+                    'test_modules' => array_values(
                         array_unique(
                             call_user_func_array(
                                 array_merge(...),
@@ -178,11 +180,11 @@ class TestDependencyUtil
     /**
      * Return array of merge test modules and file path with same test name.
      */
-    public function getFilteredTestNames(array $testObjects, array $filters) : array
+    public function getFilteredTestNames(array $testObjects, array $filters): array
     {
         foreach ($filters as $filter) {
             $filter->filter($testObjects);
         }
-        return array_map(fn($testObjects) => $testObjects->getName(), $testObjects);
+        return array_map(fn ($testObjects) => $testObjects->getName(), $testObjects);
     }
 }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -6,14 +8,14 @@
 
 namespace Magento\FunctionalTestingFramework\StaticCheck;
 
+use Exception;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Finder\Finder;
-use Exception;
 use Magento\FunctionalTestingFramework\Util\Script\ScriptUtil;
 use Magento\FunctionalTestingFramework\Util\Script\TestDependencyUtil;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Class TestDependencyCheck
@@ -21,14 +23,14 @@ use Magento\FunctionalTestingFramework\Util\Script\TestDependencyUtil;
  */
 class TestDependencyCheck implements StaticCheckInterface
 {
-    const EXTENDS_REGEX_PATTERN = '/extends=["\']([^\'"]*)/';
-    const ACTIONGROUP_REGEX_PATTERN = '/ref=["\']([^\'"]*)/';
+    public const EXTENDS_REGEX_PATTERN = '/extends=["\']([^\'"]*)/';
+    public const ACTIONGROUP_REGEX_PATTERN = '/ref=["\']([^\'"]*)/';
 
-    const ERROR_LOG_FILENAME = 'mftf-dependency-checks-errors';
-    const ERROR_LOG_MESSAGE = 'MFTF File Dependency Check';
-    const WARNING_LOG_FILENAME = 'mftf-dependency-checks-warnings';
+    public const ERROR_LOG_FILENAME = 'mftf-dependency-checks-errors';
+    public const ERROR_LOG_MESSAGE = 'MFTF File Dependency Check';
+    public const WARNING_LOG_FILENAME = 'mftf-dependency-checks-warnings';
 
-    const ALLOW_LIST_FILENAME = 'test-dependency-allowlist';
+    public const ALLOW_LIST_FILENAME = 'test-dependency-allowlist';
 
     /**
      * Array of FullModuleName => [dependencies], including flattened dependency tree
@@ -93,7 +95,7 @@ class TestDependencyCheck implements StaticCheckInterface
 
         if (!class_exists('\Magento\Framework\Component\ComponentRegistrar')) {
             throw new TestFrameworkException(
-                "TEST DEPENDENCY CHECK ABORTED: MFTF must be attached or pointing to Magento codebase."
+                'TEST DEPENDENCY CHECK ABORTED: MFTF must be attached or pointing to Magento codebase.'
             );
         }
 
@@ -126,7 +128,7 @@ class TestDependencyCheck implements StaticCheckInterface
         // These files can contain references to other modules.
         $testXmlFiles = $this->scriptUtil->getModuleXmlFilesByScope($allModules, $filePaths[0]);
         $actionGroupXmlFiles = $this->scriptUtil->getModuleXmlFilesByScope($allModules, $filePaths[1]);
-        $dataXmlFiles= $this->scriptUtil->getModuleXmlFilesByScope($allModules, $filePaths[2]);
+        $dataXmlFiles = $this->scriptUtil->getModuleXmlFilesByScope($allModules, $filePaths[2]);
 
         $this->errors = [];
         $this->errors += $this->findErrorsInFileSet($testXmlFiles);
@@ -161,7 +163,7 @@ class TestDependencyCheck implements StaticCheckInterface
      */
     public function getOutput(): string
     {
-        return $this->output??"";
+        return $this->output ?? '';
     }
 
     /**
@@ -269,7 +271,7 @@ class TestDependencyCheck implements StaticCheckInterface
             $errorOutput = "\nFile \"{$path->getRealPath()}\"";
             $errorOutput .= "\ncontains entity references that violate dependency constraints:\n\t\t";
             foreach ($violatingReferences as $entityName => $files) {
-                $errorOutput .= "\n\t {$entityName} from module(s): " . implode(", ", $files);
+                $errorOutput .= "\n\t {$entityName} from module(s): " . implode(', ', $files);
             }
             $testErrors[$path->getRealPath()][] = $errorOutput;
         }

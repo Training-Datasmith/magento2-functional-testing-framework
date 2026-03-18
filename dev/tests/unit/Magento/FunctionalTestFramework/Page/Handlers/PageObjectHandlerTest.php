@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -44,18 +45,18 @@ class PageObjectHandlerTest extends MagentoTestCase
                 'module' => 'testModule1',
                 'section' => [
                     'someSection1' => [],
-                    'someSection2' => []
+                    'someSection2' => [],
                 ],
-                'area' => 'test'
+                'area' => 'test',
             ],
             'testPage2' => [
                 'url' => 'testURL2',
                 'module' => 'testModule2',
                 'parameterized' => true,
                 'section' => [
-                    'someSection1' => []
+                    'someSection1' => [],
                 ],
-                'area' => 'test'
+                'area' => 'test',
             ]];
 
         $this->mockPageObjectHandlerWithData($mockData);
@@ -85,7 +86,7 @@ class PageObjectHandlerTest extends MagentoTestCase
                 'module' => 'testModule1',
                 'section' => [
                 ],
-                'area' => 'test'
+                'area' => 'test',
             ]];
 
         $this->mockPageObjectHandlerWithData($mockData);
@@ -111,7 +112,7 @@ class PageObjectHandlerTest extends MagentoTestCase
                 ],
                 'area' => 'test',
                 'deprecated' => 'deprecation message',
-                'filename' => 'filename.xml'
+                'filename' => 'filename.xml',
             ]];
 
         $this->mockPageObjectHandlerWithData($mockData);

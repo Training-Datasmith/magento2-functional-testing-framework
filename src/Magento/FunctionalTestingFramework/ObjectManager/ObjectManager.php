@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -24,13 +26,14 @@ class ObjectManager implements \Magento\FunctionalTestingFramework\ObjectManager
     public function __construct(/**
      * Create instance with call time arguments.
      */
-    protected \Magento\FunctionalTestingFramework\ObjectManager\FactoryInterface $factory, /**
+        protected \Magento\FunctionalTestingFramework\ObjectManager\FactoryInterface $factory, /**
      * Class config.
      *
      * @var Config\Config
      */
-    protected \Magento\FunctionalTestingFramework\ObjectManager\ConfigInterface $config, array $sharedInstances = [])
-    {
+        protected \Magento\FunctionalTestingFramework\ObjectManager\ConfigInterface $config,
+        array $sharedInstances = []
+    ) {
         $this->sharedInstances = $sharedInstances;
         $this->sharedInstances[\Magento\FunctionalTestingFramework\ObjectManagerInterface::class] = $this;
     }

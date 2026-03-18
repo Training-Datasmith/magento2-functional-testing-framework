@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -167,7 +169,7 @@ class SuiteDataArrayBuilder
         foreach ($contents as $entry) {
             $newContents[$entry] = [
                 SuiteObjectExtractor::NODE_NAME => $type,
-                SuiteObjectExtractor::NAME => $entry
+                SuiteObjectExtractor::NAME => $entry,
             ];
         }
 
@@ -185,7 +187,7 @@ class SuiteDataArrayBuilder
         if ($afterHook === null) {
             $this->afterHook = [$this->testActionAfterName => [
                 ActionObjectExtractor::NODE_NAME => $this->testActionType,
-                ActionObjectExtractor::TEST_STEP_MERGE_KEY => $this->testActionAfterName
+                ActionObjectExtractor::TEST_STEP_MERGE_KEY => $this->testActionAfterName,
 
             ]];
         } else {
@@ -206,7 +208,7 @@ class SuiteDataArrayBuilder
         if ($beforeHook === null) {
             $this->beforeHook = [$this->testActionBeforeName => [
                 ActionObjectExtractor::NODE_NAME => $this->testActionType,
-                ActionObjectExtractor::TEST_STEP_MERGE_KEY => $this->testActionBeforeName
+                ActionObjectExtractor::TEST_STEP_MERGE_KEY => $this->testActionBeforeName,
             ]];
         } else {
             $this->beforeHook = $beforeHook;
@@ -228,8 +230,8 @@ class SuiteDataArrayBuilder
                 TestObjectExtractor::TEST_BEFORE_HOOK => $this->beforeHook,
                 TestObjectExtractor::TEST_AFTER_HOOK => $this->afterHook,
                 SuiteObjectExtractor::INCLUDE_TAG_NAME => $this->includes,
-                SuiteObjectExtractor::EXCLUDE_TAG_NAME => $this->excludes
-            ]
+                SuiteObjectExtractor::EXCLUDE_TAG_NAME => $this->excludes,
+            ],
         ]];
     }
 }

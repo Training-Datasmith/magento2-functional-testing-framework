@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -16,12 +18,12 @@ class Dom
     /**
      * Prefix which will be used for root namespace
      */
-    const ROOT_NAMESPACE_PREFIX = 'x';
+    public const ROOT_NAMESPACE_PREFIX = 'x';
 
     /**
      * Format of items in errors array to be used by default. Available placeholders - fields of \LibXMLError.
      */
-    const ERROR_FORMAT_DEFAULT = "%message%\nLine: %line%\n";
+    public const ERROR_FORMAT_DEFAULT = "%message%\nLine: %line%\n";
 
     /**
      * Dom document
@@ -195,10 +197,10 @@ class Dom
     {
         foreach ($mergeNode->attributes as $attribute) {
             // Do not overwrite filename of base node
-            if ($attribute->name === "filename") {
+            if ($attribute->name === 'filename') {
                 $baseNode->setAttribute(
                     $this->getAttributeName($attribute),
-                    $baseNode->getAttribute("filename") . "," . $attribute->value
+                    $baseNode->getAttribute('filename') . ',' . $attribute->value
                 );
                 continue;
             }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -6,17 +8,17 @@
 
 namespace Magento\FunctionalTestingFramework\DataGenerator\Handlers;
 
+use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\DataGenerator\Persist\DataPersistenceHandler;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
 use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 
 class PersistedObjectHandler
 {
-    const HOOK_SCOPE = "hook";
-    const TEST_SCOPE = "test";
-    const SUITE_SCOPE = "suite";
+    public const HOOK_SCOPE = 'hook';
+    public const TEST_SCOPE = 'test';
+    public const SUITE_SCOPE = 'suite';
 
     /**
      * The singleton instance of this class
@@ -77,19 +79,19 @@ class PersistedObjectHandler
         string $entity,
         $dependentObjectKeys = [],
         $overrideFields = [],
-        ?string $storeCode = ""
+        ?string $storeCode = ''
     ): void {
         $retrievedDependentObjects = [];
         foreach ($dependentObjectKeys as $objectKey) {
             $retrievedDependentObjects[] = $this->retrieveEntity($objectKey, $scope);
         }
-        
+
         $retrievedEntity = DataObjectHandler::getInstance()->getObject($entity);
 
         if ($retrievedEntity === null) {
             throw new TestReferenceException(
-                "Entity \"" . $entity . "\" does not exist." .
-                "\nException occurred executing action at StepKey \"" . $key . "\""
+                'Entity "' . $entity . '" does not exist.' .
+                "\nException occurred executing action at StepKey \"" . $key . '"'
             );
         }
 
@@ -100,7 +102,7 @@ class PersistedObjectHandler
             $retrievedDependentObjects,
             $overrideFields
         );
-        
+
         $persistedObject->createEntity($storeCode);
 
         if ($scope === self::TEST_SCOPE) {
@@ -125,7 +127,7 @@ class PersistedObjectHandler
         foreach ($dependentObjectKeys as $objectKey) {
             $retrievedDependentObjects[] = $this->retrieveEntity($objectKey, $scope);
         }
-        
+
         $originalEntity = $this->retrieveEntity($key, $scope);
         $originalEntity->updateEntity($updateEntity, $retrievedDependentObjects);
     }
@@ -150,7 +152,7 @@ class PersistedObjectHandler
      * @param string  $storeCode
      * @param integer $index
      */
-    public function getEntity($key, $scope, $entity, $dependentObjectKeys = [], ?string $storeCode = "", ?string $index = null): void
+    public function getEntity($key, $scope, $entity, $dependentObjectKeys = [], ?string $storeCode = '', ?string $index = null): void
     {
         $retrievedDependentObjects = [];
         foreach ($dependentObjectKeys as $objectKey) {
@@ -185,7 +187,7 @@ class PersistedObjectHandler
         $fieldValue = $this->retrieveEntity($stepKey, $scope)->getCreatedDataByName($field);
         if ($fieldValue === null) {
             $warnMsg = "Undefined field {$field} in entity object with a stepKey of {$stepKey}\n";
-            $warnMsg .= "Please fix the invalid reference. This will result in fatal error in next major release.";
+            $warnMsg .= 'Please fix the invalid reference. This will result in fatal error in next major release.';
             //TODO: change this to throw an exception in next major release
             LoggingUtil::getInstance()->getLogger(PersistedObjectHandler::class)->warning($warnMsg);
             if (MftfApplicationConfig::getConfig()->verboseEnabled()

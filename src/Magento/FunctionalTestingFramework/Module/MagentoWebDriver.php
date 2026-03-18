@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -6,28 +8,28 @@
 
 namespace Magento\FunctionalTestingFramework\Module;
 
+use Codeception\Exception\ModuleConfigException;
+use Codeception\Exception\ModuleException;
 use Codeception\Lib\Actor\Shared\Pause;
+use Codeception\Lib\ModuleContainer;
 use Codeception\Module\WebDriver;
 use Codeception\Test\Descriptor;
 use Codeception\TestInterface;
-use Magento\FunctionalTestingFramework\Allure\AllureHelper;
-use Facebook\WebDriver\Interactions\WebDriverActions;
-use Codeception\Exception\ModuleConfigException;
-use Codeception\Exception\ModuleException;
 use Codeception\Util\Uri;
-use Codeception\Lib\ModuleContainer;
-use Magento\FunctionalTestingFramework\DataTransport\WebApiExecutor;
-use Magento\FunctionalTestingFramework\DataTransport\Auth\WebApiAuth;
-use Magento\FunctionalTestingFramework\DataTransport\Auth\Tfa\OTP;
-use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlInterface;
+use Facebook\WebDriver\Interactions\WebDriverActions;
+use Magento\FunctionalTestingFramework\Allure\AllureHelper;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\CredentialStore;
-use Magento\FunctionalTestingFramework\Module\Util\ModuleUtils;
-use Magento\FunctionalTestingFramework\Util\Path\UrlFormatter;
-use Magento\FunctionalTestingFramework\Util\ConfigSanitizerUtil;
-use Qameta\Allure\Allure;
+use Magento\FunctionalTestingFramework\DataTransport\Auth\Tfa\OTP;
+use Magento\FunctionalTestingFramework\DataTransport\Auth\WebApiAuth;
+use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlInterface;
 use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlTransport;
-use Qameta\Allure\Io\DataSourceFactory;
+use Magento\FunctionalTestingFramework\DataTransport\WebApiExecutor;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
+use Magento\FunctionalTestingFramework\Module\Util\ModuleUtils;
+use Magento\FunctionalTestingFramework\Util\ConfigSanitizerUtil;
+use Magento\FunctionalTestingFramework\Util\Path\UrlFormatter;
+use Qameta\Allure\Allure;
+use Qameta\Allure\Io\DataSourceFactory;
 
 /**
  * MagentoWebDriver module provides common Magento web actions through Selenium WebDriver.
@@ -57,8 +59,8 @@ class MagentoWebDriver extends WebDriver
         pause as codeceptPause;
     }
 
-    const MAGENTO_CRON_INTERVAL = 60;
-    const MAGENTO_CRON_COMMAND = 'cron:run';
+    public const MAGENTO_CRON_INTERVAL = 60;
+    public const MAGENTO_CRON_COMMAND = 'cron:run';
 
     /**
      * List of known magento loading masks by selector
@@ -135,7 +137,7 @@ class MagentoWebDriver extends WebDriver
     /**
      * Calls parent reset, then re-sanitizes config
      */
-    public function _resetConfig():void
+    public function _resetConfig(): void
     {
         parent::_resetConfig();
         $this->config = ConfigSanitizerUtil::sanitizeWebDriverConfig($this->config);
@@ -195,7 +197,7 @@ class MagentoWebDriver extends WebDriver
      * @throws ModuleException
      * @api
      */
-    public function _getCurrentUri():string
+    public function _getCurrentUri(): string
     {
         $url = $this->webDriver->getCurrentURL();
         if ($url === 'about:blank') {
@@ -210,7 +212,7 @@ class MagentoWebDriver extends WebDriver
      *
      * @param string $url
      */
-    public function dontSeeCurrentUrlEquals($url):void
+    public function dontSeeCurrentUrlEquals($url): void
     {
         $actualUrl = $this->webDriver->getCurrentURL();
         $comparison = "Expected: $url\nActual: $actualUrl";
@@ -223,7 +225,7 @@ class MagentoWebDriver extends WebDriver
      *
      * @param string $regex
      */
-    public function dontSeeCurrentUrlMatches($regex):void
+    public function dontSeeCurrentUrlMatches($regex): void
     {
         $actualUrl = $this->webDriver->getCurrentURL();
         $comparison = "Expected: $regex\nActual: $actualUrl";
@@ -236,7 +238,7 @@ class MagentoWebDriver extends WebDriver
      *
      * @param string $needle
      */
-    public function dontSeeInCurrentUrl($needle):void
+    public function dontSeeInCurrentUrl($needle): void
     {
         $actualUrl = $this->webDriver->getCurrentURL();
         $comparison = "Expected: $needle\nActual: $actualUrl";
@@ -249,7 +251,7 @@ class MagentoWebDriver extends WebDriver
      *
      * @param string|null $regex
      */
-    public function grabFromCurrentUrl($regex = null):string
+    public function grabFromCurrentUrl($regex = null): string
     {
         $fullUrl = $this->webDriver->getCurrentURL();
         if (!$regex) {
@@ -272,7 +274,7 @@ class MagentoWebDriver extends WebDriver
      *
      * @param string $url
      */
-    public function seeCurrentUrlEquals($url):void
+    public function seeCurrentUrlEquals($url): void
     {
         $actualUrl = $this->webDriver->getCurrentURL();
         $comparison = "Expected: $url\nActual: $actualUrl";
@@ -285,7 +287,7 @@ class MagentoWebDriver extends WebDriver
      *
      * @param string $regex
      */
-    public function seeCurrentUrlMatches($regex):void
+    public function seeCurrentUrlMatches($regex): void
     {
         $actualUrl = $this->webDriver->getCurrentURL();
         $comparison = "Expected: $regex\nActual: $actualUrl";
@@ -298,7 +300,7 @@ class MagentoWebDriver extends WebDriver
      *
      * @param string $needle
      */
-    public function seeInCurrentUrl($needle):void
+    public function seeInCurrentUrl($needle): void
     {
         $actualUrl = $this->webDriver->getCurrentURL();
         $comparison = "Expected: $needle\nActual: $actualUrl";
@@ -531,7 +533,7 @@ class MagentoWebDriver extends WebDriver
 
         $util = new ModuleUtils();
         $response = trim($util->utf8SafeControlCharacterTrim($response));
-        return $response != "" ? $response : "CLI did not return output.";
+        return $response != '' ? $response : 'CLI did not return output.';
     }
 
     /**
@@ -626,7 +628,7 @@ class MagentoWebDriver extends WebDriver
     {
         $el = $this->_findElements($dependentSelector);
         if (sizeof($el) > 1) {
-            throw new \Exception("more than one element matches selector " . $dependentSelector);
+            throw new \Exception('more than one element matches selector ' . $dependentSelector);
         }
 
         $clickCondition = null;
@@ -646,9 +648,9 @@ class MagentoWebDriver extends WebDriver
      *
      * @param string $selector
      */
-    public function clearField($selector):void
+    public function clearField($selector): void
     {
-        $this->fillField($selector, "");
+        $this->fillField($selector, '');
     }
 
     /**
@@ -691,7 +693,7 @@ class MagentoWebDriver extends WebDriver
      * @param integer $xOffset
      * @param integer $yOffset
      */
-    public function dragAndDrop($source, $target, $xOffset = null, $yOffset = null):void
+    public function dragAndDrop($source, $target, $xOffset = null, $yOffset = null): void
     {
         $snodes = $this->matchFirstOrFail($this->baseElement, $source);
         $tnodes = $this->matchFirstOrFail($this->baseElement, $target);
@@ -812,7 +814,7 @@ class MagentoWebDriver extends WebDriver
      *
      * @throws TestFrameworkException
      */
-    public function seeInSecretField(string $field, string $value):void
+    public function seeInSecretField(string $field, string $value): void
     {
         // to protect any secrets from being printed to console the values are executed only at the webdriver level as a
         // decrypted value
@@ -866,7 +868,7 @@ class MagentoWebDriver extends WebDriver
      */
     public function saveScreenshot(): void
     {
-        $testDescription = "unknown." . uniqid();
+        $testDescription = 'unknown.' . uniqid();
         if ($this->current_test !== null) {
             $testDescription = Descriptor::getTestSignature($this->current_test);
         }
@@ -883,7 +885,7 @@ class MagentoWebDriver extends WebDriver
      * @param string $page
      * @throws \Exception
      */
-    public function amOnPage($page):void
+    public function amOnPage($page): void
     {
         (str_starts_with($page, 'http')) ? parent::amOnUrl($page) : parent::amOnPage($page);
         $this->waitForPageLoad();
@@ -940,10 +942,10 @@ class MagentoWebDriver extends WebDriver
      *
      * @param string $name
      */
-    public function makeScreenshot($name = null):void
+    public function makeScreenshot($name = null): void
     {
         if (empty($name)) {
-            $name = uniqid(date("Y-m-d_H-i-s_"));
+            $name = uniqid(date('Y-m-d_H-i-s_'));
         }
         $debugDir = codecept_log_dir() . 'debug';
         if (!is_dir($debugDir)) {
@@ -987,7 +989,7 @@ class MagentoWebDriver extends WebDriver
             $this->wait($waitFor);
         }
 
-        $command = array_reduce($cronGroups, fn(string $command, string $cronGroup): string => $command . (' --group=' . $cronGroup), self::MAGENTO_CRON_COMMAND);
+        $command = array_reduce($cronGroups, fn (string $command, string $cronGroup): string => $command . (' --group=' . $cronGroup), self::MAGENTO_CRON_COMMAND);
         $timeStart = microtime(true);
         $cronResult = $this->magentoCLI($command, $timeout, $arguments);
         $timeEnd = microtime(true);
@@ -1003,7 +1005,7 @@ class MagentoWebDriver extends WebDriver
      * @param string|null $locator
      * @throws \Exception
      */
-    public function switchToIFrame($locator = null):void
+    public function switchToIFrame($locator = null): void
     {
         try {
             parent::switchToIFrame($locator);
@@ -1022,11 +1024,11 @@ class MagentoWebDriver extends WebDriver
      *
      * @param boolean $pauseOnFail
      */
-    public function pause($pauseOnFail = false):void
+    public function pause($pauseOnFail = false): void
     {
         if (\Composer\InstalledVersions::isInstalled('hoa/console') === false) {
-            $message = "<pause /> action is unavailable." . PHP_EOL;
-            $message .= "Please install `hoa/console` via \"composer require hoa/console\"" . PHP_EOL;
+            $message = '<pause /> action is unavailable.' . PHP_EOL;
+            $message .= 'Please install `hoa/console` via "composer require hoa/console"' . PHP_EOL;
             print($message);
             return;
         }
@@ -1035,7 +1037,7 @@ class MagentoWebDriver extends WebDriver
         }
 
         if ($pauseOnFail) {
-            print(PHP_EOL . "Failure encountered. Pausing execution..." . PHP_EOL . PHP_EOL);
+            print(PHP_EOL . 'Failure encountered. Pausing execution...' . PHP_EOL . PHP_EOL);
         }
 
         $this->codeceptPause();
@@ -1071,7 +1073,7 @@ class MagentoWebDriver extends WebDriver
     {
         $text = (isset($text))
             ? (string)$text
-            : "";
+            : '';
         if (!$selector) {
             $this->assertPageContains($text);
             return;
@@ -1091,7 +1093,7 @@ class MagentoWebDriver extends WebDriver
     {
         $text = (isset($text))
             ? (string)$text
-            : "";
+            : '';
         if (!$selector) {
             $this->assertPageNotContains($text);
         } else {

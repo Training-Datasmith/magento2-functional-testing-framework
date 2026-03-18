@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -79,7 +81,7 @@ class FileStorage extends BaseStorage
 
         if (!file_exists($credsFilePath)) {
             throw new TestFrameworkException(
-                "Credential file is not used: .credentials file not found in " . TESTS_BP
+                'Credential file is not used: .credentials file not found in ' . TESTS_BP
             );
         }
 
@@ -102,13 +104,13 @@ class FileStorage extends BaseStorage
             if (empty($credValue)) {
                 continue;
             }
-            if (!str_contains((string) $credValue, "=")) {
+            if (!str_contains((string) $credValue, '=')) {
                 throw new TestFrameworkException(
-                    $credValue . " not configured correctly in .credentials file"
+                    $credValue . ' not configured correctly in .credentials file'
                 );
             }
 
-            [$key, $value] = explode("=", (string) $credValue, 2);
+            [$key, $value] = explode('=', (string) $credValue, 2);
             if (!empty($value)) {
                 $encryptedCreds[$key] = openssl_encrypt(
                     $value,

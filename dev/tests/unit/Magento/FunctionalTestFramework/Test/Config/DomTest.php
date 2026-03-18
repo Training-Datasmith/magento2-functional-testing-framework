@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -7,7 +9,6 @@
 namespace tests\unit\Magento\FunctionalTestFramework\Test\Config;
 
 use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
-use Magento\FunctionalTestingFramework\Config\Dom\ValidationException;
 use Magento\FunctionalTestingFramework\Test\Config\ActionGroupDom;
 use tests\unit\Util\MagentoTestCase;
 
@@ -50,7 +51,7 @@ class DomTest extends MagentoTestCase
         $exceptionCollector = new ExceptionCollector();
         new ActionGroupDom($sampleXml, 'dupeTestsTest.xml', $exceptionCollector);
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessageMatches("/name: testName is used more than once./");
+        $this->expectExceptionMessageMatches('/name: testName is used more than once./');
         $exceptionCollector->throwException();
     }
 }

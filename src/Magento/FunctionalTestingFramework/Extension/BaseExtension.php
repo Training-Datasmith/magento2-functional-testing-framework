@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -23,7 +25,7 @@ class BaseExtension extends Extension
      */
     public static $events = [
         Events::TEST_BEFORE => 'beforeTest',
-        Events::STEP_BEFORE => 'beforeStep'
+        Events::STEP_BEFORE => 'beforeStep',
     ];
 
     /**

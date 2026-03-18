@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -18,8 +20,7 @@ class SuiteDataParser
          * Suite data interface for parser.
          */
         private readonly DataInterface $suiteData
-    )
-    {
+    ) {
     }
 
     /**

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -23,8 +25,7 @@ class ValidationState implements ValidationStateInterface
          * Application mode value.
          */
         protected $appMode
-    )
-    {
+    ) {
     }
 
     /**

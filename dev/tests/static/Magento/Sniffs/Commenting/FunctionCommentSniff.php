@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -6,21 +8,19 @@
 
 namespace Magento\Sniffs\Commenting;
 
-use PHP_CodeSniffer\Standards\PEAR\Sniffs\Commenting\FunctionCommentSniff as PEARFunctionCommentSniff;
-use PHP_CodeSniffer\Files\File;
 use PHP_CodeSniffer\Config;
+use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Standards\PEAR\Sniffs\Commenting\FunctionCommentSniff as PEARFunctionCommentSniff;
 use PHP_CodeSniffer\Util\Common;
 
 class FunctionCommentSniff extends PEARFunctionCommentSniff
 {
-
     /**
      * The current PHP version.
      *
      * @var integer
      */
     private $phpVersion = null;
-
 
     /**
      * Process the return comment of this function comment.
@@ -53,7 +53,6 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
             }
         }
 
-
         if ($isSpecialMethod === true) {
             return;
         }
@@ -74,7 +73,7 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
 
                 // Check return type (can be multiple, separated by '|').
                 $typeNames      = explode('|', $returnType);
-                $suggestedNames = array();
+                $suggestedNames = [];
                 foreach ($typeNames as $typeName) {
                     $suggestedName = Common::suggestType($typeName);
                     if (in_array($suggestedName, $suggestedNames) === false) {
@@ -85,10 +84,10 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
                 $suggestedType = implode('|', $suggestedNames);
                 if ($returnType !== $suggestedType) {
                     $error = 'Expected "%s" but found "%s" for function return type';
-                    $data  = array(
+                    $data  = [
                               $suggestedType,
                               $returnType,
-                             );
+                             ];
                     $fix   = $phpcsFile->addFixableError($error, $return, 'InvalidReturn', $data);
                     if ($fix === true) {
                         $replacement = $suggestedType;
@@ -132,12 +131,12 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
                             }
                         }
                     }//end if
-                } else if ($returnType !== 'mixed' && in_array('void', $typeNames, true) === false) {
+                } elseif ($returnType !== 'mixed' && in_array('void', $typeNames, true) === false) {
                     // If return type is not void, there needs to be a return statement
                     // somewhere in the function that returns something.
                     if (isset($tokens[$stackPtr]['scope_closer']) === true) {
                         $endToken    = $tokens[$stackPtr]['scope_closer'];
-                        $returnToken = $phpcsFile->findNext(array(T_RETURN, T_YIELD, T_YIELD_FROM), $stackPtr, $endToken);
+                        $returnToken = $phpcsFile->findNext([T_RETURN, T_YIELD, T_YIELD_FROM], $stackPtr, $endToken);
                         if ($returnToken === false) {
                             $error = 'Function return type is not void, but function has no return statement';
                             $phpcsFile->addError($error, $return, 'InvalidNoReturn');
@@ -158,7 +157,6 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
 
     }//end processReturn()
 
-
     /**
      * Process any throw tags that this function comment has.
      *
@@ -173,7 +171,7 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
     {
         $tokens = $phpcsFile->getTokens();
 
-        $throws = array();
+        $throws = [];
         foreach ($tokens[$commentStart]['comment_tags'] as $pos => $tag) {
             if ($tokens[$tag]['content'] !== '@throws') {
                 continue;
@@ -182,7 +180,7 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
             $exception = null;
             $comment   = null;
             if ($tokens[($tag + 2)]['code'] === T_DOC_COMMENT_STRING) {
-                $matches = array();
+                $matches = [];
                 preg_match('/([^\s]+)(?:\s+(.*))?/', $tokens[($tag + 2)]['content'], $matches);
                 $exception = $matches[1];
                 if (isset($matches[2]) === true && trim($matches[2]) !== '') {
@@ -193,9 +191,9 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
             if ($exception === null) {
                 $error = 'Exception type and comment missing for @throws tag in function comment';
                 $phpcsFile->addError($error, $tag, 'InvalidThrows');
-            } else if ($comment === null) {
+            } elseif ($comment === null) {
                 $error = 'Comment missing for @throws tag in function comment';
-//                $phpcsFile->addError($error, $tag, 'EmptyThrows');
+                //                $phpcsFile->addError($error, $tag, 'EmptyThrows');
             } else {
                 // Any strings until the next tag belong to this comment.
                 if (isset($tokens[$commentStart]['comment_tags'][($pos + 1)]) === true) {
@@ -227,7 +225,6 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
 
     }//end processThrows()
 
-
     /**
      * Process the function parameter comments.
      *
@@ -249,7 +246,7 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
 
         $tokens = $phpcsFile->getTokens();
 
-        $params  = array();
+        $params  = [];
         $maxType = 0;
         $maxVar  = 0;
         foreach ($tokens[$commentStart]['comment_tags'] as $pos => $tag) {
@@ -262,9 +259,9 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
             $var          = '';
             $varSpace     = 0;
             $comment      = '';
-            $commentLines = array();
+            $commentLines = [];
             if ($tokens[($tag + 2)]['code'] === T_DOC_COMMENT_STRING) {
-                $matches = array();
+                $matches = [];
                 preg_match('/([^$&.]+)(?:((?:\.\.\.)?(?:\$|&)[^\s]+)(?:(\s+)(.*))?)?/', $tokens[($tag + 2)]['content'], $matches);
 
                 if (empty($matches) === false) {
@@ -287,11 +284,11 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
                     if (isset($matches[4]) === true) {
                         $varSpace       = strlen($matches[3]);
                         $comment        = $matches[4];
-                        $commentLines[] = array(
+                        $commentLines[] = [
                                            'comment' => $comment,
                                            'token'   => ($tag + 2),
                                            'indent'  => $varSpace,
-                                          );
+                                          ];
 
                         // Any strings until the next tag belong to this comment.
                         if (isset($tokens[$commentStart]['comment_tags'][($pos + 1)]) === true) {
@@ -308,17 +305,17 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
                                 }
 
                                 $comment       .= ' '.$tokens[$i]['content'];
-                                $commentLines[] = array(
+                                $commentLines[] = [
                                                    'comment' => $tokens[$i]['content'],
                                                    'token'   => $i,
                                                    'indent'  => $indent,
-                                                  );
+                                                  ];
                             }
                         }
                     } else {
                         $error = 'Missing parameter comment';
-//                        $phpcsFile->addError($error, $tag, 'MissingParamComment');
-                        $commentLines[] = array('comment' => '');
+                        //                        $phpcsFile->addError($error, $tag, 'MissingParamComment');
+                        $commentLines[] = ['comment' => ''];
                     }//end if
                 } else {
                     $error = 'Missing parameter name';
@@ -329,7 +326,7 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
                 $phpcsFile->addError($error, $tag, 'MissingParamType');
             }//end if
 
-            $params[] = array(
+            $params[] = [
                          'tag'          => $tag,
                          'type'         => $type,
                          'var'          => $var,
@@ -337,11 +334,11 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
                          'commentLines' => $commentLines,
                          'type_space'   => $typeSpace,
                          'var_space'    => $varSpace,
-                        );
+                        ];
         }//end foreach
 
         $realParams  = $phpcsFile->getMethodParameters($stackPtr);
-        $foundParams = array();
+        $foundParams = [];
 
         // We want to use ... for all variable length arguments, so added
         // this prefix to the variable name so comparisons are easier.
@@ -359,7 +356,7 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
 
             // Check the param type value.
             $typeNames          = explode('|', $param['type']);
-            $suggestedTypeNames = array();
+            $suggestedTypeNames = [];
 
             foreach ($typeNames as $typeName) {
                 $suggestedName        = Common::suggestType($typeName);
@@ -373,22 +370,22 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
                 $suggestedTypeHint = '';
                 if (strpos($suggestedName, 'array') !== false || substr($suggestedName, -2) === '[]') {
                     $suggestedTypeHint = 'array';
-                } else if (strpos($suggestedName, 'callable') !== false) {
+                } elseif (strpos($suggestedName, 'callable') !== false) {
                     $suggestedTypeHint = 'callable';
-                } else if (strpos($suggestedName, 'callback') !== false) {
+                } elseif (strpos($suggestedName, 'callback') !== false) {
                     $suggestedTypeHint = 'callable';
-                } else if (in_array($suggestedName, Common::$allowedTypes) === false) {
+                } elseif (in_array($suggestedName, Common::$allowedTypes) === false) {
                     $suggestedTypeHint = $suggestedName;
                 }
 
                 if ($this->phpVersion >= 70000) {
                     if ($suggestedName === 'string') {
                         $suggestedTypeHint = 'string';
-                    } else if ($suggestedName === 'int' || $suggestedName === 'integer') {
+                    } elseif ($suggestedName === 'int' || $suggestedName === 'integer') {
                         $suggestedTypeHint = 'int';
-                    } else if ($suggestedName === 'float') {
+                    } elseif ($suggestedName === 'float') {
                         $suggestedTypeHint = 'float';
-                    } else if ($suggestedName === 'bool' || $suggestedName === 'boolean') {
+                    } elseif ($suggestedName === 'bool' || $suggestedName === 'boolean') {
                         $suggestedTypeHint = 'bool';
                     }
                 }
@@ -397,10 +394,10 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
                     $typeHint = $realParams[$pos]['type_hint'];
                     if ($typeHint === '') {
                         $error = 'Type hint "%s" missing for %s';
-                        $data  = array(
+                        $data  = [
                                   $suggestedTypeHint,
                                   $param['var'],
-                                 );
+                                 ];
 
                         $errorCode = 'TypeHintMissing';
                         if ($suggestedTypeHint === 'string'
@@ -411,26 +408,26 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
                             $errorCode = 'Scalar'.$errorCode;
                         }
 
-//                        $phpcsFile->addError($error, $stackPtr, $errorCode, $data);
-                    } else if ($typeHint !== substr($suggestedTypeHint, (strlen($typeHint) * -1))) {
+                        //                        $phpcsFile->addError($error, $stackPtr, $errorCode, $data);
+                    } elseif ($typeHint !== substr($suggestedTypeHint, (strlen($typeHint) * -1))) {
                         $error = 'Expected type hint "%s"; found "%s" for %s';
-                        $data  = array(
+                        $data  = [
                                   $suggestedTypeHint,
                                   $typeHint,
                                   $param['var'],
-                                 );
-                        if ($suggestedTypeHint != "null" && (ltrim($typeHint, '?') !== $suggestedTypeHint)) {
+                                 ];
+                        if ($suggestedTypeHint != 'null' && (ltrim($typeHint, '?') !== $suggestedTypeHint)) {
                             $phpcsFile->addError($error, $stackPtr, 'IncorrectTypeHint', $data);
                         }
                     }//end if
-                } else if ($suggestedTypeHint === '' && isset($realParams[$pos]) === true) {
+                } elseif ($suggestedTypeHint === '' && isset($realParams[$pos]) === true) {
                     $typeHint = $realParams[$pos]['type_hint'];
                     if ($typeHint !== '') {
                         $error = 'Unknown type hint "%s" found for %s';
-                        $data  = array(
+                        $data  = [
                                   $typeHint,
                                   $param['var'],
-                                 );
+                                 ];
                         $phpcsFile->addError($error, $stackPtr, 'InvalidTypeHint', $data);
                     }
                 }//end if
@@ -439,10 +436,10 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
             $suggestedType = implode('|', $suggestedTypeNames);
             if ($param['type'] !== $suggestedType) {
                 $error = 'Expected "%s" but found "%s" for parameter type';
-                $data  = array(
+                $data  = [
                           $suggestedType,
                           $param['type'],
-                         );
+                         ];
 
                 $fix = $phpcsFile->addFixableError($error, $param['tag'], 'IncorrectParamVarName', $data);
                 if ($fix === true) {
@@ -492,10 +489,10 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
                 $realName = $realParams[$pos]['name'];
                 if ($realName !== $param['var']) {
                     $code = 'ParamNameNoMatch';
-                    $data = array(
+                    $data = [
                              $param['var'],
                              $realName,
-                            );
+                            ];
 
                     $error = 'Doc comment for parameter %s does not match ';
                     if (strtolower($param['var']) === strtolower($realName)) {
@@ -507,7 +504,7 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
 
                     $phpcsFile->addError($error, $param['tag'], $code, $data);
                 }
-            } else if (substr($param['var'], -4) !== ',...') {
+            } elseif (substr($param['var'], -4) !== ',...') {
                 // We must have an extra parameter comment.
                 $error = 'Superfluous parameter comment';
                 $phpcsFile->addError($error, $param['tag'], 'ExtraParamComment');
@@ -533,7 +530,7 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
             }
         }//end foreach
 
-        $realNames = array();
+        $realNames = [];
         foreach ($realParams as $realParam) {
             $realNames[] = $realParam['name'];
         }
@@ -542,12 +539,11 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
         $diff = array_diff($realNames, $foundParams);
         foreach ($diff as $neededParam) {
             $error = 'Doc comment for parameter "%s" missing';
-            $data  = array($neededParam);
-//            $phpcsFile->addError($error, $commentStart, 'MissingParamTag', $data);
+            $data  = [$neededParam];
+            //            $phpcsFile->addError($error, $commentStart, 'MissingParamTag', $data);
         }
 
     }//end processParams()
-
 
     /**
      * Check the spacing after the type of a parameter.
@@ -559,16 +555,16 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
      *
      * @return void
      */
-    protected function checkSpacingAfterParamType(File $phpcsFile, $param, $maxType, $spacing=1)
+    protected function checkSpacingAfterParamType(File $phpcsFile, $param, $maxType, $spacing = 1)
     {
         // Check number of spaces after the type.
         $spaces = ($maxType - strlen($param['type']) + $spacing);
         if ($param['type_space'] !== $spaces) {
             $error = 'Expected %s spaces after parameter type; %s found';
-            $data  = array(
+            $data  = [
                       $spaces,
                       $param['type_space'],
-                     );
+                     ];
 
             $fix = $phpcsFile->addFixableError($error, $param['tag'], 'SpacingAfterParamType', $data);
             if ($fix === true) {
@@ -603,7 +599,6 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
 
     }//end checkSpacingAfterParamType()
 
-
     /**
      * Check the spacing after the name of a parameter.
      *
@@ -614,16 +609,16 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
      *
      * @return void
      */
-    protected function checkSpacingAfterParamName(File $phpcsFile, $param, $maxVar, $spacing=1)
+    protected function checkSpacingAfterParamName(File $phpcsFile, $param, $maxVar, $spacing = 1)
     {
         // Check number of spaces after the var name.
         $spaces = ($maxVar - strlen($param['var']) + $spacing);
         if ($param['var_space'] !== $spaces) {
             $error = 'Expected %s spaces after parameter name; %s found';
-            $data  = array(
+            $data  = [
                       $spaces,
                       $param['var_space'],
-                     );
+                     ];
 
             $fix = $phpcsFile->addFixableError($error, $param['tag'], 'SpacingAfterParamName', $data);
             if ($fix === true) {
@@ -657,6 +652,5 @@ class FunctionCommentSniff extends PEARFunctionCommentSniff
         }//end if
 
     }//end checkSpacingAfterParamName()
-
 
 }//end class

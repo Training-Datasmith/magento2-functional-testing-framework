@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -39,8 +40,8 @@ class ActionGroupAnnotationExtractorTest extends TestCase
             'nodeName' => 'annotations',
             'description' => [
                 'nodeName' => 'description',
-                'value' => 'someDescription'
-            ]
+                'value' => 'someDescription',
+            ],
         ];
         // Perform Test
         $extractor = new ActionGroupAnnotationExtractor();

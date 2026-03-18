@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -6,17 +8,15 @@
 
 namespace Magento\FunctionalTestingFramework\Test\Objects;
 
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\DataObjectHandler;
 use Magento\FunctionalTestingFramework\DataGenerator\Objects\EntityDataObject;
+use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
 use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 use Magento\FunctionalTestingFramework\ObjectManager\ObjectHandlerInterface;
-use Magento\FunctionalTestingFramework\Page\Objects\PageObject;
-use Magento\FunctionalTestingFramework\Page\Objects\SectionObject;
 use Magento\FunctionalTestingFramework\Page\Handlers\PageObjectHandler;
 use Magento\FunctionalTestingFramework\Page\Handlers\SectionObjectHandler;
-use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
+use Magento\FunctionalTestingFramework\Page\Objects\PageObject;
+use Magento\FunctionalTestingFramework\Page\Objects\SectionObject;
 
 /**
  * Class ActionObject
@@ -24,61 +24,61 @@ use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
  */
 class ActionObject
 {
-    const COMMENT_ACTION = '#comment';
-    const __ENV = "_ENV";
-    const __CREDS = "_CREDS";
-    const RUNTIME_REFERENCES = [
+    public const COMMENT_ACTION = '#comment';
+    public const __ENV = '_ENV';
+    public const __CREDS = '_CREDS';
+    public const RUNTIME_REFERENCES = [
         self::__ENV,
-        self::__CREDS
+        self::__CREDS,
     ];
 
-    const DATA_ENABLED_ATTRIBUTES = [
-        "userInput",
-        "parameterArray",
-        "expected",
-        "actual",
-        "x",
-        "y",
-        "expectedResult",
-        "actualResult",
-        "command",
-        "regex",
-        "date",
-        "format"
+    public const DATA_ENABLED_ATTRIBUTES = [
+        'userInput',
+        'parameterArray',
+        'expected',
+        'actual',
+        'x',
+        'y',
+        'expectedResult',
+        'actualResult',
+        'command',
+        'regex',
+        'date',
+        'format',
     ];
-    const SELECTOR_ENABLED_ATTRIBUTES = [
+    public const SELECTOR_ENABLED_ATTRIBUTES = [
         'selector',
         'dependentSelector',
-        "selector1",
-        "selector2",
-        "function",
+        'selector1',
+        'selector2',
+        'function',
         'filterSelector',
         'optionSelector',
-        "command",
-        "html"
+        'command',
+        'html',
     ];
-    const ASSERTION_ATTRIBUTES = ["expectedResult" => "expected", "actualResult" => "actual"];
-    const ASSERTION_TYPE_ATTRIBUTE = "type";
-    const ASSERTION_VALUE_ATTRIBUTE = "value";
-    const ASSERTION_ELEMENT_ATTRIBUTES = ["selector", "attribute"];
-    const DELETE_DATA_MUTUAL_EXCLUSIVE_ATTRIBUTES = ["url", "createDataKey"];
-    const EXTERNAL_URL_AREA_INVALID_ACTIONS = ['amOnPage'];
-    const FUNCTION_CLOSURE_ACTIONS = ['waitForElementChange'];
-    const COMMAND_ACTION_ATTRIBUTES = ['magentoCLI', 'magentoCLISecret'];
-    const MERGE_ACTION_ORDER_AFTER = 'after';
-    const MERGE_ACTION_ORDER_BEFORE = 'before';
-    const ACTION_ATTRIBUTE_TIMEZONE = 'timezone';
-    const ACTION_ATTRIBUTE_URL = 'url';
-    const ACTION_ATTRIBUTE_SELECTOR = 'selector';
-    const ACTION_ATTRIBUTE_VARIABLE_REGEX_PARAMETER = '/\(.+\)/';
-    const ACTION_ATTRIBUTE_VARIABLE_REGEX_PATTERN = '/({{[\w]+\.[\w\[\]]+}})|({{[\w]+\.[\w]+\((?(?!}}).)+\)}})/';
-    const STRING_PARAMETER_REGEX = "/'[^']+'/";
-    const DEFAULT_COMMAND_WAIT_TIMEOUT = 60;
-    const ACTION_ATTRIBUTE_USERINPUT = 'userInput';
-    const ACTION_TYPE_COMMENT = 'comment';
-    const ACTION_TYPE_HELPER = 'helper';
-    const INVISIBLE_STEP_ACTIONS = ['retrieveEntityField', 'getSecret'];
-    const PAUSE_ACTION_INTERNAL_ATTRIBUTE = 'pauseOnFail';
+    public const ASSERTION_ATTRIBUTES = ['expectedResult' => 'expected', 'actualResult' => 'actual'];
+    public const ASSERTION_TYPE_ATTRIBUTE = 'type';
+    public const ASSERTION_VALUE_ATTRIBUTE = 'value';
+    public const ASSERTION_ELEMENT_ATTRIBUTES = ['selector', 'attribute'];
+    public const DELETE_DATA_MUTUAL_EXCLUSIVE_ATTRIBUTES = ['url', 'createDataKey'];
+    public const EXTERNAL_URL_AREA_INVALID_ACTIONS = ['amOnPage'];
+    public const FUNCTION_CLOSURE_ACTIONS = ['waitForElementChange'];
+    public const COMMAND_ACTION_ATTRIBUTES = ['magentoCLI', 'magentoCLISecret'];
+    public const MERGE_ACTION_ORDER_AFTER = 'after';
+    public const MERGE_ACTION_ORDER_BEFORE = 'before';
+    public const ACTION_ATTRIBUTE_TIMEZONE = 'timezone';
+    public const ACTION_ATTRIBUTE_URL = 'url';
+    public const ACTION_ATTRIBUTE_SELECTOR = 'selector';
+    public const ACTION_ATTRIBUTE_VARIABLE_REGEX_PARAMETER = '/\(.+\)/';
+    public const ACTION_ATTRIBUTE_VARIABLE_REGEX_PATTERN = '/({{[\w]+\.[\w\[\]]+}})|({{[\w]+\.[\w]+\((?(?!}}).)+\)}})/';
+    public const STRING_PARAMETER_REGEX = "/'[^']+'/";
+    public const DEFAULT_COMMAND_WAIT_TIMEOUT = 60;
+    public const ACTION_ATTRIBUTE_USERINPUT = 'userInput';
+    public const ACTION_TYPE_COMMENT = 'comment';
+    public const ACTION_TYPE_HELPER = 'helper';
+    public const INVISIBLE_STEP_ACTIONS = ['retrieveEntityField', 'getSecret'];
+    public const PAUSE_ACTION_INTERNAL_ATTRIBUTE = 'pauseOnFail';
 
     /**
      * The unique identifier for the action
@@ -362,7 +362,7 @@ class ActionObject
             throw new TestReferenceException(
                 "Could not resolve entity reference \"{$attrValue}\" "
                 . "in Action with stepKey \"{$this->getStepKey()}\"",
-                ["input" => $attrValue, "stepKey" => $this->getStepKey()]
+                ['input' => $attrValue, 'stepKey' => $this->getStepKey()]
             );
         }
     }
@@ -395,9 +395,9 @@ class ActionObject
             if (in_array($key, $relevantKeys)) {
                 $prefix = ActionObject::ASSERTION_ATTRIBUTES[$key];
                 $this->actionAttributes[$prefix . ucfirst(ActionObject::ASSERTION_TYPE_ATTRIBUTE)] =
-                    $subAttributes[ActionObject::ASSERTION_TYPE_ATTRIBUTE] ?? "NO_TYPE";
+                    $subAttributes[ActionObject::ASSERTION_TYPE_ATTRIBUTE] ?? 'NO_TYPE';
                 $this->actionAttributes[$prefix] =
-                    $subAttributes[ActionObject::ASSERTION_VALUE_ATTRIBUTE] ?? "";
+                    $subAttributes[ActionObject::ASSERTION_VALUE_ATTRIBUTE] ?? '';
                 unset($this->actionAttributes[$key]);
             }
         }
@@ -438,10 +438,10 @@ class ActionObject
      */
     public function detectCredentials()
     {
-        $requiredCredentials = "";
+        $requiredCredentials = '';
         $attributes = $this->getCustomActionAttributes();
         if (isset($attributes['userInput']) && stristr($attributes['userInput'], '_CREDS') == true) {
-            $credentials =  explode(".", trim($attributes['userInput'], '{}'));
+            $credentials =  explode('.', trim($attributes['userInput'], '{}'));
             $requiredCredentials = $credentials[1];
         }
         $this->resolvedCustomAttributes['requiredCredentials'] =  $requiredCredentials;
@@ -468,11 +468,11 @@ class ActionObject
         if ($replacement) {
             $this->resolvedCustomAttributes[ActionObject::ACTION_ATTRIBUTE_URL] = $replacement;
             $allPages = PageObjectHandler::getInstance()->getAllObjects();
-            if ($replacement === $url && array_key_exists(trim($url, "{}"), $allPages)
+            if ($replacement === $url && array_key_exists(trim($url, '{}'), $allPages)
             ) {
                 throw new TestReferenceException(
-                    "page url attribute not found and is required",
-                    ["action" => $this->type, "url" => $url, "stepKey" => $this->stepKey]
+                    'page url attribute not found and is required',
+                    ['action' => $this->type, 'url' => $url, 'stepKey' => $this->stepKey]
                 );
             }
         }
@@ -532,11 +532,11 @@ class ActionObject
      */
     private function stripAndReturnParameters($reference)
     {
-        $postCleanupDelimiter = "::::";
+        $postCleanupDelimiter = '::::';
 
         preg_match(ActionObject::ACTION_ATTRIBUTE_VARIABLE_REGEX_PARAMETER, $reference, $matches);
         if (!empty($matches)) {
-            $strippedReference = ltrim(rtrim($matches[0], ")"), "(");
+            $strippedReference = ltrim(rtrim($matches[0], ')'), '(');
 
             // Pull out all 'string' references, as they can contain 'string with , comma in it'
             // 'string', or 'string,!@#$%^&*()_+, '
@@ -596,34 +596,34 @@ class ActionObject
                 $parameterized = false;
             } elseif (get_class($obj) === PageObject::class) {
                 if ($obj->getDeprecated() !== null) {
-                    $this->deprecatedUsage[] = "DEPRECATED PAGE in Test: " . $match . ' ' . $obj->getDeprecated();
+                    $this->deprecatedUsage[] = 'DEPRECATED PAGE in Test: ' . $match . ' ' . $obj->getDeprecated();
                 }
                 $this->validateUrlAreaAgainstActionType($obj);
                 $replacement = $obj->getUrl();
                 $parameterized = $obj->isParameterized();
             } elseif (get_class($obj) === SectionObject::class) {
                 if ($obj->getDeprecated() !== null) {
-                    $this->deprecatedUsage[] = "DEPRECATED SECTION in Test: " . $match . ' ' . $obj->getDeprecated();
+                    $this->deprecatedUsage[] = 'DEPRECATED SECTION in Test: ' . $match . ' ' . $obj->getDeprecated();
                 }
-                list(,$objField) = $this->stripAndSplitReference($match);
+                list(, $objField) = $this->stripAndSplitReference($match);
 
                 if ($obj->getElement($objField) === null) {
                     throw new TestReferenceException(
                         "Could not resolve entity reference \"{$inputString}\" "
                         . "in Action with stepKey \"{$this->getStepKey()}\"",
-                        ["input" => $inputString, "stepKey" => $this->getStepKey()]
+                        ['input' => $inputString, 'stepKey' => $this->getStepKey()]
                     );
                 }
                 $parameterized = $obj->getElement($objField)->isParameterized();
                 $replacement = $obj->getElement($objField)->getPrioritizedSelector();
                 $this->setTimeout($obj->getElement($objField)->getTimeout());
                 if ($obj->getElement($objField)->getDeprecated() !== null) {
-                    $this->deprecatedUsage[] = "DEPRECATED ELEMENT in Test: " . $match . ' '
+                    $this->deprecatedUsage[] = 'DEPRECATED ELEMENT in Test: ' . $match . ' '
                         . $obj->getElement($objField)->getDeprecated();
                 }
             } elseif (get_class($obj) === EntityDataObject::class) {
                 if ($obj->getDeprecated() !== null) {
-                    $this->deprecatedUsage[] = "DEPRECATED DATA ENTITY in Test: "
+                    $this->deprecatedUsage[] = 'DEPRECATED DATA ENTITY in Test: '
                         . $match . ' ' . $obj->getDeprecated();
                 }
                 $replacement = $this->resolveEntityDataObjectReference($obj, $match);
@@ -640,7 +640,7 @@ class ActionObject
                     throw new TestReferenceException(
                         "Could not resolve entity reference \"{$inputString}\" "
                         . "in Action with stepKey \"{$this->getStepKey()}\"",
-                        ["input" => $inputString, "stepKey" => $this->getStepKey()]
+                        ['input' => $inputString, 'stepKey' => $this->getStepKey()]
                     );
                 }
             }
@@ -665,13 +665,13 @@ class ActionObject
             throw new TestReferenceException(
                 "Actions of type '{$this->getType()}' must only contain one attribute of types '"
                 . implode("', '", $attributes) . "'",
-                ["type" => $this->getType(), "attributes" => $attributes]
+                ['type' => $this->getType(), 'attributes' => $attributes]
             );
         } elseif (count($matches) === 0) {
             throw new TestReferenceException(
                 "Actions of type '{$this->getType()}' must contain at least one attribute of types '"
                 . implode("', '", $attributes) . "'",
-                ["type" => $this->getType(), "attributes" => $attributes]
+                ['type' => $this->getType(), 'attributes' => $attributes]
             );
         }
     }
@@ -689,7 +689,7 @@ class ActionObject
             in_array($this->getType(), self::EXTERNAL_URL_AREA_INVALID_ACTIONS)) {
             throw new TestReferenceException(
                 "Page of type 'external' is not compatible with action type '{$this->getType()}'",
-                ["type" => $this->getType()]
+                ['type' => $this->getType()]
             );
         }
     }
@@ -710,7 +710,7 @@ class ActionObject
             } catch (\Exception $e) {
                 throw new TestReferenceException(
                     "Timezone '{$timezone}' is not a valid timezone",
-                    ["stepKey" => $this->getStepKey(), self::ACTION_ATTRIBUTE_TIMEZONE => $timezone]
+                    ['stepKey' => $this->getStepKey(), self::ACTION_ATTRIBUTE_TIMEZONE => $timezone]
                 );
             }
         }
@@ -724,7 +724,7 @@ class ActionObject
      */
     private function resolveEntityDataObjectReference($obj, $match)
     {
-        list(,$objField) = $this->stripAndSplitReference($match);
+        list(, $objField) = $this->stripAndSplitReference($match);
 
         if (strpos($objField, '[') !== false) {
             // Access <array>...</array>
@@ -759,7 +759,7 @@ class ActionObject
             $urlSegments = [
                 '{{_ENV.MAGENTO_BACKEND_BASE_URL}}',
                 '{{_ENV.MAGENTO_BACKEND_NAME}}',
-                $resolvedReplacement
+                $resolvedReplacement,
             ];
             $resolvedReplacement = implode('/', $urlSegments);
         }
@@ -822,28 +822,28 @@ class ActionObject
     {
         if (count($matches) > count($parameters)) {
             if (is_array($parameters)) {
-                $parametersGiven = implode(",", $parameters);
+                $parametersGiven = implode(',', $parameters);
             } elseif ($parameters === null) {
-                $parametersGiven = "NONE";
+                $parametersGiven = 'NONE';
             } else {
                 $parametersGiven = $parameters;
             }
             throw new TestReferenceException(
-                "Parameter Resolution Failed: Not enough parameters given for reference " .
-                $reference . ". Parameters Given: " . $parametersGiven,
-                ["reference" => $reference, "parametersGiven" => $parametersGiven]
+                'Parameter Resolution Failed: Not enough parameters given for reference ' .
+                $reference . '. Parameters Given: ' . $parametersGiven,
+                ['reference' => $reference, 'parametersGiven' => $parametersGiven]
             );
         } elseif (count($matches) < count($parameters)) {
             throw new TestReferenceException(
-                "Parameter Resolution Failed: Too many parameters given for reference " .
-                $reference . ". Parameters Given: " . implode(", ", $parameters),
-                ["reference" => $reference, "parametersGiven" => $parameters]
+                'Parameter Resolution Failed: Too many parameters given for reference ' .
+                $reference . '. Parameters Given: ' . implode(', ', $parameters),
+                ['reference' => $reference, 'parametersGiven' => $parameters]
             );
         } elseif (count($matches) === 0) {
             throw new TestReferenceException(
-                "Parameter Resolution Failed: No parameter matches found in parameterized element with selector " .
+                'Parameter Resolution Failed: No parameter matches found in parameterized element with selector ' .
                 $reference,
-                ["reference" => $reference]
+                ['reference' => $reference]
             );
         }
     }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -7,12 +9,12 @@
 namespace Magento\FunctionalTestingFramework\DataTransport;
 
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\CredentialStore;
-use Magento\FunctionalTestingFramework\Util\MftfGlobals;
+use Magento\FunctionalTestingFramework\DataTransport\Auth\Tfa;
+use Magento\FunctionalTestingFramework\DataTransport\Auth\Tfa\OTP;
 use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlInterface;
 use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlTransport;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\DataTransport\Auth\Tfa\OTP;
-use Magento\FunctionalTestingFramework\DataTransport\Auth\Tfa;
+use Magento\FunctionalTestingFramework\Util\MftfGlobals;
 
 /**
  * Curl executor for requests to Admin.
@@ -46,8 +48,8 @@ class AdminFormExecutor implements CurlInterface
     public function __construct(/**
      * Flag describes whether the request is to Magento Base URL, removes backend_name from api url
      */
-    private $removeBackend)
-    {
+        private $removeBackend
+    ) {
         $this->transport = new CurlTransport();
         $this->authorize();
     }
@@ -117,7 +119,7 @@ class AdminFormExecutor implements CurlInterface
      */
     public function write($url, $data = [], $method = CurlInterface::POST, $headers = []): void
     {
-        $url = ltrim($url, "/");
+        $url = ltrim($url, '/');
         $apiUrl = MftfGlobals::getBackendBaseUrl() . $url;
 
         if ($this->removeBackend) {

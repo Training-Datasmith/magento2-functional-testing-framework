@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -67,7 +69,7 @@ class TestHookObjectExtractor extends BaseObjectExtractor
      */
     public function createDefaultFailedHook($parentName)
     {
-        $defaultSteps['saveScreenshot'] = new ActionObject("saveScreenshot", "saveScreenshot", []);
+        $defaultSteps['saveScreenshot'] = new ActionObject('saveScreenshot', 'saveScreenshot', []);
         if (getenv('ENABLE_PAUSE') === 'true') {
             $defaultSteps['pauseWhenFailed'] = new ActionObject(
                 'pauseWhenFailed',

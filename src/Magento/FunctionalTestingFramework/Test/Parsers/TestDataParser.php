@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -7,10 +9,7 @@
 namespace Magento\FunctionalTestingFramework\Test\Parsers;
 
 use Magento\FunctionalTestingFramework\Config\DataInterface;
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Filter\FilterInterface;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 
 /**
  * Class TestDataParser

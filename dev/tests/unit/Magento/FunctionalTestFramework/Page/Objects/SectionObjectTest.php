@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -24,7 +26,7 @@ class SectionObjectTest extends MagentoTestCase
         $element2 = new ElementObject('element2', 'type', '#selector', null, '42', true);
         $elements = [
             'element1' => $element1,
-            'element2' => $element2
+            'element2' => $element2,
         ];
         $section = new SectionObject('test', $elements);
         $this->assertTrue($section->hasElement('element1'));
@@ -37,7 +39,7 @@ class SectionObjectTest extends MagentoTestCase
     {
         $element2 = new ElementObject('element2', 'type', '#selector', null, '42', true);
         $elements = [
-            'element2' => $element2
+            'element2' => $element2,
         ];
         $section = new SectionObject('test', $elements);
         $this->assertFalse($section->hasElement('element1'));
@@ -52,7 +54,7 @@ class SectionObjectTest extends MagentoTestCase
         $element2 = new ElementObject('element2', 'type', '#selector', null, '42', true);
         $elements = [
             'element1' => $element1,
-            'element2' => $element2
+            'element2' => $element2,
         ];
         $section = new SectionObject('test', $elements);
         $gotElement = $section->getElement('element2');
@@ -67,7 +69,7 @@ class SectionObjectTest extends MagentoTestCase
     {
         $element1 = new ElementObject('element1', 'type', '#selector', null, '41', false);
         $elements = [
-            'element1' => $element1
+            'element1' => $element1,
         ];
         $section = new SectionObject('test', $elements);
         $this->assertNull($section->getElement('element2'));

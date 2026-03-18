@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -7,19 +9,19 @@
 namespace Magento\FunctionalTestingFramework\DataTransport\Auth;
 
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\CredentialStore;
-use Magento\FunctionalTestingFramework\Exceptions\FastFailException;
-use Magento\FunctionalTestingFramework\Util\MftfGlobals;
+use Magento\FunctionalTestingFramework\DataTransport\Auth\Tfa\OTP;
 use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlInterface;
 use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlTransport;
+use Magento\FunctionalTestingFramework\Exceptions\FastFailException;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\DataTransport\Auth\Tfa\OTP;
+use Magento\FunctionalTestingFramework\Util\MftfGlobals;
 
 /**
  * Class WebApiAuth
  */
 class WebApiAuth
 {
-    const PATH_ADMIN_AUTH = 'V1/integration/admin/token';
+    public const PATH_ADMIN_AUTH = 'V1/integration/admin/token';
 
     /** Rest request headers
      *
@@ -64,7 +66,7 @@ class WebApiAuth
             $secret = CredentialStore::getInstance()->decryptSecretValue($encryptedSecret);
             $password ??= $secret;
         } catch (TestFrameworkException $e) {
-            $message = "Password not found in credentials file";
+            $message = 'Password not found in credentials file';
             throw new FastFailException($message . $e->getMessage(), $e->getContext());
         }
         if (!$login || !$password) {
@@ -87,7 +89,7 @@ class WebApiAuth
 
             $data = [
                 'username' => $login,
-                'password' => $password
+                'password' => $password,
             ];
 
             if (Tfa::isEnabled()) {

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -7,8 +9,8 @@
 namespace Magento\FunctionalTestingFramework\Config\FileResolver;
 
 use Magento\FunctionalTestingFramework\Config\FileResolverInterface;
-use Magento\FunctionalTestingFramework\Util\ModuleResolver;
 use Magento\FunctionalTestingFramework\Util\Iterator\File;
+use Magento\FunctionalTestingFramework\Util\ModuleResolver;
 
 /**
  * Class Mask

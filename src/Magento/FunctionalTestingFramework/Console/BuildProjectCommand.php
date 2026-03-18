@@ -1,25 +1,26 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Magento\FunctionalTestingFramework\Console;
 
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
+use Magento\FunctionalTestingFramework\Util\Env\EnvProcessor;
 use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
+use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
-use Magento\FunctionalTestingFramework\Util\Env\EnvProcessor;
 use Symfony\Component\Yaml\Yaml;
-use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 
 /**
  * Class BuildProjectCommand
@@ -47,7 +48,7 @@ class BuildProjectCommand extends Command
         $this->setName('build:project')
             ->setDescription('Generate configuration files for the project. Build the Codeception project.')
             ->addOption(
-                "upgrade",
+                'upgrade',
                 'u',
                 InputOption::VALUE_NONE,
                 'upgrade existing MFTF tests according to last major release requirements'
@@ -99,7 +100,7 @@ class BuildProjectCommand extends Command
 
         if ($codeceptReturnCode !== 0) {
             throw new TestFrameworkException(
-                "The codecept build command failed unexpectedly. Please see the above output for more details."
+                'The codecept build command failed unexpectedly. Please see the above output for more details.'
             );
         }
 
@@ -126,7 +127,7 @@ class BuildProjectCommand extends Command
         if (!$fileSystem->exists(FilePathFormatter::format(TESTS_BP) . 'codeception.yml')) {
             // read in the codeception.yml file
             $configDistYml = Yaml::parse(file_get_contents(
-                realpath(FilePathFormatter::format(FW_BP) . "etc/config/codeception.dist.yml")
+                realpath(FilePathFormatter::format(FW_BP) . 'etc/config/codeception.dist.yml')
             ));
             $configDistYml['paths']['support'] = $relativePath . 'src/Magento/FunctionalTestingFramework';
             $configDistYml['paths']['envs'] = $relativePath . 'etc/_envs';
@@ -134,10 +135,10 @@ class BuildProjectCommand extends Command
 
             // dump output to new codeception.yml file
             file_put_contents(FilePathFormatter::format(TESTS_BP) . 'codeception.yml', $configYmlText);
-            $output->writeln("codeception.yml configuration successfully applied.");
+            $output->writeln('codeception.yml configuration successfully applied.');
         }
 
-        $output->writeln("codeception.yml applied to " . FilePathFormatter::format(TESTS_BP) . 'codeception.yml');
+        $output->writeln('codeception.yml applied to ' . FilePathFormatter::format(TESTS_BP) . 'codeception.yml');
 
         // copy the functional suite yml, will only copy if there are differences between the template the destination
         $fileSystem->copy(
@@ -146,7 +147,7 @@ class BuildProjectCommand extends Command
         );
         $output->writeln('functional.suite.yml configuration successfully applied.');
 
-        $output->writeln("functional.suite.yml applied to " .
+        $output->writeln('functional.suite.yml applied to ' .
             FilePathFormatter::format(TESTS_BP) . 'tests' . DIRECTORY_SEPARATOR . 'functional.suite.yml');
 
         $fileSystem->copy(
@@ -161,10 +162,10 @@ class BuildProjectCommand extends Command
         } else {
             $fileSystem->copy(
                 realpath(FilePathFormatter::format(FW_BP) . 'etc/config/command.php'),
-                FilePathFormatter::format(TESTS_BP) . "utils" . DIRECTORY_SEPARATOR .'command.php'
+                FilePathFormatter::format(TESTS_BP) . 'utils' . DIRECTORY_SEPARATOR .'command.php'
             );
             $output->writeln('command.php copied to ' .
-                FilePathFormatter::format(TESTS_BP) . "utils" . DIRECTORY_SEPARATOR .'command.php');
+                FilePathFormatter::format(TESTS_BP) . 'utils' . DIRECTORY_SEPARATOR .'command.php');
         }
 
         // Remove and Create Log File

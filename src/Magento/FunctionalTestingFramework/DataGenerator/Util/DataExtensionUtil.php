@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -33,11 +35,11 @@ class DataExtensionUtil
         $parentEntity = DataObjectHandler::getInstance()->getObject($entityObject->getParentName());
         if ($parentEntity === null) {
             throw new XmlException(
-                "Parent Entity " .
+                'Parent Entity ' .
                 $entityObject->getParentName() .
-                " not defined for Entity " .
+                ' not defined for Entity ' .
                 $entityObject->getName() .
-                "." .
+                '.' .
                 PHP_EOL
             );
         }
@@ -45,15 +47,15 @@ class DataExtensionUtil
         // Check to see if the parent entity is already an extended entity
         if ($parentEntity->getParentName() !== null) {
             throw new XmlException(
-                "Cannot extend an entity that already extends another entity. Entity: " .
+                'Cannot extend an entity that already extends another entity. Entity: ' .
                 $parentEntity->getName() .
-                "." .
+                '.' .
                 PHP_EOL
             );
         }
         if (MftfApplicationConfig::getConfig()->verboseEnabled()
             && MftfApplicationConfig::getConfig()->getPhase() !== MftfApplicationConfig::UNIT_TEST_PHASE) {
-            print("Extending Data: " . $parentEntity->getName() . " => " . $entityObject->getName() . PHP_EOL);
+            print('Extending Data: ' . $parentEntity->getName() . ' => ' . $entityObject->getName() . PHP_EOL);
         }
 
         //get parent entity type if child does not have a type

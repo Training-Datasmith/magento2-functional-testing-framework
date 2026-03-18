@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -11,6 +12,7 @@ namespace tests\unit\Magento\FunctionalTestFramework\Util;
 use Exception;
 use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\DataObjectHandler;
+use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
 use Magento\FunctionalTestingFramework\Filter\FilterList;
 use Magento\FunctionalTestingFramework\ObjectManager;
@@ -26,7 +28,6 @@ use ReflectionClass;
 use ReflectionProperty;
 use tests\unit\Util\MagentoTestCase;
 use tests\unit\Util\TestLoggingUtil;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 
 class TestGeneratorTest extends MagentoTestCase
 {
@@ -62,7 +63,7 @@ class TestGeneratorTest extends MagentoTestCase
     protected function tearDown(): void
     {
         GenerationErrorHandler::getInstance()->reset();
-        
+
         // Reset DataObjectHandler to ensure test isolation
         $dataObjectHandler = new ReflectionProperty(DataObjectHandler::class, 'INSTANCE');
         $dataObjectHandler->setValue(null, null);
@@ -80,7 +81,7 @@ class TestGeneratorTest extends MagentoTestCase
             'fakeAction',
             'comment',
             [
-            'userInput' => '{{someEntity.entity}}'
+            'userInput' => '{{someEntity.entity}}',
             ]
         );
 
@@ -109,15 +110,15 @@ class TestGeneratorTest extends MagentoTestCase
             'fakeAction',
             'comment',
             [
-            'userInput' => '{{someEntity.entity}}'
+            'userInput' => '{{someEntity.entity}}',
             ]
         );
 
         $testObject = new TestObject('sampleTest', ['merge123' => $actionObject], [], [], 'filename');
         $testGeneratorObject = TestGenerator::getInstance('', ['sampleTest' => $testObject]);
 
-        $result = $testGeneratorObject->getUniqueIdForInput('prefix', "foo");
-        
+        $result = $testGeneratorObject->getUniqueIdForInput('prefix', 'foo');
+
         $this->assertMatchesRegularExpression('/[A-Za-z0-9]+foo/', $result);
     }
 
@@ -132,7 +133,7 @@ class TestGeneratorTest extends MagentoTestCase
         // Mock DataObjectHandler to return null for non-existent entity
         $mockDataObjectHandler = $this->createMock(DataObjectHandler::class);
         $mockDataObjectHandler->method('getObject')->willReturn(null);
-        
+
         $property = new ReflectionProperty(DataObjectHandler::class, 'INSTANCE');
         $property->setValue(null, $mockDataObjectHandler);
 
@@ -140,14 +141,14 @@ class TestGeneratorTest extends MagentoTestCase
             'fakeAction',
             'comment',
             [
-            'userInput' => '{{someEntity.entity}}'
+            'userInput' => '{{someEntity.entity}}',
             ]
         );
 
         $testObject = new TestObject('sampleTest', ['merge123' => $actionObject], [], [], 'filename');
         $testGeneratorObject = TestGenerator::getInstance('', ['sampleTest' => $testObject]);
         $this->expectException(TestReferenceException::class);
-        $result = $testGeneratorObject->entityExistsCheck('testintity', "teststepkey");
+        $result = $testGeneratorObject->entityExistsCheck('testintity', 'teststepkey');
     }
 
     /**
@@ -162,39 +163,39 @@ class TestGeneratorTest extends MagentoTestCase
             'fakeAction',
             'comment',
             [
-            'userInput' => '{{someEntity.entity}}'
+            'userInput' => '{{someEntity.entity}}',
             ]
         );
 
         $testObject = new TestObject('sampleTest', ['merge123' => $actionObject], [], [], 'filename');
         $testGeneratorObject = TestGenerator::getInstance('', ['sampleTest' => $testObject]);
 
-        $result = $testGeneratorObject->getUniqueIdForInput('suffix', "foo");
-        
+        $result = $testGeneratorObject->getUniqueIdForInput('suffix', 'foo');
+
         $this->assertMatchesRegularExpression('/foo[A-Za-z0-9]+/', $result);
     }
 
-     /**
-      * Basic test for wrong output for input
-      *
-      * @return void
-      * @throws Exception
-      */
+    /**
+     * Basic test for wrong output for input
+     *
+     * @return void
+     * @throws Exception
+     */
     public function testFailedRegexForUniqueAttribute()
     {
         $actionObject = new ActionObject(
             'fakeAction',
             'comment',
             [
-            'userInput' => '{{someEntity.entity}}'
+            'userInput' => '{{someEntity.entity}}',
             ]
         );
 
         $testObject = new TestObject('sampleTest', ['merge123' => $actionObject], [], [], 'filename');
         $testGeneratorObject = TestGenerator::getInstance('', ['sampleTest' => $testObject]);
 
-        $result = $testGeneratorObject->getUniqueIdForInput('suffix', "foo");
-        
+        $result = $testGeneratorObject->getUniqueIdForInput('suffix', 'foo');
+
         $this->assertDoesNotMatchRegularExpression('/bar[A-Za-z0-9]+/', $result);
     }
 
@@ -211,7 +212,7 @@ class TestGeneratorTest extends MagentoTestCase
             'fakeAction',
             'comment',
             [
-            'userInput' => $actionInput
+            'userInput' => $actionInput,
             ]
         );
 
@@ -252,7 +253,7 @@ class TestGeneratorTest extends MagentoTestCase
             'fakeAction',
             'comment',
             [
-            'userInput' => $actionInput
+            'userInput' => $actionInput,
             ]
         );
         $beforeActionInput = 'beforeInput';
@@ -260,7 +261,7 @@ class TestGeneratorTest extends MagentoTestCase
             'beforeAction',
             'comment',
             [
-            'userInput' => $beforeActionInput
+            'userInput' => $beforeActionInput,
             ]
         );
 
@@ -309,7 +310,7 @@ class TestGeneratorTest extends MagentoTestCase
             'fakeAction',
             'comment',
             [
-            'userInput' => $actionInput
+            'userInput' => $actionInput,
             ]
         );
 
@@ -380,7 +381,7 @@ class TestGeneratorTest extends MagentoTestCase
             'fakeAction',
             'comment',
             [
-            'userInput' => $actionInput
+            'userInput' => $actionInput,
             ]
         );
         $annotation1 = ['group' => ['someGroupValue']];
@@ -403,7 +404,7 @@ class TestGeneratorTest extends MagentoTestCase
         );
         $testGeneratorObject = TestGenerator::getInstance('', ['sampleTest' => $test1, 'test2' => $test2]);
         $result = $testGeneratorObject->throwExceptionIfDuplicateArgumentsFound($testGeneratorObject);
-        $this->assertEquals($result, "");
+        $this->assertEquals($result, '');
     }
 
     /**
@@ -432,7 +433,7 @@ class TestGeneratorTest extends MagentoTestCase
             'fakeAction',
             'comment',
             [
-            'userInput' => $actionInput
+            'userInput' => $actionInput,
             ]
         );
         $annotation1 = ['group' => ['someGroupValue']];
@@ -455,7 +456,7 @@ class TestGeneratorTest extends MagentoTestCase
         );
         $testGeneratorObject = TestGenerator::getInstance('', ['sampleTest' => $test1, 'test2' => $test2]);
         $result = $testGeneratorObject->throwExceptionIfDuplicateArgumentsFound($testGeneratorObject);
-        $this->assertEquals($result, "");
+        $this->assertEquals($result, '');
     }
 
     /**
@@ -485,7 +486,7 @@ class TestGeneratorTest extends MagentoTestCase
             'fakeAction',
             'comment',
             [
-            'userInput' => $actionInput
+            'userInput' => $actionInput,
             ]
         );
 
@@ -555,7 +556,7 @@ class TestGeneratorTest extends MagentoTestCase
             'fakeAction',
             'comment',
             [
-            'userInput' => $actionInput
+            'userInput' => $actionInput,
             ]
         );
 

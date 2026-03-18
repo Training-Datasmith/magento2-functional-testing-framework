@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -6,8 +8,8 @@
 
 namespace Magento\Sniffs\LiteralNamespaces;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 /**
  * Custom phpcs sniff to detect usages of literal class and interface names.
@@ -55,7 +57,7 @@ class LiteralNamespacesSniff implements Sniff
 
         if (preg_match($this->literalNamespacePattern, $content) === 1 && $this->classExists($content)) {
             $sourceFile->addError(
-                "Use ::class notation instead.",
+                'Use ::class notation instead.',
                 $stackPtr,
                 'LiteralClassUsage'
             );

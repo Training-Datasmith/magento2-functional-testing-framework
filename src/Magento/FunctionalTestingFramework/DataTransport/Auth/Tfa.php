@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -6,19 +8,19 @@
 
 namespace Magento\FunctionalTestingFramework\DataTransport\Auth;
 
-use Magento\FunctionalTestingFramework\Util\MftfGlobals;
 use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlInterface;
 use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlTransport;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
+use Magento\FunctionalTestingFramework\Util\MftfGlobals;
 
 /**
  * Class Tfa (i.e. 2FA)
  */
 class Tfa
 {
-    const WEB_API_AUTH_GOOGLE = 'V1/tfa/provider/google/authenticate';
-    const ADMIN_FORM_AUTH_GOOGLE = 'tfa/google/authpost/?isAjax=true';
-    const TFA_SCHEMA = 'schema?services=twoFactorAuthAdminTokenServiceV1';
+    public const WEB_API_AUTH_GOOGLE = 'V1/tfa/provider/google/authenticate';
+    public const ADMIN_FORM_AUTH_GOOGLE = 'tfa/google/authpost/?isAjax=true';
+    public const TFA_SCHEMA = 'schema?services=twoFactorAuthAdminTokenServiceV1';
 
     /**
      * If 2FA is enabled

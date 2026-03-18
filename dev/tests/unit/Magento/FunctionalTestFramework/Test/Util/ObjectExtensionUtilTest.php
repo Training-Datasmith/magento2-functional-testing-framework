@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -51,7 +52,7 @@ class ObjectExtensionUtilTest extends TestCase
     public function testGenerateExtendedTest(): void
     {
         $mockActions = [
-            'mockStep' => ['nodeName' => 'mockNode', 'stepKey' => 'mockStep']
+            'mockStep' => ['nodeName' => 'mockNode', 'stepKey' => 'mockStep'],
         ];
 
         $testDataArrayBuilder = new TestDataArrayBuilder();
@@ -94,10 +95,10 @@ class ObjectExtensionUtilTest extends TestCase
     public function testGenerateExtendedWithHooks(): void
     {
         $mockBeforeHooks = [
-            'beforeHookAction' => ['nodeName' => 'mockNodeBefore', 'stepKey' => 'mockStepBefore']
+            'beforeHookAction' => ['nodeName' => 'mockNodeBefore', 'stepKey' => 'mockStepBefore'],
         ];
         $mockAfterHooks = [
-            'afterHookAction' => ['nodeName' => 'mockNodeAfter', 'stepKey' => 'mockStepAfter']
+            'afterHookAction' => ['nodeName' => 'mockNodeAfter', 'stepKey' => 'mockStepAfter'],
         ];
 
         $testDataArrayBuilder = new TestDataArrayBuilder();
@@ -220,12 +221,12 @@ class ObjectExtensionUtilTest extends TestCase
             'commentHere' => [
                 'nodeName' => 'comment',
                 'selector' => 'selector',
-                'stepKey' => 'commentHere'
+                'stepKey' => 'commentHere',
             ],
             'parentComment' => [
                 'nodeName' => 'comment',
                 'selector' => 'parentSelector',
-                'stepKey' => 'parentComment'
+                'stepKey' => 'parentComment',
             ],
         ];
 
@@ -237,15 +238,15 @@ class ObjectExtensionUtilTest extends TestCase
             'commentHere' => [
                 'nodeName' => 'comment',
                 'selector' => 'otherSelector',
-                'stepKey' => 'commentHere'
+                'stepKey' => 'commentHere',
             ],
         ];
 
         $mockActionGroupData = [
             'actionGroups' => [
                 'mockSimpleActionGroup' => $mockSimpleActionGroup,
-                'mockExtendedActionGroup' => $mockExtendedActionGroup
-            ]
+                'mockExtendedActionGroup' => $mockExtendedActionGroup,
+            ],
         ];
         $this->setMockTestOutput(null, $mockActionGroupData);
 
@@ -282,14 +283,14 @@ class ObjectExtensionUtilTest extends TestCase
             'commentHere' => [
                 'nodeName' => 'comment',
                 'selector' => 'otherSelector',
-                'stepKey' => 'commentHere'
+                'stepKey' => 'commentHere',
             ],
         ];
 
         $mockActionGroupData = [
             'actionGroups' => [
-                'mockExtendedActionGroup' => $mockExtendedActionGroup
-            ]
+                'mockExtendedActionGroup' => $mockExtendedActionGroup,
+            ],
         ];
         $this->setMockTestOutput(null, $mockActionGroupData);
 
@@ -312,29 +313,29 @@ class ObjectExtensionUtilTest extends TestCase
         $mockParentActionGroup = [
             'nodeName' => 'actionGroup',
             'name' => 'mockParentActionGroup',
-            'filename' => 'someFile'
+            'filename' => 'someFile',
         ];
 
         $mockSimpleActionGroup = [
             'nodeName' => 'actionGroup',
             'name' => 'mockSimpleActionGroup',
             'filename' => 'someFile',
-            'extends' => 'mockParentActionGroup'
+            'extends' => 'mockParentActionGroup',
         ];
 
         $mockExtendedActionGroup = [
             'nodeName' => 'actionGroup',
             'name' => 'mockExtendedActionGroup',
             'filename' => 'someFile',
-            'extends' => 'mockSimpleActionGroup'
+            'extends' => 'mockSimpleActionGroup',
         ];
 
         $mockActionGroupData = [
             'actionGroups' => [
                 'mockParentActionGroup' => $mockParentActionGroup,
                 'mockSimpleActionGroup' => $mockSimpleActionGroup,
-                'mockExtendedActionGroup' => $mockExtendedActionGroup
-            ]
+                'mockExtendedActionGroup' => $mockExtendedActionGroup,
+            ],
         ];
         $this->setMockTestOutput(null, $mockActionGroupData);
 
@@ -371,7 +372,7 @@ class ObjectExtensionUtilTest extends TestCase
             ->withName('baseTest')
             ->withAnnotations(
                 [
-                'skip' => ['nodeName' => 'skip', 'issueId' => [['nodeName' => 'issueId', 'value' => 'someIssue']]]
+                'skip' => ['nodeName' => 'skip', 'issueId' => [['nodeName' => 'issueId', 'value' => 'someIssue']]],
                 ]
             )
             ->build();

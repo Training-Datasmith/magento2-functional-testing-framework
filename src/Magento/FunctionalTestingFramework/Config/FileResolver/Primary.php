@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -6,9 +8,9 @@
 
 namespace Magento\FunctionalTestingFramework\Config\FileResolver;
 
+use Magento\FunctionalTestingFramework\Config\FileResolverInterface;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Util\Iterator\File;
-use Magento\FunctionalTestingFramework\Config\FileResolverInterface;
 use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 
 /**
@@ -59,7 +61,7 @@ class Primary implements FileResolverInterface
         if (str_starts_with($scope, FW_BP)) {
             $patterns = [
                 $scope . DIRECTORY_SEPARATOR . $filename,
-                $scope . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $filename
+                $scope . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $filename,
             ];
         } else {
             $defaultPath = dirname(__DIR__, 4);
@@ -70,7 +72,7 @@ class Primary implements FileResolverInterface
                 . $filename,
                 FilePathFormatter::format(FW_BP) . $scope . DIRECTORY_SEPARATOR . $filename,
                 FilePathFormatter::format(FW_BP)  . $scope . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR
-                . $filename
+                . $filename,
             ];
         }
         return str_replace(DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $patterns);

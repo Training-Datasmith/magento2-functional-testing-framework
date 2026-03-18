@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -11,9 +13,9 @@ namespace Magento\FunctionalTestingFramework\Test\Util;
  */
 class BaseObjectExtractor
 {
-    const NODE_NAME = 'nodeName';
-    const NAME = 'name';
-    const OBJ_DEPRECATED = 'deprecated';
+    public const NODE_NAME = 'nodeName';
+    public const NAME = 'name';
+    public const OBJ_DEPRECATED = 'deprecated';
 
     /**
      * BaseObjectExtractor constructor.

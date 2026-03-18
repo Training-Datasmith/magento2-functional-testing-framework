@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -25,16 +27,16 @@ class ActionMergeUtilTest extends MagentoTestCase
             'fakeAction',
             'comment',
             [
-            'userInput' => '{{someEntity.entity}}'
+            'userInput' => '{{someEntity.entity}}',
             ]
         );
 
         $this->expectExceptionMessage(
-            "Could not resolve entity reference \"{{someEntity.entity}}\" " .
+            'Could not resolve entity reference "{{someEntity.entity}}" ' .
             "in Action with stepKey \"fakeAction\".\n" .
-            "Exception occurred parsing action at StepKey \"fakeAction\""
+            'Exception occurred parsing action at StepKey "fakeAction"'
         );
 
-        $testActionMergeUtil->resolveActionSteps(["merge123" => $actionObject]);
+        $testActionMergeUtil->resolveActionSteps(['merge123' => $actionObject]);
     }
 }

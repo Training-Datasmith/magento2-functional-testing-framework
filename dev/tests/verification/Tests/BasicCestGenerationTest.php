@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -69,8 +71,8 @@ class BasicCestGenerationTest extends MftfTestCase
      */
     public function testMagentoCli()
     {
-        putenv("MAGENTO_CLI_WAIT_TIMEOUT=45");
+        putenv('MAGENTO_CLI_WAIT_TIMEOUT=45');
         $this->generateAndCompareTest('MagentoCliTest');
-        putenv("MAGENTO_CLI_WAIT_TIMEOUT");
+        putenv('MAGENTO_CLI_WAIT_TIMEOUT');
     }
 }

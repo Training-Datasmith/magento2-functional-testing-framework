@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -35,7 +37,7 @@ class VaultTokenAuthStrategy extends AbstractAuthenticationStrategy
         try {
             return new Auth(['clientToken' => $this->token]);
         } catch (\Exception) {
-            throw new TestFrameworkException("Cannot authenticate Vault token.");
+            throw new TestFrameworkException('Cannot authenticate Vault token.');
         }
     }
 }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -17,35 +19,35 @@ use Magento\FunctionalTestingFramework\Util\Validation\NameValidationUtil;
 
 class OperationDefinitionObjectHandler implements ObjectHandlerInterface
 {
-    const ENTITY_OPERATION_ROOT_TAG = 'operation';
-    const ENTITY_OPERATION_TYPE = 'type';
-    const ENTITY_OPERATION_DATA_TYPE = 'dataType';
-    const ENTITY_OPERATION_URL = 'url';
-    const ENTITY_OPERATION_METHOD = 'method';
-    const ENTITY_OPERATION_AUTH = 'auth';
-    const ENTITY_OPERATION_URL_AREA = 'area';
-    const ENTITY_OPERATION_STORE_CODE = 'storeCode';
-    const ENTITY_OPERATION_SUCCESS_REGEX = 'successRegex';
-    const ENTITY_OPERATION_RETURN_REGEX = 'returnRegex';
-    const ENTITY_OPERATION_RETURN_INDEX = 'returnIndex';
-    const ENTITY_OPERATION_HEADER = 'header';
-    const ENTITY_OPERATION_CONTENT_TYPE = 'contentType';
-    const ENTITY_OPERATION_HEADER_PARAM = 'param';
-    const ENTITY_OPERATION_HEADER_VALUE = 'value';
-    const ENTITY_OPERATION_URL_PARAM = 'param';
-    const ENTITY_OPERATION_URL_PARAM_KEY = 'key';
-    const ENTITY_OPERATION_URL_PARAM_VALUE = 'value';
-    const ENTITY_OPERATION_ENTRY = 'field';
-    const ENTITY_OPERATION_ENTRY_KEY = 'key';
-    const ENTITY_OPERATION_ENTRY_VALUE = 'value';
-    const ENTITY_OPERATION_ARRAY = 'array';
-    const ENTITY_OPERATION_ARRAY_KEY = 'key';
-    const ENTITY_OPERATION_ARRAY_VALUE = 'value';
-    const ENTITY_OPERATION_OBJECT = 'object';
-    const ENTITY_OPERATION_OBJECT_KEY = 'key';
-    const ENTITY_OPERATION_OBJECT_VALUE = 'value';
-    const ENTITY_OPERATION_REQUIRED = 'required';
-    const ENTITY_OPERATION_BACKEND_REMOVE = 'removeBackend';
+    public const ENTITY_OPERATION_ROOT_TAG = 'operation';
+    public const ENTITY_OPERATION_TYPE = 'type';
+    public const ENTITY_OPERATION_DATA_TYPE = 'dataType';
+    public const ENTITY_OPERATION_URL = 'url';
+    public const ENTITY_OPERATION_METHOD = 'method';
+    public const ENTITY_OPERATION_AUTH = 'auth';
+    public const ENTITY_OPERATION_URL_AREA = 'area';
+    public const ENTITY_OPERATION_STORE_CODE = 'storeCode';
+    public const ENTITY_OPERATION_SUCCESS_REGEX = 'successRegex';
+    public const ENTITY_OPERATION_RETURN_REGEX = 'returnRegex';
+    public const ENTITY_OPERATION_RETURN_INDEX = 'returnIndex';
+    public const ENTITY_OPERATION_HEADER = 'header';
+    public const ENTITY_OPERATION_CONTENT_TYPE = 'contentType';
+    public const ENTITY_OPERATION_HEADER_PARAM = 'param';
+    public const ENTITY_OPERATION_HEADER_VALUE = 'value';
+    public const ENTITY_OPERATION_URL_PARAM = 'param';
+    public const ENTITY_OPERATION_URL_PARAM_KEY = 'key';
+    public const ENTITY_OPERATION_URL_PARAM_VALUE = 'value';
+    public const ENTITY_OPERATION_ENTRY = 'field';
+    public const ENTITY_OPERATION_ENTRY_KEY = 'key';
+    public const ENTITY_OPERATION_ENTRY_VALUE = 'value';
+    public const ENTITY_OPERATION_ARRAY = 'array';
+    public const ENTITY_OPERATION_ARRAY_KEY = 'key';
+    public const ENTITY_OPERATION_ARRAY_VALUE = 'value';
+    public const ENTITY_OPERATION_OBJECT = 'object';
+    public const ENTITY_OPERATION_OBJECT_KEY = 'key';
+    public const ENTITY_OPERATION_OBJECT_VALUE = 'value';
+    public const ENTITY_OPERATION_REQUIRED = 'required';
+    public const ENTITY_OPERATION_BACKEND_REMOVE = 'removeBackend';
 
     /**
      * The singleton instance of this class
@@ -209,7 +211,7 @@ class OperationDefinitionObjectHandler implements ObjectHandlerInterface
             if ($deprecated !== null) {
                 LoggingUtil::getInstance()->getLogger(self::class)->deprecation(
                     $message = "The operation {$dataDefName} is deprecated.",
-                    ["operationType" => $operation, "deprecatedMessage" => $deprecated]
+                    ['operationType' => $operation, 'deprecatedMessage' => $deprecated]
                 );
             }
 

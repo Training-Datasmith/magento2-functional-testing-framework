@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -6,9 +8,9 @@
 
 namespace tests\unit\Magento\FunctionalTestFramework\Util;
 
-use ReflectionClass;
 use Magento\FunctionalTestingFramework\Util\ComposerModuleResolver;
 use PHPUnit\Framework\Attributes\DataProvider;
+use ReflectionClass;
 use tests\unit\Util\MagentoTestCase;
 
 class ComposerModuleResolverTest extends MagentoTestCase
@@ -23,7 +25,7 @@ class ComposerModuleResolverTest extends MagentoTestCase
         $expected = [
             'Magento_ModuleX',
             'Magento_ModuleY',
-            'Magento_ModuleZ'
+            'Magento_ModuleZ',
         ];
 
         $composer = new ComposerModuleResolver();
@@ -42,13 +44,13 @@ class ComposerModuleResolverTest extends MagentoTestCase
         $expected = [
             $baseDir . DIRECTORY_SEPARATOR . 'dir31' . DIRECTORY_SEPARATOR . 'dir41' => [
                 'Magento_ModuleE',
-                'Magento_ModuleF'
+                'Magento_ModuleF',
             ],
             $baseDir . DIRECTORY_SEPARATOR . 'dir32' . DIRECTORY_SEPARATOR . 'dir41' => [
-                'Magento_ModuleG'
+                'Magento_ModuleG',
             ],
             $baseDir . DIRECTORY_SEPARATOR . 'dir32' . DIRECTORY_SEPARATOR . 'dir42' => [
-                'Magento_ModuleH'
+                'Magento_ModuleH',
             ],
         ];
 
@@ -106,8 +108,8 @@ class ComposerModuleResolverTest extends MagentoTestCase
                 $baseDir,
                 0,
                 [
-                    $baseDir . DIRECTORY_SEPARATOR . 'composer.json'
-                ]
+                    $baseDir . DIRECTORY_SEPARATOR . 'composer.json',
+                ],
             ],
             [
                 $baseDir,
@@ -115,7 +117,7 @@ class ComposerModuleResolverTest extends MagentoTestCase
                 [
                     $baseDir . DIRECTORY_SEPARATOR . 'dir31' . DIRECTORY_SEPARATOR . 'composer.json',
                     $baseDir . DIRECTORY_SEPARATOR . 'dir32' . DIRECTORY_SEPARATOR . 'composer.json',
-                ]
+                ],
             ],
             [
                 $baseDir,
@@ -127,8 +129,8 @@ class ComposerModuleResolverTest extends MagentoTestCase
                     . 'composer.json',
                     $baseDir . DIRECTORY_SEPARATOR . 'dir32' . DIRECTORY_SEPARATOR . 'dir42' . DIRECTORY_SEPARATOR
                     . 'composer.json',
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
@@ -154,8 +156,8 @@ class ComposerModuleResolverTest extends MagentoTestCase
                     . 'composer.json',
                     $baseDir . DIRECTORY_SEPARATOR . 'dir32' . DIRECTORY_SEPARATOR . 'composer.json',
                     $baseDir . DIRECTORY_SEPARATOR . 'composer.json',
-                ]
-            ]
+                ],
+            ],
         ];
     }
 }

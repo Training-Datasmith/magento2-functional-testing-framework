@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -6,8 +8,6 @@
 
 namespace Magento\FunctionalTestingFramework\DataGenerator\Config;
 
-use Magento\FunctionalTestingFramework\Config\Dom\NodeMergingConfig;
-use Magento\FunctionalTestingFramework\Config\Dom\NodePathMatcher;
 use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
 use Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUtil;
 
@@ -17,9 +17,9 @@ use Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUt
  */
 class Dom extends \Magento\FunctionalTestingFramework\Config\MftfDom
 {
-    const DATA_FILE_NAME_ENDING = "Data";
-    const DATA_META_FILENAME_ATTRIBUTE = "filename";
-    const DATA_META_NAME_ATTRIBUTE = "name";
+    public const DATA_FILE_NAME_ENDING = 'Data';
+    public const DATA_META_FILENAME_ATTRIBUTE = 'filename';
+    public const DATA_META_NAME_ATTRIBUTE = 'name';
 
     /**
      * NodeValidationUtil
@@ -83,8 +83,8 @@ class Dom extends \Magento\FunctionalTestingFramework\Config\MftfDom
         $itemNodes = $dom->getElementsByTagName('item');
         /** @var \DOMElement $itemNode */
         foreach ($itemNodes as $itemKey => $itemNode) {
-            if ($itemNode->hasAttribute("name") === false) {
-                $itemNode->setAttribute("name", (string)$itemKey);
+            if ($itemNode->hasAttribute('name') === false) {
+                $itemNode->setAttribute('name', (string)$itemKey);
             }
         }
         return $dom;

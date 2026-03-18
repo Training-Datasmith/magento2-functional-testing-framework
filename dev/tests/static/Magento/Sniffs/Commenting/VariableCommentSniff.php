@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -6,14 +8,12 @@
 
 namespace Magento\Sniffs\Commenting;
 
-use PHP_CodeSniffer\Sniffs\AbstractVariableSniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\AbstractVariableSniff;
 use PHP_CodeSniffer\Util\Common;
 
 class VariableCommentSniff extends AbstractVariableSniff
 {
-
-
     /**
      * Called to process class member vars.
      *
@@ -26,14 +26,14 @@ class VariableCommentSniff extends AbstractVariableSniff
     public function processMemberVar(File $phpcsFile, $stackPtr)
     {
         $tokens = $phpcsFile->getTokens();
-        $ignore = array(
+        $ignore = [
                    T_PUBLIC,
                    T_PRIVATE,
                    T_PROTECTED,
                    T_VAR,
                    T_STATIC,
                    T_WHITESPACE,
-                  );
+                  ];
 
         $commentEnd = $phpcsFile->findPrevious($ignore, ($stackPtr - 1), null, true);
         if ($commentEnd === false
@@ -60,7 +60,7 @@ class VariableCommentSniff extends AbstractVariableSniff
                 } else {
                     $foundVar = $tag;
                 }
-            } else if ($tokens[$tag]['content'] === '@see') {
+            } elseif ($tokens[$tag]['content'] === '@see') {
                 // Make sure the tag isn't empty.
                 $string = $phpcsFile->findNext(T_DOC_COMMENT_STRING, $tag, $commentEnd);
                 if ($string === false || $tokens[$string]['line'] !== $tokens[$tag]['line']) {
@@ -69,7 +69,7 @@ class VariableCommentSniff extends AbstractVariableSniff
                 }
             } else {
                 $error = '%s tag is not allowed in member variable comment';
-                $data  = array($tokens[$tag]['content']);
+                $data  = [$tokens[$tag]['content']];
                 $phpcsFile->addWarning($error, $tag, 'TagNotAllowed', $data);
             }//end if
         }//end foreach
@@ -99,10 +99,10 @@ class VariableCommentSniff extends AbstractVariableSniff
         $suggestedType = Common::suggestType($varType);
         if ($varType !== $suggestedType) {
             $error = 'Expected "%s" but found "%s" for @var tag in member variable comment';
-            $data  = array(
+            $data  = [
                       $suggestedType,
                       $varType,
-                     );
+                     ];
 
             $fix = $phpcsFile->addFixableError($error, ($foundVar + 2), 'IncorrectVarType', $data);
             if ($fix === true) {
@@ -111,7 +111,6 @@ class VariableCommentSniff extends AbstractVariableSniff
         }
 
     }//end processMemberVar()
-
 
     /**
      * Called to process a normal variable.
@@ -129,7 +128,6 @@ class VariableCommentSniff extends AbstractVariableSniff
 
     }//end processVariable()
 
-
     /**
      * Called to process variables found in double quoted strings.
      *
@@ -145,6 +143,5 @@ class VariableCommentSniff extends AbstractVariableSniff
     {
 
     }//end processVariableInString()
-
 
 }//end class

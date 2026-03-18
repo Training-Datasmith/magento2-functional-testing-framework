@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -43,32 +44,32 @@ class AnnotationExtractorTest extends TestCase
             'features' => [
                 [
                     'nodeName' => 'features',
-                    'value' => 'TestFeatures'
-                ]
+                    'value' => 'TestFeatures',
+                ],
             ],
             'stories' => [
                 [
                     'nodeName' => 'stories',
-                    'value' => 'TestStories'
-                ]
+                    'value' => 'TestStories',
+                ],
             ],
             'description' => [
                 [
                     'nodeName' => 'description',
-                    'value' => 'TestDescription'
-                ]
+                    'value' => 'TestDescription',
+                ],
             ],
             'severity' => [
                 [
                     'nodeName' => 'severity',
-                    'value' => 'CRITICAL'
-                ]
+                    'value' => 'CRITICAL',
+                ],
             ],
             'group' => [
                 [
                     'nodeName' => 'group',
-                    'value' => 'TestGroup'
-                ]
+                    'value' => 'TestGroup',
+                ],
             ],
         ];
         // Perform Test
@@ -98,20 +99,20 @@ class AnnotationExtractorTest extends TestCase
             'features' => [
                 [
                     'nodeName' => 'features',
-                    'value' => 'TestFeatures'
-                ]
+                    'value' => 'TestFeatures',
+                ],
             ],
             'stories' => [
                 [
                     'nodeName' => 'stories',
-                    'value' => 'TestStories'
-                ]
+                    'value' => 'TestStories',
+                ],
             ],
             'group' => [
                 [
                     'nodeName' => 'group',
-                    'value' => 'TestGroup'
-                ]
+                    'value' => 'TestGroup',
+                ],
             ],
         ];
         // Perform Test
@@ -124,7 +125,7 @@ class AnnotationExtractorTest extends TestCase
             'DEPRECATION: Test testFileName is missing required annotations.',
             [
                 'testName' => 'testFileName',
-                'missingAnnotations' => 'title, description, severity'
+                'missingAnnotations' => 'title, description, severity',
             ]
         );
     }
@@ -143,38 +144,38 @@ class AnnotationExtractorTest extends TestCase
             'features' => [
                 [
                     'nodeName' => 'features',
-                    'value' => ''
-                ]
+                    'value' => '',
+                ],
             ],
             'stories' => [
                 [
                     'nodeName' => 'stories',
-                    'value' => 'TestStories'
-                ]
+                    'value' => 'TestStories',
+                ],
             ],
             'title' => [
                 [
                     'nodeName' => 'title',
-                    'value' => ' '
-                ]
+                    'value' => ' ',
+                ],
             ],
             'description' => [
                 [
                     'nodeName' => 'description',
-                    'value' => "\t"
-                ]
+                    'value' => "\t",
+                ],
             ],
             'severity' => [
                 [
                     'nodeName' => 'severity',
-                    'value' => ''
-                ]
+                    'value' => '',
+                ],
             ],
             'group' => [
                 [
                     'nodeName' => 'group',
-                    'value' => 'TestGroup'
-                ]
+                    'value' => 'TestGroup',
+                ],
             ],
         ];
         // Perform Test
@@ -187,7 +188,7 @@ class AnnotationExtractorTest extends TestCase
             'DEPRECATION: Test testFileName is missing required annotations.',
             [
                 'testName' => 'testFileName',
-                'missingAnnotations' => 'title, description, severity'
+                'missingAnnotations' => 'title, description, severity',
             ]
         );
     }
@@ -206,32 +207,32 @@ class AnnotationExtractorTest extends TestCase
             'features' => [
                 [
                     'nodeName' => 'features',
-                    'value' => 'TestFeatures'
-                ]
+                    'value' => 'TestFeatures',
+                ],
             ],
             'stories' => [
                 [
                     'nodeName' => 'stories',
-                    'value' => 'TestStories'
-                ]
+                    'value' => 'TestStories',
+                ],
             ],
             'title' => [
                 [
                     'nodeName' => 'title',
-                    'value' => 'TEST TITLE'
-                ]
+                    'value' => 'TEST TITLE',
+                ],
             ],
             'severity' => [
                 [
                     'nodeName' => 'severity',
-                    'value' => 'CRITICAL'
-                ]
+                    'value' => 'CRITICAL',
+                ],
             ],
             'testCaseId' => [
                 [
                     'nodeName' => 'testCaseId',
-                    'value' => 'MQE-0001'
-                ]
+                    'value' => 'MQE-0001',
+                ],
             ],
         ];
         $secondTestannotation = [
@@ -239,32 +240,32 @@ class AnnotationExtractorTest extends TestCase
             'features' => [
                 [
                     'nodeName' => 'features',
-                    'value' => 'TestFeatures'
-                ]
+                    'value' => 'TestFeatures',
+                ],
             ],
             'stories' => [
                 [
                     'nodeName' => 'stories',
-                    'value' => 'TestStories'
-                ]
+                    'value' => 'TestStories',
+                ],
             ],
             'title' => [
                 [
                     'nodeName' => 'title',
-                    'value' => 'TEST TITLE'
-                ]
+                    'value' => 'TEST TITLE',
+                ],
             ],
             'severity' => [
                 [
                     'nodeName' => 'severity',
-                    'value' => 'CRITICAL'
-                ]
+                    'value' => 'CRITICAL',
+                ],
             ],
             'testCaseId' => [
                 [
                     'nodeName' => 'testCaseId',
-                    'value' => 'MQE-0001'
-                ]
+                    'value' => 'MQE-0001',
+                ],
             ],
         ];
         // Perform Test

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -6,6 +8,7 @@
 
 namespace Magento\FunctionalTestingFramework\Page\Handlers;
 
+use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 use Magento\FunctionalTestingFramework\ObjectManager\ObjectHandlerInterface;
 use Magento\FunctionalTestingFramework\ObjectManagerFactory;
 use Magento\FunctionalTestingFramework\Page\Objects\ElementObject;
@@ -13,20 +16,19 @@ use Magento\FunctionalTestingFramework\Page\Objects\SectionObject;
 use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 use Magento\FunctionalTestingFramework\Util\Validation\NameValidationUtil;
 use Magento\FunctionalTestingFramework\XmlParser\SectionParser;
-use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 
 class SectionObjectHandler implements ObjectHandlerInterface
 {
-    const SECTION = 'section';
-    const ELEMENT = 'element';
-    const TYPE = 'type';
-    const SELECTOR = 'selector';
-    const LOCATOR_FUNCTION = 'locatorFunction';
-    const TIMEOUT = 'timeout';
-    const PARAMETERIZED = 'parameterized';
-    const FILENAME = 'filename';
-    const SECTION_NAME_ERROR_MSG = "Section names cannot contain non alphanumeric characters.\tSection='%s'";
-    const ELEMENT_NAME_ERROR_MSG = "Element names cannot contain non alphanumeric characters.\tElement='%s'";
+    public const SECTION = 'section';
+    public const ELEMENT = 'element';
+    public const TYPE = 'type';
+    public const SELECTOR = 'selector';
+    public const LOCATOR_FUNCTION = 'locatorFunction';
+    public const TIMEOUT = 'timeout';
+    public const PARAMETERIZED = 'parameterized';
+    public const FILENAME = 'filename';
+    public const SECTION_NAME_ERROR_MSG = "Section names cannot contain non alphanumeric characters.\tSection='%s'";
+    public const ELEMENT_NAME_ERROR_MSG = "Element names cannot contain non alphanumeric characters.\tElement='%s'";
 
     /**
      * Singleton instance of this class
@@ -88,7 +90,7 @@ class SectionObjectHandler implements ObjectHandlerInterface
                     if ($elementDeprecated !== null) {
                         LoggingUtil::getInstance()->getLogger(ElementObject::class)->deprecation(
                             "The element '{$elementName}' is deprecated.",
-                            ["fileName" => $filename, "deprecatedMessage" => $elementDeprecated]
+                            ['fileName' => $filename, 'deprecatedMessage' => $elementDeprecated]
                         );
                     }
                     $elements[$elementName] = new ElementObject(
@@ -110,7 +112,7 @@ class SectionObjectHandler implements ObjectHandlerInterface
             if ($sectionDeprecated !== null) {
                 LoggingUtil::getInstance()->getLogger(SectionObject::class)->deprecation(
                     $sectionDeprecated,
-                    ["sectionName" => $filename, "deprecatedSection" => $sectionDeprecated]
+                    ['sectionName' => $filename, 'deprecatedSection' => $sectionDeprecated]
                 );
             }
 
@@ -121,7 +123,7 @@ class SectionObjectHandler implements ObjectHandlerInterface
                 $sectionDeprecated
             );
         }
-        $sectionNameValidator->summarize(NameValidationUtil::SECTION . " name");
+        $sectionNameValidator->summarize(NameValidationUtil::SECTION . ' name');
         $elementNameValidator->summarize(NameValidationUtil::SECTION_ELEMENT_NAME);
     }
 

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -120,8 +122,8 @@ class ComposerModuleResolver
     private function findAllComposerJsonFiles(string $directory): array
     {
         $directory = realpath($directory);
-        $jsonPattern = DIRECTORY_SEPARATOR . "composer.json";
-        $subDirectoryPattern = DIRECTORY_SEPARATOR . "*";
+        $jsonPattern = DIRECTORY_SEPARATOR . 'composer.json';
+        $subDirectoryPattern = DIRECTORY_SEPARATOR . '*';
 
         $jsonFileList = [];
         foreach (glob($directory . $subDirectoryPattern, GLOB_ONLYDIR) as $dir) {
@@ -145,15 +147,15 @@ class ComposerModuleResolver
     private function findComposerJsonFilesAtDepth($directory, int|float $depth)
     {
         $directory = realpath($directory);
-        $jsonPattern = DIRECTORY_SEPARATOR . "composer.json";
-        $subDirectoryPattern = DIRECTORY_SEPARATOR . "*";
+        $jsonPattern = DIRECTORY_SEPARATOR . 'composer.json';
+        $subDirectoryPattern = DIRECTORY_SEPARATOR . '*';
 
         $jsonFileList = [];
         if ($depth > 0) {
             foreach (glob($directory . $subDirectoryPattern, GLOB_ONLYDIR) as $dir) {
                 $jsonFileList = array_merge_recursive(
                     $jsonFileList,
-                    self::findComposerJsonFilesAtDepth($dir, $depth-1)
+                    self::findComposerJsonFilesAtDepth($dir, $depth - 1)
                 );
             }
         } elseif ($depth === 0) {

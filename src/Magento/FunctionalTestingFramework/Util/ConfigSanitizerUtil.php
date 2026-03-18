@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -6,8 +8,6 @@
 
 namespace Magento\FunctionalTestingFramework\Util;
 
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Util\Path\UrlFormatter;
 
 /**
@@ -41,16 +41,16 @@ class ConfigSanitizerUtil
     private static function sanitizeSeleniumEnvs(array $config): array
     {
         if ($config['protocol'] === '%SELENIUM_PROTOCOL%') {
-            $config['protocol'] = "http";
+            $config['protocol'] = 'http';
         }
         if ($config['host'] === '%SELENIUM_HOST%') {
-            $config['host'] = "127.0.0.1";
+            $config['host'] = '127.0.0.1';
         }
         if ($config['port'] === '%SELENIUM_PORT%') {
-            $config['port'] = "4444";
+            $config['port'] = '4444';
         }
         if ($config['path'] === '%SELENIUM_PATH%') {
-            $config['path'] = "/wd/hub";
+            $config['path'] = '/wd/hub';
         }
         return $config;
     }
@@ -61,14 +61,14 @@ class ConfigSanitizerUtil
      */
     private static function validateConfigBasedVars(array $config): void
     {
-        $configStrings = array_filter($config, fn($value) => is_string($value));
+        $configStrings = array_filter($config, fn ($value) => is_string($value));
 
         foreach ($configStrings as $configValue) {
-            $var = trim((String)$configValue, '%');
+            $var = trim((string)$configValue, '%');
             if (array_key_exists($var, $_ENV)) {
                 trigger_error(
                     "Issue with setting configuration for test runs. Please make sure '{$var}' is "
-                    . "not duplicated as a system level variable",
+                    . 'not duplicated as a system level variable',
                     E_USER_ERROR
                 );
             }

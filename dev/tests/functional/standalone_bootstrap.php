@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -7,7 +9,7 @@
 //Do not continue running this bootstrap if PHPUnit is calling it
 $fullTrace = debug_backtrace();
 $rootFile = array_values(array_slice($fullTrace, -1))[0]['file'];
-if (strpos($rootFile, "phpunit") !== false) {
+if (strpos($rootFile, 'phpunit') !== false) {
     return;
 }
 
@@ -25,7 +27,6 @@ if (file_exists(ENV_FILE_PATH . '.env')) {
         $env->usePutenv();
     }
     $env->populate($env->parse(file_get_contents(ENV_FILE_PATH . '.env'), ENV_FILE_PATH . '.env'), true);
-
 
     foreach ($_ENV as $key => $var) {
         defined($key) || define($key, $var);
@@ -64,7 +65,7 @@ if (file_exists(ENV_FILE_PATH . '.env')) {
     try {
         new DateTimeZone(DEFAULT_TIMEZONE);
     } catch (\Exception $e) {
-        throw new \Exception("Invalid DEFAULT_TIMEZONE in .env: " . DEFAULT_TIMEZONE . PHP_EOL);        
+        throw new \Exception('Invalid DEFAULT_TIMEZONE in .env: ' . DEFAULT_TIMEZONE . PHP_EOL);
     }
 
 }

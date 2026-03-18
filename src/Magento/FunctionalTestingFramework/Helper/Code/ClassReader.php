@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -37,7 +39,7 @@ class ClassReader
                         'isOptional' => $parameter->isOptional(),
                         'optionalValue' => $parameter->isOptional() ?
                             $parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : null :
-                            null
+                            null,
                     ];
                 } catch (\ReflectionException $e) {
                     $message = $e->getMessage();

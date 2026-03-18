@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -35,23 +36,23 @@ class AnnotationsCheckTest extends MagentoTestCase
     {
         $annotations = [
             'features' => [
-                0 => 'feature1'
+                0 => 'feature1',
             ],
             'stories' => [
-                0 => 'story1'
+                0 => 'story1',
             ],
             'description' => [
                 'main' => 'description1',
                 'test_files' => 'file1',
                 'deprecated' => [
-                    0 => 'deprecated1'
-                ]
+                    0 => 'deprecated1',
+                ],
             ],
             'severity' => [
-                0 => 'severity1'
+                0 => 'severity1',
             ],
             'title' => [
-                0 => '[NO TESTCASEID]: title1'
+                0 => '[NO TESTCASEID]: title1',
             ],
         ];
         $expected = [];
@@ -72,28 +73,28 @@ class AnnotationsCheckTest extends MagentoTestCase
 
         $annotations = [
             'features' => [
-                0 => 'feature1'
+                0 => 'feature1',
             ],
             'stories' => [
-                0 => 'story1'
+                0 => 'story1',
             ],
             'description' => [
                 'test_files' => 'file1',
                 'deprecated' => [
-                    0 => 'deprecated1'
-                ]
+                    0 => 'deprecated1',
+                ],
             ],
             'title' => [
-                0 => $testCaseId . ': title1'
+                0 => $testCaseId . ': title1',
             ],
             'testCaseId' => [
-                0 => $testCaseId
-            ]
+                0 => $testCaseId,
+            ],
         ];
         $expected = [
             0 => [
-                0 => 'Test AnnotationsCheckTest is missing the required annotations: description, severity'
-            ]
+                0 => 'Test AnnotationsCheckTest is missing the required annotations: description, severity',
+            ],
         ];
 
         $test = $this->createMock(TestObject::class);
@@ -111,25 +112,25 @@ class AnnotationsCheckTest extends MagentoTestCase
     {
         $annotations = [
             'features' => [
-                0 => 'feature1'
+                0 => 'feature1',
             ],
             'stories' => [
-                0 => 'story1'
+                0 => 'story1',
             ],
             'description' => [
                 'test_files' => 'file1',
                 'deprecated' => [
-                    0 => 'deprecated1'
-                ]
+                    0 => 'deprecated1',
+                ],
             ],
             'title' => [
-                0 => "[NO TESTCASEID]: \t"
+                0 => "[NO TESTCASEID]: \t",
             ],
         ];
         $expected = [
             0 => [
-                0 => 'Test AnnotationsCheckTest is missing the required annotations: title, description, severity'
-            ]
+                0 => 'Test AnnotationsCheckTest is missing the required annotations: title, description, severity',
+            ],
         ];
 
         $test = $this->createMock(TestObject::class);
@@ -147,29 +148,29 @@ class AnnotationsCheckTest extends MagentoTestCase
     {
         $annotations = [
             'features' => [
-                0 => 'feature1'
+                0 => 'feature1',
             ],
             'stories' => [
-                0 => 'story1'
+                0 => 'story1',
             ],
             'description' => [
                 'main' => 'description1',
                 'test_files' => 'file1',
                 'deprecated' => [
-                    0 => 'deprecated1'
-                ]
+                    0 => 'deprecated1',
+                ],
             ],
             'severity' => [
-                0 => 'severity1'
+                0 => 'severity1',
             ],
             'title' => [
-                0 => ''
+                0 => '',
             ],
         ];
         $expected = [
             0 => [
-                0 => 'Test AnnotationsCheckTest is missing the required annotations: title'
-            ]
+                0 => 'Test AnnotationsCheckTest is missing the required annotations: title',
+            ],
         ];
 
         $test = $this->createMock(TestObject::class);

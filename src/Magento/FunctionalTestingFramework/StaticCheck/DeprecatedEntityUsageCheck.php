@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -6,27 +8,27 @@
 
 namespace Magento\FunctionalTestingFramework\StaticCheck;
 
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use InvalidArgumentException;
+use DOMElement;
+use DOMNodeList;
 use Exception;
+use InvalidArgumentException;
+use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
+use Magento\FunctionalTestingFramework\DataGenerator\Handlers\DataObjectHandler;
+use Magento\FunctionalTestingFramework\DataGenerator\Handlers\OperationDefinitionObjectHandler;
+use Magento\FunctionalTestingFramework\DataGenerator\Objects\EntityDataObject;
+use Magento\FunctionalTestingFramework\DataGenerator\Objects\OperationDefinitionObject;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Exceptions\XmlException;
-use Magento\FunctionalTestingFramework\Page\Objects\SectionObject;
-use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
 use Magento\FunctionalTestingFramework\Page\Objects\ElementObject;
-use Magento\FunctionalTestingFramework\Test\Objects\ActionGroupObject;
 use Magento\FunctionalTestingFramework\Page\Objects\PageObject;
+use Magento\FunctionalTestingFramework\Page\Objects\SectionObject;
+use Magento\FunctionalTestingFramework\Test\Objects\ActionGroupObject;
+use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
 use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
+use Magento\FunctionalTestingFramework\Util\Script\ScriptUtil;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Finder\Finder;
-use Magento\FunctionalTestingFramework\Util\Script\ScriptUtil;
-use Magento\FunctionalTestingFramework\DataGenerator\Handlers\OperationDefinitionObjectHandler;
-use Magento\FunctionalTestingFramework\DataGenerator\Objects\OperationDefinitionObject;
-use Magento\FunctionalTestingFramework\DataGenerator\Handlers\DataObjectHandler;
-use Magento\FunctionalTestingFramework\DataGenerator\Objects\EntityDataObject;
 use Symfony\Component\Finder\SplFileInfo;
-use DOMNodeList;
-use DOMElement;
 
 /**
  * Class DeprecatedEntityUsageCheck
@@ -35,12 +37,12 @@ use DOMElement;
  */
 class DeprecatedEntityUsageCheck implements StaticCheckInterface
 {
-    const EXTENDS_REGEX_PATTERN = '/extends=["\']([^\'"]*)/';
-    const ACTIONGROUP_REGEX_PATTERN = '/ref=["\']([^\'"]*)/';
-    const DEPRECATED_REGEX_PATTERN = '/deprecated=["\']([^\'"]*)/';
+    public const EXTENDS_REGEX_PATTERN = '/extends=["\']([^\'"]*)/';
+    public const ACTIONGROUP_REGEX_PATTERN = '/ref=["\']([^\'"]*)/';
+    public const DEPRECATED_REGEX_PATTERN = '/deprecated=["\']([^\'"]*)/';
 
-    const ERROR_LOG_FILENAME = 'mftf-deprecated-entity-usage-checks';
-    const ERROR_LOG_MESSAGE = 'MFTF Deprecated Entity Usage Check';
+    public const ERROR_LOG_FILENAME = 'mftf-deprecated-entity-usage-checks';
+    public const ERROR_LOG_MESSAGE = 'MFTF Deprecated Entity Usage Check';
 
     /**
      * Array containing all errors found after running the execute() function
@@ -181,7 +183,7 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
         if ($includeRootPath) {
             $this->rootSuiteXmlFiles = $this->scriptUtil->getRootSuiteXmlFiles();
         }
-        $this->dataXmlFiles= $this->scriptUtil->getModuleXmlFilesByScope($modulePaths, 'Data');
+        $this->dataXmlFiles = $this->scriptUtil->getModuleXmlFilesByScope($modulePaths, 'Data');
 
         if (empty($this->thistestXmlFiles)
             && empty($this->actionGroupXmlFiles)
@@ -596,7 +598,7 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
                 $name = $entity->getName();
                 if ($classType === ElementObject::class) {
                     $name = $key;
-                    list($section,) = explode('.', (string) $key, 2);
+                    list($section, ) = explode('.', (string) $key, 2);
                     /** @var SectionObject $references[$section] */
                     $file = StaticChecksList::getFilePath($references[$section]->getFilename());
                 } else {
@@ -629,7 +631,7 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
             foreach ($violatingReferences as $subject => $data) {
                 $errorOutput .= "\t- {$subject}:\n";
                 foreach ($data as $item) {
-                    $errorOutput .= "\t\t\"" . $item['name'] . "\" in " . $item['file'] . "\n";
+                    $errorOutput .= "\t\t\"" . $item['name'] . '" in ' . $item['file'] . "\n";
                 }
             }
             $testErrors[$filePath][] = $errorOutput;

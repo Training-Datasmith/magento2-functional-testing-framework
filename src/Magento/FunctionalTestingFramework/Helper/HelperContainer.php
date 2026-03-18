@@ -1,10 +1,11 @@
 <?php
+
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Magento\FunctionalTestingFramework\Helper;
 
@@ -28,7 +29,7 @@ class HelperContainer extends \Codeception\Module
     public function create(string $helperClass): Helper
     {
         if (get_parent_class($helperClass) !== Helper::class) {
-            throw new \Exception("Helper class must extend " . Helper::class);
+            throw new \Exception('Helper class must extend ' . Helper::class);
         }
         if (!isset($this->helpers[$helperClass])) {
             $this->helpers[$helperClass] = $this->moduleContainer->create($helperClass);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -66,9 +67,9 @@ class OperationDefinitionObjectHandlerTest extends MagentoTestCase
                     OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY => [
                         0 => [
                             OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_KEY => 'id',
-                            OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE => 'integer'
+                            OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE => 'integer',
                         ],
-                    ]
+                    ],
                 ],
                 [
                     OperationDefinitionObjectHandler::ENTITY_OPERATION_DATA_TYPE => $dataType1,
@@ -79,11 +80,11 @@ class OperationDefinitionObjectHandlerTest extends MagentoTestCase
                     OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY => [
                         0 => [
                             OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_KEY => 'id',
-                            OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE => 'integer'
+                            OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE => 'integer',
                         ],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
         $this->mockOperationHandlerWithData($mockData);
 
@@ -124,12 +125,12 @@ class OperationDefinitionObjectHandlerTest extends MagentoTestCase
                     OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY => [
                         0 => [
                             OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_KEY => 'id',
-                            OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE => 'integer'
+                            OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE => 'integer',
                         ],
                     ],
-                    OperationDefinitionObjectHandler::OBJ_DEPRECATED => 'deprecation message'
-                ]
-            ]
+                    OperationDefinitionObjectHandler::OBJ_DEPRECATED => 'deprecation message',
+                ],
+            ],
         ];
         $this->mockOperationHandlerWithData($mockData);
 
@@ -208,20 +209,20 @@ class OperationDefinitionObjectHandlerTest extends MagentoTestCase
                     OperationDefinitionObjectHandler::ENTITY_OPERATION_SUCCESS_REGEX => $testSuccessRegex,
                     OperationDefinitionObjectHandler::ENTITY_OPERATION_CONTENT_TYPE => [
                         0 => [
-                            'value' => $testContentType
-                        ]
+                            'value' => $testContentType,
+                        ],
                     ],
                     OperationDefinitionObjectHandler::ENTITY_OPERATION_HEADER => [
                         0 => [
                             OperationDefinitionObjectHandler::ENTITY_OPERATION_HEADER_PARAM => $testHeaderParam,
                             OperationDefinitionObjectHandler::ENTITY_OPERATION_HEADER_VALUE => $testHeaderValue,
-                        ]
+                        ],
                     ],
                     OperationDefinitionObjectHandler::ENTITY_OPERATION_URL_PARAM => [
                         0 => [
                             OperationDefinitionObjectHandler::ENTITY_OPERATION_URL_PARAM_KEY => 'testUrlParamKey',
-                            OperationDefinitionObjectHandler::ENTITY_OPERATION_URL_PARAM_VALUE => 'testUrlParamValue'
-                        ]
+                            OperationDefinitionObjectHandler::ENTITY_OPERATION_URL_PARAM_VALUE => 'testUrlParamValue',
+                        ],
                     ],
                     OperationDefinitionObjectHandler::ENTITY_OPERATION_OBJECT => [
                         0 => [
@@ -231,25 +232,25 @@ class OperationDefinitionObjectHandlerTest extends MagentoTestCase
                                 0 => [
                                     OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_KEY => $nestedEntryKey1,
                                     OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE =>
-                                        $nestedEntryValue1
+                                        $nestedEntryValue1,
                                 ],
                                 1 => [
                                     OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_KEY => $nestedEntryKey2,
                                     OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE =>
                                         $nestedEntryValue2,
                                     OperationDefinitionObjectHandler::ENTITY_OPERATION_REQUIRED =>
-                                        $nestedEntryRequired2
+                                        $nestedEntryRequired2,
                                 ],
                                 2 => [
                                     OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_KEY => $nestedEntryKey3,
                                     OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE =>
-                                        $nestedEntryValue3
-                                ]
-                            ]
-                        ]
+                                        $nestedEntryValue3,
+                                ],
+                            ],
+                        ],
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
         // Prepare objects to compare against
         $field = OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY;
@@ -286,7 +287,7 @@ class OperationDefinitionObjectHandlerTest extends MagentoTestCase
             [
                 0 => $expectedNestedField,
                 1 => $expectedNestedField2,
-                2 => $expectedNestedField3
+                2 => $expectedNestedField3,
             ]
         );
 
@@ -362,15 +363,15 @@ class OperationDefinitionObjectHandlerTest extends MagentoTestCase
                                             OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_KEY =>
                                                 $twiceNestedEntryKey,
                                             OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE =>
-                                                $twiceNestedEntryValue
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                                                $twiceNestedEntryValue,
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
         // Prepare Objects to compare against
         $twoLevelNestedMetadata = new OperationElement(
@@ -389,7 +390,7 @@ class OperationDefinitionObjectHandlerTest extends MagentoTestCase
             false,
             [],
             [
-                0 => $twoLevelNestedMetadata
+                0 => $twoLevelNestedMetadata,
             ]
         );
 
@@ -399,7 +400,7 @@ class OperationDefinitionObjectHandlerTest extends MagentoTestCase
             $twiceNestedObjectKey,
             false,
             [
-                $twiceNestedObjectKey => $oneLevelNestedMetadata
+                $twiceNestedObjectKey => $oneLevelNestedMetadata,
             ],
             null
         );
@@ -446,21 +447,21 @@ class OperationDefinitionObjectHandlerTest extends MagentoTestCase
                     OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY => [
                         0 => [
                             OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_KEY => $entryKey,
-                            OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE => $entryValue
-                        ]
+                            OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE => $entryValue,
+                        ],
                     ],
                     OperationDefinitionObjectHandler::ENTITY_OPERATION_ARRAY => [
                         0 => [
                             OperationDefinitionObjectHandler::ENTITY_OPERATION_ARRAY_KEY => $arrayKey,
                             OperationDefinitionObjectHandler::ENTITY_OPERATION_ARRAY_VALUE => [
                                 0 => [
-                                    OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE => $arrayValue
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                                    OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE => $arrayValue,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
         // Prepare Objects to assert against
         $entry = new OperationElement(

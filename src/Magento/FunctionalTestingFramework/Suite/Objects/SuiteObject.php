@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -11,7 +13,6 @@ use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Filter\FilterInterface;
 use Magento\FunctionalTestingFramework\Test\Objects\TestHookObject;
 use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 
 /**
  * Class SuiteObject
@@ -47,8 +48,7 @@ class SuiteObject
          * Filename of where the suite came from
          */
         private $filename = null
-    )
-    {
+    ) {
     }
 
     /**

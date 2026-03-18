@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -15,7 +17,7 @@ use Magento\FunctionalTestingFramework\Util\Validation\SingleNodePerFileValidati
  */
 class SuiteDom extends \Magento\FunctionalTestingFramework\Config\MftfDom
 {
-    const SUITE_META_FILENAME_ATTRIBUTE = "filename";
+    public const SUITE_META_FILENAME_ATTRIBUTE = 'filename';
 
     /** SingleNodePerFileValidationUtil
      */

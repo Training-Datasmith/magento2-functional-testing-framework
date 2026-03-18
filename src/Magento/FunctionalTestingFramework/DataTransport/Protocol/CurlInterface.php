@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -14,10 +16,10 @@ interface CurlInterface
     /**
      * HTTP request methods.
      */
-    const GET = 'GET';
-    const PUT = 'PUT';
-    const POST = 'POST';
-    const DELETE = 'DELETE';
+    public const GET = 'GET';
+    public const PUT = 'PUT';
+    public const POST = 'POST';
+    public const DELETE = 'DELETE';
 
     /**
      * Add additional option to cURL.

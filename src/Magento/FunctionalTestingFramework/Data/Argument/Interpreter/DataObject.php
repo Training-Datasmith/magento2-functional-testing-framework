@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -7,7 +9,6 @@
 namespace Magento\FunctionalTestingFramework\Data\Argument\Interpreter;
 
 use Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface;
-use Magento\FunctionalTestingFramework\Stdlib\BooleanUtils;
 
 class DataObject implements InterpreterInterface
 {
@@ -19,8 +20,7 @@ class DataObject implements InterpreterInterface
          * Utility methods for the boolean data type.
          */
         protected \Magento\FunctionalTestingFramework\Stdlib\BooleanUtils $booleanUtils
-    )
-    {
+    ) {
     }
 
     /**

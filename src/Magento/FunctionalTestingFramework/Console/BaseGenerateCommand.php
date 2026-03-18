@@ -1,28 +1,28 @@
 <?php
+
 // @codingStandardsIgnoreFile
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Magento\FunctionalTestingFramework\Console;
 
+use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\Exceptions\FastFailException;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Exceptions\XmlException;
+use Magento\FunctionalTestingFramework\Suite\Handlers\SuiteObjectHandler;
 use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
+use Magento\FunctionalTestingFramework\Util\Filesystem\DirSetupUtil;
 use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
+use Magento\FunctionalTestingFramework\Util\TestGenerator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Magento\FunctionalTestingFramework\Util\Filesystem\DirSetupUtil;
-use Magento\FunctionalTestingFramework\Util\TestGenerator;
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use Magento\FunctionalTestingFramework\Suite\Handlers\SuiteObjectHandler;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -33,11 +33,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class BaseGenerateCommand extends Command
 {
-    const MFTF_NOTICES = "Placeholder text for MFTF notices\n";
-    const CODECEPT_RUN = 'codecept:run';
-    const CODECEPT_RUN_FUNCTIONAL = self::CODECEPT_RUN . ' functional ';
-    const CODECEPT_RUN_OPTION_NO_EXIT = ' --no-exit ';
-    const FAILED_FILE = 'failed';
+    public const MFTF_NOTICES = "Placeholder text for MFTF notices\n";
+    public const CODECEPT_RUN = 'codecept:run';
+    public const CODECEPT_RUN_FUNCTIONAL = self::CODECEPT_RUN . ' functional ';
+    public const CODECEPT_RUN_OPTION_NO_EXIT = ' --no-exit ';
+    public const FAILED_FILE = 'failed';
 
     /**
      * Enable pause()
@@ -81,12 +81,12 @@ class BaseGenerateCommand extends Command
             InputOption::VALUE_NONE,
             'remove previous generated suites and tests'
         )->addOption(
-            "force",
+            'force',
             'f',
             InputOption::VALUE_NONE,
             'force generation and running of tests regardless of Magento Instance Configuration'
         )->addOption(
-            "allow-skipped",
+            'allow-skipped',
             'a',
             InputOption::VALUE_NONE,
             'Allows MFTF to generate and run skipped tests.'
@@ -129,7 +129,7 @@ class BaseGenerateCommand extends Command
         $testsReferencedInSuites = SuiteObjectHandler::getInstance()->getAllTestReferences();
         $suiteToTestPair = [];
 
-        foreach($tests as $test) {
+        foreach ($tests as $test) {
             if (str_contains((string) $test, ':')) {
                 $suiteToTestPair[] = $test;
                 continue;
@@ -147,7 +147,7 @@ class BaseGenerateCommand extends Command
         }
         // configuration for suites
         foreach ($suiteToTestPair as $pair) {
-            [$suite, $test] = explode(":", (string) $pair);
+            [$suite, $test] = explode(':', (string) $pair);
             $testConfiguration['suites'][$suite][] = $test;
         }
         return json_encode($testConfiguration);
@@ -286,9 +286,9 @@ class BaseGenerateCommand extends Command
     {
         if (!$this->testsOutputDir) {
             $this->testsOutputDir = FilePathFormatter::format(TESTS_BP) .
-                "tests" .
+                'tests' .
                 DIRECTORY_SEPARATOR .
-                "_output" .
+                '_output' .
                 DIRECTORY_SEPARATOR;
         }
 
@@ -358,16 +358,16 @@ class BaseGenerateCommand extends Command
      */
     public function movingXMLFileFromSourceToDestination($xml, $fileName, $output): void
     {
-        if(!empty($xml) && file_exists($this->getTestsOutputDir().'report.xml')) {
+        if (!empty($xml) && file_exists($this->getTestsOutputDir().'report.xml')) {
             if (!file_exists($this->getTestsOutputDir().'xml')) {
-                mkdir($this->getTestsOutputDir().'xml' , 0777, true);
+                mkdir($this->getTestsOutputDir().'xml', 0777, true);
             }
-            $fileName = str_replace("Cest.php", "",$fileName);
+            $fileName = str_replace('Cest.php', '', $fileName);
             $existingFileName = $this->getTestsOutputDir().'report.xml';
             $newFileName = $this->getTestsOutputDir().'xml/'.$fileName.'_report.xml';
-            $output->writeln( "<info>".sprintf(" report.xml file is moved to  ".
-                    $this->getTestsOutputDir().'xml/'. ' location with the new name '.$fileName.'_report.xml')."</info>") ;
-            rename($existingFileName , $newFileName);
+            $output->writeln('<info>'.sprintf(' report.xml file is moved to  '.
+                    $this->getTestsOutputDir().'xml/'. ' location with the new name '.$fileName.'_report.xml').'</info>') ;
+            rename($existingFileName, $newFileName);
         }
     }
 

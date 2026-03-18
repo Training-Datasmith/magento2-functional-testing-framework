@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -6,12 +8,12 @@
 
 namespace Magento\FunctionalTestingFramework\Upgrade;
 
+use DOMElement;
 use Magento\FunctionalTestingFramework\StaticCheck\ActionGroupStandardsCheck;
 use Magento\FunctionalTestingFramework\Util\Script\ScriptUtil;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use DOMElement;
 
 /**
  * Class RenameMetadataFiles
@@ -19,7 +21,7 @@ use DOMElement;
  */
 class RemoveUnusedArguments implements UpgradeInterface
 {
-    const ARGUMENTS_BLOCK_REGEX_PATTERN = "/\s*<arguments.*\/arguments>/s";
+    public const ARGUMENTS_BLOCK_REGEX_PATTERN = "/\s*<arguments.*\/arguments>/s";
 
     /**
      * Updates all actionGroup xml files

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -38,7 +40,7 @@ class ParallelGroupSorter
         if ($time == 0) {
             throw new FastFailException(
                 "Please provide the argument '--time' to the robo command in order to".
-                " generate grouped tests manifests for a parallel execution"
+                ' generate grouped tests manifests for a parallel execution'
             );
         }
 
@@ -113,8 +115,7 @@ class ParallelGroupSorter
                 $suiteNameToGroupCount,
                 $groupTotal - $minTestGroupTotal
             );
-        }
-        else {
+        } else {
             // Calculate test group total
             $testGroupTotal = $groupTotal - $suitesGroupTotal;
         }
@@ -244,7 +245,7 @@ class ParallelGroupSorter
             if ($suiteTime <= $time) {
                 $suiteNameToGroupCount[$suiteName] = 1;
             } else {
-                $suiteNameToGroupCount[$suiteName] = min((int)ceil($suiteTime/$time), $maxCount);
+                $suiteNameToGroupCount[$suiteName] = min((int)ceil($suiteTime / $time), $maxCount);
             }
         }
         return $suiteNameToGroupCount;
@@ -263,7 +264,7 @@ class ParallelGroupSorter
         }
 
         // Reverse sort the test array by size
-        uasort($tests, fn($a, $b) => $a >= $b ? -1 : 1);
+        uasort($tests, fn ($a, $b) => $a >= $b ? -1 : 1);
         $groups = array_fill(0, $groupCnt, []);
         $sums = array_fill(0, $groupCnt, 0);
 
@@ -387,7 +388,7 @@ class ParallelGroupSorter
         $suiteNameToSize = $this->getSuiteToSize($suiteNameToTestSize);
 
         // divide the suites up within the array
-        $suitesForResize = array_filter($suiteNameToSize, fn($val) => $val > $lineLimit);
+        $suitesForResize = array_filter($suiteNameToSize, fn ($val) => $val > $lineLimit);
 
         // remove the suites for resize from the original list
         $remainingSuites = array_diff_key($suiteNameToTestSize, $suitesForResize);

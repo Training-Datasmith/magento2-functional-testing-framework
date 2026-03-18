@@ -1,14 +1,16 @@
 <?php
+
 // @codingStandardsIgnoreFile
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Magento\FunctionalTestingFramework\Console;
 
+use Exception;
 use Magento\FunctionalTestingFramework\StaticCheck\StaticCheckInterface;
 use Magento\FunctionalTestingFramework\StaticCheck\StaticChecksList;
 use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
@@ -18,7 +20,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Exception;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class StaticChecksCommand extends Command
@@ -113,7 +114,7 @@ class StaticChecksCommand extends Command
 
             $staticOutput = $staticCheck->getOutput();
             LoggingUtil::getInstance()->getLogger($staticCheck::class)->info($staticOutput);
-            $this->ioStyle->text($staticOutput??"");
+            $this->ioStyle->text($staticOutput ?? '');
 
             $this->ioStyle->text('Total execution time is ' . ($end - $start) . ' seconds.' . PHP_EOL);
         }
@@ -149,13 +150,14 @@ class StaticChecksCommand extends Command
                     array_keys($this->staticCheckObjects)[0],
                     [
                         StaticChecksList::DEPRECATED_ENTITY_USAGE_CHECK_NAME,
-                        StaticChecksList::PAUSE_ACTION_USAGE_CHECK_NAME
+                        StaticChecksList::PAUSE_ACTION_USAGE_CHECK_NAME,
                     ]
                 )
-            )
+            ) {
                 throw new InvalidArgumentException(
                     '--path option is not supported for the command."'
                 );
+            }
         }
     }
 
@@ -188,12 +190,12 @@ class StaticChecksCommand extends Command
      */
     private function parseRulesetJson(): void
     {
-        $pathAddition = "/dev/tests/acceptance/";
+        $pathAddition = '/dev/tests/acceptance/';
         // MFTF is both NOT attached and no MAGENTO_BP defined in .env
         if (MAGENTO_BP === FW_BP) {
-            $pathAddition = "/dev/";
+            $pathAddition = '/dev/';
         }
-        $pathToRuleset = MAGENTO_BP . $pathAddition . "staticRuleset.json";
+        $pathToRuleset = MAGENTO_BP . $pathAddition . 'staticRuleset.json';
         if (!file_exists($pathToRuleset)) {
             $this->ioStyle->text("No ruleset under $pathToRuleset" . PHP_EOL);
             return;

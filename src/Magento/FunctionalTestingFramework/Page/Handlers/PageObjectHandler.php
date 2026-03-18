@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -6,24 +8,24 @@
 
 namespace Magento\FunctionalTestingFramework\Page\Handlers;
 
+use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 use Magento\FunctionalTestingFramework\ObjectManager\ObjectHandlerInterface;
 use Magento\FunctionalTestingFramework\ObjectManagerFactory;
 use Magento\FunctionalTestingFramework\Page\Objects\PageObject;
 use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 use Magento\FunctionalTestingFramework\Util\Validation\NameValidationUtil;
 use Magento\FunctionalTestingFramework\XmlParser\PageParser;
-use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 
 class PageObjectHandler implements ObjectHandlerInterface
 {
-    const PAGE = 'page';
-    const SECTION = 'section';
-    const URL = 'url';
-    const MODULE = 'module';
-    const PARAMETERIZED = 'parameterized';
-    const AREA = 'area';
-    const FILENAME = 'filename';
-    const NAME_BLOCKLIST_ERROR_MSG = "Page names cannot contain non alphanumeric characters.\tPage='%s'";
+    public const PAGE = 'page';
+    public const SECTION = 'section';
+    public const URL = 'url';
+    public const MODULE = 'module';
+    public const PARAMETERIZED = 'parameterized';
+    public const AREA = 'area';
+    public const FILENAME = 'filename';
+    public const NAME_BLOCKLIST_ERROR_MSG = "Page names cannot contain non alphanumeric characters.\tPage='%s'";
 
     /**
      * The singleton instance of this class
@@ -65,12 +67,12 @@ class PageObjectHandler implements ObjectHandlerInterface
             $url = $pageData[self::URL] ?? null;
 
             if ($area === 'admin') {
-                $url = ltrim((string) $url, "/");
+                $url = ltrim((string) $url, '/');
             }
 
             $module = $pageData[self::MODULE] ?? null;
             $sectionNames = array_keys($pageData[self::SECTION] ?? []);
-            $urlContainsMustaches = str_contains((string) $url, "{{") && str_contains((string) $url, "}}");
+            $urlContainsMustaches = str_contains((string) $url, '{{') && str_contains((string) $url, '}}');
             $parameterized = $pageData[self::PARAMETERIZED] ?? $urlContainsMustaches ?? false;
             $filename = $pageData[self::FILENAME] ?? null;
             $deprecated = $pageData[self::OBJ_DEPRECATED] ?? null;
@@ -78,14 +80,14 @@ class PageObjectHandler implements ObjectHandlerInterface
             if ($deprecated !== null) {
                 LoggingUtil::getInstance()->getLogger(self::class)->deprecation(
                     "The page '{$pageName}' is deprecated.",
-                    ["fileName" => $filename, "deprecatedMessage" => $deprecated]
+                    ['fileName' => $filename, 'deprecatedMessage' => $deprecated]
                 );
             }
 
             $this->pageObjects[$pageName] =
                 new PageObject($pageName, $url, $module, $sectionNames, $parameterized, $area, $filename, $deprecated);
         }
-        $pageNameValidator->summarize(NameValidationUtil::PAGE . " name");
+        $pageNameValidator->summarize(NameValidationUtil::PAGE . ' name');
     }
 
     /**

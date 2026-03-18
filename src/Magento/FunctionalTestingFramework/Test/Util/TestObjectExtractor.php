@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -9,8 +11,6 @@ namespace Magento\FunctionalTestingFramework\Test\Util;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
 use Magento\FunctionalTestingFramework\Exceptions\XmlException;
-use Magento\FunctionalTestingFramework\Page\Objects\ElementObject;
-use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
 use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
 use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 use Magento\FunctionalTestingFramework\Util\ModulePathExtractor;
@@ -22,15 +22,15 @@ use Magento\FunctionalTestingFramework\Util\Validation\NameValidationUtil;
  */
 class TestObjectExtractor extends BaseObjectExtractor
 {
-    const TEST_ANNOTATIONS = 'annotations';
-    const TEST_BEFORE_HOOK = 'before';
-    const TEST_AFTER_HOOK = 'after';
-    const TEST_FAILED_HOOK = 'failed';
-    const TEST_BEFORE_ATTRIBUTE = 'before';
-    const TEST_AFTER_ATTRIBUTE = 'after';
-    const TEST_INSERT_BEFORE = 'insertBefore';
-    const TEST_INSERT_AFTER = 'insertAfter';
-    const TEST_FILENAME = 'filename';
+    public const TEST_ANNOTATIONS = 'annotations';
+    public const TEST_BEFORE_HOOK = 'before';
+    public const TEST_AFTER_HOOK = 'after';
+    public const TEST_FAILED_HOOK = 'failed';
+    public const TEST_BEFORE_ATTRIBUTE = 'before';
+    public const TEST_AFTER_ATTRIBUTE = 'after';
+    public const TEST_INSERT_BEFORE = 'insertBefore';
+    public const TEST_INSERT_AFTER = 'insertAfter';
+    public const TEST_FILENAME = 'filename';
 
     /**
      * Action Object Extractor object
@@ -94,12 +94,12 @@ class TestObjectExtractor extends BaseObjectExtractor
     public function extractTestData($testData, $validateAnnotations = true)
     {
         // validate the test name for blocklisted char (will cause allure report issues) MQE-483
-        NameValidationUtil::validateName($testData[self::NAME], "Test");
+        NameValidationUtil::validateName($testData[self::NAME], 'Test');
 
         $testAnnotations = [];
         $testHooks = [];
         $filename = $testData['filename'] ?? null;
-        $fileNames = explode(",", $filename ?? '');
+        $fileNames = explode(',', $filename ?? '');
         $baseFileName = $fileNames[0];
         $module = $this->modulePathExtractor->extractModuleName($baseFileName);
         $testReference = $testData['extends']  ?? null;
@@ -126,24 +126,24 @@ class TestObjectExtractor extends BaseObjectExtractor
         );
 
         //Override features with module name if present, populates it otherwise
-        $testAnnotations["features"] = [$module];
+        $testAnnotations['features'] = [$module];
 
         // Always try to append test file names in description annotation, i.e. displaying test files title only
         // when $fileNames is not available
-        if (!isset($testAnnotations["description"])) {
-            $testAnnotations["description"] = [];
+        if (!isset($testAnnotations['description'])) {
+            $testAnnotations['description'] = [];
         } else {
-            $testAnnotations["description"]['main'] = $testAnnotations["description"][0];
-            unset($testAnnotations["description"][0]);
+            $testAnnotations['description']['main'] = $testAnnotations['description'][0];
+            unset($testAnnotations['description'][0]);
         }
-        $testAnnotations["description"]['test_files'] = $this->appendFileNamesInDescriptionAnnotation($fileNames);
+        $testAnnotations['description']['test_files'] = $this->appendFileNamesInDescriptionAnnotation($fileNames);
 
-        $testAnnotations["description"][self::OBJ_DEPRECATED] = [];
+        $testAnnotations['description'][self::OBJ_DEPRECATED] = [];
         if ($deprecated !== null) {
-            $testAnnotations["description"][self::OBJ_DEPRECATED][] = $deprecated;
+            $testAnnotations['description'][self::OBJ_DEPRECATED][] = $deprecated;
             LoggingUtil::getInstance()->getLogger(TestObject::class)->deprecation(
                 $deprecated,
-                ["testName" => $filename, "deprecatedTest" => $deprecated]
+                ['testName' => $filename, 'deprecatedTest' => $deprecated]
             );
         }
 

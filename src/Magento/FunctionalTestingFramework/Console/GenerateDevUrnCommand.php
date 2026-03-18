@@ -1,4 +1,5 @@
 <?php
+
 // @codingStandardsIgnoreFile
 /**
  * Copyright 2018 Adobe
@@ -10,13 +11,13 @@ declare(strict_types=1);
 namespace Magento\FunctionalTestingFramework\Console;
 
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
+use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateDevUrnCommand extends Command
 {
@@ -42,7 +43,7 @@ class GenerateDevUrnCommand extends Command
                 'Path to file to output the catalog. For PhpStorm use .idea/misc.xml'
             )
             ->addOption(
-                "force",
+                'force',
                 'f',
                 InputOption::VALUE_NONE,
                 'forces creation of misc.xml file if not found in the path given.'
@@ -63,7 +64,7 @@ class GenerateDevUrnCommand extends Command
         if ($miscXmlFile === false) {
             if ($force === true) {
                 // create file and refresh realpath
-                $xml = "<project version=\"4\"/>";
+                $xml = '<project version="4"/>';
                 file_put_contents($miscXmlFilePath, $xml);
                 $miscXmlFile = realpath($miscXmlFilePath);
             } else {
@@ -137,7 +138,7 @@ class GenerateDevUrnCommand extends Command
             'urn:magento:mftf:Test/etc/testSchema.xsd' =>
                 $this->getResourcePath('Test/etc/testSchema.xsd'),
             'urn:magento:mftf:Suite/etc/suiteSchema.xsd' =>
-                $this->getResourcePath('Suite/etc/suiteSchema.xsd')
+                $this->getResourcePath('Suite/etc/suiteSchema.xsd'),
         ];
     }
 

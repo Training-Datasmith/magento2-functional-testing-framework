@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -11,7 +13,7 @@ namespace Magento\FunctionalTestingFramework\Util;
  */
 class ModulePathExtractor
 {
-    const SPLIT_DELIMITER = '_';
+    public const SPLIT_DELIMITER = '_';
 
     /**
      * Test module paths
@@ -41,10 +43,10 @@ class ModulePathExtractor
     {
         $key = $this->extractKeyByPath($path);
         if (empty($key)) {
-            return "NO MODULE DETECTED";
+            return 'NO MODULE DETECTED';
         }
         $parts = $this->splitKeyForParts($key);
-        return $parts[1] ?? "NO MODULE DETECTED";
+        return $parts[1] ?? 'NO MODULE DETECTED';
     }
 
     /**
@@ -57,10 +59,10 @@ class ModulePathExtractor
     {
         $key = $this->extractKeyByPath($path);
         if (empty($key)) {
-            return "NO VENDOR DETECTED";
+            return 'NO VENDOR DETECTED';
         }
         $parts = $this->splitKeyForParts($key);
-        return $parts[0] ?? "NO VENDOR DETECTED";
+        return $parts[0] ?? 'NO VENDOR DETECTED';
     }
 
     /**

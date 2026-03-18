@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -26,7 +28,7 @@ class Console extends \Codeception\Subscriber\Console
     /**
      * Regular expresion to find deprecated notices.
      */
-    const DEPRECATED_NOTICE = '/<li>(?<deprecatedMessage>.*?)<\/li>/m';
+    public const DEPRECATED_NOTICE = '/<li>(?<deprecatedMessage>.*?)<\/li>/m';
 
     /**
      * Test files cache.
@@ -168,7 +170,7 @@ class Console extends \Codeception\Subscriber\Console
             $msg->append('  ');
         }
         if ($stepKey !== null) {
-            $msg->append(OutputFormatter::escape("[" . $stepKey . "] "));
+            $msg->append(OutputFormatter::escape('[' . $stepKey . '] '));
             $msg->style('bold');
         }
 

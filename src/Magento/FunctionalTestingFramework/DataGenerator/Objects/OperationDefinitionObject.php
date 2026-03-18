@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -14,7 +16,7 @@ use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
  */
 class OperationDefinitionObject
 {
-    const HTTP_CONTENT_TYPE_HEADER = 'Content-Type';
+    public const HTTP_CONTENT_TYPE_HEADER = 'Content-Type';
 
     /**
      * Api request url.
@@ -268,11 +270,11 @@ class OperationDefinitionObject
     {
         foreach ($this->params['query'] as $paramName => $paramValue) {
             if (!str_contains($this->apiUrl, '?')) {
-                $this->apiUrl = $this->apiUrl . "?";
+                $this->apiUrl = $this->apiUrl . '?';
             } else {
-                $this->apiUrl = $this->apiUrl . "&";
+                $this->apiUrl = $this->apiUrl . '&';
             }
-            $this->apiUrl = $this->apiUrl . $paramName . "=" . $paramValue;
+            $this->apiUrl = $this->apiUrl . $paramName . '=' . $paramValue;
         }
     }
 
@@ -284,7 +286,7 @@ class OperationDefinitionObject
         if ($this->deprecated !== null) {
             LoggingUtil::getInstance()->getLogger(self::class)->deprecation(
                 $message = "The operation {$this->name} is deprecated.",
-                ["operationType" => $this->operation, "deprecatedMessage" => $this->deprecated],
+                ['operationType' => $this->operation, 'deprecatedMessage' => $this->deprecated],
                 true
             );
         }

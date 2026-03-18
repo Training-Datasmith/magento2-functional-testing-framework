@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -33,16 +34,16 @@ class DataObjectHandlerTest extends MagentoTestCase
     }
 
     // All tests share this array, feel free to add but be careful modifying or removing
-    const PARSER_OUTPUT = [
+    public const PARSER_OUTPUT = [
         'entity' => [
             'EntityOne' => [
                 'type' => 'testType',
                 'data' => [
                     0 => [
                         'key' => 'testKey',
-                        'value' => 'testValue'
-                    ]
-                ]
+                        'value' => 'testValue',
+                    ],
+                ],
             ],
             'EntityTwo' => [
                 'type' => 'testType',
@@ -50,30 +51,30 @@ class DataObjectHandlerTest extends MagentoTestCase
                 'data' => [
                     0 => [
                         'key' => 'testKeyTwo',
-                        'value' => 'testValueTwo'
-                    ]
-                ]
+                        'value' => 'testValueTwo',
+                    ],
+                ],
             ],
-        ]
+        ],
     ];
 
-    const PARSER_OUTPUT_DEPRECATED = [
+    public const PARSER_OUTPUT_DEPRECATED = [
         'entity' => [
             'EntityOne' => [
                 'type' => 'testType',
                 'data' => [
                     0 => [
                         'key' => 'testKey',
-                        'value' => 'testValue'
-                    ]
+                        'value' => 'testValue',
+                    ],
                 ],
-                'deprecated' => "deprecation message",
-                'filename' => "filename.xml"
+                'deprecated' => 'deprecation message',
+                'filename' => 'filename.xml',
             ],
-        ]
+        ],
     ];
 
-    const PARSER_OUTPUT_WITH_EXTEND = [
+    public const PARSER_OUTPUT_WITH_EXTEND = [
         'entity' => [
             'EntityOne' => [
                 'name' => 'EntityOne',
@@ -81,9 +82,9 @@ class DataObjectHandlerTest extends MagentoTestCase
                 'data' => [
                     0 => [
                         'key' => 'testKey',
-                        'value' => 'testValue'
-                    ]
-                ]
+                        'value' => 'testValue',
+                    ],
+                ],
             ],
             'EntityTwo' => [
                 'name' => 'EntityTwo',
@@ -92,8 +93,8 @@ class DataObjectHandlerTest extends MagentoTestCase
                 'data' => [
                     0 => [
                         'key' => 'testKeyTwo',
-                        'value' => 'testValueTwo'
-                    ]
+                        'value' => 'testValueTwo',
+                    ],
                 ],
             ],
             'EntityThree' => [
@@ -103,14 +104,14 @@ class DataObjectHandlerTest extends MagentoTestCase
                 'data' => [
                     0 => [
                         'key' => 'testKeyThree',
-                        'value' => 'testValueThree'
-                    ]
+                        'value' => 'testValueThree',
+                    ],
                 ],
-            ]
-        ]
+            ],
+        ],
     ];
 
-    const PARSER_OUTPUT_WITH_EXTEND_INVALID = [
+    public const PARSER_OUTPUT_WITH_EXTEND_INVALID = [
         'entity' => [
             'EntityOne' => [
                 'name' => 'EntityOne',
@@ -119,9 +120,9 @@ class DataObjectHandlerTest extends MagentoTestCase
                 'data' => [
                     0 => [
                         'key' => 'testKey',
-                        'value' => 'testValue'
-                    ]
-                ]
+                        'value' => 'testValue',
+                    ],
+                ],
             ],
             'EntityTwo' => [
                 'name' => 'EntityTwo',
@@ -129,8 +130,8 @@ class DataObjectHandlerTest extends MagentoTestCase
                 'data' => [
                     0 => [
                         'key' => 'testKeyTwo',
-                        'value' => 'testValueTwo'
-                    ]
+                        'value' => 'testValueTwo',
+                    ],
                 ],
             ],
             'EntityThree' => [
@@ -140,11 +141,11 @@ class DataObjectHandlerTest extends MagentoTestCase
                 'data' => [
                     0 => [
                         'key' => 'testKeyThree',
-                        'value' => 'testValueThree'
-                    ]
+                        'value' => 'testValueThree',
+                    ],
                 ],
-            ]
-        ]
+            ],
+        ],
     ];
 
     /**
@@ -323,7 +324,7 @@ class DataObjectHandlerTest extends MagentoTestCase
      */
     private function mockDataObjectHandlerWithData(array $mockData): void
     {
-        $dataObjectHandlerProperty = new ReflectionProperty(DataObjectHandler::class, "INSTANCE");
+        $dataObjectHandlerProperty = new ReflectionProperty(DataObjectHandler::class, 'INSTANCE');
         $dataObjectHandlerProperty->setValue(null, null);
 
         $mockDataProfileSchemaParser =  $this->createMock(DataProfileSchemaParser::class);
@@ -362,7 +363,7 @@ class DataObjectHandlerTest extends MagentoTestCase
     {
         parent::tearDownAfterClass();
 
-        $dataObjectHandlerProperty = new ReflectionProperty(DataObjectHandler::class, "INSTANCE");
+        $dataObjectHandlerProperty = new ReflectionProperty(DataObjectHandler::class, 'INSTANCE');
         $dataObjectHandlerProperty->setValue(null, null);
 
         $objectManagerProperty = new ReflectionProperty(ObjectManager::class, 'instance');

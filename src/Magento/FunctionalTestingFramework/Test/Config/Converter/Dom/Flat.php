@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -14,11 +16,11 @@ use Magento\FunctionalTestingFramework\Config\Dom\ArrayNodeConfig;
  */
 class Flat implements ConverterInterface
 {
-    const REMOVE_ACTION = 'remove';
-    const REMOVE_KEY_ATTRIBUTE = 'keyForRemoval';
-    const EXTENDS_ATTRIBUTE = 'extends';
-    const TEST_HOOKS = ['before', 'after'];
-    const VALID_COMMENT_PARENT = ['test', 'before', 'after', 'actionGroup'];
+    public const REMOVE_ACTION = 'remove';
+    public const REMOVE_KEY_ATTRIBUTE = 'keyForRemoval';
+    public const EXTENDS_ATTRIBUTE = 'extends';
+    public const TEST_HOOKS = ['before', 'after'];
+    public const VALID_COMMENT_PARENT = ['test', 'before', 'after', 'actionGroup'];
 
     /**
      * Array node configuration.

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -25,8 +27,7 @@ class DomFactory
          * Instance name to create
          */
         protected $instanceName = \Magento\FunctionalTestingFramework\ObjectManager\Config\Reader\Dom::class
-    )
-    {
+    ) {
     }
 
     /**

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -25,9 +27,9 @@ class DuplicateNodeValidationUtilTest extends MagentoTestCase
                     </test>
                 </tests>
                 ';
-        $uniqueIdentifier = "stepKey";
-        $filename = "file";
-        $testName = "test";
+        $uniqueIdentifier = 'stepKey';
+        $filename = 'file';
+        $testName = 'test';
 
         // Perform Test
         $dom = new \DOMDocument();

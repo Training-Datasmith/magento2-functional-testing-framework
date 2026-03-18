@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -6,8 +8,8 @@
 
 namespace Magento\FunctionalTestingFramework\DataGenerator\Persist;
 
-use Magento\FunctionalTestingFramework\DataGenerator\Objects\EntityDataObject;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\DataObjectHandler;
+use Magento\FunctionalTestingFramework\DataGenerator\Objects\EntityDataObject;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\ObjectManagerFactory;
 

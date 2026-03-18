@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -11,14 +13,14 @@ use Magento\FunctionalTestingFramework\Test\Util\ActionObjectExtractor;
 
 class ActionGroupArrayBuilder
 {
-    const DEFAULT_ACTION_GROUP_KEY = 'actionGroupStepKey';
+    public const DEFAULT_ACTION_GROUP_KEY = 'actionGroupStepKey';
 
     /**
      * Action group name
      *
      * @var string
      */
-    private $name = "testActionGroup";
+    private $name = 'testActionGroup';
 
     /**
      * Action group actions (default value set by constructor)
@@ -126,8 +128,8 @@ class ActionGroupArrayBuilder
     public function withFilename($filename = '')
     {
         if (empty($filename)) {
-            $this->filename = "/magento2-functional-testing-framework/dev/tests/verification/"
-                . "TestModule/ActionGroup/BasicActionGroup.xml";
+            $this->filename = '/magento2-functional-testing-framework/dev/tests/verification/'
+                . 'TestModule/ActionGroup/BasicActionGroup.xml';
         } else {
             $this->filename = $filename;
         }
@@ -144,7 +146,7 @@ class ActionGroupArrayBuilder
             self::DEFAULT_ACTION_GROUP_KEY => [
                 ActionObjectExtractor::NODE_NAME => 'testActionType',
                 ActionObjectExtractor::TEST_STEP_MERGE_KEY => self::DEFAULT_ACTION_GROUP_KEY,
-            ]
+            ],
         ];
     }
 
@@ -162,7 +164,7 @@ class ActionGroupArrayBuilder
                 ActionGroupObjectExtractor::ACTION_GROUP_ANNOTATIONS => $this->annotations,
                 ActionGroupObjectExtractor::ACTION_GROUP_ARGUMENTS => $this->arguments,
                 ActionGroupObjectExtractor::FILENAME => $this->filename,
-                ActionGroupObjectExtractor::EXTENDS_ACTION_GROUP => $this->extends
+                ActionGroupObjectExtractor::EXTENDS_ACTION_GROUP => $this->extends,
             ],
             $this->actionObjects
         )];

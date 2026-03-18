@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -21,10 +23,10 @@ use Magento\FunctionalTestingFramework\Util\Validation\NameValidationUtil;
  */
 class ActionGroupObjectHandler implements ObjectHandlerInterface
 {
-    const BEFORE_AFTER_ERROR_MSG = "Merge Error - Steps cannot have both before and after attributes.\tTestStep='%s'";
-    const ACTION_GROUP_ROOT = 'actionGroups';
-    const ACTION_GROUP = 'actionGroup';
-    const ACTION_GROUP_FILENAME_ATTRIBUTE = 'filename';
+    public const BEFORE_AFTER_ERROR_MSG = "Merge Error - Steps cannot have both before and after attributes.\tTestStep='%s'";
+    public const ACTION_GROUP_ROOT = 'actionGroups';
+    public const ACTION_GROUP = 'actionGroup';
+    public const ACTION_GROUP_FILENAME_ATTRIBUTE = 'filename';
 
     /**
      * Single instance of class var
@@ -122,7 +124,7 @@ class ActionGroupObjectHandler implements ObjectHandlerInterface
 
         $actionGroupNameValidator = new NameValidationUtil();
         foreach ($neededActionGroup as $actionGroupName => $actionGroupData) {
-            if (!in_array($actionGroupName, ["nodeName", "xsi:noNamespaceSchemaLocation"])) {
+            if (!in_array($actionGroupName, ['nodeName', 'xsi:noNamespaceSchemaLocation'])) {
                 $filename = $actionGroupData[ActionGroupObjectHandler::ACTION_GROUP_FILENAME_ATTRIBUTE];
                 $actionGroupNameValidator->validatePascalCase(
                     $actionGroupName,

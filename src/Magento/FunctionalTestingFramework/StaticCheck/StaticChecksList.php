@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -17,14 +18,14 @@ use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
  */
 class StaticChecksList implements StaticCheckListInterface
 {
-    const DEPRECATED_ENTITY_USAGE_CHECK_NAME = 'deprecatedEntityUsage';
-    const PAUSE_ACTION_USAGE_CHECK_NAME = 'pauseActionUsage';
-    const CREATED_DATA_FROM_OUTSIDE_ACTIONGROUP = 'createdDataFromOutsideActionGroup';
-    const UNUSED_ENTITY_CHECK = 'unusedEntityCheck';
+    public const DEPRECATED_ENTITY_USAGE_CHECK_NAME = 'deprecatedEntityUsage';
+    public const PAUSE_ACTION_USAGE_CHECK_NAME = 'pauseActionUsage';
+    public const CREATED_DATA_FROM_OUTSIDE_ACTIONGROUP = 'createdDataFromOutsideActionGroup';
+    public const UNUSED_ENTITY_CHECK = 'unusedEntityCheck';
 
-    const CLASS_FILE_NAMING_CHECK = 'classFileNamingCheck';
+    public const CLASS_FILE_NAMING_CHECK = 'classFileNamingCheck';
 
-    const STATIC_RESULTS = 'tests' . DIRECTORY_SEPARATOR .'_output' . DIRECTORY_SEPARATOR . 'static-results';
+    public const STATIC_RESULTS = 'tests' . DIRECTORY_SEPARATOR .'_output' . DIRECTORY_SEPARATOR . 'static-results';
 
     /**
      * Property contains all static check scripts.
@@ -52,7 +53,7 @@ class StaticChecksList implements StaticCheckListInterface
             'annotations' => new AnnotationsCheck(),
             self::PAUSE_ACTION_USAGE_CHECK_NAME => new PauseActionUsageCheck(),
             self::UNUSED_ENTITY_CHECK => new UnusedEntityCheck(),
-            self::CREATED_DATA_FROM_OUTSIDE_ACTIONGROUP => new CreatedDataFromOutsideActionGroupCheck(), 
+            self::CREATED_DATA_FROM_OUTSIDE_ACTIONGROUP => new CreatedDataFromOutsideActionGroupCheck(),
             self::CLASS_FILE_NAMING_CHECK => new ClassFileNamingCheck(),
 
                 ] + $checks;

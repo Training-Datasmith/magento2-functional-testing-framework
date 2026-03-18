@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2021 Adobe
  * All Rights Reserved.
@@ -73,13 +74,13 @@ class ModuleResolverService
         }
 
         if (array_key_exists('MAGENTO_BP', $_ENV)) {
-            $autoloadPath = realpath(MAGENTO_BP . "/app/autoload.php");
+            $autoloadPath = realpath(MAGENTO_BP . '/app/autoload.php');
 
             if ($autoloadPath) {
                 require_once($autoloadPath);
             } else {
                 throw new TestFrameworkException(
-                    "Magento app/autoload.php not found with given MAGENTO_BP:" . MAGENTO_BP
+                    'Magento app/autoload.php not found with given MAGENTO_BP:' . MAGENTO_BP
                 );
             }
         }
@@ -128,7 +129,7 @@ class ModuleResolverService
         }
 
         foreach ($relevantPaths as $codePath) {
-            $potentialSymlink = str_replace(DIRECTORY_SEPARATOR . $pattern, "", $codePath);
+            $potentialSymlink = str_replace(DIRECTORY_SEPARATOR . $pattern, '', $codePath);
 
             if (is_link($potentialSymlink)) {
                 $codePath = realpath($potentialSymlink) . DIRECTORY_SEPARATOR . $pattern;
@@ -139,7 +140,7 @@ class ModuleResolverService
 
             if (MftfApplicationConfig::getConfig()->verboseEnabled()) {
                 LoggingUtil::getInstance()->getLogger(ModuleResolver::class)->debug(
-                    "including module",
+                    'including module',
                     ['module' => $mainModName, 'path' => $codePath]
                 );
             }
@@ -289,11 +290,11 @@ class ModuleResolverService
         $dirPaths = [
             ModuleResolver::VENDOR,
             ModuleResolver::APP_CODE,
-            ModuleResolver::DEV_TESTS
+            ModuleResolver::DEV_TESTS,
         ];
 
         foreach ($dirPaths as $dirPath) {
-            $regex = "~.+\\/" . $dirPath . "\/(?<" . ModuleResolver::VENDOR . ">[^\/]+)\/.+~";
+            $regex = '~.+\\/' . $dirPath . "\/(?<" . ModuleResolver::VENDOR . ">[^\/]+)\/.+~";
             $match = [];
             preg_match($regex, $path, $match);
 

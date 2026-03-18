@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -8,35 +10,35 @@ namespace Magento\FunctionalTestingFramework\DataGenerator\Handlers;
 
 use Magento\FunctionalTestingFramework\DataGenerator\Objects\EntityDataObject;
 use Magento\FunctionalTestingFramework\DataGenerator\Parsers\DataProfileSchemaParser;
+use Magento\FunctionalTestingFramework\DataGenerator\Util\DataExtensionUtil;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 use Magento\FunctionalTestingFramework\ObjectManager\ObjectHandlerInterface;
 use Magento\FunctionalTestingFramework\ObjectManagerFactory;
-use Magento\FunctionalTestingFramework\DataGenerator\Util\DataExtensionUtil;
 use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 use Magento\FunctionalTestingFramework\Util\Validation\NameValidationUtil;
 
 class DataObjectHandler implements ObjectHandlerInterface
 {
-    const _ENTITY = 'entity';
-    const _NAME = 'name';
-    const _TYPE = 'type';
-    const _EXTENDS = 'extends';
-    const _DATA = 'data';
-    const _KEY = 'key';
-    const _VALUE = 'value';
-    const _UNIQUE = 'unique';
-    const _PREFIX = 'prefix';
-    const _SUFFIX = 'suffix';
-    const _ARRAY = 'array';
-    const _ITEM = 'item';
-    const _VAR = 'var';
-    const _ENTITY_TYPE = 'entityType';
-    const _ENTITY_KEY = 'entityKey';
-    const _SEPARATOR = '->';
-    const _REQUIRED_ENTITY = 'requiredEntity';
-    const _FILENAME = 'filename';
-    const DATA_NAME_ERROR_MSG = "Entity names cannot contain non alphanumeric characters.\tData='%s'";
+    public const _ENTITY = 'entity';
+    public const _NAME = 'name';
+    public const _TYPE = 'type';
+    public const _EXTENDS = 'extends';
+    public const _DATA = 'data';
+    public const _KEY = 'key';
+    public const _VALUE = 'value';
+    public const _UNIQUE = 'unique';
+    public const _PREFIX = 'prefix';
+    public const _SUFFIX = 'suffix';
+    public const _ARRAY = 'array';
+    public const _ITEM = 'item';
+    public const _VAR = 'var';
+    public const _ENTITY_TYPE = 'entityType';
+    public const _ENTITY_KEY = 'entityKey';
+    public const _SEPARATOR = '->';
+    public const _REQUIRED_ENTITY = 'requiredEntity';
+    public const _FILENAME = 'filename';
+    public const DATA_NAME_ERROR_MSG = "Entity names cannot contain non alphanumeric characters.\tData='%s'";
 
     /**
      * The singleton instance of this class
@@ -184,7 +186,7 @@ class DataObjectHandler implements ObjectHandlerInterface
                 $deprecated = $rawEntity[self::OBJ_DEPRECATED];
                 LoggingUtil::getInstance()->getLogger(self::class)->deprecation(
                     "The data entity '{$name}' is deprecated.",
-                    ["fileName" => $filename, "deprecatedMessage" => $deprecated]
+                    ['fileName' => $filename, 'deprecatedMessage' => $deprecated]
                 );
             }
 
@@ -241,7 +243,7 @@ class DataObjectHandler implements ObjectHandlerInterface
                 $filename
             );
             $dataElementKey = strtolower((string) $originalDataElementKey);
-            $dataElementValue = $dataElement[self::_VALUE] ?? "";
+            $dataElementValue = $dataElement[self::_VALUE] ?? '';
             $dataValues[$dataElementKey] = $dataElementValue;
         }
         return $dataValues;
@@ -311,7 +313,7 @@ class DataObjectHandler implements ObjectHandlerInterface
     {
         if ($dataObject->getParentName() !== null) {
             if ($dataObject->getParentName() === $dataObject->getName()) {
-                throw new TestFrameworkException("Mftf Data can not extend from itself: " . $dataObject->getName());
+                throw new TestFrameworkException('Mftf Data can not extend from itself: ' . $dataObject->getName());
             }
             return $this->extendUtil->extendEntity($dataObject);
         }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -7,11 +9,10 @@
 namespace Magento\FunctionalTestingFramework\Util\Manifest;
 
 use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
-use Magento\FunctionalTestingFramework\Util\Filesystem\DirSetupUtil;
 
 class DefaultTestManifest extends BaseTestManifest
 {
-    const DEFAULT_CONFIG = 'default';
+    public const DEFAULT_CONFIG = 'default';
 
     /**
      * Path to the test manifest file.

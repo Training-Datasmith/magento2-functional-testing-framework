@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -8,7 +10,7 @@ namespace Magento\FunctionalTestingFramework\DataGenerator\Handlers\SecretStorag
 
 abstract class BaseStorage
 {
-    const ENCRYPTION_ALGO = "AES-256-CBC";
+    public const ENCRYPTION_ALGO = 'AES-256-CBC';
 
     /**
      * Initial vector for open_ssl encryption

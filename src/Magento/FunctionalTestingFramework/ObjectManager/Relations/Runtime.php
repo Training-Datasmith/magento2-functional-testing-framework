@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -28,7 +30,7 @@ class Runtime implements \Magento\FunctionalTestingFramework\ObjectManager\Relat
      */
     public function __construct(?\Magento\FunctionalTestingFramework\Code\Reader\ClassReader $classReader = null)
     {
-        $this->classReader = $classReader ? : new \Magento\FunctionalTestingFramework\Code\Reader\ClassReader();
+        $this->classReader = $classReader ?: new \Magento\FunctionalTestingFramework\Code\Reader\ClassReader();
     }
 
     /**
@@ -52,6 +54,6 @@ class Runtime implements \Magento\FunctionalTestingFramework\ObjectManager\Relat
         if (!class_exists($type)) {
             return $this->default;
         }
-        return $this->classReader->getParents($type) ? : $this->default;
+        return $this->classReader->getParents($type) ?: $this->default;
     }
 }

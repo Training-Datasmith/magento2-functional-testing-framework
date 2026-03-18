@@ -1,19 +1,20 @@
 <?php
+
 // @codingStandardsIgnoreFile
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Magento\FunctionalTestingFramework\Console;
 
 use Magento\FunctionalTestingFramework\Upgrade\UpgradeScriptList;
 use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class UpgradeTestsCommand extends Command

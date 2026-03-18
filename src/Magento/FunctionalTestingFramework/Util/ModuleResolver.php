@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -10,12 +12,12 @@ use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\CredentialStore;
 use Magento\FunctionalTestingFramework\Exceptions\FastFailException;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Util\ModuleResolver\ModuleResolverService;
 use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
+use Magento\FunctionalTestingFramework\Util\ModuleResolver\AlphabeticSequenceSorter;
+use Magento\FunctionalTestingFramework\Util\ModuleResolver\ModuleResolverService;
+use Magento\FunctionalTestingFramework\Util\ModuleResolver\SequenceSorterInterface;
 use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 use Magento\FunctionalTestingFramework\Util\Path\UrlFormatter;
-use \Magento\FunctionalTestingFramework\Util\ModuleResolver\AlphabeticSequenceSorter;
-use \Magento\FunctionalTestingFramework\Util\ModuleResolver\SequenceSorterInterface;
 
 /**
  * Class ModuleResolver, resolve module path based on enabled modules of target Magento instance.
@@ -29,35 +31,35 @@ class ModuleResolver
     /**
      * Environment field name for module allowlist.
      */
-    const MODULE_ALLOWLIST = 'MODULE_ALLOWLIST';
+    public const MODULE_ALLOWLIST = 'MODULE_ALLOWLIST';
 
     /**
      * Environment field name for custom module paths.
      */
-    const CUSTOM_MODULE_PATHS = 'CUSTOM_MODULE_PATHS';
+    public const CUSTOM_MODULE_PATHS = 'CUSTOM_MODULE_PATHS';
 
     /**
      * List of path types present in Magento Component Registrar
      */
-    const PATHS = ['module', 'library', 'theme', 'language'];
+    public const PATHS = ['module', 'library', 'theme', 'language'];
 
     /**
      * Magento Registrar Class
      */
-    const REGISTRAR_CLASS = "\Magento\Framework\Component\ComponentRegistrar";
+    public const REGISTRAR_CLASS = "\Magento\Framework\Component\ComponentRegistrar";
 
-    const TEST_MFTF_PATTERN = 'Test' . DIRECTORY_SEPARATOR . 'Mftf';
-    const VENDOR = 'vendor';
-    const APP_CODE = 'app' . DIRECTORY_SEPARATOR . "code";
-    const DEV_TESTS = 'dev'
-    . DIRECTORY_SEPARATOR
-    . 'tests'
-    . DIRECTORY_SEPARATOR
-    . 'acceptance'
-    . DIRECTORY_SEPARATOR
-    . 'tests'
-    . DIRECTORY_SEPARATOR
-    . 'functional';
+    public const TEST_MFTF_PATTERN = 'Test' . DIRECTORY_SEPARATOR . 'Mftf';
+    public const VENDOR = 'vendor';
+    public const APP_CODE = 'app' . DIRECTORY_SEPARATOR . 'code';
+    public const DEV_TESTS = 'dev'
+        . DIRECTORY_SEPARATOR
+        . 'tests'
+        . DIRECTORY_SEPARATOR
+        . 'acceptance'
+        . DIRECTORY_SEPARATOR
+        . 'tests'
+        . DIRECTORY_SEPARATOR
+        . 'functional';
 
     /**
      * Enabled modules.
@@ -92,21 +94,21 @@ class ModuleResolver
      *
      * @var string
      */
-    protected $adminTokenUrl = "rest/V1/integration/admin/token";
+    protected $adminTokenUrl = 'rest/V1/integration/admin/token';
 
     /**
      * Url for with module list.
      *
      * @var string
      */
-    protected $moduleUrl = "rest/V1/modules";
+    protected $moduleUrl = 'rest/V1/modules';
 
     /**
      * Url for magento version information.
      *
      * @var string
      */
-    protected $versionUrl = "magento_version";
+    protected $versionUrl = 'magento_version';
 
     /**
      * List of known directory that does not map to a Magento module.
@@ -133,7 +135,7 @@ class ModuleResolver
      * @var array
      */
     protected $moduleBlocklist = [
-        'SampleTests', 'SampleTemplates'
+        'SampleTests', 'SampleTemplates',
     ];
 
     /**
@@ -188,7 +190,7 @@ class ModuleResolver
             'Authorization: Bearer ' . $token,
         ];
         $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
@@ -196,13 +198,13 @@ class ModuleResolver
         $response = curl_exec($ch);
 
         if (!$response) {
-            $message = "Could not retrieve Modules from Magento Instance.";
+            $message = 'Could not retrieve Modules from Magento Instance.';
             $encryptedSecret = CredentialStore::getInstance()->getSecret('magento/MAGENTO_ADMIN_PASSWORD');
             $secret = CredentialStore::getInstance()->decryptSecretValue($encryptedSecret);
             $context = [
-                "Admin Module List Url" => $url,
-                "MAGENTO_ADMIN_USERNAME" => getenv("MAGENTO_ADMIN_USERNAME"),
-                "MAGENTO_ADMIN_PASSWORD" => $secret,
+                'Admin Module List Url' => $url,
+                'MAGENTO_ADMIN_USERNAME' => getenv('MAGENTO_ADMIN_USERNAME'),
+                'MAGENTO_ADMIN_PASSWORD' => $secret,
             ];
             throw new FastFailException($message, $context);
         }
@@ -497,17 +499,17 @@ class ModuleResolver
         }
         $url = UrlFormatter::format(getenv('MAGENTO_BASE_URL')) . $this->versionUrl;
         LoggingUtil::getInstance()->getLogger(ModuleResolver::class)->info(
-            "Fetching version information.",
+            'Fetching version information.',
             ['url' => $url]
         );
 
         $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($ch);
 
         if (!$response) {
-            $response = "No version information available.";
+            $response = 'No version information available.';
         }
 
         LoggingUtil::getInstance()->getLogger(ModuleResolver::class)->info(
@@ -529,7 +531,7 @@ class ModuleResolver
 
         array_map(function (int|string $key, int|string $value): void {
             LoggingUtil::getInstance()->getLogger(ModuleResolver::class)->info(
-                "including custom module",
+                'including custom module',
                 [$key => $value]
             );
         }, array_keys($customModulePaths), $customModulePaths);
@@ -554,7 +556,7 @@ class ModuleResolver
             if (in_array($moduleName, $this->getModuleBlocklist())) {
                 unset($modulePathsResult[$moduleName]);
                 LoggingUtil::getInstance()->getLogger(ModuleResolver::class)->info(
-                    "excluding module",
+                    'excluding module',
                     ['module' => $moduleName]
                 );
             }
@@ -595,11 +597,11 @@ class ModuleResolver
         $dirPaths = [
             self::VENDOR,
             self::APP_CODE,
-            self::DEV_TESTS
+            self::DEV_TESTS,
         ];
 
         foreach ($dirPaths as $dirPath) {
-            $regex = "~.+\\/" . $dirPath . "\/(?<" . self::VENDOR . ">[^\/]+)\/.+~";
+            $regex = '~.+\\/' . $dirPath . "\/(?<" . self::VENDOR . ">[^\/]+)\/.+~";
             $match = [];
             preg_match($regex, $path, $match);
             if (isset($match[self::VENDOR])) {

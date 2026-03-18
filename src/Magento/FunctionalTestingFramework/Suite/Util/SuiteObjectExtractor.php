@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -7,8 +9,9 @@
 namespace Magento\FunctionalTestingFramework\Suite\Util;
 
 use Exception;
+use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\Exceptions\FastFailException;
-use Magento\FunctionalTestingFramework\Exceptions\GenerationErrorCollector;
+use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
 use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 use Magento\FunctionalTestingFramework\Suite\Objects\SuiteObject;
 use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
@@ -18,10 +21,8 @@ use Magento\FunctionalTestingFramework\Test\Util\TestHookObjectExtractor;
 use Magento\FunctionalTestingFramework\Test\Util\TestObjectExtractor;
 use Magento\FunctionalTestingFramework\Util\GenerationErrorHandler;
 use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
-use Magento\FunctionalTestingFramework\Util\Validation\NameValidationUtil;
 use Magento\FunctionalTestingFramework\Util\ModulePathExtractor;
-use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
+use Magento\FunctionalTestingFramework\Util\Validation\NameValidationUtil;
 
 /**
  * Class SuiteObjectExtractor
@@ -31,13 +32,13 @@ use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
  */
 class SuiteObjectExtractor extends BaseObjectExtractor
 {
-    const SUITE_ROOT_TAG = 'suites';
-    const SUITE_TAG_NAME = 'suite';
-    const INCLUDE_TAG_NAME = 'include';
-    const EXCLUDE_TAG_NAME = 'exclude';
-    const MODULE_TAG_NAME = 'module';
-    const TEST_TAG_NAME = 'test';
-    const GROUP_TAG_NAME = 'group';
+    public const SUITE_ROOT_TAG = 'suites';
+    public const SUITE_TAG_NAME = 'suite';
+    public const INCLUDE_TAG_NAME = 'include';
+    public const EXCLUDE_TAG_NAME = 'exclude';
+    public const MODULE_TAG_NAME = 'module';
+    public const TEST_TAG_NAME = 'test';
+    public const GROUP_TAG_NAME = 'group';
 
     /**
      * TestHookObjectExtractor initialized in constructor.
@@ -90,7 +91,7 @@ class SuiteObjectExtractor extends BaseObjectExtractor
                 $stepError = $include['status'] ?? 0;
                 $includeMessage = '';
                 if ($stepError !== 0) {
-                    $includeMessage = "ERROR: " . strval($stepError) . " test(s) not included for suite "
+                    $includeMessage = 'ERROR: ' . strval($stepError) . ' test(s) not included for suite '
                         . $parsedSuite[self::NAME];
                 }
 
@@ -104,7 +105,7 @@ class SuiteObjectExtractor extends BaseObjectExtractor
                 // log error if suite is empty
                 if ($this->isSuiteEmpty($suiteHooks, $includeTests, $excludeTests)) {
                     LoggingUtil::getInstance()->getLogger(self::class)->error(
-                        "Unable to parse suite " . $parsedSuite[self::NAME] . ". Suite must not be empty."
+                        'Unable to parse suite ' . $parsedSuite[self::NAME] . '. Suite must not be empty.'
                     );
 
                     GenerationErrorHandler::getInstance()->addError(
@@ -140,11 +141,11 @@ class SuiteObjectExtractor extends BaseObjectExtractor
                 throw $e;
             } catch (\Exception $e) {
                 LoggingUtil::getInstance()->getLogger(self::class)->error(
-                    "Unable to parse suite " . $parsedSuite[self::NAME] . "\n" . $e->getMessage()
+                    'Unable to parse suite ' . $parsedSuite[self::NAME] . "\n" . $e->getMessage()
                 );
                 if (MftfApplicationConfig::getConfig()->verboseEnabled()
                     && MftfApplicationConfig::getConfig()->getPhase() === MftfApplicationConfig::GENERATION_PHASE) {
-                    print("ERROR: Unable to parse suite " . $parsedSuite[self::NAME] . "\n");
+                    print('ERROR: Unable to parse suite ' . $parsedSuite[self::NAME] . "\n");
                 }
 
                 GenerationErrorHandler::getInstance()->addError(
@@ -180,14 +181,14 @@ class SuiteObjectExtractor extends BaseObjectExtractor
         //check if name used is using special char or the "default" reserved name
         NameValidationUtil::validateName($parsedSuite[self::NAME], 'Suite');
         if ($parsedSuite[self::NAME] === 'default') {
-            throw new FastFailException("A Suite can not have the name \"default\"");
+            throw new FastFailException('A Suite can not have the name "default"');
         }
 
         $suiteName = $parsedSuite[self::NAME];
         //check for collisions between suite and existing group names
         $testGroupConflicts = TestObjectHandler::getInstance()->getTestsByGroup($suiteName);
         if (!empty($testGroupConflicts)) {
-            $testGroupConflictsFileNames = "";
+            $testGroupConflictsFileNames = '';
             foreach ($testGroupConflicts as $test) {
                 $testGroupConflictsFileNames .= $test->getFilename() . "\n";
             }
@@ -296,11 +297,11 @@ class SuiteObjectExtractor extends BaseObjectExtractor
             } catch (\Exception) {
                 $errCount++;
                 LoggingUtil::getInstance()->getLogger(self::class)->error(
-                    "Unable to find <"
+                    'Unable to find <'
                     . $suiteRefData[self::NODE_NAME]
-                    . "> reference "
+                    . '> reference '
                     . $suiteRefData[self::NAME]
-                    . " for suite "
+                    . ' for suite '
                     . $suiteRefData[self::NAME]
                 );
             }
@@ -308,7 +309,7 @@ class SuiteObjectExtractor extends BaseObjectExtractor
 
         return [
             'status' => $errCount,
-            'objects' => $testObjectList
+            'objects' => $testObjectList,
         ];
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2022 Adobe
  * All Rights Reserved.
@@ -44,7 +45,7 @@ class ModuleUtilTest extends TestCase
         return [
             ["some text $ctr1", 'some text', $ctr1],
             ["some text $ctr2", 'some text', $ctr2],
-            ["some text $ctr3", 'some text', $ctr3]
+            ["some text $ctr3", 'some text', $ctr3],
         ];
     }
 }

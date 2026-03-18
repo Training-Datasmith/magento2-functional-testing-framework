@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -126,7 +128,7 @@ class Filesystem implements \Magento\FunctionalTestingFramework\Config\ReaderInt
                     $this->validateSchema($configMerger, $fileList->getFilename());
                 }
             } catch (\Magento\FunctionalTestingFramework\Config\Dom\ValidationException $e) {
-                throw new \Exception("Invalid XML in file " . $fileList->getFilename() . ":\n" . $e->getMessage());
+                throw new \Exception('Invalid XML in file ' . $fileList->getFilename() . ":\n" . $e->getMessage());
             }
         }
         $this->validateSchema($configMerger);
@@ -171,8 +173,8 @@ class Filesystem implements \Magento\FunctionalTestingFramework\Config\ReaderInt
         if (empty($content)) {
             if (MftfApplicationConfig::getConfig()->verboseEnabled()) {
                 LoggingUtil::getInstance()->getLogger(Filesystem::class)->warning(
-                    "XML File is empty.",
-                    ["File" => $fileName]
+                    'XML File is empty.',
+                    ['File' => $fileName]
                 );
             }
             return false;
@@ -194,14 +196,14 @@ class Filesystem implements \Magento\FunctionalTestingFramework\Config\ReaderInt
             $errors = [];
             if ($configMerger && !$configMerger->validate($this->schemaFile, $errors)) {
                 foreach ($errors as $error) {
-                    $error = str_replace(PHP_EOL, "", $error);
+                    $error = str_replace(PHP_EOL, '', $error);
                     LoggingUtil::getInstance()->getLogger(Filesystem::class)->criticalFailure(
-                        "Schema validation error ",
-                        ($filename ? [ "file"=> $filename, "error" => $error]: ["error" => $error]),
+                        'Schema validation error ',
+                        ($filename ? [ 'file' => $filename, 'error' => $error] : ['error' => $error]),
                         true
                     );
                 }
-                throw new FastFailException("Schema validation errors found in xml file(s)" . $filename);
+                throw new FastFailException('Schema validation errors found in xml file(s)' . $filename);
             }
         }
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -11,8 +12,8 @@ namespace tests\unit\Magento\FunctionalTestFramework\Util;
 use Exception;
 use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\Exceptions\FastFailException;
-use Magento\FunctionalTestingFramework\Util\ModuleResolver\ModuleResolverService;
 use Magento\FunctionalTestingFramework\Util\ModuleResolver;
+use Magento\FunctionalTestingFramework\Util\ModuleResolver\ModuleResolverService;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionProperty;
 use tests\unit\Util\MagentoTestCase;
@@ -37,7 +38,7 @@ class ModuleResolverTest extends MagentoTestCase
     public static function tearDownAfterClass(): void
     {
         TestLoggingUtil::getInstance()->clearMockLoggingUtil();
-        
+
         $moduleResolverServiceInstance = new ReflectionProperty(ModuleResolverService::class, 'INSTANCE');
         $moduleResolverServiceInstance->setValue(null, null);
 
@@ -77,7 +78,7 @@ class ModuleResolverTest extends MagentoTestCase
             ->willReturn(
                 [
                     'Magento_example' => 'some' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'example',
-                    'Magento_sample' => 'other' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'sample'
+                    'Magento_sample' => 'other' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'sample',
                 ]
             );
         $moduleResolverService->expects($this->any())
@@ -85,7 +86,7 @@ class ModuleResolverTest extends MagentoTestCase
             ->willReturn(
                 [
                     'some' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'example' => ['example'],
-                    'other' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'sample' => ['sample']
+                    'other' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'sample' => ['sample'],
                 ]
             );
 
@@ -95,7 +96,7 @@ class ModuleResolverTest extends MagentoTestCase
         $this->assertEquals(
             [
                 'some' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'example',
-                'other' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'sample'
+                'other' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'sample',
             ],
             $resolver->getModulesPath()
         );
@@ -110,7 +111,7 @@ class ModuleResolverTest extends MagentoTestCase
     public function testAggregateTestModulePathsDevTests(): void
     {
         $origin = TESTS_MODULE_PATH;
-        $modulePath = ModuleResolver::DEV_TESTS . DIRECTORY_SEPARATOR . "Magento";
+        $modulePath = ModuleResolver::DEV_TESTS . DIRECTORY_SEPARATOR . 'Magento';
         putenv("TESTS_MODULE_PATH=$modulePath");
 
         $this->mockForceGenerate(false);
@@ -157,16 +158,16 @@ class ModuleResolverTest extends MagentoTestCase
         $invokedWithParams = $expectedParams = [
             [
                 $modulePath,
-                ''
+                '',
             ],
             [
                 MAGENTO_BP . '/vendor',
-                'Test/Mftf'
+                'Test/Mftf',
             ],
             [
                 MAGENTO_BP . '/app/code',
-                'Test/Mftf'
-            ]
+                'Test/Mftf',
+            ],
         ];
 
         $moduleResolverService = $this->createPartialMock(ModuleResolverService::class, ['globRelevantPaths']);
@@ -233,13 +234,13 @@ class ModuleResolverTest extends MagentoTestCase
                     'composer' . DIRECTORY_SEPARATOR . 'json' . DIRECTORY_SEPARATOR . 'pathA' =>
                         [
                             'Magento_ModuleA',
-                            'Magento_ModuleB'
+                            'Magento_ModuleB',
                         ],
                     'composer' . DIRECTORY_SEPARATOR . 'json' . DIRECTORY_SEPARATOR . 'pathB' =>
                         [
                             'Magento_ModuleB',
-                            'Magento_ModuleC'
-                        ]
+                            'Magento_ModuleC',
+                        ],
                 ]
             );
 
@@ -248,7 +249,7 @@ class ModuleResolverTest extends MagentoTestCase
         $this->setMockResolverProperties($resolver, null, [0 => 'Magento_ModuleB', 1 => 'Magento_ModuleC']);
         $this->assertEquals(
             [
-                'composer' . DIRECTORY_SEPARATOR . 'json' . DIRECTORY_SEPARATOR . 'pathB'
+                'composer' . DIRECTORY_SEPARATOR . 'json' . DIRECTORY_SEPARATOR . 'pathB',
             ],
             $resolver->getModulesPath()
         );
@@ -331,13 +332,13 @@ class ModuleResolverTest extends MagentoTestCase
                     'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'pathA' =>
                         [
                             'Magento_ModuleA',
-                            'Magento_ModuleB'
+                            'Magento_ModuleB',
                         ],
                     'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'pathB' =>
                         [
                             'Magento_ModuleB',
-                            'Magento_ModuleC'
-                        ]
+                            'Magento_ModuleC',
+                        ],
                 ]
             );
 
@@ -351,7 +352,7 @@ class ModuleResolverTest extends MagentoTestCase
         $this->assertEquals(
             [
                 'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'pathA',
-                'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'pathB'
+                'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'pathB',
             ],
             $resolver->getModulesPath()
         );
@@ -415,12 +416,12 @@ class ModuleResolverTest extends MagentoTestCase
                 [
                     'composer' . DIRECTORY_SEPARATOR . 'json' . DIRECTORY_SEPARATOR . 'pathA' =>
                         [
-                            'Magento_ModuleA'
+                            'Magento_ModuleA',
                         ],
                     'composer' . DIRECTORY_SEPARATOR . 'json' . DIRECTORY_SEPARATOR . 'pathB' =>
                         [
-                            'Magento_ModuleB'
-                        ]
+                            'Magento_ModuleB',
+                        ],
                 ]
             );
         $moduleResolverService->expects($this->any())
@@ -429,17 +430,17 @@ class ModuleResolverTest extends MagentoTestCase
                 [
                     'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'pathD' =>
                         [
-                            'Magento_ModuleD'
+                            'Magento_ModuleD',
                         ],
                     'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'pathE' =>
                         [
-                            'Magento_ModuleE'
+                            'Magento_ModuleE',
                         ],
                     'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'pathC' =>
                         [
                             'Magento_ModuleC',
                             'Magento_ModuleB',
-                        ]
+                        ],
                 ]
             );
         $moduleResolverService->expects($this->any())
@@ -451,7 +452,7 @@ class ModuleResolverTest extends MagentoTestCase
                     'some' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'path1' => ['Magento_Path1'],
                     'other' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'path2' => ['Magento_Path2'],
                     'some' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'path3' => ['Magento_Path3'],
-                    'other' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'path4' => ['Magento_Path4']
+                    'other' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'path4' => ['Magento_Path4'],
                 ]
             );
 
@@ -468,7 +469,7 @@ class ModuleResolverTest extends MagentoTestCase
                 4 => 'Magento_ModuleB',
                 5 => 'Magento_ModuleD',
                 6 => 'Magento_Otherexample',
-                7 => 'Magento_ModuleC'
+                7 => 'Magento_ModuleC',
             ]
         );
         $this->assertEquals(
@@ -479,7 +480,7 @@ class ModuleResolverTest extends MagentoTestCase
                 'some' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'example',
                 'composer' . DIRECTORY_SEPARATOR . 'json' . DIRECTORY_SEPARATOR . 'pathB',
                 'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'pathD',
-                'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'pathC'
+                'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'pathC',
 
             ],
             $resolver->getModulesPath()
@@ -506,14 +507,14 @@ class ModuleResolverTest extends MagentoTestCase
                     'composer' . DIRECTORY_SEPARATOR . 'json' . DIRECTORY_SEPARATOR
                     . 'Magento' . DIRECTORY_SEPARATOR . 'ModuleA' =>
                         [
-                            'Magento_ModuleA'
+                            'Magento_ModuleA',
                         ],
                     'composer' . DIRECTORY_SEPARATOR . 'json' . DIRECTORY_SEPARATOR
                     . 'Magento' . DIRECTORY_SEPARATOR . 'ModuleBC' =>
                         [
                             'Magento_ModuleB',
-                            'Magento_ModuleC'
-                        ]
+                            'Magento_ModuleC',
+                        ],
                 ]
             );
         $moduleResolverService->expects($this->any())
@@ -524,13 +525,13 @@ class ModuleResolverTest extends MagentoTestCase
                     . 'Magento' . DIRECTORY_SEPARATOR . 'ModuleCD' =>
                         [
                             'Magento_ModuleC',
-                            'Magento_ModuleD'
+                            'Magento_ModuleD',
                         ],
                     'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR
                     . 'Magento' . DIRECTORY_SEPARATOR . 'ModuleE' =>
                         [
-                            'Magento_ModuleE'
-                        ]
+                            'Magento_ModuleE',
+                        ],
                 ]
             );
         $moduleResolverService->expects($this->any())
@@ -538,7 +539,7 @@ class ModuleResolverTest extends MagentoTestCase
             ->willReturn(
                 [
                     'some' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'example' => ['Magento_Example'],
-                    'other' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'sample' => ['Magento_Sample']
+                    'other' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'sample' => ['Magento_Sample'],
                 ]
             );
 
@@ -552,7 +553,7 @@ class ModuleResolverTest extends MagentoTestCase
                 1 => 'Magento_ModuleC',
                 2 => 'Magento_ModuleE',
                 3 => 'Magento_Example',
-                4 => 'Magento_Otherexample'
+                4 => 'Magento_Otherexample',
             ]
         );
 
@@ -562,7 +563,7 @@ class ModuleResolverTest extends MagentoTestCase
                 . 'ModuleE',
                 'some' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'example',
                 'composer' . DIRECTORY_SEPARATOR . 'json' . DIRECTORY_SEPARATOR . 'Magento' . DIRECTORY_SEPARATOR
-                . 'ModuleBC'
+                . 'ModuleBC',
             ],
             $resolver->getModulesPath()
         );
@@ -588,14 +589,14 @@ class ModuleResolverTest extends MagentoTestCase
                     'composer' . DIRECTORY_SEPARATOR . 'json' . DIRECTORY_SEPARATOR
                     . 'Magento' . DIRECTORY_SEPARATOR . 'ModuleA' =>
                         [
-                            'Magento_ModuleA'
+                            'Magento_ModuleA',
                         ],
                     'composer' . DIRECTORY_SEPARATOR . 'json' . DIRECTORY_SEPARATOR
                     . 'Magento' . DIRECTORY_SEPARATOR . 'ModuleBC' =>
                         [
                             'Magento_ModuleB',
-                            'Magento_ModuleC'
-                        ]
+                            'Magento_ModuleC',
+                        ],
                 ]
             );
         $moduleResolverService->expects($this->any())
@@ -606,13 +607,13 @@ class ModuleResolverTest extends MagentoTestCase
                     . 'Magento' . DIRECTORY_SEPARATOR . 'ModuleCD' =>
                         [
                             'Magento_ModuleC',
-                            'Magento_ModuleD'
+                            'Magento_ModuleD',
                         ],
                     'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR
                     . 'Magento' . DIRECTORY_SEPARATOR . 'ModuleD' =>
                         [
-                            'Magento_ModuleD'
-                        ]
+                            'Magento_ModuleD',
+                        ],
                 ]
             );
         $moduleResolverService->expects($this->any())
@@ -620,7 +621,7 @@ class ModuleResolverTest extends MagentoTestCase
             ->willReturn(
                 [
                     'some' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'example' => ['Magento_Example'],
-                    'other' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'sample' => ['Magento_Sample']
+                    'other' . DIRECTORY_SEPARATOR . 'path' . DIRECTORY_SEPARATOR . 'sample' => ['Magento_Sample'],
                 ]
             );
 
@@ -634,7 +635,7 @@ class ModuleResolverTest extends MagentoTestCase
                 1 => 'Magento_ModuleC',
                 2 => 'Magento_ModuleD',
                 3 => 'Magento_Example',
-                4 => 'Magento_Otherexample'
+                4 => 'Magento_Otherexample',
             ]
         );
 
@@ -649,7 +650,7 @@ class ModuleResolverTest extends MagentoTestCase
                 'composer' . DIRECTORY_SEPARATOR . 'json' . DIRECTORY_SEPARATOR . 'Magento' . DIRECTORY_SEPARATOR
                     . 'ModuleBC',
                 'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'Magento' . DIRECTORY_SEPARATOR
-                    . 'ModuleCD'
+                    . 'ModuleCD',
             ],
             $resolver->getModulesPath()
         );
@@ -674,12 +675,12 @@ class ModuleResolverTest extends MagentoTestCase
                 [
                     'composer' . DIRECTORY_SEPARATOR . 'json' . DIRECTORY_SEPARATOR . 'pathA' =>
                         [
-                            'Magento_ModuleA'
+                            'Magento_ModuleA',
                         ],
                     'composer' . DIRECTORY_SEPARATOR . 'json' . DIRECTORY_SEPARATOR . 'pathB' =>
                         [
-                            'Magento_ModuleB'
-                        ]
+                            'Magento_ModuleB',
+                        ],
                 ]
             );
         $moduleResolverService->expects($this->any())
@@ -688,12 +689,12 @@ class ModuleResolverTest extends MagentoTestCase
                 [
                     'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'pathA' =>
                         [
-                            'Magento_ModuleA'
+                            'Magento_ModuleA',
                         ],
                     'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'pathB' =>
                         [
-                            'Magento_ModuleC'
-                        ]
+                            'Magento_ModuleC',
+                        ],
                 ]
             );
 
@@ -705,14 +706,14 @@ class ModuleResolverTest extends MagentoTestCase
             [
                 0 => 'Magento_ModuleA',
                 1 => 'Magento_ModuleB',
-                2 => 'Magento_ModuleC'
+                2 => 'Magento_ModuleC',
             ]
         );
         $this->assertEquals(
             [
                 'composer' . DIRECTORY_SEPARATOR . 'json' . DIRECTORY_SEPARATOR . 'pathA',
                 'composer' . DIRECTORY_SEPARATOR . 'json' . DIRECTORY_SEPARATOR . 'pathB',
-                'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'pathB'
+                'composer' . DIRECTORY_SEPARATOR . 'install' . DIRECTORY_SEPARATOR . 'pathB',
             ],
             $resolver->getModulesPath()
         );
@@ -772,7 +773,7 @@ class ModuleResolverTest extends MagentoTestCase
                     'thisPath/some/path4' => ['Some_Module4'],
                     'devTests/Magento/path3' => ['Magento_Module3'],
                     'appCode/Magento/path2' => ['Magento_Module2'],
-                    'vendor/amazon/path1' => ['Amazon_Module1']
+                    'vendor/amazon/path1' => ['Amazon_Module1'],
                 ]
             );
 

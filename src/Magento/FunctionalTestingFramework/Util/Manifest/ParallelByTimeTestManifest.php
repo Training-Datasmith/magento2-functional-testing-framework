@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2021 Adobe
  * All Rights Reserved.
@@ -6,20 +8,9 @@
 
 namespace Magento\FunctionalTestingFramework\Util\Manifest;
 
-use Codeception\Suite;
-use Magento\Framework\Exception\RuntimeException;
-use Magento\FunctionalTestingFramework\Suite\Handlers\SuiteObjectHandler;
-use Magento\FunctionalTestingFramework\Suite\Objects\SuiteObject;
-use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
-use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
-use Magento\FunctionalTestingFramework\Util\Filesystem\DirSetupUtil;
-use Magento\FunctionalTestingFramework\Util\Sorter\ParallelGroupSorter;
-use RecursiveArrayIterator;
-use RecursiveIteratorIterator;
-
 class ParallelByTimeTestManifest extends BaseParallelTestManifest
 {
-    const PARALLEL_CONFIG = 'parallelByTime';
+    public const PARALLEL_CONFIG = 'parallelByTime';
 
     /**
      * GroupBasedParallelTestManifest constructor.

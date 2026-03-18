@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -13,23 +14,23 @@ use Magento\FunctionalTestingFramework\DataGenerator\Handlers\DataObjectHandler;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\OperationDefinitionObjectHandler;
 use Magento\FunctionalTestingFramework\DataGenerator\Persist\OperationDataArrayResolver;
 use ReflectionProperty;
-use tests\unit\Util\MagentoTestCase;
 use tests\unit\Util\EntityDataObjectBuilder;
+use tests\unit\Util\MagentoTestCase;
 use tests\unit\Util\OperationDefinitionBuilder;
 use tests\unit\Util\OperationElementBuilder;
 use tests\unit\Util\TestLoggingUtil;
 
 class OperationDataArrayResolverTest extends MagentoTestCase
 {
-    const NESTED_METADATA_EXPECTED_RESULT = ['parentType' => [
+    public const NESTED_METADATA_EXPECTED_RESULT = ['parentType' => [
         'name' => 'Hopper',
         'address' => ['city' => 'Hawkins', 'state' => 'Indiana', 'zip' => 78758],
         'isPrimary' => true,
         'gpa' => 3.5678,
-        'phone' => 5555555
+        'phone' => 5555555,
     ]];
 
-    const NESTED_METADATA_ARRAY_RESULT = ['parentType' => [
+    public const NESTED_METADATA_ARRAY_RESULT = ['parentType' => [
         'name' => 'Hopper',
         'isPrimary' => true,
         'gpa' => 3.5678,
@@ -37,7 +38,7 @@ class OperationDataArrayResolverTest extends MagentoTestCase
         'address' => [
             ['city' => 'Hawkins', 'state' => 'Indiana', 'zip' => 78758],
             ['city' => 'Austin', 'state' => 'Texas', 'zip' => 78701],
-        ]
+        ],
     ]];
 
     /**
@@ -85,7 +86,7 @@ class OperationDataArrayResolverTest extends MagentoTestCase
             'name' => 'Hopper',
             'gpa' => 3.5678,
             'phone' => 5555555,
-            'isPrimary' => true
+            'isPrimary' => true,
         ]];
 
         $this->assertEquals($expectedResult, $result);
@@ -137,7 +138,7 @@ class OperationDataArrayResolverTest extends MagentoTestCase
                 [
                 'city' => 'string',
                 'state' => 'string',
-                'zip' => 'integer'
+                'zip' => 'integer',
                 ]
             )->build();
 
@@ -354,7 +355,7 @@ class OperationDataArrayResolverTest extends MagentoTestCase
                 [
                 'city' => 'string',
                 'state' => 'string',
-                'zip' => 'integer'
+                'zip' => 'integer',
                 ]
             )->build();
 
@@ -408,7 +409,7 @@ class OperationDataArrayResolverTest extends MagentoTestCase
             ->withMetadata(
                 [
                 'city' => 'string',
-                'zip' => 'integer'
+                'zip' => 'integer',
                 ]
             )->build();
 
@@ -420,7 +421,7 @@ class OperationDataArrayResolverTest extends MagentoTestCase
                 [
                 'city' => 'string',
                 'zip' => 'integer',
-                'state' => 'string'
+                'state' => 'string',
                 ]
             )->build();
 
@@ -458,19 +459,19 @@ class OperationDataArrayResolverTest extends MagentoTestCase
                 'address' => [
                     [
                         'city' => 'Testcity',
-                        'zip' => '12345'
+                        'zip' => '12345',
                     ],
                     [
                         'city' => 'Testcity 2',
                         'zip' => '54321',
-                        'state' => 'Teststate'
-                    ]
+                        'state' => 'Teststate',
+                    ],
                 ],
                 'name' => 'Hopper',
                 'gpa' => '3.5678',
                 'phone' => '5555555',
-                'isPrimary' => '1'
-            ]
+                'isPrimary' => '1',
+            ],
         ];
 
         $this->assertEquals($expectedResult, $result);
@@ -524,8 +525,8 @@ class OperationDataArrayResolverTest extends MagentoTestCase
 
         $expected = [
             'sub' => [
-                'subtest' => 'ExtSubtest'
-            ]
+                'subtest' => 'ExtSubtest',
+            ],
         ];
 
         $this->assertEquals($expected, $result);

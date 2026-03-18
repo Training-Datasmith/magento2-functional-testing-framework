@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -6,12 +8,9 @@
 
 namespace Magento\FunctionalTestingFramework\Config;
 
-use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
-use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 use Magento\FunctionalTestingFramework\Config\Dom\NodeMergingConfig;
 use Magento\FunctionalTestingFramework\Config\Dom\NodePathMatcher;
-use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
-use Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUtil;
+use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
 
 /**
  * Class MftfDom

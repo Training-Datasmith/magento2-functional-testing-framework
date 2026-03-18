@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -24,8 +26,7 @@ class SingleNodePerFileValidationUtil
          * ExceptionColletor used to catch errors
          */
         private $exceptionCollector
-    )
-    {
+    ) {
     }
 
     /**

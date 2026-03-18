@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -30,19 +32,19 @@ class AnnotationExtractor extends BaseObjectExtractor
      */
     private $testCaseToTitleMappings = [];
 
-    const ANNOTATION_VALUE = 'value';
-    const MAGENTO_TO_ALLURE_SEVERITY_MAP = [
-        "BLOCKER" => "BLOCKER",
-        "CRITICAL" => "CRITICAL",
-        "MAJOR" => "NORMAL",
-        "AVERAGE" => "MINOR",
-        "MINOR" => "TRIVIAL"
+    public const ANNOTATION_VALUE = 'value';
+    public const MAGENTO_TO_ALLURE_SEVERITY_MAP = [
+        'BLOCKER' => 'BLOCKER',
+        'CRITICAL' => 'CRITICAL',
+        'MAJOR' => 'NORMAL',
+        'AVERAGE' => 'MINOR',
+        'MINOR' => 'TRIVIAL',
     ];
-    const REQUIRED_ANNOTATIONS = [
-        "stories",
-        "title",
-        "description",
-        "severity"
+    public const REQUIRED_ANNOTATIONS = [
+        'stories',
+        'title',
+        'description',
+        'severity',
     ];
 
     /**
@@ -77,14 +79,14 @@ class AnnotationExtractor extends BaseObjectExtractor
             }
             $annotationValues = [];
             // Only transform severity annotation
-            if ($annotationKey === "severity") {
+            if ($annotationKey === 'severity') {
                 $annotationObjects[$annotationKey] = $this->transformAllureSeverityToMagento(
                     trim($annotationData[0][self::ANNOTATION_VALUE])
                 );
                 continue;
             }
 
-            if ($annotationKey === "skip") {
+            if ($annotationKey === 'skip') {
                 $annotationData = $annotationData['issueId'];
                 if ($validateAnnotations) {
                     $this->validateSkippedIssues($annotationData, $filename);
@@ -119,7 +121,7 @@ class AnnotationExtractor extends BaseObjectExtractor
         if (isset($annotations['stories']) && isset($annotations['title'])) {
             $story = $annotations['stories'][0];
             $title = $annotations['title'][0];
-            $this->storyToTitleMappings[$story . "/" . $title][] = $filename;
+            $this->storyToTitleMappings[$story . '/' . $title][] = $filename;
         }
     }
 
@@ -135,7 +137,7 @@ class AnnotationExtractor extends BaseObjectExtractor
             return;
         }
 
-        $testCaseId = "[NO TESTCASEID]";
+        $testCaseId = '[NO TESTCASEID]';
 
         if (isset($annotations['testCaseId'])) {
             $testCaseId = $annotations['testCaseId'][0];
@@ -168,7 +170,7 @@ class AnnotationExtractor extends BaseObjectExtractor
             $message = "Test {$filename} is missing required annotations.";
             LoggingUtil::getInstance()->getLogger(ActionObject::class)->deprecation(
                 $message,
-                ["testName" => $filename, "missingAnnotations" => implode(", ", $missingAnnotations)],
+                ['testName' => $filename, 'missingAnnotations' => implode(', ', $missingAnnotations)],
                 true
             );
         }

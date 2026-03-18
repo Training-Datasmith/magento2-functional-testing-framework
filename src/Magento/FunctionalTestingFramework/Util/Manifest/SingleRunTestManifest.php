@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -8,7 +10,7 @@ namespace Magento\FunctionalTestingFramework\Util\Manifest;
 
 class SingleRunTestManifest extends DefaultTestManifest
 {
-    const SINGLE_RUN_CONFIG = 'singleRun';
+    public const SINGLE_RUN_CONFIG = 'singleRun';
 
     /**
      * SingleRunTestManifest constructor.

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -22,7 +24,7 @@ class OperationElementBuilder
         'gpa' => 'number',
         'phone' => 'integer',
         'isPrimary' => 'boolean',
-        'empty_string' => 'string'
+        'empty_string' => 'string',
     ];
 
     /**

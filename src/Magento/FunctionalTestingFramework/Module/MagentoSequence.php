@@ -1,14 +1,17 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
 
 // @codingStandardsIgnoreFile
+
 namespace Magento\FunctionalTestingFramework\Module;
 
-use Magento\FunctionalTestingFramework\Codeception\Module\Sequence;
 use Codeception\Exception\ModuleException;
+use Magento\FunctionalTestingFramework\Codeception\Module\Sequence;
 
 /**
  * MagentoSequence module.

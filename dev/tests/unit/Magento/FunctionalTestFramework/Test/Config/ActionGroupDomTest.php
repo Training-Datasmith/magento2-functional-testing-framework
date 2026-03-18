@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -6,8 +8,8 @@
 
 namespace tests\unit\Magento\FunctionalTestFramework\Test\Config;
 
-use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
 use Magento\FunctionalTestingFramework\Config\Dom\ValidationException;
+use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
 use Magento\FunctionalTestingFramework\Test\Config\ActionGroupDom;
 use tests\unit\Util\MagentoTestCase;
 
@@ -18,12 +20,12 @@ class ActionGroupDomTest extends MagentoTestCase
      */
     public function testActionGroupDomStepKeyValidation()
     {
-        $sampleXml = "<actionGroups>
-            <actionGroup name=\"actionGroupWithoutArguments\">
-                <wait time=\"1\" stepKey=\"waitForNothing\" />
-                <wait time=\"2\" stepKey=\"waitForNothing\" />
+        $sampleXml = '<actionGroups>
+            <actionGroup name="actionGroupWithoutArguments">
+                <wait time="1" stepKey="waitForNothing" />
+                <wait time="2" stepKey="waitForNothing" />
             </actionGroup>
-         </actionGroups>";
+         </actionGroups>';
 
         $exceptionCollector = new ExceptionCollector();
         new ActionGroupDom($sampleXml, 'dupeStepKeyActionGroup.xml', $exceptionCollector);
@@ -37,11 +39,11 @@ class ActionGroupDomTest extends MagentoTestCase
      */
     public function testActionGroupDomInvalidXmlValidation()
     {
-        $sampleXml = "<actionGroups>
-            <actionGroup name=\"sampleActionGroup\">
+        $sampleXml = '<actionGroups>
+            <actionGroup name="sampleActionGroup">
                 <wait>
             </actionGroup>
-         </actionGroups>";
+         </actionGroups>';
 
         $exceptionCollector = new ExceptionCollector();
         $this->expectException(ValidationException::class);
@@ -66,7 +68,7 @@ class ActionGroupDomTest extends MagentoTestCase
         $exceptionCollector = new ExceptionCollector();
         new ActionGroupDom($sampleXml, 'dupeNameActionGroup.xml', $exceptionCollector);
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessageMatches("/name: actionGroupName is used more than once./");
+        $this->expectExceptionMessageMatches('/name: actionGroupName is used more than once./');
         $exceptionCollector->throwException();
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -61,7 +62,7 @@ class UrlFormatter implements FormatterInterface
 
         if (!isset($urlParts['host'])) {
             $urlParts['host'] = rtrim($urlParts['path'], '/');
-            $urlParts['host'] = str_replace("//", '/', $urlParts['host']);
+            $urlParts['host'] = str_replace('//', '/', $urlParts['host']);
             unset($urlParts['path']);
         }
 
@@ -69,7 +70,7 @@ class UrlFormatter implements FormatterInterface
             $urlParts['path'] = rtrim($urlParts['path'], '/');
         }
 
-        return str_replace("///", "//", self::merge($urlParts));
+        return str_replace('///', '//', self::merge($urlParts));
     }
 
     /**
@@ -80,7 +81,7 @@ class UrlFormatter implements FormatterInterface
      */
     private static function merge(array $parts): string
     {
-        $get = (fn($key) => $parts[$key] ?? '');
+        $get = (fn ($key) => $parts[$key] ?? '');
 
         $pass = $get('pass');
         $user = $get('user');
@@ -97,14 +98,14 @@ class UrlFormatter implements FormatterInterface
                 '%authority',
                 '%path',
                 '%query',
-                '%fragment'
+                '%fragment',
             ],
             [
                 strlen($scheme) ? "$scheme:" : '',
                 strlen($authority) ? "//$authority" : '',
                 $get('path'),
                 strlen($query) ? "?$query" : '',
-                strlen($fragment) ? "#$fragment" : ''
+                strlen($fragment) ? "#$fragment" : '',
             ],
             '%scheme%authority%path%query%fragment'
         );

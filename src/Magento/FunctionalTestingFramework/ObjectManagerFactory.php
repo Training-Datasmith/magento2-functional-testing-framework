@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -8,7 +10,6 @@ namespace Magento\FunctionalTestingFramework;
 
 use Magento\FunctionalTestingFramework\ObjectManager\Factory;
 use Magento\FunctionalTestingFramework\Stdlib\BooleanUtils;
-use Magento\FunctionalTestingFramework\ObjectManager as MagentoObjectManager;
 
 /**
  * Object Manager Factory.
@@ -46,7 +47,6 @@ class ObjectManagerFactory
         $factory = new Factory($diConfig);
         $argInterpreter = $this->createArgumentInterpreter(new BooleanUtils());
         $argumentMapper = new \Magento\FunctionalTestingFramework\ObjectManager\Config\Mapper\Dom($argInterpreter);
-
 
         $sharedInstances[\Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface::class] = $argInterpreter;
         $sharedInstances[\Magento\FunctionalTestingFramework\ObjectManager\Config\Mapper\Dom::class] = $argumentMapper;

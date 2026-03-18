@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2022 Adobe
  * All Rights Reserved.
@@ -6,15 +8,15 @@
 
 namespace Magento\FunctionalTestingFramework\StaticCheck;
 
+use DOMElement;
+use Exception;
+use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Test\Handlers\ActionGroupObjectHandler;
 use Magento\FunctionalTestingFramework\Test\Objects\ActionGroupObject;
+use Magento\FunctionalTestingFramework\Util\Script\ScriptUtil;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Finder\Finder;
-use Exception;
-use Magento\FunctionalTestingFramework\Util\Script\ScriptUtil;
 use Symfony\Component\Finder\SplFileInfo;
-use DOMElement;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 
 /**
  * Class ActionGroupArgumentsCheck
@@ -22,10 +24,10 @@ use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
  */
 class ActionGroupStandardsCheck implements StaticCheckInterface
 {
-    const ACTIONGROUP_NAME_REGEX_PATTERN = '/<actionGroup name=["\']([^\'"]*)/';
-    const ERROR_LOG_FILENAME = 'mftf-standards-checks';
-    const ERROR_LOG_MESSAGE = 'MFTF Action Group Unused Arguments Check';
-    const STEP_KEY_REGEX_PATTERN = '/stepKey=["\']([^\'"]*)/';
+    public const ACTIONGROUP_NAME_REGEX_PATTERN = '/<actionGroup name=["\']([^\'"]*)/';
+    public const ERROR_LOG_FILENAME = 'mftf-standards-checks';
+    public const ERROR_LOG_MESSAGE = 'MFTF Action Group Unused Arguments Check';
+    public const STEP_KEY_REGEX_PATTERN = '/stepKey=["\']([^\'"]*)/';
 
     /**
      * Array containing all errors found after running the execute() function.
@@ -105,7 +107,7 @@ class ActionGroupStandardsCheck implements StaticCheckInterface
             );
             foreach ($actionGroupReferences[0] as $actionGroupReferencesData) {
                 $actionGroupReferencesDataArray[] = trim(
-                    str_replace(['stepKey', '='], [""], $actionGroupReferencesData)
+                    str_replace(['stepKey', '='], [''], $actionGroupReferencesData)
                 ).'"';
             }
             $duplicateStepKeys = array_unique(
@@ -119,7 +121,7 @@ class ActionGroupStandardsCheck implements StaticCheckInterface
             unset($actionGroupReferencesDataArray);
             if (count($duplicateStepKeys) > 0) {
                 throw new TestFrameworkException('Action group has duplicate step keys '
-                  .implode(",", array_unique($duplicateStepKeys))." File Path ".$filePath);
+                  .implode(',', array_unique($duplicateStepKeys)).' File Path '.$filePath);
             }
             /** @var DOMElement $actionGroup */
             $actionGroup = $this->getActionGroupDomElement($contents);
@@ -189,7 +191,7 @@ class ActionGroupStandardsCheck implements StaticCheckInterface
             //pattern to match all argument references
             $patterns = [
                 '(\{{2}' . $argument . '(\.[a-zA-Z0-9_\[\]\(\).,\'\/ ]+)?}{2})',
-                '([(,\s\'$$]' . $argument . '(\.[a-zA-Z0-9_$\[\]]+)?[),\s\'])'
+                '([(,\s\'$$]' . $argument . '(\.[a-zA-Z0-9_$\[\]]+)?[),\s\'])',
             ];
             // matches entity references
             if (preg_match($patterns[0], $contents)) {
@@ -242,7 +244,7 @@ class ActionGroupStandardsCheck implements StaticCheckInterface
             $errorOutput = "\nFile \"{$path->getRealPath()}\"";
             $errorOutput .= "\ncontains action group(s) with unused arguments.\n\t\t";
             foreach ($actionGroupToArguments as $actionGroup => $arguments) {
-                $errorOutput .= "\n\t {$actionGroup} has unused argument(s): " . implode(", ", $arguments);
+                $errorOutput .= "\n\t {$actionGroup} has unused argument(s): " . implode(', ', $arguments);
             }
             $actionGroupErrors[$path->getRealPath()][] = $errorOutput;
         }

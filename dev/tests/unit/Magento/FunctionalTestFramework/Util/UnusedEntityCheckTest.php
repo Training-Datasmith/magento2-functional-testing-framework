@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2022 Adobe
  * All Rights Reserved.
@@ -8,17 +9,12 @@ declare(strict_types=1);
 
 namespace tests\unit\Magento\FunctionalTestFramework\Util;
 
-use Exception;
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
-use tests\unit\Util\MagentoTestCase;
-use tests\unit\Util\TestLoggingUtil;
 use Magento\FunctionalTestingFramework\StaticCheck\UnusedEntityCheck;
 use Magento\FunctionalTestingFramework\Util\Script\ScriptUtil;
+use tests\unit\Util\MagentoTestCase;
 
 class UnusedEntityCheckTest extends MagentoTestCase
 {
-   
     public function testUnusedEntityFilesCheck()
     {
         $unusedEntityCheck = new UnusedEntityCheck();
@@ -32,9 +28,9 @@ class UnusedEntityCheckTest extends MagentoTestCase
         $domDocument = new \DOMDocument();
         $actionGroupFiles = ['DeprecationCheckActionGroup' =>
             '/verification/DeprecationCheckModule/ActionGroup/DeprecationCheckActionGroup.xml',
-            'ActionGroupWithMultiplePausesActionGroup'=>
+            'ActionGroupWithMultiplePausesActionGroup' =>
             '/verification/PauseCheckModule/ActionGroup/ActionGroupWithMultiplePausesActionGroup.xml',
-            'ActionGroupWithNoPauseActionGroup'=>
+            'ActionGroupWithNoPauseActionGroup' =>
             '/verification/PauseCheckModule/ActionGroup/ActionGroupWithNoPauseActionGroup.xml'];
         $result =  $unusedEntityCheck->unusedActionEntity($domDocument, [], [], $actionGroupFiles, []);
         $this->assertIsArray($result);
@@ -47,10 +43,10 @@ class UnusedEntityCheckTest extends MagentoTestCase
         $unusedEntityCheck = new UnusedEntityCheck();
         $domDocument = new \DOMDocument();
         $modulePaths = $scriptUtil->getAllModulePaths();
-        $actionGroupXmlFiles = $scriptUtil->getModuleXmlFilesByScope($modulePaths, "ActionGroup");
+        $actionGroupXmlFiles = $scriptUtil->getModuleXmlFilesByScope($modulePaths, 'ActionGroup');
         $actionGroupFiles = ['DeprecationCheckActionGroup' =>
             '/verification/DeprecationCheckModule/ActionGroup/DeprecationCheckActionGroup.xml',
-            'ActionGroupWithMultiplePausesActionGroup'=>
+            'ActionGroupWithMultiplePausesActionGroup' =>
             '/verification/PauseCheckModule/ActionGroup/ActionGroupWithMultiplePausesActionGroup.xml',
             'ActionGroupWithNoPauseActionGroup' =>
             '/verification/PauseCheckModule/ActionGroup/ActionGroupWithNoPauseActionGroup.xml'];
@@ -73,9 +69,9 @@ class UnusedEntityCheckTest extends MagentoTestCase
             'DeprecationCheckSection' => '/verification/DeprecationCheckModule/Section/DeprecationCheckSection.xml',
             'DeprecatedSection' => '/verification/TestModule/Section/DeprecatedSection.xml',
             'LocatorFunctionSection' => '/verification/TestModule/Section/LocatorFunctionSection.xml',
-            'SampleSection' => '/verification/TestModuleMerged/Section/MergeSection.xml'
+            'SampleSection' => '/verification/TestModuleMerged/Section/MergeSection.xml',
         ];
-        $result=$unusedEntityCheck->unusedSectionEntity($domDocument, [], [], [], $section, []);
+        $result = $unusedEntityCheck->unusedSectionEntity($domDocument, [], [], [], $section, []);
         $this->assertIsArray($result);
         $this->assertCount(4, $result);
     }
@@ -85,14 +81,14 @@ class UnusedEntityCheckTest extends MagentoTestCase
         $unusedEntityCheck = new UnusedEntityCheck();
         $scriptUtil = new ScriptUtil();
         $modulePaths = $scriptUtil->getAllModulePaths();
-        $sectionXmlFiles = $scriptUtil->getModuleXmlFilesByScope($modulePaths, "Section");
+        $sectionXmlFiles = $scriptUtil->getModuleXmlFilesByScope($modulePaths, 'Section');
 
         $domDocument = new \DOMDocument();
         $section = [
             'DeprecationCheckSection' => '/verification/DeprecationCheckModule/Section/DeprecationCheckSection.xml',
             'DeprecatedSection' => '/verification/TestModule/Section/DeprecatedSection.xml',
             'LocatorFunctionSection' => '/verification/TestModule/Section/LocatorFunctionSection.xml',
-            'SampleSection' => '/verification/TestModuleMerged/Section/MergeSection.xml'
+            'SampleSection' => '/verification/TestModuleMerged/Section/MergeSection.xml',
         ];
         $result =  $unusedEntityCheck->unusedSectionEntity($domDocument, $sectionXmlFiles, [], [], $section, []);
         $this->assertIsArray($result);
@@ -109,7 +105,7 @@ class UnusedEntityCheckTest extends MagentoTestCase
             'AdminOneParamPage' => '/verification/TestModule/Page/SamplePage/AdminOneParamPage.xml',
             'AdminPage' => '/verification/TestModule/Page/SamplePage/AdminPage.xml',
             'ExternalPage' => '/verification/TestModule/Page/SamplePage/ExternalPage.xml',
-            'NoParamPage' => '/verification/TestModule/Page/SamplePage/NoParamPage.xml'
+            'NoParamPage' => '/verification/TestModule/Page/SamplePage/NoParamPage.xml',
         ];
         $result =  $unusedEntityCheck->unusedPageEntity($domDocument, [], [], $page, []);
         $this->assertIsArray($result);
@@ -122,14 +118,14 @@ class UnusedEntityCheckTest extends MagentoTestCase
         $domDocument = new \DOMDocument();
         $scriptUtil = new ScriptUtil();
         $modulePaths = $scriptUtil->getAllModulePaths();
-        $pageXmlFiles = $scriptUtil->getModuleXmlFilesByScope($modulePaths, "Page");
+        $pageXmlFiles = $scriptUtil->getModuleXmlFilesByScope($modulePaths, 'Page');
         $page = [
             'DeprecationCheckPage' => '/verification/DeprecationCheckModule/Page/DeprecationCheckPage.xml',
             'DeprecatedPage' => '/verification/TestModule/Page/DeprecatedPage.xml',
             'AdminOneParamPage' => '/verification/TestModule/Page/SamplePage/AdminOneParamPage.xml',
             'AdminPage' => '/verification/TestModule/Page/SamplePage/AdminPage.xml',
             'ExternalPage' => '/verification/TestModule/Page/SamplePage/ExternalPage.xml',
-            'NoParamPage' => '/verification/TestModule/Page/SamplePage/NoParamPage.xml'
+            'NoParamPage' => '/verification/TestModule/Page/SamplePage/NoParamPage.xml',
         ];
         $result =  $unusedEntityCheck->unusedPageEntity($domDocument, $pageXmlFiles, [], $page, []);
         $this->assertIsArray($result);
@@ -141,22 +137,22 @@ class UnusedEntityCheckTest extends MagentoTestCase
         $unusedEntityCheck = new UnusedEntityCheck();
         $domDocument = new \DOMDocument();
         $data = [
-            "simpleData" =>
+            'simpleData' =>
             [
-                "dataFilePath" => "/verification/TestModule/Data/ReplacementData.xml"
+                'dataFilePath' => '/verification/TestModule/Data/ReplacementData.xml',
             ],
-    
-            "uniqueData" => [
-                
-                    "dataFilePath" => "/verification/TestModule/Data/ReplacementData.xml"
+
+            'uniqueData' => [
+
+                    'dataFilePath' => '/verification/TestModule/Data/ReplacementData.xml',
             ],
-    
-            "offset"=>
+
+            'offset' =>
                 [
-                    "dataFilePath" => "/verification/TestModule/Data/ReplacementData.xml"
-                ]
+                    'dataFilePath' => '/verification/TestModule/Data/ReplacementData.xml',
+                ],
         ];
-        $result=$unusedEntityCheck->unusedPageEntity($domDocument, [], [], $data, []);
+        $result = $unusedEntityCheck->unusedPageEntity($domDocument, [], [], $data, []);
         $this->assertIsArray($result);
         $this->assertCount(3, $result);
     }
@@ -167,22 +163,22 @@ class UnusedEntityCheckTest extends MagentoTestCase
         $domDocument = new \DOMDocument();
         $scriptUtil = new ScriptUtil();
         $modulePaths = $scriptUtil->getAllModulePaths();
-        $dataXmlFiles = $scriptUtil->getModuleXmlFilesByScope($modulePaths, "Data");
+        $dataXmlFiles = $scriptUtil->getModuleXmlFilesByScope($modulePaths, 'Data');
         $data = [
-            "simpleData" =>
+            'simpleData' =>
             [
-                "dataFilePath" => "/verification/TestModule/Data/ReplacementData.xml"
+                'dataFilePath' => '/verification/TestModule/Data/ReplacementData.xml',
             ],
-    
-            "uniqueData" => [
-                
-                    "dataFilePath" => "/verification/TestModule/Data/ReplacementData.xml"
+
+            'uniqueData' => [
+
+                    'dataFilePath' => '/verification/TestModule/Data/ReplacementData.xml',
             ],
-    
-            "offset" =>
+
+            'offset' =>
                 [
-                    "dataFilePath" => "/verification/TestModule/Data/ReplacementData.xml"
-                ]
+                    'dataFilePath' => '/verification/TestModule/Data/ReplacementData.xml',
+                ],
         ];
         $result = $unusedEntityCheck->unusedPageEntity($domDocument, $dataXmlFiles, [], $data, []);
         $this->assertIsArray($result);

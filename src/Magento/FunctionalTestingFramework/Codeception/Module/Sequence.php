@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2024 Adobe
  * All Rights Reserved.
@@ -9,7 +10,6 @@ declare(strict_types=1);
 namespace Magento\FunctionalTestingFramework\Codeception\Module;
 
 use Codeception\Module;
-use Codeception\Exception\ModuleException;
 use Codeception\TestInterface;
 
 /**

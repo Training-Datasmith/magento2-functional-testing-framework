@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -6,9 +8,9 @@
 
 namespace tests\unit\Magento\FunctionalTestFramework\Composer;
 
+use Composer\Package\RootPackage;
 use Magento\FunctionalTestingFramework\Composer\ComposerPackage;
 use tests\unit\Util\MagentoTestCase;
-use Composer\Package\RootPackage;
 
 class ComposerPackageTest extends MagentoTestCase
 {
@@ -95,7 +97,7 @@ class ComposerPackageTest extends MagentoTestCase
             'magento/module-module-y',
             'magento/module-module-z',
             'magento/module-three',
-            'magento/module-four'
+            'magento/module-four',
         ];
         $this->assertEquals($expected, array_keys($this->composer->getSuggests()));
     }
@@ -108,7 +110,7 @@ class ComposerPackageTest extends MagentoTestCase
         $expected = [
             'Magento_ModuleX',
             'Magento_ModuleY',
-            'Magento_ModuleZ'
+            'Magento_ModuleZ',
         ];
         $this->assertEquals($expected, $this->composer->getSuggestedMagentoModules());
     }
@@ -139,7 +141,7 @@ class ComposerPackageTest extends MagentoTestCase
             'monolog/monolog',
             'mustache/mustache',
             'symfony/process',
-            'vlucas/phpdotenv'
+            'vlucas/phpdotenv',
         ];
         $this->assertEquals(
             $expected,

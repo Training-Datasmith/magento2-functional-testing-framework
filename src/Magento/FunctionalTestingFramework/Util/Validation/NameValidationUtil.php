@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -12,16 +14,16 @@ use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 
 class NameValidationUtil
 {
-    const PHP_CLASS_REGEX_PATTERN = '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/';
+    public const PHP_CLASS_REGEX_PATTERN = '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/';
 
-    const DATA_ENTITY_NAME = "data entity name";
-    const DATA_ENTITY_KEY = "data entity key";
-    const METADATA_OPERATION_NAME = "metadata operation name";
-    const PAGE = "Page";
-    const SECTION = "Section";
-    const SECTION_ELEMENT_NAME = "section element name";
-    const ACTION_GROUP_NAME = "action group name";
-    const TEST_NAME = "test name";
+    public const DATA_ENTITY_NAME = 'data entity name';
+    public const DATA_ENTITY_KEY = 'data entity key';
+    public const METADATA_OPERATION_NAME = 'metadata operation name';
+    public const PAGE = 'Page';
+    public const SECTION = 'Section';
+    public const SECTION_ELEMENT_NAME = 'section element name';
+    public const ACTION_GROUP_NAME = 'action group name';
+    public const TEST_NAME = 'test name';
 
     /**
      * The number of violations this instance has detected.
@@ -57,9 +59,9 @@ class NameValidationUtil
             $valid = boolval(preg_match(self::PHP_CLASS_REGEX_PATTERN, $partialName));
 
             if (!$valid) {
-                $illegalChar = str_split($partialName)[$startingPos -1];
+                $illegalChar = str_split($partialName)[$startingPos - 1];
                 $illegalCharArray[] = $illegalChar;
-                $nameToEvaluate = str_replace($illegalChar, "", $nameToEvaluate);
+                $nameToEvaluate = str_replace($illegalChar, '', $nameToEvaluate);
                 $startingPos--;
             }
         }
@@ -139,8 +141,8 @@ class NameValidationUtil
      */
     public function validateAffixes($str, $type, $filename = null): void
     {
-        $isPrefixAdmin = str_starts_with($str, "Admin");
-        $isPrefixStorefront = str_starts_with($str, "Storefront");
+        $isPrefixAdmin = str_starts_with($str, 'Admin');
+        $isPrefixStorefront = str_starts_with($str, 'Storefront');
         $isSuffixType = str_ends_with($str, $type);
 
         if ((!$isPrefixAdmin && !$isPrefixStorefront) || !$isSuffixType) {

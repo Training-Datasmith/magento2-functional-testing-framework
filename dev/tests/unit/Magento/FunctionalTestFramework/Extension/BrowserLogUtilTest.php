@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -6,35 +8,35 @@
 
 namespace tests\unit\Magento\FunctionalTestFramework\Extension;
 
-use tests\unit\Util\MagentoTestCase;
 use Magento\FunctionalTestingFramework\Extension\BrowserLogUtil;
+use tests\unit\Util\MagentoTestCase;
 
 class BrowserLogUtilTest extends MagentoTestCase
 {
     public function testGetLogsOfType()
     {
         $entryOne = [
-            "level" => "WARNING",
-            "message" => "warningMessage",
-            "source" => "console-api",
-            "timestamp" => 1234567890
+            'level' => 'WARNING',
+            'message' => 'warningMessage',
+            'source' => 'console-api',
+            'timestamp' => 1234567890,
         ];
         $entryTwo = [
-            "level" => "ERROR",
-            "message" => "errorMessage",
-            "source" => "other",
-            "timestamp" => 1234567890
+            'level' => 'ERROR',
+            'message' => 'errorMessage',
+            'source' => 'other',
+            'timestamp' => 1234567890,
         ];
         $entryThree = [
-            "level" => "LOG",
-            "message" => "logMessage",
-            "source" => "javascript",
-            "timestamp" => 1234567890
+            'level' => 'LOG',
+            'message' => 'logMessage',
+            'source' => 'javascript',
+            'timestamp' => 1234567890,
         ];
         $log = [
             $entryOne,
             $entryTwo,
-            $entryThree
+            $entryThree,
         ];
 
         $actual = BrowserLogUtil::getLogsOfType($log, 'console-api');
@@ -45,27 +47,27 @@ class BrowserLogUtilTest extends MagentoTestCase
     public function testFilterLogsOfType()
     {
         $entryOne = [
-            "level" => "WARNING",
-            "message" => "warningMessage",
-            "source" => "console-api",
-            "timestamp" => 1234567890
+            'level' => 'WARNING',
+            'message' => 'warningMessage',
+            'source' => 'console-api',
+            'timestamp' => 1234567890,
         ];
         $entryTwo = [
-            "level" => "ERROR",
-            "message" => "errorMessage",
-            "source" => "other",
-            "timestamp" => 1234567890
+            'level' => 'ERROR',
+            'message' => 'errorMessage',
+            'source' => 'other',
+            'timestamp' => 1234567890,
         ];
         $entryThree = [
-            "level" => "LOG",
-            "message" => "logMessage",
-            "source" => "javascript",
-            "timestamp" => 1234567890
+            'level' => 'LOG',
+            'message' => 'logMessage',
+            'source' => 'javascript',
+            'timestamp' => 1234567890,
         ];
         $log = [
             $entryOne,
             $entryTwo,
-            $entryThree
+            $entryThree,
         ];
 
         $actual = BrowserLogUtil::filterLogsOfType($log, 'console-api');

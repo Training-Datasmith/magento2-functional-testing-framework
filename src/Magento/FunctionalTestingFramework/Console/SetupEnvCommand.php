@@ -1,21 +1,22 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Magento\FunctionalTestingFramework\Console;
 
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
+use Magento\FunctionalTestingFramework\Util\Env\EnvProcessor;
 use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Magento\FunctionalTestingFramework\Util\Env\EnvProcessor;
 
 class SetupEnvCommand extends Command
 {
@@ -34,7 +35,7 @@ class SetupEnvCommand extends Command
     protected function configure(): void
     {
         $this->setName('setup:env')
-            ->setDescription("Generate .env file.");
+            ->setDescription('Generate .env file.');
         $this->envProcessor = new EnvProcessor(FilePathFormatter::format(TESTS_BP) . '.env');
         $env = $this->envProcessor->getEnv();
         foreach ($env as $key => $value) {
@@ -58,7 +59,7 @@ class SetupEnvCommand extends Command
             $userEnv[$key] = $input->getOption($key);
         }
         $this->envProcessor->putEnvFile($userEnv);
-        $output->writeln(".env configuration successfully applied.");
+        $output->writeln('.env configuration successfully applied.');
 
         return self::SUCCESS_EXIT_CODE;
     }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -11,7 +13,6 @@ use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 use Magento\FunctionalTestingFramework\Test\Objects\ActionGroupObject;
 use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
 use Magento\FunctionalTestingFramework\Test\Objects\ArgumentObject;
-use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
 use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 
 /**
@@ -19,13 +20,13 @@ use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
  */
 class ActionGroupObjectExtractor extends BaseObjectExtractor
 {
-    const DEFAULT_VALUE = 'defaultValue';
-    const ACTION_GROUP_ARGUMENTS = 'arguments';
-    const ACTION_GROUP_ANNOTATIONS = 'annotations';
-    const FILENAME = 'filename';
-    const ACTION_GROUP_INSERT_BEFORE = "insertBefore";
-    const ACTION_GROUP_INSERT_AFTER = "insertAfter";
-    const EXTENDS_ACTION_GROUP = 'extends';
+    public const DEFAULT_VALUE = 'defaultValue';
+    public const ACTION_GROUP_ARGUMENTS = 'arguments';
+    public const ACTION_GROUP_ANNOTATIONS = 'annotations';
+    public const FILENAME = 'filename';
+    public const ACTION_GROUP_INSERT_BEFORE = 'insertBefore';
+    public const ACTION_GROUP_INSERT_AFTER = 'insertAfter';
+    public const EXTENDS_ACTION_GROUP = 'extends';
 
     /**
      * Action Object Extractor for converting actions into objects
@@ -66,7 +67,7 @@ class ActionGroupObjectExtractor extends BaseObjectExtractor
             $deprecated = $actionGroupData[self::OBJ_DEPRECATED];
             LoggingUtil::getInstance()->getLogger(ActionGroupObject::class)->deprecation(
                 "The action group '{$actionGroupData[self::NAME]}' is deprecated.",
-                ["fileName" => $actionGroupData[self::FILENAME], "deprecatedMessage" => $deprecated]
+                ['fileName' => $actionGroupData[self::FILENAME], 'deprecatedMessage' => $deprecated]
             );
         }
         $actionGroupReference = $actionGroupData[self::EXTENDS_ACTION_GROUP] ?? null;
@@ -91,13 +92,13 @@ class ActionGroupObjectExtractor extends BaseObjectExtractor
                 $actionGroupData[self::FILENAME]
             );
         } catch (\Exception $error) {
-            throw new XmlException($error->getMessage() . " in Action Group " . $actionGroupData[self::FILENAME]);
+            throw new XmlException($error->getMessage() . ' in Action Group ' . $actionGroupData[self::FILENAME]);
         }
 
         try {
             $actions = $this->actionObjectExtractor->extractActions($actionData);
         } catch (\Exception $error) {
-            throw new XmlException($error->getMessage() . " in Action Group " . $actionGroupData[self::FILENAME]);
+            throw new XmlException($error->getMessage() . ' in Action Group ' . $actionGroupData[self::FILENAME]);
         }
 
         if (array_key_exists(self::ACTION_GROUP_ARGUMENTS, $actionGroupData)) {

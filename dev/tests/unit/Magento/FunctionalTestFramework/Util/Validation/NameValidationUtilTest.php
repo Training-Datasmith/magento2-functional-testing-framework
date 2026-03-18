@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -17,7 +19,7 @@ class NameValidationUtilTest extends MagentoTestCase
      */
     public function testCurlyBracesInTestName()
     {
-        $this->validateBlocklistedTestName("{{curlyBraces}}");
+        $this->validateBlocklistedTestName('{{curlyBraces}}');
     }
 
     /**
@@ -25,7 +27,7 @@ class NameValidationUtilTest extends MagentoTestCase
      */
     public function testQuotesInTestName()
     {
-        $this->validateBlocklistedTestName("\"quotes\"");
+        $this->validateBlocklistedTestName('"quotes"');
     }
 
     /**
@@ -41,7 +43,7 @@ class NameValidationUtilTest extends MagentoTestCase
      */
     public function testParenthesesInTestName()
     {
-        $this->validateBlocklistedTestName("(parenthesis)");
+        $this->validateBlocklistedTestName('(parenthesis)');
     }
 
     /**
@@ -49,7 +51,7 @@ class NameValidationUtilTest extends MagentoTestCase
      */
     public function testDollarSignInTestName()
     {
-        $this->validateBlocklistedTestName("\$dollarSign\$");
+        $this->validateBlocklistedTestName('$dollarSign$');
     }
 
     /**
@@ -57,7 +59,7 @@ class NameValidationUtilTest extends MagentoTestCase
      */
     public function testSpacesInTestName()
     {
-        $this->validateBlocklistedTestName("Test Name With Spaces");
+        $this->validateBlocklistedTestName('Test Name With Spaces');
     }
 
     /**
@@ -69,6 +71,6 @@ class NameValidationUtilTest extends MagentoTestCase
     private function validateBlocklistedTestName($testName)
     {
         $this->expectException(XmlException::class);
-        NameValidationUtil::validateName($testName, "Test");
+        NameValidationUtil::validateName($testName, 'Test');
     }
 }

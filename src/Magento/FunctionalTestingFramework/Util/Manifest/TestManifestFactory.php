@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -7,7 +9,6 @@
 namespace Magento\FunctionalTestingFramework\Util\Manifest;
 
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
 use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 use Magento\FunctionalTestingFramework\Util\TestGenerator;
 

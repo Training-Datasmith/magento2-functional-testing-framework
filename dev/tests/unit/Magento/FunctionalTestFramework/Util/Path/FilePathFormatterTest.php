@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -85,7 +86,7 @@ class FilePathFormatterTest extends MagentoTestCase
             [$path2, false, $path1],
             [$path2, true, $path2],
             [__DIR__ . DIRECTORY_SEPARATOR . basename(__FILE__), null, __FILE__ . DIRECTORY_SEPARATOR],
-            ['', null, null] // Empty string is valid
+            ['', null, null], // Empty string is valid
         ];
     }
 
@@ -98,7 +99,7 @@ class FilePathFormatterTest extends MagentoTestCase
     {
         return [
             ['abc', null],
-            ['X://some\dir/@', null]
+            ['X://some\dir/@', null],
         ];
     }
 }

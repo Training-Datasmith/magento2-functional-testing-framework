@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2024 Adobe
  * All Rights Reserved.
@@ -8,9 +9,9 @@ declare(strict_types=1);
 
 namespace tests\unit\Magento\FunctionalTestFramework\Util;
 
-use tests\unit\Util\MagentoTestCase;
 use Magento\FunctionalTestingFramework\StaticCheck\ClassFileNamingCheck;
 use Magento\FunctionalTestingFramework\Util\Script\ScriptUtil;
+use tests\unit\Util\MagentoTestCase;
 
 class ClassFileNameCheckTest extends MagentoTestCase
 {
@@ -21,9 +22,9 @@ class ClassFileNameCheckTest extends MagentoTestCase
     {
         $scriptUtil = new ScriptUtil();
         $modulePaths = $scriptUtil->getAllModulePaths();
-        $testXmlFiles = $scriptUtil->getModuleXmlFilesByScope($modulePaths, "Test");
+        $testXmlFiles = $scriptUtil->getModuleXmlFilesByScope($modulePaths, 'Test');
         $classFileNameCheck = new ClassFileNamingCheck();
-        $result = $classFileNameCheck->findErrorsInFileSet($testXmlFiles, "test");
+        $result = $classFileNameCheck->findErrorsInFileSet($testXmlFiles, 'test');
         $this->assertMatchesRegularExpression('/does not match with file name/', $result[array_keys($result)[0]][0]);
     }
 
@@ -35,9 +36,9 @@ class ClassFileNameCheckTest extends MagentoTestCase
     {
         $scriptUtil = new ScriptUtil();
         $modulePaths = $scriptUtil->getAllModulePaths();
-        $testXmlFiles = $scriptUtil->getModuleXmlFilesByScope($modulePaths, "Page");
+        $testXmlFiles = $scriptUtil->getModuleXmlFilesByScope($modulePaths, 'Page');
         $classFileNameCheck = new ClassFileNamingCheck();
-        $result = $classFileNameCheck->findErrorsInFileSet($testXmlFiles, "page");
+        $result = $classFileNameCheck->findErrorsInFileSet($testXmlFiles, 'page');
         $this->assertEquals(count($result), 0);
     }
 }

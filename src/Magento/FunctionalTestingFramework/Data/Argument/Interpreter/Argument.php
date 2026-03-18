@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -7,7 +9,6 @@
 namespace Magento\FunctionalTestingFramework\Data\Argument\Interpreter;
 
 use Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface;
-use Magento\FunctionalTestingFramework\Data\Argument\MissingOptionalValueException;
 
 /**
  * Interpreter that returns value of an application argument, retrieving its name from a constant
@@ -22,8 +23,7 @@ class Argument implements InterpreterInterface
          * Interpreter that returns value of a constant by its name.
          */
         private readonly Constant $constInterpreter
-    )
-    {
+    ) {
     }
 
     /**

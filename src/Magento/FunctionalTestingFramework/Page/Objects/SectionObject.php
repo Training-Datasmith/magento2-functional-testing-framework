@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -35,8 +37,7 @@ class SectionObject
          * Deprecated message.
          */
         private $deprecated = null
-    )
-    {
+    ) {
     }
 
     /**
@@ -68,7 +69,7 @@ class SectionObject
     {
         return $this->filename;
     }
-    
+
     /**
      * Getter for an array containing all of a section's elements.
      *

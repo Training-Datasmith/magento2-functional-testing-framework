@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -28,8 +30,8 @@ use Magento\FunctionalTestingFramework\Util\Validation\NameValidationUtil;
  */
 class TestObjectHandler implements ObjectHandlerInterface
 {
-    const XML_ROOT = 'tests';
-    const TEST_FILENAME_ATTRIBUTE = 'filename';
+    public const XML_ROOT = 'tests';
+    public const TEST_FILENAME_ATTRIBUTE = 'filename';
 
     /**
      * Test Object Handler
@@ -113,7 +115,7 @@ class TestObjectHandler implements ObjectHandlerInterface
             } catch (\Exception $exception) {
                 $errCount++;
                 LoggingUtil::getInstance()->getLogger(self::class)->error(
-                    "Unable to extend test " . $testName . "\n" . $exception->getMessage()
+                    'Unable to extend test ' . $testName . "\n" . $exception->getMessage()
                 );
                 GenerationErrorHandler::getInstance()->addError(
                     'test',
@@ -127,9 +129,9 @@ class TestObjectHandler implements ObjectHandlerInterface
             && MftfApplicationConfig::getConfig()->verboseEnabled()
             && MftfApplicationConfig::getConfig()->getPhase() === MftfApplicationConfig::GENERATION_PHASE) {
             print(
-                "ERROR: "
+                'ERROR: '
                 . strval($errCount)
-                . " Test(s) cannot be extended in TestObjectHandler::getAllObjects(). See mftf.log for details."
+                . ' Test(s) cannot be extended in TestObjectHandler::getAllObjects(). See mftf.log for details.'
             );
         }
 
@@ -158,7 +160,7 @@ class TestObjectHandler implements ObjectHandlerInterface
                 throw $exception;
             } catch (\Exception $exception) {
                 $errCount++;
-                $message = "Unable to reference test "
+                $message = 'Unable to reference test '
                     . $test->getName()
                     . " for group {$groupName}\n"
                     . $exception->getMessage();
@@ -176,10 +178,10 @@ class TestObjectHandler implements ObjectHandlerInterface
             && MftfApplicationConfig::getConfig()->verboseEnabled()
             && MftfApplicationConfig::getConfig()->getPhase() === MftfApplicationConfig::GENERATION_PHASE) {
             print(
-                "ERROR: "
+                'ERROR: '
                 . strval($errCount)
                 . " Test(s) cannot be referenced for group {$groupName} in TestObjectHandler::getTestsByGroup()."
-                . " See mftf.log for details."
+                . ' See mftf.log for details.'
             );
         }
 
@@ -221,14 +223,14 @@ class TestObjectHandler implements ObjectHandlerInterface
             $parsedTestArray = $testDataParser->readTestData();
 
             if (!$parsedTestArray) {
-                $parserErrorMessage = "Could not parse any test in xml.";
+                $parserErrorMessage = 'Could not parse any test in xml.';
             }
         } catch (\Exception $e) {
             $parserErrorMessage = $e->getMessage();
         }
 
         if ($parserErrorMessage) {
-            throw new FastFailException("Test Data Parser Error: " . $parserErrorMessage);
+            throw new FastFailException('Test Data Parser Error: ' . $parserErrorMessage);
         }
 
         $testObjectExtractor = new TestObjectExtractor();
@@ -246,11 +248,11 @@ class TestObjectHandler implements ObjectHandlerInterface
                 throw $exception;
             } catch (\Exception $exception) {
                 LoggingUtil::getInstance()->getLogger(self::class)->error(
-                    "Unable to parse test " . $testName . "\n" . $exception->getMessage()
+                    'Unable to parse test ' . $testName . "\n" . $exception->getMessage()
                 );
                 if (MftfApplicationConfig::getConfig()->verboseEnabled()
                     && MftfApplicationConfig::getConfig()->getPhase() === MftfApplicationConfig::GENERATION_PHASE) {
-                    print("ERROR: Unable to parse test " . $testName . "\n");
+                    print('ERROR: Unable to parse test ' . $testName . "\n");
                 }
                 GenerationErrorHandler::getInstance()->addError(
                     'test',
@@ -279,7 +281,7 @@ class TestObjectHandler implements ObjectHandlerInterface
         if ($testObject->getParentName() !== null) {
             if ($testObject->getParentName() === $testObject->getName()) {
                 throw new TestFrameworkException(
-                    "Mftf Test can not extend from itself: " . $testObject->getName()
+                    'Mftf Test can not extend from itself: ' . $testObject->getName()
                 );
             }
             return $this->extendUtil->extendTest($testObject);

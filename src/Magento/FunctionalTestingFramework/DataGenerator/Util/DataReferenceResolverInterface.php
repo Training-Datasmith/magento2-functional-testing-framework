@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -8,7 +10,7 @@ namespace Magento\FunctionalTestingFramework\DataGenerator\Util;
 
 interface DataReferenceResolverInterface
 {
-    const REFERENCE_REGEX_PATTERN = "/(?<reference>{{[\w]+\..+}})/";
+    public const REFERENCE_REGEX_PATTERN = "/(?<reference>{{[\w]+\..+}})/";
 
     /**
      * @return mixed

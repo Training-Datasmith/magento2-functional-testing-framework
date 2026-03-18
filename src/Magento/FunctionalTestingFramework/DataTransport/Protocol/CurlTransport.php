@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -52,7 +54,7 @@ class CurlTransport implements CurlInterface
      *
      * @var int[] SUCCESSFUL_HTTP_CODES
      */
-    const SUCCESSFUL_HTTP_CODES = [200, 201, 202, 203, 204, 205];
+    public const SUCCESSFUL_HTTP_CODES = [200, 201, 202, 203, 204, 205];
 
     /**
      * Apply current configuration array to curl resource.

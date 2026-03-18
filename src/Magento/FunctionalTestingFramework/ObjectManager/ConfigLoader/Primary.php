@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -42,7 +44,6 @@ class Primary
         return $reader->read();
     }
 
-
     /**
      * Return newly created instance on an argument interpreter, suitable for processing DI arguments
      *
@@ -60,7 +61,7 @@ class Primary
                 'null' => new \Magento\FunctionalTestingFramework\Data\Argument\Interpreter\NullType(),
                 'object' => new \Magento\FunctionalTestingFramework\Data\Argument\Interpreter\DataObject($booleanUtils),
                 'const' => $constInterpreter,
-                'init_parameter' => new \Magento\FunctionalTestingFramework\Data\Argument\Interpreter\Argument($constInterpreter)
+                'init_parameter' => new \Magento\FunctionalTestingFramework\Data\Argument\Interpreter\Argument($constInterpreter),
             ],
             \Magento\FunctionalTestingFramework\ObjectManager\Config\Reader\Dom::TYPE_ATTRIBUTE
         );

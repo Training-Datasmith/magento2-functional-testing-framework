@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -6,12 +8,10 @@
 
 namespace Magento\FunctionalTestingFramework\StaticCheck;
 
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Finder\Finder;
 use Exception;
 use Magento\FunctionalTestingFramework\Util\Script\ScriptUtil;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
@@ -20,8 +20,8 @@ use Symfony\Component\Finder\SplFileInfo;
  */
 class PauseActionUsageCheck implements StaticCheckInterface
 {
-    const ERROR_LOG_FILENAME = 'mftf-pause-action-usage-checks';
-    const ERROR_LOG_MESSAGE = 'MFTF Pause Action Usage Check';
+    public const ERROR_LOG_FILENAME = 'mftf-pause-action-usage-checks';
+    public const ERROR_LOG_MESSAGE = 'MFTF Pause Action Usage Check';
 
     /**
      * Array containing all errors found after running the execute() function.
@@ -210,7 +210,7 @@ class PauseActionUsageCheck implements StaticCheckInterface
             $errorOutput = "\nFile \"{$filePath}\"";
             $errorOutput .= "\ncontains pause action(s):\n\t\t";
             foreach ($violatingReferences as $entityName => $stepKey) {
-                $errorOutput .= "\n\t {$entityName} has pause action at stepKey(s): " . implode(", ", $stepKey);
+                $errorOutput .= "\n\t {$entityName} has pause action at stepKey(s): " . implode(', ', $stepKey);
             }
             $testErrors[$filePath][] = $errorOutput;
         }

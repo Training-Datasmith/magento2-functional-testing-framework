@@ -1,15 +1,16 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Magento\FunctionalTestingFramework\Console;
 
 use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
+use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Util\GenerationErrorHandler;
 use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 use Magento\FunctionalTestingFramework\Util\TestGenerator;
@@ -19,7 +20,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 
 /**
  * @SuppressWarnings(PHPMD)
@@ -36,22 +36,22 @@ class RunTestCommand extends BaseGenerateCommand
      */
     protected function configure(): void
     {
-        $this->setName("run:test")
-            ->setDescription("generation and execution of test(s) defined in xml")
+        $this->setName('run:test')
+            ->setDescription('generation and execution of test(s) defined in xml')
             ->addOption(
                 'xml',
                 'xml',
                 InputOption::VALUE_NONE,
-                "creates xml report for executed test"
+                'creates xml report for executed test'
             )->addArgument(
                 'name',
                 InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
-                "name of tests to generate and execute"
+                'name of tests to generate and execute'
             )->addOption(
                 'skip-generate',
                 'k',
                 InputOption::VALUE_NONE,
-                "skip generation and execute existing test"
+                'skip generation and execute existing test'
             )->addOption(
                 'tests',
                 't',
@@ -80,7 +80,7 @@ class RunTestCommand extends BaseGenerateCommand
         if ($skipGeneration and $remove) {
             // "skip-generate" and "remove" options cannot be used at the same time
             throw new TestFrameworkException(
-                "\"skip-generate\" and \"remove\" options can not be used at the same time."
+                '"skip-generate" and "remove" options can not be used at the same time.'
             );
         }
 
@@ -107,7 +107,7 @@ class RunTestCommand extends BaseGenerateCommand
 
         if ($testConfiguration !== null && !json_decode((string) $testConfiguration)) {
             // stop execution if we have failed to properly parse any json passed in by the user
-            throw new TestFrameworkException("JSON could not be parsed: " . json_last_error_msg());
+            throw new TestFrameworkException('JSON could not be parsed: ' . json_last_error_msg());
         }
 
         $generationErrorCode = 0;
@@ -121,7 +121,7 @@ class RunTestCommand extends BaseGenerateCommand
                 '--debug' => $debug,
                 '--allow-skipped' => $allowSkipped,
                 '-v' => $verbose,
-                ''
+                '',
             ];
             $command->run(new ArrayInput($args), $output);
 
@@ -154,8 +154,8 @@ class RunTestCommand extends BaseGenerateCommand
      */
     private function runTests(array $tests, OutputInterface $output, InputInterface $input): void
     {
-        $xml = ($input->getOption('xml')) ? '--xml' : "";
-        $noAnsi = ($input->getOption('no-ansi')) ? '--no-ansi' : "";
+        $xml = ($input->getOption('xml')) ? '--xml' : '';
+        $noAnsi = ($input->getOption('no-ansi')) ? '--no-ansi' : '';
         if ($this->pauseEnabled()) {
             $codeceptionCommand = self::CODECEPT_RUN_FUNCTIONAL;
         } else {
@@ -172,7 +172,7 @@ class RunTestCommand extends BaseGenerateCommand
             $testName = $tests[$i] . 'Cest.php';
             if (!realpath($testsDirectory . $testName)) {
                 throw new TestFrameworkException(
-                    $testName . " is not available under " . $testsDirectory
+                    $testName . ' is not available under ' . $testsDirectory
                 );
             }
 
@@ -201,8 +201,8 @@ class RunTestCommand extends BaseGenerateCommand
      */
     private function runTestsInSuite(array $suitesConfig, OutputInterface $output, InputInterface $input): void
     {
-        $xml = ($input->getOption('xml')) ? '--xml' : "";
-        $noAnsi = ($input->getOption('no-ansi')) ? '--no-ansi' : "";
+        $xml = ($input->getOption('xml')) ? '--xml' : '';
+        $noAnsi = ($input->getOption('no-ansi')) ? '--no-ansi' : '';
         if ($this->pauseEnabled()) {
             $codeceptionCommand = self::CODECEPT_RUN_FUNCTIONAL . '--verbose --steps --debug '.$xml;
         } else {
@@ -252,7 +252,7 @@ class RunTestCommand extends BaseGenerateCommand
         });
     }
 
-    private function disableAnsiColorCodes(string $buffer, string $noAnsi) :string
+    private function disableAnsiColorCodes(string $buffer, string $noAnsi): string
     {
         if (empty($noAnsi)) {
             return $buffer;

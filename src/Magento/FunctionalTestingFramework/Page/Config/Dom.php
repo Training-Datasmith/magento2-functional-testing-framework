@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -8,8 +10,6 @@ namespace Magento\FunctionalTestingFramework\Page\Config;
 
 use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
-use Magento\FunctionalTestingFramework\Config\Dom\NodeMergingConfig;
-use Magento\FunctionalTestingFramework\Config\Dom\NodePathMatcher;
 use Magento\FunctionalTestingFramework\Util\ModulePathExtractor;
 use Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUtil;
 use Magento\FunctionalTestingFramework\Util\Validation\SingleNodePerFileValidationUtil;
@@ -20,8 +20,8 @@ use Magento\FunctionalTestingFramework\Util\Validation\SingleNodePerFileValidati
  */
 class Dom extends \Magento\FunctionalTestingFramework\Config\MftfDom
 {
-    const PAGE_META_FILENAME_ATTRIBUTE = "filename";
-    const PAGE_META_NAME_ATTRIBUTE = "name";
+    public const PAGE_META_FILENAME_ATTRIBUTE = 'filename';
+    public const PAGE_META_NAME_ATTRIBUTE = 'name';
 
     /**
      * Module Path extractor
@@ -103,12 +103,12 @@ class Dom extends \Magento\FunctionalTestingFramework\Config\MftfDom
                     $this->modulePathExtractor->getExtensionPath($filename)
                     . '_'
                     . $this->modulePathExtractor->extractModuleName($filename);
-                $pageModule = $pageNode->getAttribute("module");
-                $pageName = $pageNode->getAttribute("name");
+                $pageModule = $pageNode->getAttribute('module');
+                $pageName = $pageNode->getAttribute('name');
                 if ($pageModule !== $currentModule) {
                     if (MftfApplicationConfig::getConfig()->verboseEnabled()) {
                         print(
-                            "Page Module does not match path Module. " .
+                            'Page Module does not match path Module. ' .
                             "(Page, Module): ($pageName, $pageModule) - Path Module: $currentModule" .
                             PHP_EOL
                         );

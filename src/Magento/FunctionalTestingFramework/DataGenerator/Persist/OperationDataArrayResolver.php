@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -17,13 +19,13 @@ use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
 
 class OperationDataArrayResolver
 {
-    const PRIMITIVE_TYPES = [
+    public const PRIMITIVE_TYPES = [
         'string',
         'boolean',
         'integer',
-        'number'
+        'number',
     ];
-    const EXCEPTION_REQUIRED_DATA = "%s of key \" %s\" in \"%s\" is required by metadata, but was not provided.";
+    public const EXCEPTION_REQUIRED_DATA = '%s of key " %s" in "%s" is required by metadata, but was not provided.';
 
     /**
      * The array of entity name and number of objects being created,
@@ -347,7 +349,7 @@ class OperationDataArrayResolver
 
         if (is_array($value)) {
             $newVals = [];
-            foreach($value as $val) {
+            foreach ($value as $val) {
                 $newVals[] = $this->castValue($type, $val);
             }
 

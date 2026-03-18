@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -76,7 +77,7 @@ class ActionObjectTest extends MagentoTestCase
             [
             'selector' => '{{SectionObject.elementObject}}',
             'userInput' => 'Hello world',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
             ]
         );
         $elementObject = new ElementObject('elementObject', 'button', '#replacementSelector', null, '42', false);
@@ -89,7 +90,7 @@ class ActionObjectTest extends MagentoTestCase
         $expected = [
             'selector' => '#replacementSelector',
             'userInput' => 'Hello world',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
         ];
         $this->assertEquals($expected, $actionObject->getCustomActionAttributes());
     }
@@ -109,7 +110,7 @@ class ActionObjectTest extends MagentoTestCase
             [
             'selector' => "{{SectionObject.elementObject('stringliteral')}}",
             'userInput' => 'Input',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
             ]
         );
         $elementObject = new ElementObject('elementObject', 'button', '#{{var1}}', null, '42', true);
@@ -122,7 +123,7 @@ class ActionObjectTest extends MagentoTestCase
         $expected = [
             'selector' => '#stringliteral',
             'userInput' => 'Input',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
         ];
         $this->assertEquals($expected, $actionObject->getCustomActionAttributes());
     }
@@ -140,9 +141,9 @@ class ActionObjectTest extends MagentoTestCase
             'key123',
             'fillField',
             [
-            'selector' => "{{SectionObject.elementObject(dataObject.key)}}",
+            'selector' => '{{SectionObject.elementObject(dataObject.key)}}',
             'userInput' => 'Input',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
             ]
         );
 
@@ -151,7 +152,7 @@ class ActionObjectTest extends MagentoTestCase
         $this->mockSectionHandlerWithElement($elementObject);
 
         // Mock DataHandler
-        $dataObject = new EntityDataObject('dataObject', 'dataType', ["key" => 'myValue'], null, null, null);
+        $dataObject = new EntityDataObject('dataObject', 'dataType', ['key' => 'myValue'], null, null, null);
         $this->mockDataHandlerWithData($dataObject);
 
         // Call the method under test
@@ -161,7 +162,7 @@ class ActionObjectTest extends MagentoTestCase
         $expected = [
             'selector' => '#myValue',
             'userInput' => 'Input',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
         ];
         $this->assertEquals($expected, $actionObject->getCustomActionAttributes());
     }
@@ -181,7 +182,7 @@ class ActionObjectTest extends MagentoTestCase
             [
             'selector' => '{{SectionObject.elementObject($data.key$)}}',
             'userInput' => 'Input',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
             ]
         );
 
@@ -196,7 +197,7 @@ class ActionObjectTest extends MagentoTestCase
         $expected = [
             'selector' => '#$data.key$',
             'userInput' => 'Input',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
         ];
         $this->assertEquals($expected, $actionObject->getCustomActionAttributes());
     }
@@ -215,7 +216,7 @@ class ActionObjectTest extends MagentoTestCase
             'fillField',
             [
             'selector' => "{{SectionObject.elementObject('stringLiteral', data.key, \$data.key\$)}}",
-            'userInput' => 'Input'
+            'userInput' => 'Input',
             ]
         );
 
@@ -224,7 +225,7 @@ class ActionObjectTest extends MagentoTestCase
         $this->mockSectionHandlerWithElement($elementObject);
 
         // Mock DataHandler
-        $dataObject = new EntityDataObject('dataObject', 'dataType', ["key" => 'myValue'], null, null, null);
+        $dataObject = new EntityDataObject('dataObject', 'dataType', ['key' => 'myValue'], null, null, null);
         $this->mockDataHandlerWithData($dataObject);
 
         // Call the method under test
@@ -234,7 +235,7 @@ class ActionObjectTest extends MagentoTestCase
         $expected = [
             'selector' => '#stringLiteral[myValue,$data.key$]',
             'userInput' => 'Input',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
         ];
         $this->assertEquals($expected, $actionObject->getCustomActionAttributes());
     }
@@ -253,7 +254,7 @@ class ActionObjectTest extends MagentoTestCase
             'merge123',
             'click',
             [
-            'selector' => '{{SectionObject.elementObject}}'
+            'selector' => '{{SectionObject.elementObject}}',
             ]
         );
         $elementObject = new ElementObject('elementObject', 'button', '#replacementSelector', null, '42', false);
@@ -279,10 +280,10 @@ class ActionObjectTest extends MagentoTestCase
             'merge123',
             'amOnPage',
             [
-            'url' => '{{PageObject.url}}'
+            'url' => '{{PageObject.url}}',
             ]
         );
-        $pageObject = new PageObject('PageObject', '/replacement/url.html', 'Test', [], false, "test");
+        $pageObject = new PageObject('PageObject', '/replacement/url.html', 'Test', [], false, 'test');
 
         $instance = $this->createMock(PageObjectHandler::class);
         $instance
@@ -297,7 +298,7 @@ class ActionObjectTest extends MagentoTestCase
 
         // Verify
         $expected = [
-            'url' => '/replacement/url.html','requiredCredentials' => ''
+            'url' => '/replacement/url.html','requiredCredentials' => '',
         ];
         $this->assertEquals($expected, $actionObject->getCustomActionAttributes());
     }
@@ -317,11 +318,11 @@ class ActionObjectTest extends MagentoTestCase
             'merge123',
             'amOnPage',
             [
-            'url' => '{{PageObject}}'
+            'url' => '{{PageObject}}',
             ]
         );
-        $pageObject = new PageObject('PageObject', '/replacement/url.html', 'Test', [], false, "test");
-        $pageObjectList = ["PageObject" => $pageObject];
+        $pageObject = new PageObject('PageObject', '/replacement/url.html', 'Test', [], false, 'test');
+        $pageObjectList = ['PageObject' => $pageObject];
 
         $instance = $this->createMock(PageObjectHandler::class);
         $instance
@@ -374,14 +375,14 @@ class ActionObjectTest extends MagentoTestCase
             [
             'selector' => '#selector',
             'userInput' => '{{EntityDataObject.key}}',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
             ]
         );
         $entityDataObject = new EntityDataObject(
             'EntityDataObject',
             'test',
             [
-            'key' => 'replacementData'
+            'key' => 'replacementData',
             ],
             [],
             '',
@@ -396,7 +397,7 @@ class ActionObjectTest extends MagentoTestCase
         $expected = [
             'selector' => '#selector',
             'userInput' => 'replacementData',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
         ];
         $this->assertEquals($expected, $actionObject->getCustomActionAttributes());
     }
@@ -417,7 +418,7 @@ class ActionObjectTest extends MagentoTestCase
             [
             'selector' => '#selector',
             'userInput' => '{{EntityDataObject.values}}',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
             ]
         );
         $entityDataObject = new EntityDataObject(
@@ -427,8 +428,8 @@ class ActionObjectTest extends MagentoTestCase
             'values' => [
                 'value1',
                 'value2',
-                '"My" Value'
-            ]
+                '"My" Value',
+            ],
             ],
             [],
             '',
@@ -442,7 +443,7 @@ class ActionObjectTest extends MagentoTestCase
         $expected = [
             'selector' => '#selector',
             'userInput' => '["value1","value2","\"My\" Value"]',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
         ];
         $this->assertEquals($expected, $actionObject->getCustomActionAttributes());
     }
@@ -464,7 +465,7 @@ class ActionObjectTest extends MagentoTestCase
             [
             'selector' => "{{SectionObject.elementObject('arg1')}}",
             'userInput' => 'Input',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
             ]
         );
         $elementObject = new ElementObject('elementObject', 'button', '#{{var1}} {{var2}}', null, '42', true);
@@ -491,7 +492,7 @@ class ActionObjectTest extends MagentoTestCase
             [
             'selector' => "{{SectionObject.elementObject('arg1', 'arg2', 'arg3')}}",
             'userInput' => 'Input',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
             ]
         );
         $elementObject = new ElementObject('elementObject', 'button', '#{{var1}}', null, '42', true);
@@ -516,8 +517,8 @@ class ActionObjectTest extends MagentoTestCase
             'key123',
             'generateDate',
             [
-            'timezone' => "INVALID_TIMEZONE",
-            'requiredCredentials' => ''
+            'timezone' => 'INVALID_TIMEZONE',
+            'requiredCredentials' => '',
             ]
         );
 

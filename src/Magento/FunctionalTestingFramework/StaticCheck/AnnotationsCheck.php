@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -6,12 +8,12 @@
 
 namespace Magento\FunctionalTestingFramework\StaticCheck;
 
+use Exception;
 use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
 use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
 use Magento\FunctionalTestingFramework\Util\Script\ScriptUtil;
 use Symfony\Component\Console\Input\InputInterface;
-use Exception;
 
 /**
  * Class AnnotationsCheck
@@ -19,8 +21,8 @@ use Exception;
  */
 class AnnotationsCheck implements StaticCheckInterface
 {
-    const ERROR_LOG_FILENAME = 'mftf-annotations-static-check';
-    const ERROR_LOG_MESSAGE = 'MFTF Annotations Static Check';
+    public const ERROR_LOG_FILENAME = 'mftf-annotations-static-check';
+    public const ERROR_LOG_MESSAGE = 'MFTF Annotations Static Check';
 
     /**
      * Array containing all errors found after running the execute() function.
@@ -120,10 +122,10 @@ class AnnotationsCheck implements StaticCheckInterface
 
         $stories = $annotations['stories'] ?? null;
         if ($stories === null || !isset($stories[0]) || empty(trim($stories[0]))) {
-            $missing[] = "stories";
+            $missing[] = 'stories';
         }
 
-        $testCaseId = "[NO TESTCASEID]";
+        $testCaseId = '[NO TESTCASEID]';
         if (isset($annotations['testCaseId'][0])) {
             $testCaseId = trim($annotations['testCaseId'][0]);
         }
@@ -133,20 +135,20 @@ class AnnotationsCheck implements StaticCheckInterface
             || !isset($title[0])
             || empty(trim($title[0]))
             || empty(trim(substr(trim($title[0]), strlen($testCaseId . ': '))))) {
-            $missing[] = "title";
+            $missing[] = 'title';
         }
 
         $description = $annotations['description']['main'] ?? null;
         if ($description === null || empty(trim($description))) {
-            $missing[] = "description";
+            $missing[] = 'description';
         }
 
         $severity = $annotations['severity'] ?? null;
         if ($severity === null || !isset($severity[0]) || empty(trim($severity[0]))) {
-            $missing[] = "severity";
+            $missing[] = 'severity';
         }
 
-        $allMissing = join(", ", $missing);
+        $allMissing = join(', ', $missing);
         if (strlen($allMissing) > 0) {
             $this->errors[][] = "Test {$test->getName()} is missing the required annotations: " . $allMissing;
         }
@@ -217,8 +219,8 @@ class AnnotationsCheck implements StaticCheckInterface
         if ($title === null) {
             return null;
         }
-        $testCaseId = $annotations['testCaseId'][0] ?? "[NO TESTCASEID]";
-        return substr($title, strlen($testCaseId . ": "));
+        $testCaseId = $annotations['testCaseId'][0] ?? '[NO TESTCASEID]';
+        return substr($title, strlen($testCaseId . ': '));
     }
 
     /**
@@ -228,7 +230,7 @@ class AnnotationsCheck implements StaticCheckInterface
     {
         foreach ($this->storiesTitlePairs as $pair) {
             if (sizeof($pair) > 1) {
-                $this->errors[][] = "Stories + title combination must be unique: " . join(", ", $pair);
+                $this->errors[][] = 'Stories + title combination must be unique: ' . join(', ', $pair);
             }
         }
     }
@@ -240,7 +242,7 @@ class AnnotationsCheck implements StaticCheckInterface
     {
         foreach ($this->testCaseIdTitlePairs as $pair) {
             if (sizeof($pair) > 1) {
-                $this->errors[][] = "testCaseId + title combination must be unique: " . join(", ", $pair);
+                $this->errors[][] = 'testCaseId + title combination must be unique: ' . join(', ', $pair);
             }
         }
     }

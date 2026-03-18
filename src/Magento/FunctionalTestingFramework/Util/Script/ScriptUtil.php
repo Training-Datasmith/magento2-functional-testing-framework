@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -7,22 +9,22 @@
 namespace Magento\FunctionalTestingFramework\Util\Script;
 
 use Exception;
+use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
+use Magento\FunctionalTestingFramework\DataGenerator\Handlers\DataObjectHandler;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
 use Magento\FunctionalTestingFramework\Exceptions\XmlException;
-use Magento\FunctionalTestingFramework\Page\Objects\ElementObject;
-use Magento\FunctionalTestingFramework\Page\Objects\SectionObject;
-use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
-use Symfony\Component\Finder\Finder;
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use Magento\FunctionalTestingFramework\Util\ModuleResolver;
-use Magento\FunctionalTestingFramework\DataGenerator\Handlers\DataObjectHandler;
 use Magento\FunctionalTestingFramework\Page\Handlers\PageObjectHandler;
 use Magento\FunctionalTestingFramework\Page\Handlers\SectionObjectHandler;
+use Magento\FunctionalTestingFramework\Page\Objects\ElementObject;
+use Magento\FunctionalTestingFramework\Page\Objects\SectionObject;
 use Magento\FunctionalTestingFramework\Test\Handlers\ActionGroupObjectHandler;
 use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
 use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
+use Magento\FunctionalTestingFramework\Util\ModuleResolver;
+use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 use Magento\FunctionalTestingFramework\Util\TestGenerator;
+use Symfony\Component\Finder\Finder;
 
 /**
  * ScriptUtil class that contains helper functions for static and upgrade scripts
@@ -32,9 +34,9 @@ use Magento\FunctionalTestingFramework\Util\TestGenerator;
  */
 class ScriptUtil
 {
-    const ACTIONGROUP_ARGUMENT_REGEX_PATTERN = '/<argument[^\/>]*name="([^"\']*)/';
-    const ROOT_SUITE_DIR = 'tests/_suite';
-    const DEV_TESTS_DIR = 'dev/tests/acceptance/';
+    public const ACTIONGROUP_ARGUMENT_REGEX_PATTERN = '/<argument[^\/>]*name="([^"\']*)/';
+    public const ROOT_SUITE_DIR = 'tests/_suite';
+    public const DEV_TESTS_DIR = 'dev/tests/acceptance/';
 
     /**
      * Return all installed Magento module paths
@@ -60,7 +62,7 @@ class ScriptUtil
     public function printErrorsToFile(array $errors, string $filePath, string $message): string
     {
         if (empty($errors)) {
-            return $message . ": No errors found.";
+            return $message . ': No errors found.';
         }
 
         $this->printTofile($errors, $filePath);
@@ -76,7 +78,7 @@ class ScriptUtil
     public function printWarningsToFile(array $warnings, string $filePath, string $message): string
     {
         if (empty($warnings)) {
-            return $message . ": No warnings found.";
+            return $message . ': No warnings found.';
         }
         $this->printTofile($warnings, $filePath);
         $errorCount = count($warnings);
@@ -116,7 +118,7 @@ class ScriptUtil
             if (!realpath($modulePath . $scopePath)) {
                 continue;
             }
-            $finder->files()->followLinks()->in($modulePath . $scopePath)->name("*.xml")->sortByName();
+            $finder->files()->followLinks()->in($modulePath . $scopePath)->name('*.xml')->sortByName();
             $found = true;
         }
         return $found ? $finder->files() : [];
@@ -157,7 +159,7 @@ class ScriptUtil
             if (!realpath($rootSuitePath)) {
                 continue;
             }
-            $finder->files()->followLinks()->in($rootSuitePath)->name("*.xml");
+            $finder->files()->followLinks()->in($rootSuitePath)->name('*.xml');
             $found = true;
         }
 
@@ -220,7 +222,7 @@ class ScriptUtil
                 (string) $parameterizedReference,
                 $arguments
             );
-            $splitArguments = explode(',', ltrim(rtrim($arguments[0], ")"), "("));
+            $splitArguments = explode(',', ltrim(rtrim($arguments[0], ')'), '('));
             foreach ($splitArguments as $argument) {
                 // Do nothing for 'string' or $persisted.data$
                 if (preg_match(ActionObject::STRING_PARAMETER_REGEX, $argument)) {
@@ -315,7 +317,7 @@ class ScriptUtil
     {
         $finder = new Finder();
         array_walk($testNames, function (&$value): void {
-            $value = $value . ".xml";
+            $value = $value . '.xml';
         });
         $finder->files()->followLinks()->in(MAGENTO_BP)->name($testNames)->sortByName();
 

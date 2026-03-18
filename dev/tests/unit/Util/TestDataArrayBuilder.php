@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -7,7 +9,6 @@
 namespace tests\unit\Util;
 
 use Magento\FunctionalTestingFramework\Test\Util\ActionObjectExtractor;
-use Magento\FunctionalTestingFramework\Test\Util\AnnotationExtractor;
 use Magento\FunctionalTestingFramework\Test\Util\TestObjectExtractor;
 
 class TestDataArrayBuilder
@@ -129,7 +130,7 @@ class TestDataArrayBuilder
         if ($beforeHook === null) {
             $this->beforeHook = [$this->testActionBeforeName => [
                 ActionObjectExtractor::NODE_NAME => $this->testActionType,
-                ActionObjectExtractor::TEST_STEP_MERGE_KEY => $this->testActionBeforeName
+                ActionObjectExtractor::TEST_STEP_MERGE_KEY => $this->testActionBeforeName,
             ]];
         } else {
             $this->beforeHook = $beforeHook;
@@ -149,7 +150,7 @@ class TestDataArrayBuilder
         if ($afterHook === null) {
             $this->afterHook = [$this->testActionAfterName => [
                     ActionObjectExtractor::NODE_NAME => $this->testActionType,
-                    ActionObjectExtractor::TEST_STEP_MERGE_KEY => $this->testActionAfterName
+                    ActionObjectExtractor::TEST_STEP_MERGE_KEY => $this->testActionAfterName,
 
             ]];
         } else {
@@ -170,7 +171,7 @@ class TestDataArrayBuilder
         if ($failedHook === null) {
             $this->failedHook = [$this->testActionFailedName => [
                 ActionObjectExtractor::NODE_NAME => $this->testActionType,
-                ActionObjectExtractor::TEST_STEP_MERGE_KEY => $this->testActionFailedName
+                ActionObjectExtractor::TEST_STEP_MERGE_KEY => $this->testActionFailedName,
 
             ]];
         } else {
@@ -191,7 +192,7 @@ class TestDataArrayBuilder
         if ($actions === null) {
             $this->testActions = [$this->testTestActionName => [
                 ActionObjectExtractor::NODE_NAME => $this->testActionType,
-                ActionObjectExtractor::TEST_STEP_MERGE_KEY => $this->testTestActionName
+                ActionObjectExtractor::TEST_STEP_MERGE_KEY => $this->testTestActionName,
             ]];
         } else {
             $this->testActions = $actions;
@@ -210,7 +211,7 @@ class TestDataArrayBuilder
     {
         if ($filename === null) {
             $this->filename =
-                "/magento2-functional-testing-framework/dev/tests/verification/TestModule/Test/BasicFunctionalTest.xml";
+                '/magento2-functional-testing-framework/dev/tests/verification/TestModule/Test/BasicFunctionalTest.xml';
         } else {
             $this->filename = $filename;
         }
@@ -270,8 +271,8 @@ class TestDataArrayBuilder
                 TestObjectExtractor::TEST_BEFORE_HOOK => $this->beforeHook,
                 TestObjectExtractor::TEST_AFTER_HOOK => $this->afterHook,
                 TestObjectExtractor::TEST_FAILED_HOOK => $this->failedHook,
-                "filename" => $this->filename,
-                "extends" => $this->testReference
+                'filename' => $this->filename,
+                'extends' => $this->testReference,
             ],
             $this->testActions
         )];

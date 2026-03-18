@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -6,16 +8,16 @@
 
 namespace Magento\FunctionalTestingFramework\DataTransport\Auth\Tfa;
 
+use Magento\FunctionalTestingFramework\DataGenerator\Handlers\CredentialStore;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use OTPHP\TOTP;
-use Magento\FunctionalTestingFramework\DataGenerator\Handlers\CredentialStore;
 
 /**
  * Class OTP
  */
 class OTP
 {
-    const OTP_SHARED_SECRET_PATH = 'magento/tfa/OTP_SHARED_SECRET';
+    public const OTP_SHARED_SECRET_PATH = 'magento/tfa/OTP_SHARED_SECRET';
 
     /**
      * TOTP object

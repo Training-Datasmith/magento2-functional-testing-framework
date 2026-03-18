@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -44,11 +46,11 @@ class MftfLogger extends Logger
      */
     public function deprecation($message, array $context = [], $verbose = false): void
     {
-        $message = "DEPRECATION: " . $message;
+        $message = 'DEPRECATION: ' . $message;
         // print during test generation including metadata
         if ((array_key_exists('operationType', $context) ||
                 $this->phase === MftfApplicationConfig::GENERATION_PHASE) && $verbose) {
-            print ($message . json_encode($context) . "\n");
+            print($message . json_encode($context) . "\n");
         }
         // suppress logging during test execution except metadata
         if (array_key_exists('operationType', $context) ||
@@ -66,10 +68,10 @@ class MftfLogger extends Logger
      */
     public function criticalFailure($message, array $context = [], $verbose = false): void
     {
-        $message = "FAILURE: " . $message;
+        $message = 'FAILURE: ' . $message;
         // Suppress print during unit testing
         if ($this->phase !== MftfApplicationConfig::UNIT_TEST_PHASE && $verbose) {
-            print ($message . implode("\n", $context) . "\n");
+            print($message . implode("\n", $context) . "\n");
         }
         parent::critical($message, $context);
     }
@@ -83,10 +85,10 @@ class MftfLogger extends Logger
      */
     public function notification($message, array $context = [], $verbose = false): void
     {
-        $message = "NOTICE: " . $message;
+        $message = 'NOTICE: ' . $message;
         // print during test generation
         if ($this->phase === MftfApplicationConfig::GENERATION_PHASE && $verbose) {
-            print ($message . json_encode($context) . "\n");
+            print($message . json_encode($context) . "\n");
         }
         // suppress logging during test execution
         if ($this->phase !== MftfApplicationConfig::EXECUTION_PHASE) {

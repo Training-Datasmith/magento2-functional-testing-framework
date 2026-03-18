@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -11,7 +13,7 @@ namespace Magento\FunctionalTestingFramework\ObjectManager;
  */
 interface ObjectHandlerInterface
 {
-    const OBJ_DEPRECATED = 'deprecated';
+    public const OBJ_DEPRECATED = 'deprecated';
 
     /**
      * Function to enforce singleton design pattern

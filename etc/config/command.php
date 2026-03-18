@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -38,11 +40,11 @@ if (!empty($_POST['token']) && !empty($_POST['command'])) {
                     }
                 }
                 if (empty($output)) {
-                    $output = "CLI did not return output.";
+                    $output = 'CLI did not return output.';
                 }
 
             } catch (Symfony\Component\Process\Exception\ProcessTimedOutException $exception) {
-                $output = "CLI command timed out, no output available.";
+                $output = 'CLI command timed out, no output available.';
                 $idleTimeout = true;
             }
 
@@ -58,15 +60,15 @@ if (!empty($_POST['token']) && !empty($_POST['command'])) {
             echo suppressFilePaths($output);
         } else {
             http_response_code(403);
-            echo "Given command not found valid in Magento CLI Command list.";
+            echo 'Given command not found valid in Magento CLI Command list.';
         }
     } else {
         http_response_code(401);
-        echo("Command not unauthorized.");
+        echo('Command not unauthorized.');
     }
 } else {
     http_response_code(412);
-    echo("Required parameters are not set.");
+    echo('Required parameters are not set.');
 }
 
 /**
@@ -78,7 +80,7 @@ if (!empty($_POST['token']) && !empty($_POST['command'])) {
 function escapeCommand($command)
 {
     $escapeExceptions = [
-        '> /dev/null &' => '--dev-null-amp--'
+        '> /dev/null &' => '--dev-null-amp--',
     ];
 
     $command = escapeshellcmd(
@@ -98,7 +100,7 @@ function validateCommand($magentoBinary, $command)
 {
     exec($magentoBinary . ' list', $commandList);
     // Trim list of commands after first whitespace
-    $commandList = array_map("trimAfterWhitespace", $commandList);
+    $commandList = array_map('trimAfterWhitespace', $commandList);
     return in_array(trimAfterWhitespace($command), $commandList);
 }
 

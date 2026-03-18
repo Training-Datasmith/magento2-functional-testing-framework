@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -8,10 +9,10 @@ declare(strict_types=1);
 
 namespace tests\unit\Magento\FunctionalTestFramework\Util;
 
-use ReflectionProperty;
-use tests\unit\Util\MagentoTestCase;
 use Magento\FunctionalTestingFramework\Util\GenerationErrorHandler;
 use PHPUnit\Framework\Attributes\DataProvider;
+use ReflectionProperty;
+use tests\unit\Util\MagentoTestCase;
 
 /**
  * Class GenerationErrorHandlerTest
@@ -21,7 +22,7 @@ class GenerationErrorHandlerTest extends MagentoTestCase
     /**
      * Test get errors when all errors are distinct
      */
-    public function testGetDistinctErrors():void
+    public function testGetDistinctErrors(): void
     {
         $expectedAllErrors = [
             'test' => [
@@ -32,14 +33,14 @@ class GenerationErrorHandlerTest extends MagentoTestCase
                 'Sameple2Test' => [
                     'message' => 'TestError2',
                     'generated' => true,
-                ]
+                ],
             ],
             'suite' => [
                 'Sameple1Suite' => [
                     'message' => 'SuiteError1',
                     'generated' => false,
                 ],
-            ]
+            ],
         ];
 
         $expectedTestErrors = [
@@ -50,7 +51,7 @@ class GenerationErrorHandlerTest extends MagentoTestCase
             'Sameple2Test' => [
                 'message' => 'TestError2',
                 'generated' => true,
-            ]
+            ],
         ];
 
         $expectedSuiteErrors = [
@@ -81,11 +82,11 @@ class GenerationErrorHandlerTest extends MagentoTestCase
                 'Sameple1Test' => [
                     'message' => [
                         0 => 'TestError1',
-                        1 => 'TestError3'
+                        1 => 'TestError3',
                     ],
                     'generated' => [
                         0 => false,
-                        1 => true
+                        1 => true,
                     ],
                 ],
                 'Sameple2Test' => [
@@ -111,11 +112,11 @@ class GenerationErrorHandlerTest extends MagentoTestCase
             'Sameple1Test' => [
                 'message' => [
                     0 => 'TestError1',
-                    1 => 'TestError3'
+                    1 => 'TestError3',
                 ],
                 'generated' => [
                     0 => false,
-                    1 => true
+                    1 => true,
                 ],
             ],
             'Sameple2Test' => [
@@ -160,11 +161,11 @@ class GenerationErrorHandlerTest extends MagentoTestCase
                 'Sameple1Test' => [
                     'message' => [
                         0 => 'TestError1',
-                        1 => 'TestError1'
+                        1 => 'TestError1',
                     ],
                     'generated' => [
                         0 => false,
-                        1 => false
+                        1 => false,
                     ],
                 ],
                 'Sameple2Test' => [
@@ -190,11 +191,11 @@ class GenerationErrorHandlerTest extends MagentoTestCase
             'Sameple1Test' => [
                 'message' => [
                     0 => 'TestError1',
-                    1 => 'TestError1'
+                    1 => 'TestError1',
                 ],
                 'generated' => [
                     0 => false,
-                    1 => false
+                    1 => false,
                 ],
             ],
             'Sameple2Test' => [
@@ -262,7 +263,7 @@ class GenerationErrorHandlerTest extends MagentoTestCase
             ['', [
                     'test' => [],
                     'suite' => [],
-                ]
+                ],
             ],
             ['TestError1'
                 . PHP_EOL
@@ -282,11 +283,11 @@ class GenerationErrorHandlerTest extends MagentoTestCase
                         'Sameple1Test' => [
                             'message' => [
                                 0 => 'TestError1',
-                                1 => 'TestError2'
+                                1 => 'TestError2',
                             ],
                             'generated' => [
                                 0 => false,
-                                1 => false
+                                1 => false,
                             ],
                         ],
                         'Sameple2Test' => [
@@ -312,7 +313,7 @@ class GenerationErrorHandlerTest extends MagentoTestCase
                             ],
                         ],
                     ],
-                ]
+                ],
             ],
         ];
     }

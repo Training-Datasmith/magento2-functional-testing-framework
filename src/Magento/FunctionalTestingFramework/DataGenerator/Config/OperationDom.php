@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -6,8 +8,6 @@
 
 namespace Magento\FunctionalTestingFramework\DataGenerator\Config;
 
-use Magento\FunctionalTestingFramework\Config\Dom\NodeMergingConfig;
-use Magento\FunctionalTestingFramework\Config\Dom\NodePathMatcher;
 use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
 use Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUtil;
 
@@ -17,9 +17,9 @@ use Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUt
  */
 class OperationDom extends \Magento\FunctionalTestingFramework\Config\MftfDom
 {
-    const METADATA_FILE_NAME_ENDING = "meta";
-    const METADATA_META_FILENAME_ATTRIBUTE = "filename";
-    const METADATA_META_NAME_ATTRIBUTE = "name";
+    public const METADATA_FILE_NAME_ENDING = 'meta';
+    public const METADATA_META_FILENAME_ATTRIBUTE = 'filename';
+    public const METADATA_META_NAME_ATTRIBUTE = 'name';
 
     /**
      * NodeValidationUtil

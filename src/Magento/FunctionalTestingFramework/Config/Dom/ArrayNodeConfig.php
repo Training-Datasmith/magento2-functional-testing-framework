@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -83,20 +85,20 @@ class ArrayNodeConfig
     {
         $finalPatterns = [];
         foreach ($assocArrayAttributes as $pattern => $key) {
-            $vars = explode("/", ltrim((string) $pattern, "/"));
-            $stringPatterns = [""];
+            $vars = explode('/', ltrim((string) $pattern, '/'));
+            $stringPatterns = [''];
             foreach ($vars as $var) {
-                if (strstr($var, "|")) {
-                    $repOpen = str_replace("(", "", $var);
-                    $repClosed = str_replace(")", "", $repOpen);
-                    $nestedPatterns = explode("|", $repClosed);
+                if (strstr($var, '|')) {
+                    $repOpen = str_replace('(', '', $var);
+                    $repClosed = str_replace(')', '', $repOpen);
+                    $nestedPatterns = explode('|', $repClosed);
                     $stringPatterns = $this->mergeStrings($stringPatterns, $nestedPatterns);
                     continue;
                 }
 
                 // append this path to all of the paths that currently exist
                 array_walk($stringPatterns, function (string &$value, $key) use ($var): void {
-                    $value .= "/" . $var;
+                    $value .= '/' . $var;
                 });
             }
 
@@ -117,7 +119,7 @@ class ArrayNodeConfig
         $result = [];
         foreach ($parentStrings as $pString) {
             foreach ($childStrings as $cString) {
-                $result[] = $pString . "/" . $cString;
+                $result[] = $pString . '/' . $cString;
             }
         }
 

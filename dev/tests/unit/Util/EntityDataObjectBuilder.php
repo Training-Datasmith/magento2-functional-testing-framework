@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -16,11 +18,11 @@ class EntityDataObjectBuilder
      * @var array
      */
     private $data = [
-        "name" => "Hopper",
-        "gpa" => "3.5678",
-        "phone" => "5555555",
-        "isprimary" => "true",
-        "empty_string" => ""
+        'name' => 'Hopper',
+        'gpa' => '3.5678',
+        'phone' => '5555555',
+        'isprimary' => 'true',
+        'empty_string' => '',
     ];
 
     /**
@@ -28,14 +30,14 @@ class EntityDataObjectBuilder
      *
      * @var string
      */
-    private $name = "testDataObject";
+    private $name = 'testDataObject';
 
     /**
      * Name of the data object type (e.g. customer, category etc.)
      *
      * @var string
      */
-    private $type = "testType";
+    private $type = 'testType';
 
     /**
      * A flat array containing linked entity name => linked entity type.

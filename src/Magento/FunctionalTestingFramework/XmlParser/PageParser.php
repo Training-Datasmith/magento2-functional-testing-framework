@@ -1,13 +1,12 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
 
 namespace Magento\FunctionalTestingFramework\XmlParser;
-
-use Magento\FunctionalTestingFramework\Config\DataInterface;
-use Magento\FunctionalTestingFramework\ObjectManagerInterface;
 
 /**
  * Generic Xml Parser.
@@ -28,8 +27,7 @@ class PageParser implements ParserInterface
          * Configuration data.
          */
         protected \Magento\FunctionalTestingFramework\Config\DataInterface $configData
-    )
-    {
+    ) {
     }
 
     /**

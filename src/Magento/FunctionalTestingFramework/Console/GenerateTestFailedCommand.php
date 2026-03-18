@@ -1,28 +1,25 @@
 <?php
+
 /**
  * Copyright 2021 Adobe
  * All Rights Reserved.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Magento\FunctionalTestingFramework\Console;
 
 use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Symfony\Component\Console\Input\InputOption;
 
 class GenerateTestFailedCommand extends BaseGenerateCommand
 {
     /**
      * Default Test group to signify not in suite
      */
-    const DEFAULT_TEST_GROUP = 'default';
+    public const DEFAULT_TEST_GROUP = 'default';
 
     /**
      * Configures the current command.
@@ -60,7 +57,7 @@ class GenerateTestFailedCommand extends BaseGenerateCommand
         );
 
         $testsFailedFile = $this->getTestsOutputDir() . self::FAILED_FILE;
-        $testsReRunFile = $this->getTestsOutputDir() . "rerun_tests";
+        $testsReRunFile = $this->getTestsOutputDir() . 'rerun_tests';
         $testConfiguration = $this->getFailedTestList($testsFailedFile, $testsReRunFile);
 
         if ($testConfiguration === null) {
@@ -76,10 +73,10 @@ class GenerateTestFailedCommand extends BaseGenerateCommand
             '--remove' => true,
             '--debug' => $debug,
             '--allow-skipped' => $allowSkipped,
-            '-v' => $verbose
+            '-v' => $verbose,
         ];
         $command->run(new ArrayInput($args), $output);
-        $output->writeln("Test Failed Generated, now run:failed command");
+        $output->writeln('Test Failed Generated, now run:failed command');
         return 0;
     }
 
@@ -101,7 +98,7 @@ class GenerateTestFailedCommand extends BaseGenerateCommand
                     $this->writeFailedTestToFile($test, $testsReRunFile);
                     $testInfo = explode(DIRECTORY_SEPARATOR, (string) $test);
                     $testName = isset($testInfo[count($testInfo) - 1][1])
-                        ? explode(":", $testInfo[count($testInfo) - 1])[1]
+                        ? explode(':', $testInfo[count($testInfo) - 1])[1]
                         : [];
                     $suiteName = $testInfo[count($testInfo) - 2] ?? [];
                     if ($suiteName === self::DEFAULT_TEST_GROUP) {
@@ -136,10 +133,10 @@ class GenerateTestFailedCommand extends BaseGenerateCommand
      */
     private function sanitizeSuiteName(string|array $suiteName): string|array
     {
-        $suiteNameArray = explode("_", $suiteName);
+        $suiteNameArray = explode('_', $suiteName);
         if (array_pop($suiteNameArray) === 'G') {
             if (is_numeric(array_pop($suiteNameArray))) {
-                $suiteName = implode("_", $suiteNameArray);
+                $suiteName = implode('_', $suiteNameArray);
             }
         }
         return $suiteName;
@@ -156,7 +153,7 @@ class GenerateTestFailedCommand extends BaseGenerateCommand
         if (realpath($filePath)) {
             return file($filePath, FILE_IGNORE_NEW_LINES);
         }
-        return "";
+        return '';
     }
 
     /**

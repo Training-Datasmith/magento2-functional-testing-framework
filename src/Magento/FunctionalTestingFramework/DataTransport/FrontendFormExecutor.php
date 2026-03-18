@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -6,10 +8,10 @@
 
 namespace Magento\FunctionalTestingFramework\DataTransport;
 
-use Magento\FunctionalTestingFramework\Util\MftfGlobals;
 use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlInterface;
 use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlTransport;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
+use Magento\FunctionalTestingFramework\Util\MftfGlobals;
 
 /**
  * Curl executor for requests to Frontend.
@@ -49,11 +51,11 @@ class FrontendFormExecutor implements CurlInterface
     public function __construct(/**
      * Customer email used for authentication.
      */
-    private $customerEmail, /**
+        private $customerEmail, /**
      * Customer password used for authentication.
      */
-    private $customerPassword)
-    {
+        private $customerPassword
+    ) {
         $this->transport = new CurlTransport();
         $this->authorize();
     }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -33,7 +35,7 @@ class UpdateAssertionSchema implements UpgradeInterface
         $testsUpdated = 0;
         foreach ($testPaths as $testsPath) {
             $finder = new Finder();
-            $finder->files()->in($testsPath)->name("*.xml");
+            $finder->files()->in($testsPath)->name('*.xml');
 
             $fileSystem = new Filesystem();
             foreach ($finder->files() as $file) {
@@ -72,8 +74,8 @@ class UpdateAssertionSchema implements UpgradeInterface
         $assertType = ltrim(explode(' ', $assertion)[0], '<');
 
         // regex to all attribute=>value pairs
-        $allAttributes = "stepKey|actual|actualType|expected|expectedType|expectedValue|";
-        $allAttributes .= "delta|message|selector|attribute|before|after|remove";
+        $allAttributes = 'stepKey|actual|actualType|expected|expectedType|expectedValue|';
+        $allAttributes .= 'delta|message|selector|attribute|before|after|remove';
         $grabValueRegex = '/('. $allAttributes .')=(\'[^\']*\'|"[^"]*")/';
 
         // Makes 3 arrays in $grabbedParts:
@@ -89,7 +91,7 @@ class UpdateAssertionSchema implements UpgradeInterface
         // Begin trimming values and adding back into new string
         $trimmedParts = [];
         $newString = "<$assertType";
-        $subElements = ["actual" => [], "expected" => []];
+        $subElements = ['actual' => [], 'expected' => []];
         foreach ($sortedParts as $type => $value) {
             // If attribute="'value'", elseif attribute='"value"', new nested format will break if we leave these in
             if (str_starts_with($value, '"')) {
@@ -98,29 +100,29 @@ class UpdateAssertionSchema implements UpgradeInterface
                 $value = rtrim(ltrim($value, "'"), "'");
             }
             // If value is empty string (" " or ' '), trim again to become empty
-            if (str_replace(" ", "", $value) === "''") {
-                $value = "";
-            } elseif (str_replace(" ", "", $value) === '""') {
-                $value = "";
+            if (str_replace(' ', '', $value) === "''") {
+                $value = '';
+            } elseif (str_replace(' ', '', $value) === '""') {
+                $value = '';
             }
 
             // Value is ready for storage/reapply
             $trimmedParts[$type] = $value;
-            if (in_array($type, ["stepKey", "delta", "message", "before", "after", "remove"])) {
+            if (in_array($type, ['stepKey', 'delta', 'message', 'before', 'after', 'remove'])) {
                 // Add back as attribute safely
                 $newString .= " $type=\"$value\"";
                 continue;
             }
 
             // Store in subtype for child element creation
-            if ($type === "actual") {
-                $subElements["actual"]["value"] = $value;
-            } elseif ($type === "actualType") {
-                $subElements["actual"]["type"] = $value;
-            } elseif ($type === "expected" or $type === "expectedValue") {
-                $subElements["expected"]["value"] = $value;
-            } elseif ($type === "expectedType") {
-                $subElements["expected"]["type"] = $value;
+            if ($type === 'actual') {
+                $subElements['actual']['value'] = $value;
+            } elseif ($type === 'actualType') {
+                $subElements['actual']['type'] = $value;
+            } elseif ($type === 'expected' or $type === 'expectedValue') {
+                $subElements['expected']['value'] = $value;
+            } elseif ($type === 'expectedType') {
+                $subElements['expected']['type'] = $value;
             }
         }
         $newString .= ">\n";
@@ -128,11 +130,11 @@ class UpdateAssertionSchema implements UpgradeInterface
         // Assert type is very edge-cased, completely different schema
         if ($assertType === 'assertElementContainsAttribute') {
             // assertElementContainsAttribute type defaulted to string if not present
-            if (!isset($subElements["expected"]['type'])) {
-                $subElements["expected"]['type'] = "string";
+            if (!isset($subElements['expected']['type'])) {
+                $subElements['expected']['type'] = 'string';
             }
-            $value = $subElements['expected']['value'] ?? "";
-            $type = $subElements["expected"]['type'];
+            $value = $subElements['expected']['value'] ?? '';
+            $type = $subElements['expected']['type'];
             $selector = $trimmedParts['selector'];
             $attribute = $trimmedParts['attribute'];
             // @codingStandardsIgnoreStart
@@ -140,11 +142,11 @@ class UpdateAssertionSchema implements UpgradeInterface
             // @codingStandardsIgnoreEnd
         } else {
             // Set type to const if it's absent, old default
-            if (isset($subElements["actual"]['value']) && !isset($subElements["actual"]['type'])) {
-                $subElements["actual"]['type'] = "const";
+            if (isset($subElements['actual']['value']) && !isset($subElements['actual']['type'])) {
+                $subElements['actual']['type'] = 'const';
             }
-            if (isset($subElements["expected"]['value']) && !isset($subElements["expected"]['type'])) {
-                $subElements["expected"]['type'] = "const";
+            if (isset($subElements['expected']['value']) && !isset($subElements['expected']['type'])) {
+                $subElements['expected']['type'] = 'const';
             }
             foreach ($subElements as $type => $subElement) {
                 if (empty($subElement)) {

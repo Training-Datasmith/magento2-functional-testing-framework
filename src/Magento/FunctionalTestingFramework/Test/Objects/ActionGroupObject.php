@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -14,30 +16,30 @@ use Magento\FunctionalTestingFramework\Test\Util\ActionMergeUtil;
  */
 class ActionGroupObject
 {
-    const ACTION_GROUP_ORIGIN_NAME = "actionGroupName";
-    const ACTION_GROUP_ORIGIN_TEST_REF = "testInvocationRef";
-    const ACTION_GROUP_DESCRIPTION = "description";
-    const ACTION_GROUP_PAGE = "page";
-    const ACTION_GROUP_CONTEXT_START = "Entering Action Group ";
-    const ACTION_GROUP_CONTEXT_END = "Exiting Action Group ";
-    const STEPKEY_REPLACEMENT_ENABLED_TYPES = [
-        "executeJS",
-        "magentoCLI",
-        "generateDate",
-        "formatCurrency",
-        "deleteData",
-        "getData",
-        "updateData",
-        "createData",
-        "grabAttributeFrom",
-        "grabCookie",
-        "grabCookieAttributes",
-        "grabFromCurrentUrl",
-        "grabMultiple",
-        "grabPageSource",
-        "grabTextFrom",
-        "grabValueFrom",
-        "getOTP"
+    public const ACTION_GROUP_ORIGIN_NAME = 'actionGroupName';
+    public const ACTION_GROUP_ORIGIN_TEST_REF = 'testInvocationRef';
+    public const ACTION_GROUP_DESCRIPTION = 'description';
+    public const ACTION_GROUP_PAGE = 'page';
+    public const ACTION_GROUP_CONTEXT_START = 'Entering Action Group ';
+    public const ACTION_GROUP_CONTEXT_END = 'Exiting Action Group ';
+    public const STEPKEY_REPLACEMENT_ENABLED_TYPES = [
+        'executeJS',
+        'magentoCLI',
+        'generateDate',
+        'formatCurrency',
+        'deleteData',
+        'getData',
+        'updateData',
+        'createData',
+        'grabAttributeFrom',
+        'grabCookie',
+        'grabCookieAttributes',
+        'grabFromCurrentUrl',
+        'grabMultiple',
+        'grabPageSource',
+        'grabTextFrom',
+        'grabValueFrom',
+        'getOTP',
     ];
 
     /**
@@ -156,7 +158,7 @@ class ActionGroupObject
      */
     public function getSteps($arguments, $actionReferenceKey)
     {
-        $mergeUtil = new ActionMergeUtil($this->name, "ActionGroup");
+        $mergeUtil = new ActionMergeUtil($this->name, 'ActionGroup');
 
         $args = $this->resolveArguments($arguments);
 
@@ -189,7 +191,7 @@ class ActionGroupObject
         }
 
         if (!empty($emptyArguments)) {
-            $error = 'Arguments missed (' . implode(", ", $emptyArguments) . ') for actionGroup "' . $this->name . '"';
+            $error = 'Arguments missed (' . implode(', ', $emptyArguments) . ') for actionGroup "' . $this->name . '"';
             throw new TestReferenceException($error);
         }
 
@@ -399,7 +401,7 @@ class ActionGroupObject
         if ($isInnerArgument) {
             return preg_replace("/(?<![\w]){$variableName}(?![(\w])/", $argumentValue, $attributeValue);
         } else {
-            return str_replace("{{{$variableName}}}", $argumentValue ?? "", $attributeValue ?? "");
+            return str_replace("{{{$variableName}}}", $argumentValue ?? '', $attributeValue ?? '');
         }
     }
 
@@ -572,12 +574,12 @@ class ActionGroupObject
      */
     private function addContextCommentsToActionList($actionList, $actionReferenceKey)
     {
-        $actionStartComment = self::ACTION_GROUP_CONTEXT_START . "[" . $actionReferenceKey . "] " . $this->name;
-        $actionEndComment = self::ACTION_GROUP_CONTEXT_END . "[" . $actionReferenceKey . "] " . $this->name;
+        $actionStartComment = self::ACTION_GROUP_CONTEXT_START . '[' . $actionReferenceKey . '] ' . $this->name;
+        $actionEndComment = self::ACTION_GROUP_CONTEXT_END . '[' . $actionReferenceKey . '] ' . $this->name;
 
         $deprecationNotices = [];
         if ($this->getDeprecated() !== null) {
-            $deprecationNotices[] = "DEPRECATED ACTION GROUP in Test: " . $this->name . ' ' . $this->getDeprecated();
+            $deprecationNotices[] = 'DEPRECATED ACTION GROUP in Test: ' . $this->name . ' ' . $this->getDeprecated();
         }
 
         $startAction = new ActionObject(

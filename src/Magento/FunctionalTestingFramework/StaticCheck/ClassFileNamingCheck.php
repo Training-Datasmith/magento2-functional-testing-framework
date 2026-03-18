@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2024 Adobe
  * All Rights Reserved.
@@ -6,9 +8,9 @@
 
 namespace Magento\FunctionalTestingFramework\StaticCheck;
 
-use Symfony\Component\Console\Input\InputInterface;
 use Exception;
 use Magento\FunctionalTestingFramework\Util\Script\ScriptUtil;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
@@ -17,10 +19,10 @@ use Symfony\Component\Finder\SplFileInfo;
  */
 class ClassFileNamingCheck implements StaticCheckInterface
 {
-    const ERROR_LOG_FILENAME = 'mftf-class-file-naming-check';
-    const ERROR_LOG_MESSAGE = 'MFTF Class File Naming Check';
-    const ALLOW_LIST_FILENAME = 'class-file-naming-allowlist';
-    const WARNING_LOG_FILENAME = 'mftf-class-file-naming-warnings';
+    public const ERROR_LOG_FILENAME = 'mftf-class-file-naming-check';
+    public const ERROR_LOG_MESSAGE = 'MFTF Class File Naming Check';
+    public const ALLOW_LIST_FILENAME = 'class-file-naming-allowlist';
+    public const WARNING_LOG_FILENAME = 'mftf-class-file-naming-warnings';
 
     /**
      * Array containing all warnings found after running the execute() function.
@@ -68,10 +70,10 @@ class ClassFileNamingCheck implements StaticCheckInterface
                 }
             }
         }
-        $testXmlFiles = $this->scriptUtil->getModuleXmlFilesByScope($modulePaths, "Test");
-        $actionGroupXmlFiles = $this->scriptUtil->getModuleXmlFilesByScope($modulePaths, "ActionGroup");
-        $pageXmlFiles = $this->scriptUtil->getModuleXmlFilesByScope($modulePaths, "Page");
-        $sectionXmlFiles = $this->scriptUtil->getModuleXmlFilesByScope($modulePaths, "Section");
+        $testXmlFiles = $this->scriptUtil->getModuleXmlFilesByScope($modulePaths, 'Test');
+        $actionGroupXmlFiles = $this->scriptUtil->getModuleXmlFilesByScope($modulePaths, 'ActionGroup');
+        $pageXmlFiles = $this->scriptUtil->getModuleXmlFilesByScope($modulePaths, 'Page');
+        $sectionXmlFiles = $this->scriptUtil->getModuleXmlFilesByScope($modulePaths, 'Section');
         $suiteXmlFiles = $this->scriptUtil->getModuleXmlFilesByScope($modulePaths, 'Suite');
         $this->errors = [];
         $this->errors += $this->findErrorsInFileSet($testXmlFiles, 'test');
@@ -129,18 +131,18 @@ class ClassFileNamingCheck implements StaticCheckInterface
             $domDocument->load($filePath);
             $testResult = $this->getAttributesFromDOMNodeList(
                 $domDocument->getElementsByTagName($fileType),
-                ["type" => 'name']
+                ['type' => 'name']
             );
             if ($fileNameWithoutExtension != array_values($testResult[0])[0]) {
                 $isInAllowList = array_key_exists(array_values($testResult[0])[0], $this->allowFailureEntities);
                 if ($isInAllowList) {
-                     $errorOutput = ucfirst($fileType). " name does not match with file name 
-                    {$filePath->getRealPath()}. ".ucfirst($fileType)." ".array_values($testResult[0])[0];
-                     $this->warnings[$filePath->getFilename()][] = $errorOutput;
-                     continue;
+                    $errorOutput = ucfirst($fileType). " name does not match with file name 
+                    {$filePath->getRealPath()}. ".ucfirst($fileType).' '.array_values($testResult[0])[0];
+                    $this->warnings[$filePath->getFilename()][] = $errorOutput;
+                    continue;
                 }
                 $errorOutput =  ucfirst($fileType). " name does not match with file name 
-                    {$filePath->getRealPath()}. ".ucfirst($fileType)." ".array_values($testResult[0])[0];
+                    {$filePath->getRealPath()}. ".ucfirst($fileType).' '.array_values($testResult[0])[0];
                 $errors[$filePath->getFilename()][] = $errorOutput;
             }
         }

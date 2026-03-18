@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -11,14 +13,14 @@ use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
 
 class ActionGroupObjectBuilder
 {
-    const DEFAULT_ACTION_OBJECT_NAME = 'action1';
+    public const DEFAULT_ACTION_OBJECT_NAME = 'action1';
 
     /**
      * Action Group Object Builder default name
      *
      * @var string
      */
-    private $name = "testActionGroupObject";
+    private $name = 'testActionGroupObject';
 
     /**
      * Action Group Object Builder default action objects (set by constructor).
@@ -133,7 +135,7 @@ class ActionGroupObjectBuilder
     public function __construct()
     {
         $this->actionObjects = [
-            new ActionObject(self::DEFAULT_ACTION_OBJECT_NAME, 'testAction', ['userInput' => 'literal'])
+            new ActionObject(self::DEFAULT_ACTION_OBJECT_NAME, 'testAction', ['userInput' => 'literal']),
         ];
     }
 

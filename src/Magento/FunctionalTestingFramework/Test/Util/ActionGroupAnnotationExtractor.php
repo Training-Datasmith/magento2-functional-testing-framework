@@ -1,12 +1,12 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
  */
 
 namespace Magento\FunctionalTestingFramework\Test\Util;
-
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 
 /**
  * Class AnnotationExtractor

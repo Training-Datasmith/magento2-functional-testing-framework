@@ -1,10 +1,11 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Magento\FunctionalTestingFramework\Console;
 
@@ -40,7 +41,7 @@ class GenerateSuiteCommand extends BaseGenerateCommand
      * @return integer|null|void
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output):int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $force = $input->getOption('force');
         $debug = $input->getOption('debug') ?? MftfApplicationConfig::LEVEL_DEVELOPER; // for backward compatibility
@@ -80,18 +81,18 @@ class GenerateSuiteCommand extends BaseGenerateCommand
 
         if (empty(GenerationErrorHandler::getInstance()->getAllErrors())) {
             if ($generated > 0) {
-                $output->writeln("Suites Generated" . PHP_EOL);
+                $output->writeln('Suites Generated' . PHP_EOL);
                 return 0;
             }
         } else {
             GenerationErrorHandler::getInstance()->printErrorSummary();
             if ($generated > 0) {
-                $output->writeln("Suites Generated (with errors)" . PHP_EOL);
+                $output->writeln('Suites Generated (with errors)' . PHP_EOL);
                 return 1;
             }
         }
 
-        $output->writeln("No Suite Generated" . PHP_EOL);
+        $output->writeln('No Suite Generated' . PHP_EOL);
         return 1;
     }
 }

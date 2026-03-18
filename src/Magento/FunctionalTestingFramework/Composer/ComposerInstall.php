@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -78,7 +80,7 @@ class ComposerInstall extends AbstractComposer
                         $package->getSuggests()
                     ),
                     self::PACKAGE_INSTALLEDPATH => $this->getComposer()->getInstallationManager()
-                        ->getInstallPath($package)
+                        ->getInstallPath($package),
                 ];
             }
         }

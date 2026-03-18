@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2021 Adobe
  * All Rights Reserved.
@@ -6,10 +8,10 @@
 
 namespace tests\unit\Magento\FunctionalTestFramework\Console;
 
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
-use Magento\FunctionalTestingFramework\Exceptions\FastFailException;
 use Magento\FunctionalTestingFramework\Console\GenerateTestsCommand;
+use Magento\FunctionalTestingFramework\Exceptions\FastFailException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
 class GenerateTestsCommandTest extends TestCase
 {
@@ -67,13 +69,13 @@ class GenerateTestsCommandTest extends TestCase
             [null, '-10', "'groups' option must be an integer and greater than 0"], /* #19 */
             [null, '12x', "'groups' option must be an integer and greater than 0"], /* #20 */
             ['20', '300', "'time' and 'groups' options are mutually exclusive. "
-                . "Only one can be specified for 'config parallel'"
+                . "Only one can be specified for 'config parallel'",
             ],                                                                      /* #21 */
             [20, 300, "'time' and 'groups' options are mutually exclusive. "
-                . "Only one can be specified for 'config parallel'"
+                . "Only one can be specified for 'config parallel'",
             ],                                                                      /* #22 */
             ['0', 0, "'time' and 'groups' options are mutually exclusive. "
-                . "Only one can be specified for 'config parallel'"
+                . "Only one can be specified for 'config parallel'",
             ],                                                                      /* #23 */
             [[1], null, "'time' option must be an integer and greater than 0"],     /* #24 */
             [null, [-1], "'groups' option must be an integer and greater than 0"],  /* #25 */

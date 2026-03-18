@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -11,12 +13,12 @@ use tests\util\MftfTestCase;
 
 class ReferenceReplacementGenerationTest extends MftfTestCase
 {
-    const DATA_REPLACEMENT_TEST = 'DataReplacementTest';
-    const PERSISTED_REPLACEMENT_TEST = 'PersistedReplacementTest';
-    const PAGE_REPLACEMENT_TEST = 'PageReplacementTest';
-    const ADMIN_PAGE_TEST = 'AdminPageTest';
-    const SECTION_REPLACEMENT_TEST = 'SectionReplacementTest';
-    const RESOURCES_PATH = __DIR__ . '/../Resources';
+    public const DATA_REPLACEMENT_TEST = 'DataReplacementTest';
+    public const PERSISTED_REPLACEMENT_TEST = 'PersistedReplacementTest';
+    public const PAGE_REPLACEMENT_TEST = 'PageReplacementTest';
+    public const ADMIN_PAGE_TEST = 'AdminPageTest';
+    public const SECTION_REPLACEMENT_TEST = 'SectionReplacementTest';
+    public const RESOURCES_PATH = __DIR__ . '/../Resources';
 
     /**
      * Tests replacement of {{data.key}} references.
@@ -57,7 +59,7 @@ class ReferenceReplacementGenerationTest extends MftfTestCase
     public function testExternalPageBadReference()
     {
         $this->expectException(TestReferenceException::class);
-        $this->generateAndCompareTest("ExternalPageTestBadReference");
+        $this->generateAndCompareTest('ExternalPageTestBadReference');
     }
 
     /**
@@ -77,6 +79,6 @@ class ReferenceReplacementGenerationTest extends MftfTestCase
      */
     public function testCharacterReplacementCest()
     {
-        $this->generateAndCompareTest("CharacterReplacementTest");
+        $this->generateAndCompareTest('CharacterReplacementTest');
     }
 }

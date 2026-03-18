@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -7,7 +9,6 @@
 namespace Magento\FunctionalTestingFramework\Util\Manifest;
 
 use Magento\FunctionalTestingFramework\Suite\Handlers\SuiteObjectHandler;
-use Magento\FunctionalTestingFramework\Suite\Objects\SuiteObject;
 use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
 
 abstract class BaseTestManifest
@@ -27,10 +28,10 @@ abstract class BaseTestManifest
     public function __construct($path, /**
      * Type of manifest to generate. (Currently describes whether to path to a dir or for each test).
      */
-    protected $runTypeConfig, /**
+        protected $runTypeConfig, /**
      * Suite configuration in the format suite name to test name. Overwritten during a custom configuration.
      */
-    protected $suiteConfiguration)
+        protected $suiteConfiguration)
     {
         $relativeDirPath = substr($path, strlen(TESTS_BP));
         $this->relativeDirPath = ltrim($relativeDirPath, DIRECTORY_SEPARATOR);

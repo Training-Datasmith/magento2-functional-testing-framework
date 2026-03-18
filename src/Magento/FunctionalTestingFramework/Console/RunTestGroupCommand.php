@@ -1,10 +1,11 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Magento\FunctionalTestingFramework\Console;
 
@@ -33,13 +34,13 @@ class RunTestGroupCommand extends BaseGenerateCommand
                 'xml',
                 'xml',
                 InputOption::VALUE_NONE,
-                "creates xml report for executed group"
+                'creates xml report for executed group'
             )
             ->addOption(
                 'skip-generate',
                 'k',
                 InputOption::VALUE_NONE,
-                "only execute a group of tests without generating from source xml"
+                'only execute a group of tests without generating from source xml'
             )->addArgument(
                 'groups',
                 InputArgument::IS_ARRAY | InputArgument::REQUIRED,
@@ -61,7 +62,7 @@ class RunTestGroupCommand extends BaseGenerateCommand
     {
         $xml = ($input->getOption('xml'))
             ? '--xml'
-            : "";
+            : '';
         $skipGeneration = $input->getOption('skip-generate');
         $force = $input->getOption('force');
         $groups = $input->getArgument('groups');
@@ -73,7 +74,7 @@ class RunTestGroupCommand extends BaseGenerateCommand
         if ($skipGeneration and $remove) {
             // "skip-generate" and "remove" options cannot be used at the same time
             throw new TestFrameworkException(
-                "\"skip-generate\" and \"remove\" options can not be used at the same time."
+                '"skip-generate" and "remove" options can not be used at the same time.'
             );
         }
 
@@ -97,7 +98,7 @@ class RunTestGroupCommand extends BaseGenerateCommand
                 '--remove' => $remove,
                 '--debug' => $debug,
                 '--allow-skipped' => $allowSkipped,
-                '-v' => $verbose
+                '-v' => $verbose,
             ];
 
             $command->run(new ArrayInput($args), $output);

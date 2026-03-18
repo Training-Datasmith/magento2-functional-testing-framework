@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -16,20 +18,20 @@ use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
  */
 class ActionMergeUtil
 {
-    const STEP_MISSING_ERROR_MSG =
+    public const STEP_MISSING_ERROR_MSG =
         "Merge Error - Step could not be found in either TestXML or DeltaXML.
         \t%s: '%s'\tTestStep: '%s'\tLinkedStep: '%s'";
 
-    const WAIT_ATTR = 'timeout';
-    const WAIT_ACTION_NAME = 'waitForPageLoad';
-    const WAIT_ACTION_SUFFIX = 'WaitForPageLoad';
-    const DEFAULT_SKIP_ON_ORDER = 'before';
-    const DEFAULT_SKIP_OFF_ORDER = 'after';
-    const DEFAULT_WAIT_ORDER = 'after';
-    const APPROVED_ACTIONS = ['fillField', 'magentoCLI', 'field', 'seeInField'];
-    const SECRET_MAPPING = ['fillField' => 'fillSecretField', 'magentoCLI' => 'magentoCLISecret',
+    public const WAIT_ATTR = 'timeout';
+    public const WAIT_ACTION_NAME = 'waitForPageLoad';
+    public const WAIT_ACTION_SUFFIX = 'WaitForPageLoad';
+    public const DEFAULT_SKIP_ON_ORDER = 'before';
+    public const DEFAULT_SKIP_OFF_ORDER = 'after';
+    public const DEFAULT_WAIT_ORDER = 'after';
+    public const APPROVED_ACTIONS = ['fillField', 'magentoCLI', 'field', 'seeInField'];
+    public const SECRET_MAPPING = ['fillField' => 'fillSecretField', 'magentoCLI' => 'magentoCLISecret',
          'seeInField' => 'seeInSecretField'];
-    const CREDS_REGEX = "/{{_CREDS\.([\w|\/]+)}}/";
+    public const CREDS_REGEX = "/{{_CREDS\.([\w|\/]+)}}/";
 
     /**
      * Array holding final resulting steps
@@ -110,8 +112,8 @@ class ActionMergeUtil
             $actionType = $resolvedAction->getType();
 
             if ($actionHasSecretRef && !(in_array($actionType, self::APPROVED_ACTIONS))) {
-                throw new TestReferenceException("You cannot reference secret data outside " .
-                    "of the fillField, magentoCLI, seeInField and createData actions");
+                throw new TestReferenceException('You cannot reference secret data outside ' .
+                    'of the fillField, magentoCLI, seeInField and createData actions');
             }
 
             // Do NOT remap actions that don't need it.
@@ -251,7 +253,7 @@ class ActionMergeUtil
             } catch (\Exception $e) {
                 throw new TestReferenceException(
                     $e->getMessage() .
-                    ".\nException occurred parsing action at StepKey \"" . $parsedStep->getStepKey() . "\""
+                    ".\nException occurred parsing action at StepKey \"" . $parsedStep->getStepKey() . '"'
                 );
             }
         }

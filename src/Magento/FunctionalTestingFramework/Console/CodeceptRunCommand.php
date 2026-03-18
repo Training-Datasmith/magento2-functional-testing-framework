@@ -1,29 +1,30 @@
 <?php
+
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Magento\FunctionalTestingFramework\Console;
 
 use Codeception\Command\Run;
+use Magento\FunctionalTestingFramework\Console\Codecept\CodeceptCommandUtil;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Magento\FunctionalTestingFramework\Console\Codecept\CodeceptCommandUtil;
 
 class CodeceptRunCommand extends Run
 {
     /**
      * Configures the current command
      */
-    protected function configure():void
+    protected function configure(): void
     {
         $this->setName('codecept:run')
             ->setDescription(
-                "Wrapper command to vendor/bin/codecept:run. See https://codeception.com/docs/reference/Commands#Run"
+                'Wrapper command to vendor/bin/codecept:run. See https://codeception.com/docs/reference/Commands#Run'
             );
 
         parent::configure();

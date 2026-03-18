@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -6,8 +8,8 @@
 
 namespace Magento\Sniffs\MicroOptimizations;
 
-use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Files\File;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 class IsNullSniff implements Sniff
 {
@@ -32,7 +34,7 @@ class IsNullSniff implements Sniff
         $tokens = $sourceFile->getTokens();
         if ($tokens[$stackPtr]['content'] === $this->blocklist) {
             $sourceFile->addError(
-                "is_null must be avoided. Use strict comparison instead.",
+                'is_null must be avoided. Use strict comparison instead.',
                 $stackPtr,
                 'IsNullUsage'
             );

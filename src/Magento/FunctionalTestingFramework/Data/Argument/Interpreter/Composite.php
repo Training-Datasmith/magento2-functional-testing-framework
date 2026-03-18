@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -28,7 +30,7 @@ class Composite implements InterpreterInterface
     public function __construct(array $interpreters, /**
      * Data key that holds name of an interpreter to be used for that data
      */
-    private $discriminator)
+        private $discriminator)
     {
         foreach ($interpreters as $interpreterName => $interpreterInstance) {
             if (!$interpreterInstance instanceof InterpreterInterface) {

@@ -1,21 +1,22 @@
 <?php
+
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Magento\FunctionalTestingFramework\Console\Codecept;
 
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputInterface;
 
 class CodeceptCommandUtil
 {
-    const CODECEPTION_AUTOLOAD_FILE = PROJECT_ROOT . '/vendor/codeception/codeception/autoload.php';
+    public const CODECEPTION_AUTOLOAD_FILE = PROJECT_ROOT . '/vendor/codeception/codeception/autoload.php';
 
     /**
      * Current working directory
@@ -34,7 +35,7 @@ class CodeceptCommandUtil
 
         $tokens = preg_split('{\\s+}', $input->__toString());
         $tokens[0] = str_replace('codecept:', '', $tokens[0]);
-        \Closure::bind(fn&(ArgvInput $input) => $input->setTokens($tokens), null, ArgvInput::class);
+        \Closure::bind(fn &(ArgvInput $input) => $input->setTokens($tokens), null, ArgvInput::class);
     }
     // @codingStandardsIgnoreEnd
     /**

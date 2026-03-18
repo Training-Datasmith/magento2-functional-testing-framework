@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -18,13 +20,13 @@ use tests\util\MftfTestCase;
 
 class ResilientGenerationTest extends MftfTestCase
 {
-    const RESOURCES_DIR = TESTS_BP . DIRECTORY_SEPARATOR . 'verification' . DIRECTORY_SEPARATOR . 'Resources';
-    const CONFIG_YML_FILE = TESTS_BP . DIRECTORY_SEPARATOR . SuiteGenerator::YAML_CODECEPTION_CONFIG_FILENAME;
-    const GENERATE_RESULT_DIR = TESTS_BP .
+    public const RESOURCES_DIR = TESTS_BP . DIRECTORY_SEPARATOR . 'verification' . DIRECTORY_SEPARATOR . 'Resources';
+    public const CONFIG_YML_FILE = TESTS_BP . DIRECTORY_SEPARATOR . SuiteGenerator::YAML_CODECEPTION_CONFIG_FILENAME;
+    public const GENERATE_RESULT_DIR = TESTS_BP .
         DIRECTORY_SEPARATOR .
-        "verification" .
+        'verification' .
         DIRECTORY_SEPARATOR .
-        "_generated" .
+        '_generated' .
         DIRECTORY_SEPARATOR;
 
     /**
@@ -34,13 +36,13 @@ class ResilientGenerationTest extends MftfTestCase
      */
     private static $exceptionGrpLogs = [
         'NotGenerateHookBeforeSuite' => [
-            '/Suite NotGenerateHookBeforeSuite is not defined in xml or is invalid./'
+            '/Suite NotGenerateHookBeforeSuite is not defined in xml or is invalid./',
         ],
         'NotGenerateHookAfterSuite' => [
-            '/Suite NotGenerateHookAfterSuite is not defined in xml or is invalid./'
+            '/Suite NotGenerateHookAfterSuite is not defined in xml or is invalid./',
         ],
         'NotGenerateEmptySuite' => [
-            '/Suite NotGenerateEmptySuite is not defined in xml or is invalid./'
+            '/Suite NotGenerateEmptySuite is not defined in xml or is invalid./',
         ],
     ];
 
@@ -74,16 +76,16 @@ class ResilientGenerationTest extends MftfTestCase
 
         TestLoggingUtil::getInstance()->setMockLoggingUtil();
 
-        $property = new \ReflectionProperty(SuiteGenerator::class, "instance");
+        $property = new \ReflectionProperty(SuiteGenerator::class, 'instance');
         $property->setValue(null, null);
 
-        $property = new \ReflectionProperty(DirSetupUtil::class, "DIR_CONTEXT");
+        $property = new \ReflectionProperty(DirSetupUtil::class, 'DIR_CONTEXT');
         $property->setValue(null, []);
 
-        $property = new \ReflectionProperty(SuiteObjectHandler::class, "instance");
+        $property = new \ReflectionProperty(SuiteObjectHandler::class, 'instance');
         $property->setValue(null, null);
 
-        $property = new \ReflectionProperty(TestObjectHandler::class, "testObjectHandler");
+        $property = new \ReflectionProperty(TestObjectHandler::class, 'testObjectHandler');
         $property->setValue(null, null);
     }
 
@@ -201,7 +203,7 @@ class ResilientGenerationTest extends MftfTestCase
                 $message = '/suite generated/';
                 $context = [
                     'suite' => $groupName,
-                    'relative_path' => "_generated" . DIRECTORY_SEPARATOR . $groupName
+                    'relative_path' => '_generated' . DIRECTORY_SEPARATOR . $groupName,
                 ];
             } else {
                 $type = 'error';
@@ -255,16 +257,16 @@ class ResilientGenerationTest extends MftfTestCase
             self::CONFIG_YML_FILE
         );
 
-        $property = new \ReflectionProperty(SuiteGenerator::class, "instance");
+        $property = new \ReflectionProperty(SuiteGenerator::class, 'instance');
         $property->setValue(null, null);
 
-        $property = new \ReflectionProperty(DirSetupUtil::class, "DIR_CONTEXT");
+        $property = new \ReflectionProperty(DirSetupUtil::class, 'DIR_CONTEXT');
         $property->setValue(null, []);
 
-        $property = new \ReflectionProperty(SuiteObjectHandler::class, "instance");
+        $property = new \ReflectionProperty(SuiteObjectHandler::class, 'instance');
         $property->setValue(null, null);
 
-        $property = new \ReflectionProperty(TestObjectHandler::class, "testObjectHandler");
+        $property = new \ReflectionProperty(TestObjectHandler::class, 'testObjectHandler');
         $property->setValue(null, null);
     }
 

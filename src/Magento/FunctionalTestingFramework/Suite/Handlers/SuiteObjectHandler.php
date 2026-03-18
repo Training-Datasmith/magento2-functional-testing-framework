@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -6,19 +8,14 @@
 
 namespace Magento\FunctionalTestingFramework\Suite\Handlers;
 
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\Exceptions\FastFailException;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
-use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 use Magento\FunctionalTestingFramework\ObjectManager\ObjectHandlerInterface;
 use Magento\FunctionalTestingFramework\ObjectManagerFactory;
 use Magento\FunctionalTestingFramework\Suite\Objects\SuiteObject;
 use Magento\FunctionalTestingFramework\Suite\Parsers\SuiteDataParser;
 use Magento\FunctionalTestingFramework\Suite\Util\SuiteObjectExtractor;
-use Magento\FunctionalTestingFramework\Test\Util\ObjectExtractor;
-use Magento\FunctionalTestingFramework\Util\GenerationErrorHandler;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 
 /**
  * Class SuiteObjectHandler
@@ -120,7 +117,7 @@ class SuiteObjectHandler implements ObjectHandlerInterface
         try {
             $suiteDataParser = ObjectManagerFactory::getObjectManager()->create(SuiteDataParser::class);
         } catch (\Exception $e) {
-            throw new FastFailException("Suite Data Parser Error: " . $e->getMessage());
+            throw new FastFailException('Suite Data Parser Error: ' . $e->getMessage());
         }
 
         $suiteObjectExtractor = new SuiteObjectExtractor();

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -93,9 +94,9 @@ class DeprecatedEntityUsageCheckTest extends MagentoTestCase
             'Deprecated Element(s)' => [
                 0 => [
                         'name' => $elementRef,
-                        'file' => $fileName
-                    ]
-            ]
+                        'file' => $fileName,
+                    ],
+            ],
         ];
         $this->assertEquals($actual, $expected);
     }
@@ -119,9 +120,9 @@ class DeprecatedEntityUsageCheckTest extends MagentoTestCase
             'Deprecated Page(s)' => [
                 0 => [
                     'name' => $pageName,
-                    'file' => $fileName
-                ]
-            ]
+                    'file' => $fileName,
+                ],
+            ],
         ];
         $this->assertEquals($actual, $expected);
     }
@@ -155,9 +156,9 @@ class DeprecatedEntityUsageCheckTest extends MagentoTestCase
             'Deprecated Data(s)' => [
                 0 => [
                     'name' => $entityName,
-                    'file' => $fileName
-                ]
-            ]
+                    'file' => $fileName,
+                ],
+            ],
         ];
         $this->assertEquals($actual, $expected);
     }
@@ -181,9 +182,9 @@ class DeprecatedEntityUsageCheckTest extends MagentoTestCase
             'Deprecated Test(s)' => [
                 0 => [
                     'name' => $testName,
-                    'file' => $fileName
-                ]
-            ]
+                    'file' => $fileName,
+                ],
+            ],
         ];
         $this->assertEquals($actual, $expected);
     }
@@ -221,10 +222,10 @@ class DeprecatedEntityUsageCheckTest extends MagentoTestCase
                 OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY => [
                     0 => [
                         OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_KEY => 'id',
-                        OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE => 'integer'
+                        OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE => 'integer',
                     ],
                 ],
-                OperationDefinitionObjectHandler::OBJ_DEPRECATED => 'deprecated'
+                OperationDefinitionObjectHandler::OBJ_DEPRECATED => 'deprecated',
             ],[
                 OperationDefinitionObjectHandler::ENTITY_OPERATION_DATA_TYPE => $dataType1,
                 OperationDefinitionObjectHandler::ENTITY_OPERATION_TYPE => $operationType2,
@@ -234,9 +235,9 @@ class DeprecatedEntityUsageCheckTest extends MagentoTestCase
                 OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY => [
                     0 => [
                         OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_KEY => 'id',
-                        OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE => 'integer'
+                        OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE => 'integer',
                     ],
-                ]
+                ],
             ]]];
 
         $this->mockOperationHandlerWithData($mockData);
@@ -245,18 +246,18 @@ class DeprecatedEntityUsageCheckTest extends MagentoTestCase
             $dataName => [
                     $dataType1 => [
                             $operationType1,
-                            $operationType2
-                        ]
-                ]
+                            $operationType2,
+                        ],
+                ],
         ];
 
         $expected = [
             '"'.$dataName.'" references deprecated' => [
                 0 => [
                     'name' => $dataType1,
-                    'file' => 'metadata xml file'
-                ]
-            ]
+                    'file' => 'metadata xml file',
+                ],
+            ],
         ];
         $property = $this->staticCheckClass->getMethod('findViolatingMetadataReferences');
         $actual = $property->invoke($this->staticCheck, $references);

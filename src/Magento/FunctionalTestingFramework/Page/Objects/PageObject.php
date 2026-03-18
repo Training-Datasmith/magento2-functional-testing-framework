@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -14,7 +16,7 @@ use Magento\FunctionalTestingFramework\Page\Handlers\SectionObjectHandler;
  */
 class PageObject
 {
-    const ADMIN_AREA = 'admin';
+    public const ADMIN_AREA = 'admin';
 
     /**
      * PageObject constructor.
@@ -60,8 +62,7 @@ class PageObject
          * Deprecated message.
          */
         private $deprecated = null
-    )
-    {
+    ) {
     }
 
     /**

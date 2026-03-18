@@ -1,21 +1,22 @@
 <?php
+
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Magento\FunctionalTestingFramework\Console;
 
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
+use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
-use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 
 class RunManifestCommand extends Command
 {
@@ -42,9 +43,9 @@ class RunManifestCommand extends Command
      */
     protected function configure(): void
     {
-        $this->setName("run:manifest")
-            ->setDescription("runs a manifest file")
-            ->addArgument("path", InputArgument::REQUIRED, "path to a manifest file");
+        $this->setName('run:manifest')
+            ->setDescription('runs a manifest file')
+            ->addArgument('path', InputArgument::REQUIRED, 'path to a manifest file');
     }
 
     /**
@@ -55,14 +56,14 @@ class RunManifestCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $testsOutputDir = FilePathFormatter::format(TESTS_BP) .
-            "tests" .
+            'tests' .
             DIRECTORY_SEPARATOR .
-            "_output" .
+            '_output' .
             DIRECTORY_SEPARATOR;
 
-        $this->testsFailedFile = $testsOutputDir . "failed";
+        $this->testsFailedFile = $testsOutputDir . 'failed';
 
-        $path = $input->getArgument("path");
+        $path = $input->getArgument('path');
 
         if (!file_exists($path)) {
             throw new TestFrameworkException("Could not find file $path. Check the path and try again.");
@@ -115,8 +116,8 @@ class RunManifestCommand extends Command
             $command = $this->getApplication()->find(BaseGenerateCommand::CODECEPT_RUN);
             $subReturnCode = $command->run($input, $output);
         } else {
-            $codeceptionCommand = realpath(PROJECT_ROOT . "/vendor/bin/codecept")
-                . " run functional --verbose --steps " . $manifestLine;
+            $codeceptionCommand = realpath(PROJECT_ROOT . '/vendor/bin/codecept')
+                . ' run functional --verbose --steps ' . $manifestLine;
 
             // run the codecept command in a sub process
             $process = Process::fromShellCommandline($codeceptionCommand);

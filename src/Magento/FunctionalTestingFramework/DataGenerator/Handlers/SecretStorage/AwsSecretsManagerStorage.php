@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -6,34 +8,34 @@
 
 namespace Magento\FunctionalTestingFramework\DataGenerator\Handlers\SecretStorage;
 
+use Aws\Exception\AwsException;
+use Aws\Result;
+use Aws\SecretsManager\SecretsManagerClient;
+use Exception;
+use InvalidArgumentException;
 use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\CredentialStore;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
-use Aws\SecretsManager\SecretsManagerClient;
-use Aws\Exception\AwsException;
-use Aws\Result;
-use InvalidArgumentException;
-use Exception;
 
 class AwsSecretsManagerStorage extends BaseStorage
 {
     /**
      * Mftf project path
      */
-    const MFTF_PATH = 'mftf';
+    public const MFTF_PATH = 'mftf';
 
     /**
      * AWS Secrets Manager partial ARN
      */
-    const AWS_SM_PARTIAL_ARN = 'arn:aws:secretsmanager:';
+    public const AWS_SM_PARTIAL_ARN = 'arn:aws:secretsmanager:';
 
     /**
      * AWS Secrets Manager version
      *
      * Last tested version '2017-10-17'
      */
-    const LATEST_VERSION = 'latest';
+    public const LATEST_VERSION = 'latest';
 
     /**
      * SecretsManagerClient client
@@ -61,7 +63,7 @@ class AwsSecretsManagerStorage extends BaseStorage
     public function __construct($region, $profile = null, /**
      * AWS account id
      */
-    private $awsAccountId = null)
+        private $awsAccountId = null)
     {
         parent::__construct();
         $this->createAwsSecretsManagerClient($region, $profile);
@@ -200,7 +202,7 @@ class AwsSecretsManagerStorage extends BaseStorage
         // Create AWS Secrets Manager client
         $this->client = new SecretsManagerClient($options);
         if ($this->client === null) {
-            throw new TestFrameworkException("Unable to create AWS Secrets Manager client");
+            throw new TestFrameworkException('Unable to create AWS Secrets Manager client');
         }
     }
 }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -6,10 +8,7 @@
 
 namespace Magento\FunctionalTestingFramework\Test\Objects;
 
-use Magento\FunctionalTestingFramework\Test\Handlers\ActionGroupObjectHandler;
 use Magento\FunctionalTestingFramework\Test\Util\ActionMergeUtil;
-use Magento\FunctionalTestingFramework\Test\Util\ActionObjectExtractor;
-use Magento\FunctionalTestingFramework\Test\Util\TestHookObjectExtractor;
 use Magento\FunctionalTestingFramework\Test\Util\TestObjectExtractor;
 
 /**
@@ -17,9 +16,9 @@ use Magento\FunctionalTestingFramework\Test\Util\TestObjectExtractor;
  */
 class TestObject
 {
-    const WAIT_TIME_ATTRIBUTE = 'time';
+    public const WAIT_TIME_ATTRIBUTE = 'time';
 
-    const TEST_ACTION_WEIGHT = [
+    public const TEST_ACTION_WEIGHT = [
         'waitForPageLoad' => 1500,
         'amOnPage' => 1500,
         'waitForLoadingMaskToDisappear' => 500,
@@ -42,14 +41,14 @@ class TestObject
         'startMessageQueue' => 700,
     ];
 
-    const WEBAPI_AUTH_TEST_ACTIONS = [
+    public const WEBAPI_AUTH_TEST_ACTIONS = [
         'createData',
         'deleteData',
         'updateData',
         'getData',
     ];
 
-    const WEBAPI_AUTH_TEST_ACTION_WEIGHT = 6000;
+    public const WEBAPI_AUTH_TEST_ACTION_WEIGHT = 6000;
 
     /**
      * Name of the test
@@ -348,7 +347,7 @@ class TestObject
     public function getOrderedActions()
     {
         if ($this->cachedOrderedActions === null) {
-            $mergeUtil = new ActionMergeUtil($this->getName(), "Test");
+            $mergeUtil = new ActionMergeUtil($this->getName(), 'Test');
             $this->cachedOrderedActions = $mergeUtil->resolveActionSteps($this->parsedSteps);
         }
 

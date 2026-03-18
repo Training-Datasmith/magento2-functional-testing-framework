@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -30,19 +32,19 @@ class RenameMetadataFiles implements UpgradeInterface
 
         foreach ($testPaths as $testsPath) {
             $finder = new Finder();
-            $finder->files()->in($testsPath)->name("*-meta.xml");
+            $finder->files()->in($testsPath)->name('*-meta.xml');
 
             foreach ($finder->files() as $file) {
                 $oldFileName = $file->getFileName();
                 $newFileName = $this->convertFileName($oldFileName);
                 $oldPath = $file->getPathname();
-                $newPath = $file->getPath() . "/" . $newFileName;
-                print("Renaming " . $oldPath . " => " . $newPath . "\n");
+                $newPath = $file->getPath() . '/' . $newFileName;
+                print('Renaming ' . $oldPath . ' => ' . $newPath . "\n");
                 rename($oldPath, $newPath);
             }
         }
 
-        return "Finished renaming -meta.xml files.";
+        return 'Finished renaming -meta.xml files.';
     }
 
     /**
@@ -52,14 +54,14 @@ class RenameMetadataFiles implements UpgradeInterface
      */
     private function convertFileName(string $oldFileName): string
     {
-        $stripEnding = preg_replace("/-meta.xml/", "", $oldFileName);
-        $hyphenToUnderscore = str_replace("-", "_", $stripEnding);
-        $parts = explode("_", $hyphenToUnderscore);
+        $stripEnding = preg_replace('/-meta.xml/', '', $oldFileName);
+        $hyphenToUnderscore = str_replace('-', '_', $stripEnding);
+        $parts = explode('_', $hyphenToUnderscore);
         $ucParts = [];
         foreach ($parts as $part) {
             $ucParts[] = ucfirst($part);
         }
-        $recombine = join("", $ucParts);
-        return $recombine . "Meta.xml";
+        $recombine = join('', $ucParts);
+        return $recombine . 'Meta.xml';
     }
 }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -34,7 +36,7 @@ class ActionGroupObjectExtractorTest extends MagentoTestCase
         $this->expectExceptionMessage(
             "StepKeys cannot be empty.	Action='sampleAction' in Action Group filename.xml"
         );
-        $this->testActionGroupObjectExtractor->extractActionGroup($this->createBasicActionObjectArray(""));
+        $this->testActionGroupObjectExtractor->extractActionGroup($this->createBasicActionObjectArray(''));
     }
 
     /**
@@ -44,17 +46,17 @@ class ActionGroupObjectExtractorTest extends MagentoTestCase
     {
         $this->testActionGroupObjectExtractor->extractActionGroup(
             $this->createBasicActionObjectArray(
-                "testDeprecatedAction1",
-                "actionGroup",
-                "filename1.xml",
-                "message"
+                'testDeprecatedAction1',
+                'actionGroup',
+                'filename1.xml',
+                'message'
             )
         );
 
         TestLoggingUtil::getInstance()->validateMockLogStatement(
             'warning',
             "DEPRECATION: The action group 'actionGroup' is deprecated.",
-            ["fileName" => "filename1.xml", "deprecatedMessage" => "message"]
+            ['fileName' => 'filename1.xml', 'deprecatedMessage' => 'message']
         );
     }
 
@@ -69,8 +71,8 @@ class ActionGroupObjectExtractorTest extends MagentoTestCase
      */
     private function createBasicActionObjectArray(
         $stepKey = 'testAction1',
-        $actionGroup = "actionGroup",
-        $filename = "filename.xml",
+        $actionGroup = 'actionGroup',
+        $filename = 'filename.xml',
         $deprecated = null
     ) {
         $baseArray = [
@@ -79,10 +81,10 @@ class ActionGroupObjectExtractorTest extends MagentoTestCase
             'filename' => $filename,
             'deprecated' => $deprecated,
             $stepKey => [
-                "nodeName" => "sampleAction",
-                "stepKey" => $stepKey,
-                "someAttribute" => "someAttributeValue"
-            ]
+                'nodeName' => 'sampleAction',
+                'stepKey' => $stepKey,
+                'someAttribute' => 'someAttributeValue',
+            ],
         ];
         return $baseArray;
     }

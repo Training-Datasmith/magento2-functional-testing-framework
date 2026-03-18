@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -16,7 +17,6 @@ use Qameta\Allure\Io\DataSourceFactory;
 use Qameta\Allure\Model\AttachmentResult;
 use Qameta\Allure\Model\ResultFactoryInterface;
 use Qameta\Allure\Setup\LifecycleBuilderInterface;
-use const STDOUT;
 
 /**
  * @covers \Qameta\Allure\Allure

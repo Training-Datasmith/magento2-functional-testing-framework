@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -11,12 +13,12 @@ use Magento\FunctionalTestingFramework\DataGenerator\Objects\OperationElement;
 
 class OperationElementExtractor
 {
-    const OPERATION_OBJECT_KEY = 'key';
-    const OPERATION_OBJECT_DATA_TYPE = 'dataType';
-    const OPERATION_OBJECT_ARRAY = 'array';
-    const OPERATION_OBJECT_ENTRY = 'field';
-    const OPERATION_OBJECT_OBJ_NAME = 'object';
-    const OPERATION_OBJECT_ARRAY_VALUE = 'value';
+    public const OPERATION_OBJECT_KEY = 'key';
+    public const OPERATION_OBJECT_DATA_TYPE = 'dataType';
+    public const OPERATION_OBJECT_ARRAY = 'array';
+    public const OPERATION_OBJECT_ENTRY = 'field';
+    public const OPERATION_OBJECT_OBJ_NAME = 'object';
+    public const OPERATION_OBJECT_ARRAY_VALUE = 'value';
 
     /**
      * OperationElementExtractor constructor.
@@ -68,7 +70,7 @@ class OperationElementExtractor
 
         // a dataObject specified in xml must contain corresponding metadata for the object
         if (empty($operationElements)) {
-            throw new \Exception("must specify dataObject metadata if declaration is used");
+            throw new \Exception('must specify dataObject metadata if declaration is used');
         }
 
         return new OperationElement(

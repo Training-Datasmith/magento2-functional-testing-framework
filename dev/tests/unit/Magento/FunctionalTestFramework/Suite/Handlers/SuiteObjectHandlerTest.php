@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -48,19 +49,19 @@ class SuiteObjectHandlerTest extends MagentoTestCase
 
         $mockGroup1Test1 = $testDataArrayBuilder
             ->withName('group1Test1')
-            ->withAnnotations(['group' => [['value' => 'group1']], 'title'=>[['value' => 'group1Test1']]])
+            ->withAnnotations(['group' => [['value' => 'group1']], 'title' => [['value' => 'group1Test1']]])
             ->withTestActions()
             ->build();
 
         $mockGroup1Test2 = $testDataArrayBuilder
             ->withName('group1Test2')
-            ->withAnnotations(['group' => [['value' => 'group1']], 'title'=>[['value' => 'group1Test2']]])
+            ->withAnnotations(['group' => [['value' => 'group1']], 'title' => [['value' => 'group1Test2']]])
             ->withTestActions()
             ->build();
 
         $mockGroup2Test1 = $testDataArrayBuilder
             ->withName('group2Test1')
-            ->withAnnotations(['group' => [['value' => 'group2']], 'title'=>[['value' => 'group2Test1']]])
+            ->withAnnotations(['group' => [['value' => 'group2']], 'title' => [['value' => 'group2Test1']]])
             ->withTestActions()
             ->build();
 

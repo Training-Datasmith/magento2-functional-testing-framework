@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -84,7 +85,7 @@ class ActionMergeUtilTest extends MagentoTestCase
             ActionObject::MERGE_ACTION_ORDER_AFTER
         );
 
-        $mergeUtil = new ActionMergeUtil("actionMergeUtilTest", "TestCase");
+        $mergeUtil = new ActionMergeUtil('actionMergeUtilTest', 'TestCase');
         $orderedActions = $mergeUtil->resolveActionSteps($actions);
         $orderedActionKeys = array_keys($orderedActions);
 
@@ -107,10 +108,10 @@ class ActionMergeUtilTest extends MagentoTestCase
         $dataObjectType = 'testObject';
         $dataFieldName = 'myfield';
         $dataFieldValue = 'myValue';
-        $userInputKey = "userInput";
-        $userInputValue = "{{" . "{$dataObjectName}.{$dataFieldName}}}";
-        $actionName = "myAction";
-        $actionType = "myCustomType";
+        $userInputKey = 'userInput';
+        $userInputValue = '{{' . "{$dataObjectName}.{$dataFieldName}}}";
+        $actionName = 'myAction';
+        $actionType = 'myCustomType';
 
         // Set up mock data object
         $mockData = [$dataFieldName => $dataFieldValue];
@@ -126,11 +127,11 @@ class ActionMergeUtilTest extends MagentoTestCase
         $property->setValue($mockDOHInstance, $mockDOHInstance);
 
         // Create test object and action object
-        $actionAttributes = [$userInputKey => $userInputValue,'requiredCredentials'=>''];
+        $actionAttributes = [$userInputKey => $userInputValue,'requiredCredentials' => ''];
         $actions[$actionName] = new ActionObject($actionName, $actionType, $actionAttributes);
         $this->assertEquals($userInputValue, $actions[$actionName]->getCustomActionAttributes()[$userInputKey]);
 
-        $mergeUtil = new ActionMergeUtil("test", "TestCase");
+        $mergeUtil = new ActionMergeUtil('test', 'TestCase');
         $resolvedActions = $mergeUtil->resolveActionSteps($actions);
         $this->assertEquals($dataFieldValue, $resolvedActions[$actionName]->getCustomActionAttributes()[$userInputKey]);
     }
@@ -155,7 +156,7 @@ class ActionMergeUtilTest extends MagentoTestCase
         );
 
         $this->expectException(XmlException::class);
-        $actionMergeUtil = new ActionMergeUtil("actionMergeUtilTest", "TestCase");
+        $actionMergeUtil = new ActionMergeUtil('actionMergeUtilTest', 'TestCase');
         $actionMergeUtil->resolveActionSteps($actionObjects);
     }
 
@@ -172,7 +173,7 @@ class ActionMergeUtilTest extends MagentoTestCase
         $actionObjectOne->setTimeout(42);
         $actionObjects = [$actionObjectOne];
 
-        $actionMergeUtil = new ActionMergeUtil("actionMergeUtilTest", "TestCase");
+        $actionMergeUtil = new ActionMergeUtil('actionMergeUtilTest', 'TestCase');
         $result = $actionMergeUtil->resolveActionSteps($actionObjects);
 
         $actual = $result['actionKey1WaitForPageLoad'];
@@ -227,7 +228,7 @@ class ActionMergeUtilTest extends MagentoTestCase
             'magentoCLI',
             ['command' =>
                 'config:set cms/wysiwyg/enabled {{_CREDS.payment_authorizenet_login}}',
-                'requiredCredentials' => ''
+                'requiredCredentials' => '',
             ]
         );
         $actionObject = [$actionObjectOne];
@@ -240,7 +241,7 @@ class ActionMergeUtilTest extends MagentoTestCase
             'magentoCLISecret',
             ['command' =>
                 'config:set cms/wysiwyg/enabled {{_CREDS.payment_authorizenet_login}}',
-                'requiredCredentials' => ''
+                'requiredCredentials' => '',
             ]
         );
         $this->assertEquals($expectedValue, $result['actionKey1']);

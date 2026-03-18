@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -6,8 +8,8 @@
 
 namespace Magento\FunctionalTestingFramework\Module;
 
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 
 /**
  * MagentoWebDriverDoctor module extends MagentoWebDriver module and is a light weighted module to diagnose webdriver
@@ -15,11 +17,11 @@ use Facebook\WebDriver\Remote\RemoteWebDriver;
  */
 class MagentoWebDriverDoctor extends MagentoWebDriver
 {
-    const MAGENTO_CLI_COMMAND = 'info:currency:list';
-    const EXCEPTION_CONTEXT_SELENIUM = 'selenium';
-    const EXCEPTION_CONTEXT_ADMIN = 'admin';
-    const EXCEPTION_CONTEXT_STOREFRONT = 'store';
-    const EXCEPTION_CONTEXT_CLI = 'cli';
+    public const MAGENTO_CLI_COMMAND = 'info:currency:list';
+    public const EXCEPTION_CONTEXT_SELENIUM = 'selenium';
+    public const EXCEPTION_CONTEXT_ADMIN = 'admin';
+    public const EXCEPTION_CONTEXT_STOREFRONT = 'store';
+    public const EXCEPTION_CONTEXT_CLI = 'cli';
 
     /**
      * Remote Web Driver
@@ -100,7 +102,7 @@ class MagentoWebDriverDoctor extends MagentoWebDriver
 
         throw new TestFrameworkException(
             "Failed to connect Selenium WebDriver at: {$this->wdHost}.\n"
-            . "Please make sure that Selenium Server is running."
+            . 'Please make sure that Selenium Server is running.'
         );
     }
 
@@ -134,7 +136,7 @@ class MagentoWebDriverDoctor extends MagentoWebDriver
 
         throw new TestFrameworkException(
             "Failed to load page at url: $url\n"
-            . "Please check Selenium Browser session have access to Magento instance."
+            . 'Please check Selenium Browser session have access to Magento instance.'
         );
     }
 
@@ -158,7 +160,7 @@ class MagentoWebDriverDoctor extends MagentoWebDriver
 
         throw new TestFrameworkException(
             "Failed to run Magento CLI command\n"
-            . "Please reference Magento DevDoc to setup command.php and .htaccess files."
+            . 'Please reference Magento DevDoc to setup command.php and .htaccess files.'
         );
     }
 }

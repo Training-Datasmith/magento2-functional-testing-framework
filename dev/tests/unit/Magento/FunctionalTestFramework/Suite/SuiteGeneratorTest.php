@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -12,19 +13,19 @@ use Exception;
 use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
 use Magento\FunctionalTestingFramework\ObjectManager;
 use Magento\FunctionalTestingFramework\ObjectManagerFactory;
-use Magento\FunctionalTestingFramework\Suite\Service\SuiteGeneratorService;
-use Magento\FunctionalTestingFramework\Suite\SuiteGenerator;
 use Magento\FunctionalTestingFramework\Suite\Generators\GroupClassGenerator;
 use Magento\FunctionalTestingFramework\Suite\Handlers\SuiteObjectHandler;
 use Magento\FunctionalTestingFramework\Suite\Parsers\SuiteDataParser;
+use Magento\FunctionalTestingFramework\Suite\Service\SuiteGeneratorService;
+use Magento\FunctionalTestingFramework\Suite\SuiteGenerator;
 use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
-use Magento\FunctionalTestingFramework\Test\Util\TestObjectExtractor;
 use Magento\FunctionalTestingFramework\Test\Parsers\TestDataParser;
+use Magento\FunctionalTestingFramework\Test\Util\TestObjectExtractor;
 use Magento\FunctionalTestingFramework\Util\GenerationErrorHandler;
 use Magento\FunctionalTestingFramework\Util\Manifest\DefaultTestManifest;
+use Magento\FunctionalTestingFramework\Util\Manifest\TestManifestFactory;
 use ReflectionProperty;
 use tests\unit\Util\MagentoTestCase;
-use Magento\FunctionalTestingFramework\Util\Manifest\TestManifestFactory;
 use tests\unit\Util\SuiteDataArrayBuilder;
 use tests\unit\Util\TestDataArrayBuilder;
 use tests\unit\Util\TestLoggingUtil;
@@ -58,7 +59,7 @@ class SuiteGeneratorTest extends MagentoTestCase
         $mockSimpleTest1 = $testDataArrayBuilder
             ->withName('simpleTest1')
             ->withAnnotations(['group' => [['value' => 'group1']]])
-            ->withTestReference("NonExistantTest")
+            ->withTestReference('NonExistantTest')
             ->withTestActions()
             ->build();
         $mockSimpleTest2 = $testDataArrayBuilder
@@ -304,7 +305,7 @@ class SuiteGeneratorTest extends MagentoTestCase
         $mockSimpleTest1 = $testDataArrayBuilder
             ->withName('simpleTest1')
             ->withAnnotations(['group' => [['value' => 'group1']]])
-            ->withTestReference("NonExistantTest")
+            ->withTestReference('NonExistantTest')
             ->withTestActions()
             ->build();
         $mockSimpleTest2 = $testDataArrayBuilder
@@ -354,7 +355,8 @@ class SuiteGeneratorTest extends MagentoTestCase
     {
         $this->clearMockResolverProperties();
         $mockSuiteGeneratorService = $this->createMock(SuiteGeneratorService::class);
-        $mockVoidReturnCallback = function () {};// phpcs:ignore
+        $mockVoidReturnCallback = function () {
+        };// phpcs:ignore
 
         $mockSuiteGeneratorService
             ->method('clearPreviousSessionConfigEntries')

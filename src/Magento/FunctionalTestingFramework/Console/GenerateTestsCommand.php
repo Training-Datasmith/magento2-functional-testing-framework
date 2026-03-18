@@ -1,24 +1,23 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Magento\FunctionalTestingFramework\Console;
 
 use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\Exceptions\FastFailException;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
 use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 use Magento\FunctionalTestingFramework\Suite\SuiteGenerator;
 use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
 use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
 use Magento\FunctionalTestingFramework\Util\GenerationErrorHandler;
 use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
-use Magento\FunctionalTestingFramework\Util\Manifest\ParallelByTimeTestManifest;
 use Magento\FunctionalTestingFramework\Util\Manifest\TestManifestFactory;
 use Magento\FunctionalTestingFramework\Util\Script\ScriptUtil;
 use Magento\FunctionalTestingFramework\Util\Script\TestDependencyUtil;
@@ -27,7 +26,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -35,11 +33,11 @@ use Symfony\Component\Finder\Finder;
  */
 class GenerateTestsCommand extends BaseGenerateCommand
 {
-    const PARALLEL_DEFAULT_TIME = 10;
-    const EXTENDS_REGEX_PATTERN = '/extends=["\']([^\'"]*)/';
-    const ACTIONGROUP_REGEX_PATTERN = '/ref=["\']([^\'"]*)/';
-    const TEST_DEPENDENCY_FILE_LOCATION_STANDALONE = 'dev/tests/_output/test-dependencies.json';
-    const TEST_DEPENDENCY_FILE_LOCATION_EMBEDDED = 'dev/tests/acceptance/tests/_output/test-dependencies.json';
+    public const PARALLEL_DEFAULT_TIME = 10;
+    public const EXTENDS_REGEX_PATTERN = '/extends=["\']([^\'"]*)/';
+    public const ACTIONGROUP_REGEX_PATTERN = '/ref=["\']([^\'"]*)/';
+    public const TEST_DEPENDENCY_FILE_LOCATION_STANDALONE = 'dev/tests/_output/test-dependencies.json';
+    public const TEST_DEPENDENCY_FILE_LOCATION_EMBEDDED = 'dev/tests/acceptance/tests/_output/test-dependencies.json';
 
     private ?\Magento\FunctionalTestingFramework\Util\Script\ScriptUtil $scriptUtil = null;
 
@@ -65,7 +63,7 @@ class GenerateTestsCommand extends BaseGenerateCommand
                 InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
                 'name(s) of specific tests to generate'
             )->addOption(
-                "config",
+                'config',
                 'c',
                 InputOption::VALUE_REQUIRED,
                 'default, singleRun, or parallel',
@@ -160,7 +158,7 @@ class GenerateTestsCommand extends BaseGenerateCommand
                 $filterList ?? []
             );
         } catch (\Exception $exception) {
-            $this->ioStyle->error("Test generation failed." . PHP_EOL . $exception->getMessage());
+            $this->ioStyle->error('Test generation failed.' . PHP_EOL . $exception->getMessage());
             return 1;
         }
 
@@ -174,7 +172,7 @@ class GenerateTestsCommand extends BaseGenerateCommand
 
         if ($json !== null && !json_decode((string) $json)) {
             // stop execution if we have failed to properly parse any json passed in by the user
-            throw new TestFrameworkException("JSON could not be parsed: " . json_last_error_msg());
+            throw new TestFrameworkException('JSON could not be parsed: ' . json_last_error_msg());
         }
 
         if ($config === 'parallel') {
@@ -234,28 +232,28 @@ class GenerateTestsCommand extends BaseGenerateCommand
 
         // check test dependencies log command
         if (!empty($log)) {
-            if ($log === "testEntityJson") {
-                $this->getTestEntityJson($filterList ??[], $tests);
+            if ($log === 'testEntityJson') {
+                $this->getTestEntityJson($filterList ?? [], $tests);
                 $testDependencyFileLocation = self::TEST_DEPENDENCY_FILE_LOCATION_EMBEDDED;
                 if (isset($_ENV['MAGENTO_BP'])) {
                     $testDependencyFileLocation = self::TEST_DEPENDENCY_FILE_LOCATION_STANDALONE;
                 }
                 $output->writeln(
-                    "Test dependencies file created, Located in: " . $testDependencyFileLocation
+                    'Test dependencies file created, Located in: ' . $testDependencyFileLocation
                 );
             } else {
                 $output->writeln(
-                    "Wrong parameter for log (-l) option, accepted parameter are: testEntityJson" . PHP_EOL
+                    'Wrong parameter for log (-l) option, accepted parameter are: testEntityJson' . PHP_EOL
                 );
             }
         }
 
         if (empty(GenerationErrorHandler::getInstance()->getAllErrors())) {
-            $output->writeln("Generate Tests Command Run" . PHP_EOL);
+            $output->writeln('Generate Tests Command Run' . PHP_EOL);
             return 0;
         }
         GenerationErrorHandler::getInstance()->printErrorSummary();
-        $output->writeln("Generate Tests Command Run (with errors)" . PHP_EOL);
+        $output->writeln('Generate Tests Command Run (with errors)' . PHP_EOL);
         return 1;
     }
 
@@ -394,7 +392,7 @@ class GenerateTestsCommand extends BaseGenerateCommand
 
         if (!class_exists('\Magento\Framework\Component\ComponentRegistrar')) {
             throw new TestFrameworkException(
-                "TEST DEPENDENCY CHECK ABORTED: MFTF must be attached or pointing to Magento codebase."
+                'TEST DEPENDENCY CHECK ABORTED: MFTF must be attached or pointing to Magento codebase.'
             );
         }
         $registrar = new \Magento\Framework\Component\ComponentRegistrar();
@@ -408,7 +406,7 @@ class GenerateTestsCommand extends BaseGenerateCommand
             $testXmlFiles = $this->scriptUtil->getModuleXmlFilesByTestNames($tests);
         } else {
             $filePaths = [
-                DIRECTORY_SEPARATOR . 'Test' . DIRECTORY_SEPARATOR
+                DIRECTORY_SEPARATOR . 'Test' . DIRECTORY_SEPARATOR,
             ];
             // These files can contain references to other modules.
             $testXmlFiles = $this->scriptUtil->getModuleXmlFilesByScope($allModules, $filePaths[0]);
@@ -487,22 +485,22 @@ class GenerateTestsCommand extends BaseGenerateCommand
                 $test_name = $test_file->getAttribute('name');
 
                 # check any test extends on with this test.
-                $extended_test = $test_file->getAttribute('extends') ?? "";
+                $extended_test = $test_file->getAttribute('extends') ?? '';
                 if (!empty($extended_test)) {
                     $extendedTests[] = $extended_test;
-                    $extendedTestMapping[] = ["child_test_name" =>$test_name, "parent_test_name" =>$extended_test];
+                    $extendedTestMapping[] = ['child_test_name' => $test_name, 'parent_test_name' => $extended_test];
                 }
 
                 $flattenedDependencyMap = array_values(
                     array_unique(call_user_func_array(array_merge(...), array_values($modulesReferencedInTest)))
                 );
                 $suite_name = $this->getSuiteName($test_name);
-                $full_name = "Magento\AcceptanceTest\_". $suite_name. "\Backend\\".$test_name."Cest.".$test_name;
+                $full_name = "Magento\AcceptanceTest\_". $suite_name. "\Backend\\".$test_name.'Cest.'.$test_name;
                 $dependencyMap = [
-                    "file_path" => $filePath,
-                    "full_name" => $full_name,
-                    "test_name" => $test_name,
-                    "test_modules" => $flattenedDependencyMap,
+                    'file_path' => $filePath,
+                    'full_name' => $full_name,
+                    'test_name' => $test_name,
+                    'test_modules' => $flattenedDependencyMap,
                 ];
                 $testDependencies[] = $dependencyMap;
             }
@@ -554,7 +552,7 @@ class GenerateTestsCommand extends BaseGenerateCommand
      */
     private function getSuiteName(string $test_name)
     {
-        $suite_name = json_decode($this->getTestAndSuiteConfiguration([$test_name]), true)["suites"] ?? "default";
+        $suite_name = json_decode($this->getTestAndSuiteConfiguration([$test_name]), true)['suites'] ?? 'default';
         if (is_array($suite_name)) {
             return array_keys($suite_name)[0];
         }

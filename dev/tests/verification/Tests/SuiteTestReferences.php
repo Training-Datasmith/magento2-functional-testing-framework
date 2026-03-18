@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
@@ -18,41 +20,41 @@ class SuiteTestReferences
             'additionalTestCest.php',
             'additionalIncludeTest2Cest.php',
             'IncludeTest2Cest.php',
-            'IncludeTestCest.php'
+            'IncludeTestCest.php',
         ],
         'functionalSuiteHooks' => [
-            'IncludeTestCest.php'
+            'IncludeTestCest.php',
         ],
         'functionalSuite2' => [
             'additionalTestCest.php',
             'additionalIncludeTest2Cest.php',
             'IncludeTest2Cest.php',
-            'IncludeTestCest.php'
+            'IncludeTestCest.php',
         ],
         'suiteExtends' => [
-            'ExtendedChildTestInSuiteCest.php'
+            'ExtendedChildTestInSuiteCest.php',
         ],
         'functionalSuiteWithComments' => [
-            'IncludeTestCest.php'
+            'IncludeTestCest.php',
         ],
         'ActionsInDifferentModulesSuite' => [
-            'IncludeActionsInDifferentModulesTestCest.php'
+            'IncludeActionsInDifferentModulesTestCest.php',
         ],
         'suiteWithMultiplePauseActionsSuite' => [
             'additionalTestCest.php',
             'ExcludeTest2Cest.php',
-            'IncludeTest2Cest.php'
+            'IncludeTest2Cest.php',
         ],
         'suiteWithPauseActionSuite' => [
             'additionalTestCest.php',
             'ExcludeTest2Cest.php',
-            'IncludeTest2Cest.php'
+            'IncludeTest2Cest.php',
         ],
         'PartialGenerateForIncludeSuite' => [
-            'IncludeTestCest.php'
+            'IncludeTestCest.php',
         ],
         'PartialGenerateNoExcludeSuite' => [
-            'IncludeTestCest.php'
+            'IncludeTestCest.php',
         ],
         'NotGenerateHookBeforeSuite' => [
         ],
@@ -60,7 +62,7 @@ class SuiteTestReferences
         ],
         'deprecationCheckSuite' => [
             'DeprecationCheckDeprecatedTestCest.php',
-            'DeprecationCheckTestCest.php'
+            'DeprecationCheckTestCest.php',
         ],
         'NotGenerateEmptySuite' => [
         ],

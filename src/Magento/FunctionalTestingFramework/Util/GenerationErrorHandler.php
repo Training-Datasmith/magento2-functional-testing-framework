@@ -1,13 +1,12 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
  */
 
 namespace Magento\FunctionalTestingFramework\Util;
-
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use PHP_CodeSniffer\Exceptions\RuntimeException;
 
 class GenerationErrorHandler
 {
@@ -134,7 +133,7 @@ class GenerationErrorHandler
                     . strval($totalNotGenErrors)
                     . ' '
                     . ucfirst((string) $type)
-                    . "(s) failed to generate. See mftf.log for details."
+                    . '(s) failed to generate. See mftf.log for details.'
                     . PHP_EOL
                 );
             }
@@ -145,7 +144,7 @@ class GenerationErrorHandler
                         . strval($totalAnnotationErrors)
                         . ' '
                         . ucfirst((string) $type)
-                        . "(s) generated with annotation errors. See mftf.log for details."
+                        . '(s) generated with annotation errors. See mftf.log for details.'
                         . PHP_EOL
                     );
                 } else {

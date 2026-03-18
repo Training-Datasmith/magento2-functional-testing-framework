@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -7,7 +9,6 @@
 namespace Magento\FunctionalTestingFramework\Test\Objects;
 
 use Magento\FunctionalTestingFramework\Test\Util\ActionMergeUtil;
-use Magento\FunctionalTestingFramework\Test\Util\TestObjectExtractor;
 
 /**
  * Class TestHookObject

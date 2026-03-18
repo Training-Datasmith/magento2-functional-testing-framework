@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -7,15 +9,15 @@
 namespace Magento\FunctionalTestingFramework\DataGenerator\Persist;
 
 use Magento\FunctionalTestingFramework\Allure\AllureHelper;
-use Magento\FunctionalTestingFramework\DataTransport\AdminFormExecutor;
-use Magento\FunctionalTestingFramework\DataTransport\FrontendFormExecutor;
-use Magento\FunctionalTestingFramework\DataTransport\WebApiExecutor;
-use Magento\FunctionalTestingFramework\DataTransport\WebApiNoAuthExecutor;
 use Magento\FunctionalTestingFramework\DataGenerator\Handlers\OperationDefinitionObjectHandler;
 use Magento\FunctionalTestingFramework\DataGenerator\Objects\EntityDataObject;
 use Magento\FunctionalTestingFramework\DataGenerator\Objects\OperationDefinitionObject;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
+use Magento\FunctionalTestingFramework\DataTransport\AdminFormExecutor;
+use Magento\FunctionalTestingFramework\DataTransport\FrontendFormExecutor;
 use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlInterface;
+use Magento\FunctionalTestingFramework\DataTransport\WebApiExecutor;
+use Magento\FunctionalTestingFramework\DataTransport\WebApiNoAuthExecutor;
+use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 
 /**
  * Class CurlHandler
@@ -61,14 +63,14 @@ class CurlHandler
     public function __construct(/**
      * Describes the operation for the executor ('create','update','delete')
      */
-    private $operation, /**
+        private $operation, /**
      * The entity object data being created, updated, or deleted.
      */
-    private $entityObject, /**
+        private $entityObject, /**
      * Store code in web api rest url.
      */
-    private $storeCode = null)
-    {
+        private $storeCode = null
+    ) {
         $this->operationDefinition = OperationDefinitionObjectHandler::getInstance()->getOperationDefinition(
             $this->operation,
             $this->entityObject->getType()
@@ -154,7 +156,7 @@ class CurlHandler
         $executor->close();
 
         AllureHelper::addAttachmentToCurrentStep(
-            json_encode(json_decode($response, true), JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE+JSON_UNESCAPED_SLASHES),
+            json_encode(json_decode($response, true), JSON_PRETTY_PRINT + JSON_UNESCAPED_UNICODE + JSON_UNESCAPED_SLASHES),
             'Response Data'
         );
 
@@ -192,10 +194,10 @@ class CurlHandler
         $urlOut = $urlIn;
         $matchedParams = [];
         // Find all the params ({}) references
-        preg_match_all("/[{](.+?)[}]/", $urlIn, $matchedParams);
+        preg_match_all('/[{](.+?)[}]/', $urlIn, $matchedParams);
 
         foreach ($matchedParams[0] as $paramKey => $paramValue) {
-            $paramEntityParent = "";
+            $paramEntityParent = '';
             $matchedParent = [];
             $dataItem = $matchedParams[1][$paramKey];
             // Find all the parent property (Type.key) references, assuming there will be only one
@@ -210,7 +212,7 @@ class CurlHandler
             foreach ($entityObjects as $entityObject) {
                 $param = null;
 
-                if ($paramEntityParent === "" || $entityObject->getType() === $paramEntityParent) {
+                if ($paramEntityParent === '' || $entityObject->getType() === $paramEntityParent) {
                     $param = $entityObject->getDataByName(
                         $dataItem,
                         EntityDataObject::CEST_UNIQUE_VALUE

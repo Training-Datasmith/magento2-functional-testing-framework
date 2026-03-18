@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -24,7 +25,7 @@ use tests\unit\Util\TestLoggingUtil;
 
 class ActionGroupObjectTest extends MagentoTestCase
 {
-    const ACTION_GROUP_MERGE_KEY = 'TestKey';
+    public const ACTION_GROUP_MERGE_KEY = 'TestKey';
 
     /**
      * Before test functionality.
@@ -75,7 +76,7 @@ class ActionGroupObjectTest extends MagentoTestCase
                     'action1',
                     'testAction',
                     [
-                    'userInput' => '{{arg1.field2}}','requiredCredentials' => ''
+                    'userInput' => '{{arg1.field2}}','requiredCredentials' => '',
                     ]
                 )]
             )
@@ -92,7 +93,7 @@ class ActionGroupObjectTest extends MagentoTestCase
                     'action1',
                     'testAction',
                     ['userInput' => '{{arg1}}',
-                    'requiredCredentials' => ''
+                    'requiredCredentials' => '',
                     ]
                 )]
             )
@@ -109,7 +110,7 @@ class ActionGroupObjectTest extends MagentoTestCase
                     'action1',
                     'testAction',
                     ['userInput' => '{{simple}}',
-                    'requiredCredentials' => ''
+                    'requiredCredentials' => '',
                     ]
                 )]
             )
@@ -150,7 +151,7 @@ class ActionGroupObjectTest extends MagentoTestCase
                     'action1',
                     'testAction',
                     ['userInput' => '{{simple}}',
-                    'requiredCredentials' => ''
+                    'requiredCredentials' => '',
                     ]
                 )]
             )
@@ -183,7 +184,7 @@ class ActionGroupObjectTest extends MagentoTestCase
                     'action1',
                     'testAction',
                     ['userInput' => '{{arg1}}',
-                    'requiredCredentials' => ''
+                    'requiredCredentials' => '',
                     ]
                 )]
             )
@@ -216,7 +217,7 @@ class ActionGroupObjectTest extends MagentoTestCase
                     'action1',
                     'testAction',
                     ['userInput' => '{{data1.field1}}',
-                    'requiredCredentials' => ''
+                    'requiredCredentials' => '',
                     ]
                 )]
             )
@@ -243,8 +244,8 @@ class ActionGroupObjectTest extends MagentoTestCase
             }
         );
         // mock the section object handler response
-        $element = new ElementObject("element1", "textArea", ".selector {{var1}}", null, null, true);
-        $section = new SectionObject("testSection", ["element1" => $element]);
+        $element = new ElementObject('element1', 'textArea', '.selector {{var1}}', null, null, true);
+        $section = new SectionObject('testSection', ['element1' => $element]);
         $sectionInstance = $this->createMock(SectionObjectHandler::class);
         $sectionInstance
             ->method('getObject')
@@ -266,7 +267,7 @@ class ActionGroupObjectTest extends MagentoTestCase
             $steps,
             [
             'selector' => '.selector testValue2',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
             ]
         );
 
@@ -278,7 +279,7 @@ class ActionGroupObjectTest extends MagentoTestCase
         $this->assertOnMergeKeyAndActionValue(
             $steps,
             ['selector' => '.selector $data2.field2$',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
             ]
         );
     }
@@ -300,8 +301,8 @@ class ActionGroupObjectTest extends MagentoTestCase
             }
         );
         // mock the section object handler response
-        $element = new ElementObject("element1", "textArea", ".selector {{var1}}", null, null, true);
-        $section = new SectionObject("testSection", ["element1" => $element]);
+        $element = new ElementObject('element1', 'textArea', '.selector {{var1}}', null, null, true);
+        $section = new SectionObject('testSection', ['element1' => $element]);
 
         $sectionInstance = $this->createMock(SectionObjectHandler::class);
         $sectionInstance
@@ -324,7 +325,7 @@ class ActionGroupObjectTest extends MagentoTestCase
             $steps,
             [
             'selector' => '.selector stringLiteral',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
             ]
         );
 
@@ -333,7 +334,7 @@ class ActionGroupObjectTest extends MagentoTestCase
         $this->assertOnMergeKeyAndActionValue(
             $steps,
             ['selector' => '.selector data2.field2',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
             ]
         );
 
@@ -342,7 +343,7 @@ class ActionGroupObjectTest extends MagentoTestCase
         $this->assertOnMergeKeyAndActionValue(
             $steps,
             ['selector' => '.selector $someData.field1$',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
             ]
         );
     }
@@ -364,7 +365,7 @@ class ActionGroupObjectTest extends MagentoTestCase
         $this->assertOnMergeKeyAndActionValue(
             $steps,
             ['userInput' => '$$someData.field1$$',
-            'requiredCredentials' => ''
+            'requiredCredentials' => '',
             ]
         );
     }
@@ -409,8 +410,8 @@ class ActionGroupObjectTest extends MagentoTestCase
      */
     public function testStepKeyReplacementFilteredIn(): void
     {
-        $createStepKey = "createDataStepKey";
-        $updateStepKey = "updateDataStepKey";
+        $createStepKey = 'createDataStepKey';
+        $updateStepKey = 'updateDataStepKey';
 
         $actionGroupUnderTest = (new ActionGroupObjectBuilder())
             ->withActionObjects(
@@ -424,7 +425,7 @@ class ActionGroupObjectTest extends MagentoTestCase
                     $createStepKey,
                     ActionGroupObject::STEPKEY_REPLACEMENT_ENABLED_TYPES[7],
                     ['selector' => 'value']
-                )
+                ),
                 ]
             )
             ->build();
@@ -444,16 +445,16 @@ class ActionGroupObjectTest extends MagentoTestCase
      */
     public function testStepKeyReplacementFilteredOut(): void
     {
-        $clickStepKey = "clickStepKey";
-        $fillFieldStepKey = "fillFieldStepKey";
-        $clickAction = "click";
-        $fillFieldAction ="fillField";
+        $clickStepKey = 'clickStepKey';
+        $fillFieldStepKey = 'fillFieldStepKey';
+        $clickAction = 'click';
+        $fillFieldAction = 'fillField';
 
         $actionGroupUnderTest = (new ActionGroupObjectBuilder())
             ->withActionObjects(
                 [
                 new ActionObject($clickStepKey, $clickAction, ['selector' => 'value']),
-                new ActionObject($fillFieldStepKey, $fillFieldAction, ['selector' => 'value'])
+                new ActionObject($fillFieldStepKey, $fillFieldAction, ['selector' => 'value']),
                 ]
             )
             ->build();

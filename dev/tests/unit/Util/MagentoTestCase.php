@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -32,7 +33,7 @@ class MagentoTestCase extends TestCase
      */
     public static function tearDownAfterClass(): void
     {
-        array_map('unlink', glob(DOCS_OUTPUT_DIR . DIRECTORY_SEPARATOR . "*"));
+        array_map('unlink', glob(DOCS_OUTPUT_DIR . DIRECTORY_SEPARATOR . '*'));
 
         if (file_exists(DOCS_OUTPUT_DIR)) {
             rmdir(DOCS_OUTPUT_DIR);

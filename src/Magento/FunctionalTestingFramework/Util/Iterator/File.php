@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -55,7 +57,7 @@ class File extends AbstractIterator
     /**
      * Check if current element is valid
      */
-    protected function isValid() : bool
+    protected function isValid(): bool
     {
         return true;
     }

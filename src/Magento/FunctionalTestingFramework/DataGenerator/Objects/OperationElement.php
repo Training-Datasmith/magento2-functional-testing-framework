@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -25,20 +27,21 @@ class OperationElement
     public function __construct(/**
      * Data parameter name
      */
-    private $key, /**
+        private $key, /**
      * Data parameter metadata value (e.g. string, bool)
      */
-    private $value, /**
+        private $value, /**
      * Data type such as array or entry
      */
-    private $type, $required, /**
+        private $type,
+        $required, /**
      * Nested data Objects defined within the same operation.xml file
      */
-    private $nestedElements = [], /**
+        private $nestedElements = [], /**
      * Nested Metadata which must be included for a dataElement of type dataObject
      */
-    private $nestedMetadata = null)
-    {
+        private $nestedMetadata = null
+    ) {
         $this->required = filter_var($required, FILTER_VALIDATE_BOOLEAN);
     }
 

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -24,8 +26,8 @@ class Data implements \Magento\FunctionalTestingFramework\Config\DataInterface
     public function __construct(/**
      * Configuration reader model
      */
-    protected \Magento\FunctionalTestingFramework\Config\ReaderInterface $reader)
-    {
+        protected \Magento\FunctionalTestingFramework\Config\ReaderInterface $reader
+    ) {
         $this->load();
     }
 

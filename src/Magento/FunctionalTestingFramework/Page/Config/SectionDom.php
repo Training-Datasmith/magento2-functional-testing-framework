@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -6,11 +8,7 @@
 
 namespace Magento\FunctionalTestingFramework\Page\Config;
 
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
-use Magento\FunctionalTestingFramework\Config\Dom\NodeMergingConfig;
-use Magento\FunctionalTestingFramework\Config\Dom\NodePathMatcher;
-use Magento\FunctionalTestingFramework\Util\ModulePathExtractor;
 use Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUtil;
 use Magento\FunctionalTestingFramework\Util\Validation\SingleNodePerFileValidationUtil;
 
@@ -20,8 +18,8 @@ use Magento\FunctionalTestingFramework\Util\Validation\SingleNodePerFileValidati
  */
 class SectionDom extends \Magento\FunctionalTestingFramework\Config\MftfDom
 {
-    const SECTION_META_FILENAME_ATTRIBUTE = "filename";
-    const SECTION_META_NAME_ATTRIBUTE = "name";
+    public const SECTION_META_FILENAME_ATTRIBUTE = 'filename';
+    public const SECTION_META_NAME_ATTRIBUTE = 'name';
 
     /**
      * NodeValidationUtil

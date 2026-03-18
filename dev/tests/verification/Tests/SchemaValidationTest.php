@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -27,11 +29,11 @@ class SchemaValidationTest extends MftfTestCase
         $testFile = ['testFile.xml' => "<tests><test name='testName'><annotations>a</annotations></test></tests>"];
         $expectedError = TESTS_MODULE_PATH .
             DIRECTORY_SEPARATOR .
-            "TestModule" .
+            'TestModule' .
             DIRECTORY_SEPARATOR .
-            "Test" .
+            'Test' .
             DIRECTORY_SEPARATOR .
-            "testFile.xml";
+            'testFile.xml';
         $this->validateSchemaErrorWithTest($testFile, 'Test', $expectedError);
     }
 

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -6,7 +8,6 @@
 
 namespace Magento\FunctionalTestingFramework\Test\Util;
 
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
 use Magento\FunctionalTestingFramework\Exceptions\XmlException;
@@ -18,22 +19,22 @@ use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
  */
 class ActionObjectExtractor extends BaseObjectExtractor
 {
-    const TEST_ACTION_BEFORE = 'before';
-    const TEST_ACTION_AFTER = 'after';
-    const TEST_STEP_MERGE_KEY = 'stepKey';
-    const ACTION_GROUP_TAG = 'actionGroup';
-    const HELPER_TAG = 'helper';
-    const ACTION_GROUP_REF = 'ref';
-    const ACTION_GROUP_ARGUMENTS = 'arguments';
-    const ACTION_GROUP_ARG_VALUE = 'value';
-    const BEFORE_AFTER_ERROR_MSG = "Merge Error - Steps cannot have both before and after attributes.\tStepKey='%s'";
-    const STEP_KEY_BLOCKLIST_ERROR_MSG = "StepKeys cannot contain non alphanumeric characters.\tStepKey='%s'";
-    const STEP_KEY_EMPTY_ERROR_MSG = "StepKeys cannot be empty.\tAction='%s'";
-    const DATA_PERSISTENCE_CUSTOM_FIELD = 'field';
-    const DATA_PERSISTENCE_CUSTOM_FIELD_KEY = 'key';
-    const ACTION_OBJECT_PERSISTENCE_FIELDS = 'customFields';
-    const ACTION_OBJECT_USER_INPUT = 'userInput';
-    const DATA_PERSISTENCE_ACTIONS = ['createData', 'deleteData', 'updateData'];
+    public const TEST_ACTION_BEFORE = 'before';
+    public const TEST_ACTION_AFTER = 'after';
+    public const TEST_STEP_MERGE_KEY = 'stepKey';
+    public const ACTION_GROUP_TAG = 'actionGroup';
+    public const HELPER_TAG = 'helper';
+    public const ACTION_GROUP_REF = 'ref';
+    public const ACTION_GROUP_ARGUMENTS = 'arguments';
+    public const ACTION_GROUP_ARG_VALUE = 'value';
+    public const BEFORE_AFTER_ERROR_MSG = "Merge Error - Steps cannot have both before and after attributes.\tStepKey='%s'";
+    public const STEP_KEY_BLOCKLIST_ERROR_MSG = "StepKeys cannot contain non alphanumeric characters.\tStepKey='%s'";
+    public const STEP_KEY_EMPTY_ERROR_MSG = "StepKeys cannot be empty.\tAction='%s'";
+    public const DATA_PERSISTENCE_CUSTOM_FIELD = 'field';
+    public const DATA_PERSISTENCE_CUSTOM_FIELD_KEY = 'key';
+    public const ACTION_OBJECT_PERSISTENCE_FIELDS = 'customFields';
+    public const ACTION_OBJECT_USER_INPUT = 'userInput';
+    public const DATA_PERSISTENCE_ACTIONS = ['createData', 'deleteData', 'updateData'];
 
     /**
      * ActionObjectExtractor constructor.
@@ -62,7 +63,7 @@ class ActionObjectExtractor extends BaseObjectExtractor
             //  Removing # from nodeName to match stepKey requirements
             $stepKey = strpos($actionData[self::NODE_NAME], ActionObject::COMMENT_ACTION) === false
                 ? $actionData[self::TEST_STEP_MERGE_KEY]
-                : str_replace("#", "", $actionName);
+                : str_replace('#', '', $actionName);
             $actionType = $actionData[self::NODE_NAME];
 
             if (empty($stepKey)) {
@@ -80,7 +81,7 @@ class ActionObjectExtractor extends BaseObjectExtractor
             );
 
             // Flatten AssertSorted "array" element to parameterArray
-            if (isset($actionData["array"])) {
+            if (isset($actionData['array'])) {
                 $actionAttributes['parameterArray'] = $actionData['array']['value'];
             }
 
@@ -124,7 +125,7 @@ class ActionObjectExtractor extends BaseObjectExtractor
      */
     private function processLinkedActions($actionName, $actionData)
     {
-        $linkedAction =['stepKey' => null, 'order' => null];
+        $linkedAction = ['stepKey' => null, 'order' => null];
         if (array_key_exists(self::TEST_ACTION_BEFORE, $actionData)
             and array_key_exists(self::TEST_ACTION_AFTER, $actionData)) {
             throw new XmlException(sprintf(self::BEFORE_AFTER_ERROR_MSG, $actionName));
@@ -295,7 +296,7 @@ class ActionObjectExtractor extends BaseObjectExtractor
 
         if (!empty($invalidStepRef)) {
             throw new TestReferenceException(
-                "Invalid ordering configuration in test",
+                'Invalid ordering configuration in test',
                 ['test' => $testName, 'stepKey' => array_keys($invalidStepRef)]
             );
         }

@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
@@ -6,14 +8,13 @@
 
 namespace Magento\FunctionalTestingFramework\Config\FileResolver;
 
-use Magento\FunctionalTestingFramework\Config\FileResolverInterface;
 use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Util\Iterator\File;
 use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 
 class Root extends Mask
 {
-    const ROOT_SUITE_DIR = "tests/_suite";
+    public const ROOT_SUITE_DIR = 'tests/_suite';
 
     /**
      * Retrieve the list of configuration files with given name that relate to specified scope at the root level as well

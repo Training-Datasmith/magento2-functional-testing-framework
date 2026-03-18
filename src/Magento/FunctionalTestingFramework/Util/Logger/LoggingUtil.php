@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -57,7 +59,7 @@ class LoggingUtil
     public function getLogger($className): MftfLogger
     {
         if ($className === null) {
-            throw new TestFrameworkException("You must pass a class name to receive a logger");
+            throw new TestFrameworkException('You must pass a class name to receive a logger');
         }
 
         if (!array_key_exists($className, $this->loggers)) {
@@ -76,6 +78,6 @@ class LoggingUtil
      */
     public function getLoggingPath(): string
     {
-        return FilePathFormatter::format(TESTS_BP) . "mftf.log";
+        return FilePathFormatter::format(TESTS_BP) . 'mftf.log';
     }
 }

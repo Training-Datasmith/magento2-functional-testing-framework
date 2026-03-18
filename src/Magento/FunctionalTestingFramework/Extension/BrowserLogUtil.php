@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
@@ -12,8 +14,8 @@ namespace Magento\FunctionalTestingFramework\Extension;
  */
 class BrowserLogUtil
 {
-    const LOG_TYPE_BROWSER = "browser";
-    const ERROR_TYPE_JAVASCRIPT = "javascript";
+    public const LOG_TYPE_BROWSER = 'browser';
+    public const ERROR_TYPE_JAVASCRIPT = 'javascript';
 
     /**
      * Loops throw errors in log and logs them to allure. Uses Module to set the error itself
@@ -28,7 +30,7 @@ class BrowserLogUtil
         foreach ($jsErrors as $entry) {
             self::logError(self::ERROR_TYPE_JAVASCRIPT, $stepEvent, $entry);
             //Set javascript error in MagentoWebDriver internal array
-            $module->setJsError("ERROR({$entry["level"]}) - " . $entry["message"]);
+            $module->setJsError("ERROR({$entry['level']}) - " . $entry['message']);
         }
     }
 
@@ -42,7 +44,7 @@ class BrowserLogUtil
     {
         $errors = [];
         foreach ($log as $entry) {
-            if (array_key_exists("source", $entry) && $entry["source"] === $type) {
+            if (array_key_exists('source', $entry) && $entry['source'] === $type) {
                 $errors[] = $entry;
             }
         }
@@ -59,7 +61,7 @@ class BrowserLogUtil
     {
         $errors = [];
         foreach ($log as $entry) {
-            if (array_key_exists("source", $entry) && $entry["source"] !== $type) {
+            if (array_key_exists('source', $entry) && $entry['source'] !== $type) {
                 $errors[] = $entry;
             }
         }
@@ -73,6 +75,6 @@ class BrowserLogUtil
     private static function logError(string $type, $stepEvent, array $entry): void
     {
         //TODO Add to overall log
-        $stepEvent->getTest()->getScenario()->comment("{$type} ERROR({$entry["level"]}) - " . $entry["message"]);
+        $stepEvent->getTest()->getScenario()->comment("{$type} ERROR({$entry['level']}) - " . $entry['message']);
     }
 }

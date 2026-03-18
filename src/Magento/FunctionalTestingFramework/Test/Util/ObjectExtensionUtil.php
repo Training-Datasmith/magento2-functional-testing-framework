@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
@@ -11,11 +13,11 @@ use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
 use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
 use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 use Magento\FunctionalTestingFramework\Test\Handlers\ActionGroupObjectHandler;
+use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
 use Magento\FunctionalTestingFramework\Test\Objects\ActionGroupObject;
 use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
-use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
 use Magento\FunctionalTestingFramework\Test\Objects\TestHookObject;
-use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
+use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
 use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 
 class ObjectExtensionUtil
@@ -45,8 +47,8 @@ class ObjectExtensionUtil
             $skippedTest = $this->skipTest($testObject, 'ParentTestDoesNotExist');
             if (MftfApplicationConfig::getConfig()->verboseEnabled()) {
                 LoggingUtil::getInstance()->getLogger(ObjectExtensionUtil::class)->debug(
-                    "parent test not defined. test will be skipped",
-                    ["parent" => $testObject->getParentName(), "test" => $testObject->getName()]
+                    'parent test not defined. test will be skipped',
+                    ['parent' => $testObject->getParentName(), 'test' => $testObject->getName()]
                 );
             }
             return $skippedTest;
@@ -55,13 +57,13 @@ class ObjectExtensionUtil
         // Check to see if the parent test is already an extended test
         if ($parentTest->getParentName() !== null) {
             throw new XmlException(
-                "Cannot extend a test that already extends another test. Test: " . $parentTest->getName(),
-                ["parent" => $parentTest->getName(), "actionGroup" => $testObject->getName()]
+                'Cannot extend a test that already extends another test. Test: ' . $parentTest->getName(),
+                ['parent' => $parentTest->getName(), 'actionGroup' => $testObject->getName()]
             );
         }
         if (MftfApplicationConfig::getConfig()->verboseEnabled()) {
             LoggingUtil::getInstance()->getLogger(ObjectExtensionUtil::class)
-                ->debug("extending test", ["parent" => $parentTest->getName(), "test" => $testObject->getName()]);
+                ->debug('extending test', ['parent' => $parentTest->getName(), 'test' => $testObject->getName()]);
         }
 
         // Skip test if parent is skipped
@@ -100,11 +102,11 @@ class ObjectExtensionUtil
         $parentActionGroup = ActionGroupObjectHandler::getInstance()->getObject($actionGroupObject->getParentName());
         if ($parentActionGroup === null) {
             throw new XmlException(
-                "Parent Action Group " .
+                'Parent Action Group ' .
                 $actionGroupObject->getParentName() .
-                " not defined for Test " .
+                ' not defined for Test ' .
                 $actionGroupObject->getName() .
-                "." .
+                '.' .
                 PHP_EOL
             );
         }
@@ -112,15 +114,15 @@ class ObjectExtensionUtil
         // Check to see if the parent action group is already an extended action group
         if ($parentActionGroup->getParentName() !== null) {
             throw new XmlException(
-                "Cannot extend an action group that already extends another action group. " .
+                'Cannot extend an action group that already extends another action group. ' .
                 $parentActionGroup->getName(),
-                ["parent" => $parentActionGroup->getName(), "actionGroup" => $actionGroupObject->getName()]
+                ['parent' => $parentActionGroup->getName(), 'actionGroup' => $actionGroupObject->getName()]
             );
         }
         if (MftfApplicationConfig::getConfig()->verboseEnabled()) {
             LoggingUtil::getInstance()->getLogger(ObjectExtensionUtil::class)->debug(
-                "extending action group:",
-                ["parent" => $parentActionGroup->getName(), "actionGroup" => $actionGroupObject->getName()]
+                'extending action group:',
+                ['parent' => $parentActionGroup->getName(), 'actionGroup' => $actionGroupObject->getName()]
             );
         }
 
@@ -145,13 +147,13 @@ class ObjectExtensionUtil
         return $extendedActionGroup;
     }
 
-        /**
-         * Resolves test references for extending test objects
-         *
-         * @param TestObject $testObject
-         * @param TestObject $parentTestObject
-         * @return TestHookObject[] $testHooks
-         */
+    /**
+     * Resolves test references for extending test objects
+     *
+     * @param TestObject $testObject
+     * @param TestObject $parentTestObject
+     * @return TestHookObject[] $testHooks
+     */
     private function resolveExtendedHooks($testObject, $parentTestObject)
     {
         $testHooks = $testObject->getHooks();
