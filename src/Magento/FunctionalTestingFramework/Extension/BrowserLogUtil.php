@@ -21,9 +21,8 @@ class BrowserLogUtil
      * @param array                         $log
      * @param \Codeception\Module\WebDriver $module
      * @param \Codeception\Event\StepEvent  $stepEvent
-     * @return void
      */
-    public static function logErrors($log, $module, $stepEvent)
+    public static function logErrors($log, $module, $stepEvent): void
     {
         $jsErrors = self::getLogsOfType($log, self::ERROR_TYPE_JAVASCRIPT);
         foreach ($jsErrors as $entry) {
@@ -38,9 +37,8 @@ class BrowserLogUtil
      *
      * @param array  $log
      * @param string $type
-     * @return array
      */
-    public static function getLogsOfType($log, $type)
+    public static function getLogsOfType($log, $type): array
     {
         $errors = [];
         foreach ($log as $entry) {
@@ -56,9 +54,8 @@ class BrowserLogUtil
      *
      * @param array  $log
      * @param string $type
-     * @return array
      */
-    public static function filterLogsOfType($log, $type)
+    public static function filterLogsOfType($log, $type): array
     {
         $errors = [];
         foreach ($log as $entry) {
@@ -71,12 +68,9 @@ class BrowserLogUtil
 
     /**
      * Logs errors to console/report.
-     * @param string                       $type
      * @param \Codeception\Event\StepEvent $stepEvent
-     * @param array                        $entry
-     * @return void
      */
-    private static function logError($type, $stepEvent, $entry)
+    private static function logError(string $type, $stepEvent, array $entry): void
     {
         //TODO Add to overall log
         $stepEvent->getTest()->getScenario()->comment("{$type} ERROR({$entry["level"]}) - " . $entry["message"]);

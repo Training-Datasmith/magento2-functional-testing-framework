@@ -32,38 +32,13 @@ class Dom
 
     /**
      * Configuration of identifier attributes to be taken into account during merging.
-     *
-     * @var Dom\NodeMergingConfig
      */
-    protected $nodeMergingConfig;
-
-    /**
-     * Name of attribute that specifies type of argument node
-     *
-     * @var string|null
-     */
-    protected $typeAttributeName;
-
-    /**
-     * Schema validation file
-     *
-     * @var string
-     */
-    protected $schemaFile;
-
-    /**
-     * Format of error messages
-     *
-     * @var string
-     */
-    protected $errorFormat;
+    protected \Magento\FunctionalTestingFramework\Config\Dom\NodeMergingConfig $nodeMergingConfig;
 
     /**
      * Default namespace for xml elements
-     *
-     * @var string
      */
-    protected $rootNamespace;
+    protected ?string $rootNamespace;
 
     /**
      * Build DOM with initial XML contents and specifying identifier attributes for merging
@@ -72,7 +47,6 @@ class Dom
      * The path to ID attribute name should not include any attribute notations or modifiers -- only node names
      *
      * @param string $xml
-     * @param array  $idAttributes
      * @param string $typeAttributeName
      * @param string $schemaFile
      * @param string $errorFormat
@@ -80,14 +54,20 @@ class Dom
     public function __construct(
         $xml,
         array $idAttributes = [],
-        $typeAttributeName = null,
-        $schemaFile = null,
-        $errorFormat = self::ERROR_FORMAT_DEFAULT
+        /**
+         * Name of attribute that specifies type of argument node
+         */
+        protected $typeAttributeName = null,
+        /**
+         * Schema validation file
+         */
+        protected $schemaFile = null,
+        /**
+         * Format of error messages
+         */
+        protected $errorFormat = self::ERROR_FORMAT_DEFAULT
     ) {
-        $this->schemaFile = $schemaFile;
         $this->nodeMergingConfig = new Dom\NodeMergingConfig(new Dom\NodePathMatcher(), $idAttributes);
-        $this->typeAttributeName = $typeAttributeName;
-        $this->errorFormat = $errorFormat;
         $this->dom = $this->initDom($xml);
         $this->rootNamespace = $this->dom->lookupNamespaceUri($this->dom->namespaceURI);
     }
@@ -98,11 +78,10 @@ class Dom
      * @param string             $xml
      * @param string             $filename
      * @param ExceptionCollector $exceptionCollector
-     * @return void
      */
-    public function merge($xml, $filename = null, $exceptionCollector = null)
+    public function merge($xml, $filename = null, $exceptionCollector = null): void
     {
-        $dom = $this->initDom($xml, $filename, $exceptionCollector);
+        $dom = $this->initDom($xml, $filename);
         $this->mergeNode($dom->documentElement, '');
     }
 
@@ -114,7 +93,6 @@ class Dom
      * 2. Extend and override original document node attributes and scalar value if found
      * 3. Append new node if original document doesn't have the same node
      *
-     * @param \DOMElement $node
      * @param string      $parentPath Path to parent node.
      * @return void
      */
@@ -138,7 +116,6 @@ class Dom
     /**
      * Function to process matching node merges. Broken into shared logic for extending classes.
      *
-     * @param \DomElement $node
      * @param string      $parentPath
      * @param |DomElement $matchedNode
      * @param string      $path
@@ -187,8 +164,6 @@ class Dom
      * Replace node value.
      *
      * @param string      $parentPath
-     * @param \DOMElement $node
-     * @param \DOMElement $matchedNode
      *
      * @return void
      */
@@ -203,9 +178,8 @@ class Dom
      * Check if the node content is text
      *
      * @param \DOMElement $node
-     * @return boolean
      */
-    protected function isTextNode($node)
+    protected function isTextNode($node): bool
     {
         return $node->childNodes->length === 1 && $node->childNodes->item(0) instanceof \DOMText;
     }
@@ -234,12 +208,8 @@ class Dom
 
     /**
      * Identify node path based on parent path and node attributes
-     *
-     * @param \DOMElement $node
-     * @param string      $parentPath
-     * @return string
      */
-    protected function getNodePathByParent(\DOMElement $node, $parentPath)
+    protected function getNodePathByParent(\DOMElement $node, string $parentPath): string
     {
         $prefix = $this->rootNamespace === null ? '' : self::ROOT_NAMESPACE_PREFIX . ':';
         $path = $parentPath . '/' . $prefix . $node->tagName;
@@ -273,8 +243,9 @@ class Dom
         $node = null;
         if ($matchedNodes->length > 1) {
             throw new \Exception("More than one node matching the query: {$nodePath}");
-        } elseif ($matchedNodes->length === 1) {
-            $node = $matchedNodes->item(0);
+        }
+        if ($matchedNodes->length === 1) {
+            return $matchedNodes->item(0);
         }
         return $node;
     }
@@ -282,15 +253,13 @@ class Dom
     /**
      * Validate dom document
      *
-     * @param \DOMDocument $dom
-     * @param string       $schemaFileName
      * @param string       $errorFormat
      * @return array of errors
      * @throws \Exception
      */
     public static function validateDomDocument(
         \DOMDocument $dom,
-        $schemaFileName,
+        string $schemaFileName,
         $errorFormat = self::ERROR_FORMAT_DEFAULT
     ) {
         libxml_use_internal_errors(true);
@@ -324,7 +293,6 @@ class Dom
     /**
      * Render error message string by replacing placeholders '%field%' with properties of \LibXMLError
      *
-     * @param \LibXMLError $errorInfo
      * @param string       $format
      * @return string
      * @throws \InvalidArgumentException
@@ -337,7 +305,7 @@ class Dom
             $value = trim((string)$value);
             $result = str_replace($placeholder, $value, $result);
         }
-        if (strpos($result, '%') !== false) {
+        if (str_contains($result, '%')) {
             throw new \InvalidArgumentException("Error format '{$format}' contains unsupported placeholders.");
         }
         return $result;
@@ -358,10 +326,9 @@ class Dom
      *
      * @param string $xml
      * @param string $filename
-     * @return \DOMDocument
      * @throws \Magento\FunctionalTestingFramework\Config\Dom\ValidationException
      */
-    protected function initDom($xml, $filename = null)
+    protected function initDom($xml, $filename = null): \DOMDocument
     {
         $dom = new \DOMDocument();
         try {
@@ -369,7 +336,7 @@ class Dom
             if (!$domSuccess) {
                 throw new \Exception();
             }
-        } catch (\Exception $exception) {
+        } catch (\Exception) {
             throw new ValidationException("XML Parse Error: $filename\n");
         }
         if ($this->schemaFile) {
@@ -386,9 +353,8 @@ class Dom
      *
      * @param string $schemaFileName Absolute path to schema file.
      * @param array  $errors
-     * @return boolean
      */
-    public function validate($schemaFileName, &$errors = [])
+    public function validate($schemaFileName, &$errors = []): bool
     {
         $errors = self::validateDomDocument($this->dom, $schemaFileName, $this->errorFormat);
         return !count($errors);
@@ -400,7 +366,7 @@ class Dom
      * @param string $schemaFile
      * @return $this
      */
-    public function setSchemaFile($schemaFile)
+    public function setSchemaFile($schemaFile): static
     {
         $this->schemaFile = $schemaFile;
         return $this;
@@ -415,10 +381,8 @@ class Dom
     private function getAttributeName($attribute)
     {
         if ($attribute->prefix !== null && !empty($attribute->prefix)) {
-            $attributeName = $attribute->prefix . ':' . $attribute->name;
-        } else {
-            $attributeName = $attribute->name;
+            return $attribute->prefix . ':' . $attribute->name;
         }
-        return $attributeName;
+        return $attribute->name;
     }
 }

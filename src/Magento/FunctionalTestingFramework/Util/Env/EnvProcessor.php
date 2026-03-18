@@ -19,13 +19,6 @@ use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
 class EnvProcessor
 {
     /**
-     * File .env location.
-     *
-     * @var string
-     */
-    private $envFile = '';
-
-    /**
      * File .env.example location.
      *
      * @var string
@@ -34,35 +27,30 @@ class EnvProcessor
 
     /**
      * Array of environment variables form file.
-     *
-     * @var array
      */
-    private $env = [];
+    private array $env = [];
 
     /**
      * Boolean indicating existence of env file
-     *
-     * @var boolean
      */
-    private $envExists;
+    private readonly bool $envExists;
 
     /**
      * EnvProcessor constructor.
-     * @param string $envFile
      * @throws TestFrameworkException
      */
     public function __construct(
-        string $envFile = ''
+        /**
+         * File .env location.
+         */
+        private readonly string $envFile = ''
     ) {
-        $this->envFile = $envFile;
-        $this->envExists = file_exists($envFile);
+        $this->envExists = file_exists($this->envFile);
         $this->envExampleFile = realpath(FilePathFormatter::format(FW_BP) . "etc/config/.env.example");
     }
 
     /**
      * Serves for parsing '.env' file into associative array.
-     *
-     * @return array
      */
     private function parseEnvFile(): array
     {
@@ -86,16 +74,14 @@ class EnvProcessor
 
     /**
      * Iterates through env and returns array of file contents.
-     * @param array $file
-     * @return array
      */
     private function parseEnvFileLines(array $file): array
     {
         $fileArray = [];
         foreach ($file as $line) {
             // do not use commented out lines
-            if (strpos($line, '#') !== 0) {
-                list($key, $value) = explode('=', $line);
+            if (!str_starts_with((string) $line, '#')) {
+                [$key, $value] = explode('=', (string) $line);
                 $fileArray[$key] = $value;
             }
         }
@@ -104,11 +90,8 @@ class EnvProcessor
 
     /**
      * Serves for putting array with environment variables into .env file or appending new variables we introduce
-     *
-     * @param array $config
-     * @return void
      */
-    public function putEnvFile(array $config = [])
+    public function putEnvFile(array $config = []): void
     {
         $envData = '';
         foreach ($config as $key => $value) {
@@ -120,8 +103,6 @@ class EnvProcessor
 
     /**
      * Retrieves '.env.example' file as associative array.
-     *
-     * @return array
      */
     public function getEnv(): array
     {

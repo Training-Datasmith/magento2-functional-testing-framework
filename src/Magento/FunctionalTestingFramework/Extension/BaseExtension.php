@@ -36,13 +36,11 @@ class BaseExtension extends Extension
     /**
      * Codeception event listener function - initialize uri before test
      *
-     * @param \Codeception\Event\TestEvent $e
-     * @return void
      * @throws \Exception
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function beforeTest(\Codeception\Event\TestEvent $e)
+    public function beforeTest(\Codeception\Event\TestEvent $e): void
     {
         $this->uri = null;
     }
@@ -50,13 +48,11 @@ class BaseExtension extends Extension
     /**
      * Codeception event listener function - check for page uri change before step
      *
-     * @param \Codeception\Event\StepEvent $e
-     * @return void
      * @throws \Exception
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function beforeStep(\Codeception\Event\StepEvent $e)
+    public function beforeStep(\Codeception\Event\StepEvent $e): void
     {
         $this->pageChanged();
     }
@@ -99,7 +95,7 @@ class BaseExtension extends Extension
                 $this->uri = $currentUri;
                 return true;
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // just fall through and return false
         }
         return false;

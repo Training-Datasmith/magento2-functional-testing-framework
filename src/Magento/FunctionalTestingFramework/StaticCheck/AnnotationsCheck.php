@@ -24,40 +24,34 @@ class AnnotationsCheck implements StaticCheckInterface
 
     /**
      * Array containing all errors found after running the execute() function.
-     * @var array
      */
-    private $errors = [];
+    private array $errors = [];
 
     /**
      * String representing the output summary found after running the execute() function.
-     * @var string
      */
-    private $output;
+    private ?string $output = null;
 
     /**
      * Array containing
      *   key = Story appended to Title
      *   value = test names that have that pair
-     * @var array
      */
-    private $storiesTitlePairs = [];
+    private array $storiesTitlePairs = [];
 
     /**
      * Array containing
      *   key = testCaseId appended to Title
      *   value = test names that have that pair
-     * @var array
      */
-    private $testCaseIdTitlePairs = [];
+    private array $testCaseIdTitlePairs = [];
 
     /**
      * Validates test annotations
      *
-     * @param InputInterface $input
-     * @return void
      * @throws Exception
      */
-    public function execute(InputInterface $input)
+    public function execute(InputInterface $input): void
     {
         // Set MFTF to the UNIT_TEST_PHASE to mute the default DEPRECATION warnings from the TestObjectHandler.
         MftfApplicationConfig::create(
@@ -116,11 +110,10 @@ class AnnotationsCheck implements StaticCheckInterface
      *   severity
      *
      * @param TestObject $test
-     * @return void
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
-    private function validateRequiredAnnotations($test)
+    private function validateRequiredAnnotations($test): void
     {
         $annotations = $test->getAnnotations();
         $missing = [];
@@ -185,9 +178,8 @@ class AnnotationsCheck implements StaticCheckInterface
      * Add the key = "stories appended to title", value = test name, to the class variable.
      *
      * @param TestObject $test
-     * @return void
      */
-    private function aggregateStoriesTitlePairs($test)
+    private function aggregateStoriesTitlePairs($test): void
     {
         $annotations = $test->getAnnotations();
         $stories = $annotations['stories'][0] ?? null;
@@ -201,9 +193,8 @@ class AnnotationsCheck implements StaticCheckInterface
      * Add the key = "testCaseId appended to title", value = test name, to the class variable.
      *
      * @param TestObject $test
-     * @return void
      */
-    private function aggregateTestCaseIdTitlePairs($test)
+    private function aggregateTestCaseIdTitlePairs($test): void
     {
         $annotations = $test->getAnnotations();
         $testCaseId = $annotations['testCaseId'][0] ?? null;
@@ -218,26 +209,22 @@ class AnnotationsCheck implements StaticCheckInterface
      * so that way we have just the raw title from the XML file.
      *
      * @param TestObject $test
-     * @return string|null
      */
-    private function getTestTitleWithoutPrefix($test)
+    private function getTestTitleWithoutPrefix($test): ?string
     {
         $annotations = $test->getAnnotations();
         $title = $annotations['title'][0] ?? null;
         if ($title === null) {
             return null;
-        } else {
-            $testCaseId = $annotations['testCaseId'][0] ?? "[NO TESTCASEID]";
-            return substr($title, strlen($testCaseId . ": "));
         }
+        $testCaseId = $annotations['testCaseId'][0] ?? "[NO TESTCASEID]";
+        return substr($title, strlen($testCaseId . ": "));
     }
 
     /**
      * Adds an error if any story+title pairs are used by more than one test.
-     *
-     * @return void
      */
-    private function validateStoriesTitlePairs()
+    private function validateStoriesTitlePairs(): void
     {
         foreach ($this->storiesTitlePairs as $pair) {
             if (sizeof($pair) > 1) {
@@ -248,10 +235,8 @@ class AnnotationsCheck implements StaticCheckInterface
 
     /**
      * Adds an error if any testCaseId+title pairs are used by more than one test.
-     *
-     * @return void
      */
-    private function validateTestCaseIdTitlePairs()
+    private function validateTestCaseIdTitlePairs(): void
     {
         foreach ($this->testCaseIdTitlePairs as $pair) {
             if (sizeof($pair) > 1) {

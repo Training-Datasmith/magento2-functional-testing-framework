@@ -15,10 +15,9 @@ class StringUtils implements InterpreterInterface
 {
     /**
      * {@inheritdoc}
-     * @return string
      * @throws \InvalidArgumentException
      */
-    public function evaluate(array $data)
+    public function evaluate(array $data): string
     {
         if (isset($data['value'])) {
             $result = $data['value'];

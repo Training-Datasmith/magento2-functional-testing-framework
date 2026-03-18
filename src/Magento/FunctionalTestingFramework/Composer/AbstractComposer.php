@@ -76,7 +76,7 @@ abstract class AbstractComposer
         $magentoModuleNames = [];
         foreach ($suggests as $suggest) {
             // Expecting pattern - type: magento2-module, name: Magento_Store, version: ~100.0.0
-            preg_match(self::MODULE_NAME_IN_SUGGEST_REGEX, $suggest, $match);
+            preg_match(self::MODULE_NAME_IN_SUGGEST_REGEX, (string) $suggest, $match);
             if (isset($match[self::MODULE_NAME_IN_SUGGEST_REGEX_INDEX])) {
                 $magentoModuleNames[] = $match[self::MODULE_NAME_IN_SUGGEST_REGEX_INDEX];
             }

@@ -14,13 +14,9 @@ namespace Magento\FunctionalTestingFramework\Filter;
  */
 interface FilterInterface
 {
-    /**
-     * @param array $filterValues
-     */
     public function __construct(array $filterValues = []);
 
     /**
-     * @param array $tests
      * @return void
      */
     public function filter(array &$tests);

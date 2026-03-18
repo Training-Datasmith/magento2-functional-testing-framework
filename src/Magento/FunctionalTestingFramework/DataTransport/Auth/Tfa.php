@@ -25,13 +25,13 @@ class Tfa
      *
      * @var boolean|null
      */
-    private static $tfaEnabled = null;
+    private static $tfaEnabled;
 
     /** Rest request headers
      *
      * @var string[]
      */
-    private static $headers = [
+    private static array $headers = [
         'Accept: application/json',
         'Content-Type: application/json',
     ];
@@ -41,7 +41,7 @@ class Tfa
      *
      * @var string[]
      */
-    private static $providerWebApiAuthEndpoints = [
+    private static array $providerWebApiAuthEndpoints = [
         'google' => self::WEB_API_AUTH_GOOGLE,
     ];
 
@@ -50,7 +50,7 @@ class Tfa
      *
      * @var string[]
      */
-    private static $providerAdminFormAuthEndpoints = [
+    private static array $providerAdminFormAuthEndpoints = [
         'google' => self::ADMIN_FORM_AUTH_GOOGLE,
     ];
 
@@ -76,7 +76,7 @@ class Tfa
             if (isset($schema['definitions'], $schema['paths'])) {
                 return true;
             }
-        } catch (TestFrameworkException $e) {
+        } catch (TestFrameworkException) {
             $transport->close();
         }
         return false;

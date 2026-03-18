@@ -14,19 +14,15 @@ use Magento\FunctionalTestingFramework\Config\DataInterface;
 class OperationDefinitionParser
 {
     /**
-     * Meta Data.
-     *
-     * @var DataInterface
-     */
-    private $metadata;
-
-    /**
      * MetadataParser constructor.
-     * @param DataInterface $metadata
      */
-    public function __construct(DataInterface $metadata)
+    public function __construct(
+        /**
+         * Meta Data.
+         */
+        private readonly DataInterface $metadata
+    )
     {
-        $this->metadata = $metadata;
     }
 
     /**

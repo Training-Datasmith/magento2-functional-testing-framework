@@ -21,7 +21,7 @@ class XmlException extends \Exception
      */
     public function __construct($message, $context = [])
     {
-        list($childClass, $callingClass) = debug_backtrace(false, 2);
+        [$childClass, $callingClass] = debug_backtrace(false, 2);
         LoggingUtil::getInstance()->getLogger($callingClass['class'])->error(
             $message,
             $context

@@ -24,40 +24,30 @@ class ClassFileNamingCheck implements StaticCheckInterface
 
     /**
      * Array containing all warnings found after running the execute() function.
-     * @var array
      */
-    private $warnings = [];
+    private array $warnings = [];
     /**
      * Array containing all errors found after running the execute() function.
-     * @var array
      */
-    private $errors = [];
+    private array $errors = [];
 
     /**
      * String representing the output summary found after running the execute() function.
-     * @var string
      */
-    private $output;
+    private ?string $output = null;
 
-    /**
-     * @var array $allowFailureEntities
-     */
-    private $allowFailureEntities = [];
+    private array $allowFailureEntities = [];
 
     /**
      * ScriptUtil instance
-     *
-     * @var ScriptUtil
      */
-    private $scriptUtil;
+    private ?\Magento\FunctionalTestingFramework\Util\Script\ScriptUtil $scriptUtil = null;
     /**
      * Checks usage of pause action in action groups, tests and suites and prints out error to file.
      *
-     * @param InputInterface $input
-     * @return void
      * @throws Exception
      */
-    public function execute(InputInterface $input)
+    public function execute(InputInterface $input): void
     {
         $this->scriptUtil = new ScriptUtil();
         $modulePaths = [];
@@ -127,9 +117,8 @@ class ClassFileNamingCheck implements StaticCheckInterface
      * Returns Violations if found
      * @param  SplFileInfo $files
      * @param  string      $fileType
-     * @return array
      */
-    public function findErrorsInFileSet($files, $fileType)
+    public function findErrorsInFileSet($files, $fileType): array
     {
         $errors = [];
         /** @var SplFileInfo $filePath */
@@ -163,9 +152,8 @@ class ClassFileNamingCheck implements StaticCheckInterface
      *
      * @param  DOMNodeList $nodes
      * @param  string      $attributeName
-     * @return array
      */
-    public function getAttributesFromDOMNodeList($nodes, $attributeName)
+    public function getAttributesFromDOMNodeList($nodes, $attributeName): array
     {
         $attributes = [];
         foreach ($nodes as $node) {

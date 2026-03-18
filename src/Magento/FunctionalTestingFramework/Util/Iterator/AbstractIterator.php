@@ -46,15 +46,11 @@ abstract class AbstractIterator implements \Iterator, \Countable
 
     /**
      * Check if current element is valid
-     *
-     * @return boolean
      */
     abstract protected function isValid() : bool;
 
     /**
      * Initialize Data Array
-     *
-     * @return void
      */
     public function rewind() : void
     {
@@ -66,8 +62,6 @@ abstract class AbstractIterator implements \Iterator, \Countable
 
     /**
      * Seek to next valid row
-     *
-     * @return void
      */
     public function next() : void
     {
@@ -84,17 +78,14 @@ abstract class AbstractIterator implements \Iterator, \Countable
 
     /**
      * Check if current position is valid
-     *
-     * @return boolean
      */
     public function valid() : bool
     {
         $current = current($this->data);
         if ($current === false || $current === null) {
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     // @codingStandardsIgnoreStart
@@ -109,11 +100,8 @@ abstract class AbstractIterator implements \Iterator, \Countable
         return key($this->data);
     }
     // @codingStandardsIgnoreEnd
-
     /**
      * To make iterator countable
-     *
-     * @return integer
      */
     public function count() : int
     {

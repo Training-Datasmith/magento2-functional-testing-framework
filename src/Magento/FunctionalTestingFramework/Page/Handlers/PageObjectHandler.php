@@ -27,17 +27,15 @@ class PageObjectHandler implements ObjectHandlerInterface
 
     /**
      * The singleton instance of this class
-     *
-     * @var PageObjectHandler
      */
-    private static $INSTANCE;
+    private static ?\Magento\FunctionalTestingFramework\Page\Handlers\PageObjectHandler $INSTANCE = null;
 
     /**
      * Array containing all page objects
      *
      * @var PageObject[]
      */
-    private $pageObjects = [];
+    private array $pageObjects = [];
 
     /**
      * Private constructor
@@ -57,7 +55,7 @@ class PageObjectHandler implements ObjectHandlerInterface
 
         $pageNameValidator = new NameValidationUtil();
         foreach ($parserOutput as $pageName => $pageData) {
-            if (preg_match('/[^a-zA-Z0-9_]/', $pageName)) {
+            if (preg_match('/[^a-zA-Z0-9_]/', (string) $pageName)) {
                 throw new XmlException(sprintf(self::NAME_BLOCKLIST_ERROR_MSG, $pageName));
             }
 
@@ -67,12 +65,12 @@ class PageObjectHandler implements ObjectHandlerInterface
             $url = $pageData[self::URL] ?? null;
 
             if ($area === 'admin') {
-                $url = ltrim($url, "/");
+                $url = ltrim((string) $url, "/");
             }
 
             $module = $pageData[self::MODULE] ?? null;
             $sectionNames = array_keys($pageData[self::SECTION] ?? []);
-            $urlContainsMustaches = strpos($url, "{{") !== false && strpos($url, "}}") !== false;
+            $urlContainsMustaches = str_contains((string) $url, "{{") && str_contains((string) $url, "}}");
             $parameterized = $pageData[self::PARAMETERIZED] ?? $urlContainsMustaches ?? false;
             $filename = $pageData[self::FILENAME] ?? null;
             $deprecated = $pageData[self::OBJ_DEPRECATED] ?? null;

@@ -18,15 +18,11 @@ class Mask implements FileResolverInterface
 {
     /**
      * Resolves module paths based on enabled modules of target Magento instance.
-     *
-     * @var ModuleResolver
      */
-    protected $moduleResolver;
+    protected ?\Magento\FunctionalTestingFramework\Util\ModuleResolver $moduleResolver;
 
     /**
      * Constructor
-     *
-     * @param ModuleResolver|null $moduleResolver
      */
     public function __construct(?ModuleResolver $moduleResolver = null)
     {
@@ -44,7 +40,7 @@ class Mask implements FileResolverInterface
      * @param string $scope
      * @return array|\Iterator,\Countable
      */
-    public function get($filename, $scope)
+    public function get($filename, $scope): \Magento\FunctionalTestingFramework\Util\Iterator\File
     {
         $paths = $this->getFileCollection($filename, $scope);
 
@@ -55,10 +51,9 @@ class Mask implements FileResolverInterface
      * Get scope of paths.
      *
      * @param string $filename
-     * @param string $scope
      * @return array
      */
-    protected function getFileCollection($filename, $scope)
+    protected function getFileCollection($filename, string $scope)
     {
         $paths = [];
         $modulesPath = $this->moduleResolver->getModulesPath();

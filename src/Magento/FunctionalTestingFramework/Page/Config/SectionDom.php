@@ -25,22 +25,18 @@ class SectionDom extends \Magento\FunctionalTestingFramework\Config\MftfDom
 
     /**
      * NodeValidationUtil
-     * @var DuplicateNodeValidationUtil
      */
-    private $validationUtil;
+    private readonly \Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUtil $validationUtil;
 
     /** SingleNodePerFileValidationUtil
-     *
-     * @var SingleNodePerFileValidationUtil
      */
-    private $singleNodePerFileValidationUtil;
+    private readonly \Magento\FunctionalTestingFramework\Util\Validation\SingleNodePerFileValidationUtil $singleNodePerFileValidationUtil;
 
     /**
      * Entity Dom constructor.
      * @param string             $xml
      * @param string             $filename
      * @param ExceptionCollector $exceptionCollector
-     * @param array              $idAttributes
      * @param string             $typeAttributeName
      * @param string             $schemaFile
      * @param string             $errorFormat

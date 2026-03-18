@@ -48,7 +48,7 @@ class Primary
      *
      * @return \Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface
      */
-    protected function createArgumentInterpreter()
+    protected function createArgumentInterpreter(): \Magento\FunctionalTestingFramework\Data\Argument\Interpreter\Composite
     {
         $booleanUtils = new \Magento\FunctionalTestingFramework\Stdlib\BooleanUtils();
         $constInterpreter = new \Magento\FunctionalTestingFramework\Data\Argument\Interpreter\Constant();

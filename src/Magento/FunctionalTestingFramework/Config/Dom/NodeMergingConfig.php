@@ -12,28 +12,19 @@ namespace Magento\FunctionalTestingFramework\Config\Dom;
 class NodeMergingConfig
 {
     /**
-     * Matching of XPath expressions to path patterns.
-     *
-     * @var NodePathMatcher
-     */
-    private $nodePathMatcher;
-
-    /**
-     * Format: array('/node/path' => '<node_id_attribute>', ...)
-     *
-     * @var array
-     */
-    private $idAttributes = [];
-
-    /**
      * NodeMergingConfig constructor.
-     * @param NodePathMatcher $nodePathMatcher
-     * @param array           $idAttributes
      */
-    public function __construct(NodePathMatcher $nodePathMatcher, array $idAttributes)
+    public function __construct(
+        /**
+         * Matching of XPath expressions to path patterns.
+         */
+        private readonly NodePathMatcher $nodePathMatcher,
+        /**
+         * Format: array('/node/path' => '<node_id_attribute>', ...)
+         */
+        private readonly array $idAttributes
+    )
     {
-        $this->nodePathMatcher = $nodePathMatcher;
-        $this->idAttributes = $idAttributes;
     }
 
     /**

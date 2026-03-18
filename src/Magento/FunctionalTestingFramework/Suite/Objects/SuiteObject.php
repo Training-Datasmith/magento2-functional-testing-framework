@@ -19,41 +19,6 @@ use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 class SuiteObject
 {
     /**
-     * Name of the Suite.
-     *
-     * @var string
-     */
-    private $name;
-
-    /**
-     * Array of Tests to include for the suite.
-     *
-     * @var TestObject[]
-     */
-    private $includeTests = [];
-
-    /**
-     * Array of Tests to exclude for the suite.
-     *
-     * @var TestObject[]
-     */
-    private $excludeTests = [];
-
-    /**
-     * Array of before/after hooks to be executed for a suite.
-     *
-     * @var TestHookObject[]
-     */
-    private $hooks;
-
-    /**
-     * Filename of where the suite came from
-     *
-     * @var string
-     */
-    private $filename;
-
-    /**
      * SuiteObject constructor.
      * @param string           $name
      * @param TestObject[]     $includeTests
@@ -61,13 +26,29 @@ class SuiteObject
      * @param TestHookObject[] $hooks
      * @param string           $filename
      */
-    public function __construct($name, $includeTests, $excludeTests, $hooks, $filename = null)
+    public function __construct(
+        /**
+         * Name of the Suite.
+         */
+        private $name,
+        /**
+         * Array of Tests to include for the suite.
+         */
+        private $includeTests,
+        /**
+         * Array of Tests to exclude for the suite.
+         */
+        private $excludeTests,
+        /**
+         * Array of before/after hooks to be executed for a suite.
+         */
+        private $hooks,
+        /**
+         * Filename of where the suite came from
+         */
+        private $filename = null
+    )
     {
-        $this->name = $name;
-        $this->includeTests = $includeTests;
-        $this->excludeTests = $excludeTests;
-        $this->hooks = $hooks;
-        $this->filename = $filename;
     }
 
     /**
@@ -123,10 +104,8 @@ class SuiteObject
     /**
      * Convenience method for determining if a Suite will require group file generation.
      * A group file will only be generated when the user specifies a before/after statement.
-     *
-     * @return boolean
      */
-    public function requiresGroupFile()
+    public function requiresGroupFile(): bool
     {
         return !empty($this->hooks);
     }

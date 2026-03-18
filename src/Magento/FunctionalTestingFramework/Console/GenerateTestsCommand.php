@@ -41,37 +41,21 @@ class GenerateTestsCommand extends BaseGenerateCommand
     const TEST_DEPENDENCY_FILE_LOCATION_STANDALONE = 'dev/tests/_output/test-dependencies.json';
     const TEST_DEPENDENCY_FILE_LOCATION_EMBEDDED = 'dev/tests/acceptance/tests/_output/test-dependencies.json';
 
-    /**
-     * @var ScriptUtil
-     */
-    private $scriptUtil;
+    private ?\Magento\FunctionalTestingFramework\Util\Script\ScriptUtil $scriptUtil = null;
 
-    /**
-     * @var TestDependencyUtil
-     */
-    private $testDependencyUtil;
+    private ?\Magento\FunctionalTestingFramework\Util\Script\TestDependencyUtil $testDependencyUtil = null;
 
     /**
      * @var array
      */
     private $moduleNameToPath;
 
-    /**
-     * @var array
-     */
-    private $moduleNameToComposerName;
-
-    /**
-     * @var array
-     */
-    private $flattenedDependencies;
+    private ?array $moduleNameToComposerName = null;
 
     /**
      * Configures the current command.
-     *
-     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('generate:tests')
             ->setDescription('Run validation and generate all test files and suites based on xml declarations')
@@ -133,8 +117,6 @@ class GenerateTestsCommand extends BaseGenerateCommand
     /**
      * Executes the current command.
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      * @return void|integer
      * @throws TestFrameworkException
      * @throws FastFailException
@@ -157,7 +139,7 @@ class GenerateTestsCommand extends BaseGenerateCommand
         $log = $input->getOption('log');
         $filters = $input->getOption('filter');
         foreach ($filters as $filter) {
-            list($filterType, $filterValue) = explode(':', $filter);
+            [$filterType, $filterValue] = explode(':', (string) $filter);
             $filterList[$filterType][] = $filterValue;
         }
 
@@ -190,13 +172,13 @@ class GenerateTestsCommand extends BaseGenerateCommand
             $json = $this->getTestAndSuiteConfiguration($tests);
         }
 
-        if ($json !== null && !json_decode($json)) {
+        if ($json !== null && !json_decode((string) $json)) {
             // stop execution if we have failed to properly parse any json passed in by the user
             throw new TestFrameworkException("JSON could not be parsed: " . json_last_error_msg());
         }
 
         if ($config === 'parallel') {
-            list($config, $configNumber) = $this->parseConfigParallelOptions($time, $groups);
+            [$config, $configNumber] = $this->parseConfigParallelOptions($time, $groups);
         }
 
         // Remove previous GENERATED_DIR if --remove option is used
@@ -228,7 +210,7 @@ class GenerateTestsCommand extends BaseGenerateCommand
             } catch (\Exception $e) {
             }
 
-            if (strpos($config, 'parallel') !== false) {
+            if (str_contains((string) $config, 'parallel')) {
                 $testManifest->createTestGroups($configNumber);
             }
 
@@ -271,18 +253,16 @@ class GenerateTestsCommand extends BaseGenerateCommand
         if (empty(GenerationErrorHandler::getInstance()->getAllErrors())) {
             $output->writeln("Generate Tests Command Run" . PHP_EOL);
             return 0;
-        } else {
-            GenerationErrorHandler::getInstance()->printErrorSummary();
-            $output->writeln("Generate Tests Command Run (with errors)" . PHP_EOL);
-            return 1;
         }
+        GenerationErrorHandler::getInstance()->printErrorSummary();
+        $output->writeln("Generate Tests Command Run (with errors)" . PHP_EOL);
+        return 1;
     }
 
     /**
      * Function which builds up a configuration including test and suites for consumption of Magento generation methods.
      *
      * @param string $json
-     * @param array  $tests
      * @return array
      * @throws FastFailException
      * @throws TestFrameworkException
@@ -329,10 +309,8 @@ class GenerateTestsCommand extends BaseGenerateCommand
      * passed in by the user. The result is a testConfiguration array.
      *
      * @param string $json
-     * @param array  $testConfiguration
-     * @return array
      */
-    private function parseTestsConfigJson($json, array $testConfiguration)
+    private function parseTestsConfigJson($json, array $testConfiguration): array
     {
         if ($json === null) {
             return $testConfiguration;
@@ -352,10 +330,9 @@ class GenerateTestsCommand extends BaseGenerateCommand
      *
      * @param mixed $time
      * @param mixed $groups
-     * @return array
      * @throws FastFailException
      */
-    private function parseConfigParallelOptions($time, $groups)
+    private function parseConfigParallelOptions($time, $groups): array
     {
         $config = null;
         $configNumber = null;
@@ -364,9 +341,11 @@ class GenerateTestsCommand extends BaseGenerateCommand
                 "'time' and 'groups' options are mutually exclusive. "
                 . "Only one can be specified for 'config parallel'"
             );
-        } elseif ($time === null && $groups === null) {
+        }
+        if ($time === null && $groups === null) {
             $config = 'parallelByTime';
-            $configNumber = self::PARALLEL_DEFAULT_TIME * 60 * 1000; // convert from minutes to milliseconds
+            $configNumber = self::PARALLEL_DEFAULT_TIME * 60 * 1000;
+            // convert from minutes to milliseconds
         } elseif ($time !== null && is_numeric($time)) {
             $time = $time * 60 * 1000; // convert from minutes to milliseconds
             if (is_int($time) && $time > 0) {
@@ -380,23 +359,22 @@ class GenerateTestsCommand extends BaseGenerateCommand
                 $configNumber = $groups;
             }
         }
-
         if ($config && $configNumber) {
             return [$config, $configNumber];
-        } elseif ($time !== null) {
-            throw new FastFailException("'time' option must be an integer and greater than 0");
-        } else {
-            throw new FastFailException("'groups' option must be an integer and greater than 0");
         }
+
+        if ($time !== null) {
+            throw new FastFailException("'time' option must be an integer and greater than 0");
+        }
+        throw new FastFailException("'groups' option must be an integer and greater than 0");
     }
 
     /**
      * console command options --log and create test dependencies in json file
-     * @return void
      * @throws TestFrameworkException
      * @throws XmlException|FastFailException
      */
-    private function getTestEntityJson(array $filterList, array $tests = [])
+    private function getTestEntityJson(array $filterList, array $tests = []): void
     {
         $testDependencies = $this->getTestDependencies($filterList, $tests);
         $this->array2Json($testDependencies);
@@ -404,9 +382,6 @@ class GenerateTestsCommand extends BaseGenerateCommand
 
     /**
      * Function responsible for getting test dependencies in array
-     * @param array $filterList
-     * @param array $tests
-     * @return array
      * @throws FastFailException
      * @throws TestFrameworkException
      * @throws XmlException
@@ -427,10 +402,6 @@ class GenerateTestsCommand extends BaseGenerateCommand
         $this->moduleNameToComposerName = $this->testDependencyUtil->buildModuleNameToComposerName(
             $this->moduleNameToPath
         );
-        $this->flattenedDependencies = $this->testDependencyUtil->buildComposerDependencyList(
-            $this->moduleNameToPath,
-            $this->moduleNameToComposerName
-        );
 
         if (!empty($tests)) {
             # specific test dependencies will be generate.
@@ -443,7 +414,7 @@ class GenerateTestsCommand extends BaseGenerateCommand
             $testXmlFiles = $this->scriptUtil->getModuleXmlFilesByScope($allModules, $filePaths[0]);
         }
 
-        list($testDependencies, $extendedTestMapping) = $this->findTestDependentModule($testXmlFiles);
+        [$testDependencies, $extendedTestMapping] = $this->findTestDependentModule($testXmlFiles);
         return $this->testDependencyUtil->mergeDependenciesForExtendingTests(
             $testDependencies,
             $filterList,
@@ -453,8 +424,6 @@ class GenerateTestsCommand extends BaseGenerateCommand
 
     /**
      * Finds all test dependencies in given set of files
-     * @param Finder $files
-     * @return array
      * @throws FastFailException
      * @throws XmlException
      */
@@ -525,7 +494,7 @@ class GenerateTestsCommand extends BaseGenerateCommand
                 }
 
                 $flattenedDependencyMap = array_values(
-                    array_unique(call_user_func_array('array_merge', array_values($modulesReferencedInTest)))
+                    array_unique(call_user_func_array(array_merge(...), array_values($modulesReferencedInTest)))
                 );
                 $suite_name = $this->getSuiteName($test_name);
                 $full_name = "Magento\AcceptanceTest\_". $suite_name. "\Backend\\".$test_name."Cest.".$test_name;
@@ -540,7 +509,7 @@ class GenerateTestsCommand extends BaseGenerateCommand
         }
 
         if (!empty($extendedTests)) {
-            list($extendedDependencies, $tempExtendedTestMapping) = $this->getExtendedTestDependencies($extendedTests);
+            [$extendedDependencies, $tempExtendedTestMapping] = $this->getExtendedTestDependencies($extendedTests);
             $testDependencies = array_merge($testDependencies, $extendedDependencies);
             $extendedTestMapping = array_merge($extendedTestMapping, $tempExtendedTestMapping);
         }
@@ -550,8 +519,6 @@ class GenerateTestsCommand extends BaseGenerateCommand
 
     /**
      * Finds all extended test dependencies in given set of files
-     * @param array $extendedTests
-     * @return array
      * @throws FastFailException
      * @throws XmlException
      */
@@ -563,10 +530,8 @@ class GenerateTestsCommand extends BaseGenerateCommand
 
     /**
      * Create json file of test dependencies
-     * @param array $array
-     * @return void
      */
-    private function array2Json(array $array)
+    private function array2Json(array $array): void
     {
         $testDependencyFileLocation = self::TEST_DEPENDENCY_FILE_LOCATION_EMBEDDED;
         if (isset($_ENV['MAGENTO_BP'])) {
@@ -584,7 +549,6 @@ class GenerateTestsCommand extends BaseGenerateCommand
 
     /**
      * Get suite name.
-     * @param string $test_name
      * @return integer|mixed|string
      * @throws FastFailException
      */
@@ -592,14 +556,12 @@ class GenerateTestsCommand extends BaseGenerateCommand
     {
         $suite_name = json_decode($this->getTestAndSuiteConfiguration([$test_name]), true)["suites"] ?? "default";
         if (is_array($suite_name)) {
-            $suite_name = array_keys($suite_name)[0];
+            return array_keys($suite_name)[0];
         }
         return $suite_name;
     }
 
     /**
-     * @param string $path
-     * @return array
      * @throws TestFrameworkException
      */
     private function generateTestFileFromPath(string $path): array

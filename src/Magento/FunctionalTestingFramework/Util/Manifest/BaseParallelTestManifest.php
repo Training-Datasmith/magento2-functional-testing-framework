@@ -29,17 +29,13 @@ abstract class BaseParallelTestManifest extends BaseTestManifest
 
     /**
      * An instance of the group sorter which will take suites and tests organizing them to be run together.
-     *
-     * @var ParallelGroupSorter
      */
-    protected $parallelGroupSorter;
+    protected \Magento\FunctionalTestingFramework\Util\Sorter\ParallelGroupSorter $parallelGroupSorter;
 
     /**
      * Path to the directory that will contain all test group files
-     *
-     * @var string
      */
-    protected $dirPath;
+    protected string $dirPath;
 
     /**
      * An array of test name count in a single group
@@ -65,9 +61,8 @@ abstract class BaseParallelTestManifest extends BaseTestManifest
      * Takes a test name and set of tests, records the names in a file for codeception to consume.
      *
      * @param TestObject $testObject
-     * @return void
      */
-    public function addTest($testObject)
+    public function addTest($testObject): void
     {
         $this->testNameToSize[$testObject->getCodeceptionName()] = $testObject->getEstimatedDuration();
     }
@@ -82,10 +77,8 @@ abstract class BaseParallelTestManifest extends BaseTestManifest
 
     /**
      * Function which generates the actual manifest once the relevant tests have been added to the array.
-     *
-     * @return void
      */
-    public function generate()
+    public function generate(): void
     {
         DirSetupUtil::createGroupDir($this->dirPath);
         $suites = $this->getFlattenedSuiteConfiguration($this->suiteConfiguration ?? []);
@@ -114,15 +107,14 @@ abstract class BaseParallelTestManifest extends BaseTestManifest
      *
      * @param array   $testGroup
      * @param integer $nodeNumber
-     * @param array   $suites
      * @return void
      */
-    protected function generateGroupFile($testGroup, $nodeNumber, $suites)
+    protected function generateGroupFile($testGroup, $nodeNumber, array $suites)
     {
         foreach ($testGroup as $entryName => $testValue) {
             $fileResource = fopen($this->dirPath . DIRECTORY_SEPARATOR . "group{$nodeNumber}.txt", 'a');
 
-            $this->testCountsToGroup["group{$nodeNumber}"] = $this->testCountsToGroup["group{$nodeNumber}"] ?? 0;
+            $this->testCountsToGroup["group{$nodeNumber}"] ??= 0;
 
             if (!empty($suites[$entryName])) {
                 $line = "-g {$entryName}";
@@ -137,7 +129,6 @@ abstract class BaseParallelTestManifest extends BaseTestManifest
     }
 
     /**
-     * @param  array $groups
      * @return void
      */
     protected function generateGroupSummaryFile(array $groups)

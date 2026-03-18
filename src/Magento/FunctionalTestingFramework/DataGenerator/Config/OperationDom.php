@@ -23,16 +23,14 @@ class OperationDom extends \Magento\FunctionalTestingFramework\Config\MftfDom
 
     /**
      * NodeValidationUtil
-     * @var DuplicateNodeValidationUtil
      */
-    private $validationUtil;
+    private readonly \Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUtil $validationUtil;
 
     /**
      * Metadata Dom constructor.
      * @param string             $xml
      * @param string             $filename
      * @param ExceptionCollector $exceptionCollector
-     * @param array              $idAttributes
      * @param string             $typeAttributeName
      * @param string             $schemaFile
      * @param string             $errorFormat
@@ -69,7 +67,7 @@ class OperationDom extends \Magento\FunctionalTestingFramework\Config\MftfDom
     {
         $dom = parent::initDom($xml, $filename);
 
-        if (strpos($filename, self::METADATA_FILE_NAME_ENDING)) {
+        if (strpos((string) $filename, self::METADATA_FILE_NAME_ENDING)) {
             $operationNodes = $dom->getElementsByTagName('operation');
             foreach ($operationNodes as $operationNode) {
                 /** @var \DOMElement $operationNode */
@@ -87,12 +85,10 @@ class OperationDom extends \Magento\FunctionalTestingFramework\Config\MftfDom
 
     /**
      * Recurse through child elements and validate uniqueKeys
-     * @param \DOMElement $parentNode
      * @param string      $filename
      * @param string      $topParent
-     * @return void
      */
-    public function validateOperationElements(\DOMElement $parentNode, $filename, $topParent)
+    public function validateOperationElements(\DOMElement $parentNode, $filename, $topParent): void
     {
         $this->validationUtil->validateChildUniqueness(
             $parentNode,

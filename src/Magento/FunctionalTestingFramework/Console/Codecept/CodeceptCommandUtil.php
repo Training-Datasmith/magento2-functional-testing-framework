@@ -22,34 +22,27 @@ class CodeceptCommandUtil
      *
      * @var string
      */
-    private $cwd = null;
+    private $cwd;
 
     // @codingStandardsIgnoreStart
     /**
      * Setup Codeception
-     *
-     * @param InputInterface $input
-     * @return void
      */
-    public function setup(InputInterface $input)
+    public function setup(InputInterface $input): void
     {
         require_once realpath(self::CODECEPTION_AUTOLOAD_FILE);
 
         $tokens = preg_split('{\\s+}', $input->__toString());
         $tokens[0] = str_replace('codecept:', '', $tokens[0]);
-        \Closure::bind(function &(ArgvInput $input) use ($tokens) {
-            return $input->setTokens($tokens);
-        }, null, ArgvInput::class);
+        \Closure::bind(fn&(ArgvInput $input) => $input->setTokens($tokens), null, ArgvInput::class);
     }
     // @codingStandardsIgnoreEnd
-
     /**
      * Save Codeception working directory
      *
-     * @return void
      * @throws TestFrameworkException
      */
-    public function setCodeceptCwd()
+    public function setCodeceptCwd(): void
     {
         $this->cwd = getcwd();
         chdir(FilePathFormatter::format(TESTS_BP, false));
@@ -57,10 +50,8 @@ class CodeceptCommandUtil
 
     /**
      * Restore current working directory
-     *
-     * @return void
      */
-    public function restoreCwd()
+    public function restoreCwd(): void
     {
         if ($this->cwd) {
             chdir($this->cwd);

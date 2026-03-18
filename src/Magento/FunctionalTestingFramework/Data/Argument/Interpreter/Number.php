@@ -23,7 +23,6 @@ class Number implements InterpreterInterface
         if (!isset($data['value']) || !is_numeric($data['value'])) {
             throw new \InvalidArgumentException('Numeric value is expected.');
         }
-        $result = $data['value'];
-        return $result;
+        return $data['value'];
     }
 }

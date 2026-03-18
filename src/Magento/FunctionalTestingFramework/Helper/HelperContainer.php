@@ -18,13 +18,11 @@ class HelperContainer extends \Codeception\Module
     /**
      * @var Helper[]
      */
-    private $helpers = [];
+    private array $helpers = [];
 
     /**
      * Create custom helper class.
      *
-     * @param string $helperClass
-     * @return Helper
      * @throws \Exception
      */
     public function create(string $helperClass): Helper
@@ -42,8 +40,6 @@ class HelperContainer extends \Codeception\Module
     /**
      * Returns helper object by it's class name.
      *
-     * @param string $className
-     * @return Helper
      * @throws TestFrameworkException
      */
     public function get(string $className): Helper
@@ -56,9 +52,6 @@ class HelperContainer extends \Codeception\Module
 
     /**
      * Verifies that helper object exist.
-     *
-     * @param string $className
-     * @return boolean
      */
     public function has(string $className): bool
     {

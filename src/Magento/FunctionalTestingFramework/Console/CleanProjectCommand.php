@@ -23,10 +23,8 @@ class CleanProjectCommand extends Command
 
     /**
      * Configures the current command.
-     *
-     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('reset')
             ->setDescription(
@@ -38,9 +36,6 @@ class CleanProjectCommand extends Command
     /**
      * Executes the current command.
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return integer
      * @throws \Symfony\Component\Console\Exception\LogicException
      * @throws TestFrameworkException
      */

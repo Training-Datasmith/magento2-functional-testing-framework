@@ -64,21 +64,21 @@ class ModuleResolver
      *
      * @var array|null
      */
-    protected $enabledModules = null;
+    protected $enabledModules;
 
     /**
      * Paths for enabled modules.
      *
      * @var array|null
      */
-    protected $enabledModulePaths = null;
+    protected $enabledModulePaths;
 
     /**
      * Name and path for enabled modules
      *
      * @var array|null
      */
-    protected $enabledModuleNameAndPaths = null;
+    protected $enabledModuleNameAndPaths;
 
     /**
      * Configuration instance.
@@ -117,10 +117,8 @@ class ModuleResolver
 
     /**
      * ModuleResolver instance.
-     *
-     * @var ModuleResolver
      */
-    private static $instance = null;
+    private static ?\Magento\FunctionalTestingFramework\Util\ModuleResolver $instance = null;
 
     /**
      * SequenceSorter instance.
@@ -266,7 +264,6 @@ class ModuleResolver
     /**
      * Sort files according module sequence.
      *
-     * @param array $files
      * @return array
      */
     public function sortFilesByModuleSequence(array $files)
@@ -276,26 +273,23 @@ class ModuleResolver
 
     /**
      * Return an array of module allowlist that not exist in target Magento instance.
-     *
-     * @return array
      */
-    protected function getModuleAllowlist()
+    protected function getModuleAllowlist(): array
     {
         $moduleAllowlist = getenv(self::MODULE_ALLOWLIST);
 
         if (empty($moduleAllowlist)) {
             return [];
         }
-        return array_map('trim', explode(',', $moduleAllowlist));
+        return array_map(trim(...), explode(',', $moduleAllowlist));
     }
 
     /**
      * Aggregate all code paths with test module composer json files
      *
-     * @return array
      * @throws TestFrameworkException
      */
-    private function aggregateTestModulePathsFromComposerJson()
+    private function aggregateTestModulePathsFromComposerJson(): array
     {
         // Define the module paths
         $magentoBaseCodePath = FilePathFormatter::format(MAGENTO_BP, false);
@@ -318,10 +312,8 @@ class ModuleResolver
 
     /**
      * Aggregate all code paths with composer installed test modules
-     *
-     * @return array
      */
-    private function aggregateTestModulePathsFromComposerInstaller()
+    private function aggregateTestModulePathsFromComposerInstaller(): array
     {
         // Define the module paths
         $magentoBaseCodePath = MAGENTO_BP;
@@ -334,10 +326,9 @@ class ModuleResolver
      * Flip and filter module code paths
      *
      * @param array $objectArray
-     * @param array $filterArray
      * @return array
      */
-    private function flipAndFilterModulePathsArray($objectArray, $filterArray)
+    private function flipAndFilterModulePathsArray($objectArray, array $filterArray)
     {
         $oneToOneArray = [];
         $oneToManyArray = [];
@@ -358,7 +349,7 @@ class ModuleResolver
         foreach ($filterArray as $moduleName) {
             $path = array_search($moduleName, $oneToOneArray);
             if ($path !== false) {
-                if (strpos($moduleName, '_') === false) {
+                if (!str_contains((string) $moduleName, '_')) {
                     $moduleName = $this->findVendorNameFromPath($path) . '_' . $moduleName;
                 }
                 $flippedArray = $this->setArrayValueWithLogging($flippedArray, $moduleName, $path);
@@ -378,11 +369,10 @@ class ModuleResolver
      * Flip module code paths and optionally sort in alphabetical order
      *
      * @param array   $objectArray
-     * @param boolean $sort
      * @param array   $inFlippedArray
      * @return array
      */
-    private function flipAndSortModulePathsArray($objectArray, $sort, $inFlippedArray = [])
+    private function flipAndSortModulePathsArray($objectArray, bool $sort, $inFlippedArray = [])
     {
         $flippedArray = $inFlippedArray;
 
@@ -395,13 +385,13 @@ class ModuleResolver
                 // TODO: Consider saving all module names if this information is needed in the future.
                 $module = $this->findVendorAndModuleNameFromPath($path);
             } elseif (is_array($modules)) {
-                if (strpos($modules[0], '_') === false) {
+                if (!str_contains((string) $modules[0], '_')) {
                     $module = $this->findVendorNameFromPath($path) . '_' . $modules[0];
                 } else {
                     $module = $modules[0];
                 }
             } else {
-                if (strpos($modules, '_') === false) {
+                if (!str_contains((string) $modules, '_')) {
                     $module = $this->findVendorNameFromPath($path) . '_' . $modules;
                 } else {
                     $module = $modules;
@@ -421,13 +411,10 @@ class ModuleResolver
     /**
      * Set array value at index only if array value at index is not yet set, skip otherwise and log warning message
      *
-     * @param array  $inArray
      * @param string $index
-     * @param string $value
      *
-     * @return array
      */
-    private function setArrayValueWithLogging($inArray, $index, $value)
+    private function setArrayValueWithLogging(array $inArray, $index, string $value): array
     {
         $outArray = $inArray;
         if (!isset($inArray[$index])) {
@@ -444,10 +431,9 @@ class ModuleResolver
      * Merge code paths
      *
      * @param array $oneToOneArray
-     * @param array $oneToManyArray
      * @return array
      */
-    private function mergeModulePaths($oneToOneArray, $oneToManyArray)
+    private function mergeModulePaths($oneToOneArray, array $oneToManyArray)
     {
         $mergedArray = $oneToOneArray;
         foreach ($oneToManyArray as $path => $modules) {
@@ -488,11 +474,8 @@ class ModuleResolver
 
     /**
      * Takes a multidimensional array of module paths and flattens to return a one dimensional array of test paths
-     *
-     * @param array $modulePaths
-     * @return array
      */
-    private function flattenAllModulePaths($modulePaths)
+    private function flattenAllModulePaths(array $modulePaths): array
     {
         $it = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($modulePaths));
         $resultArray = [];
@@ -506,10 +489,8 @@ class ModuleResolver
 
     /**
      * Executes a REST call to the supplied Magento Base Url for version information to display during generation
-     *
-     * @return void
      */
-    private function printMagentoVersionInfo()
+    private function printMagentoVersionInfo(): void
     {
         if (MftfApplicationConfig::getConfig()->forceGenerateEnabled()) {
             return;
@@ -546,7 +527,7 @@ class ModuleResolver
         $modulePathsResult = $this->removeBlocklistModules($modulesPath);
         $customModulePaths = ModuleResolverService::getInstance()->getCustomModulePaths();
 
-        array_map(function ($key, $value) {
+        array_map(function (int|string $key, int|string $value): void {
             LoggingUtil::getInstance()->getLogger(ModuleResolver::class)->info(
                 "including custom module",
                 [$key => $value]
@@ -596,9 +577,8 @@ class ModuleResolver
      * Find vendor and module name from path
      *
      * @param string $path
-     * @return string
      */
-    private function findVendorAndModuleNameFromPath($path)
+    private function findVendorAndModuleNameFromPath($path): string
     {
         $path = str_replace(DIRECTORY_SEPARATOR . self::TEST_MFTF_PATTERN, '', $path);
         return $this->findVendorNameFromPath($path) . '_' . basename($path);
@@ -608,9 +588,8 @@ class ModuleResolver
      * Find vendor name from path
      *
      * @param string $path
-     * @return string
      */
-    private function findVendorNameFromPath($path)
+    private function findVendorNameFromPath($path): string
     {
         $possibleVendorName = 'UnknownVendor';
         $dirPaths = [
@@ -624,8 +603,7 @@ class ModuleResolver
             $match = [];
             preg_match($regex, $path, $match);
             if (isset($match[self::VENDOR])) {
-                $possibleVendorName = ucfirst($match[self::VENDOR]);
-                return $possibleVendorName;
+                return ucfirst($match[self::VENDOR]);
             }
         }
         return $possibleVendorName;

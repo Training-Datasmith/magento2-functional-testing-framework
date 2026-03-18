@@ -45,9 +45,8 @@ class ComposerInstall extends AbstractComposer
      *
      * @param string $packageName
      * @param string $packageType
-     * @return boolean
      */
-    public function isInstalledPackageOfType($packageName, $packageType)
+    public function isInstalledPackageOfType($packageName, $packageType): bool
     {
         /** @var CompletePackageInterface $package */
         foreach ($this->getLocker()->getLockedRepository()->getPackages() as $package) {
@@ -60,10 +59,8 @@ class ComposerInstall extends AbstractComposer
 
     /**
      * Collect all installed mftf test packages from composer lock
-     *
-     * @return array
      */
-    public function getInstalledTestPackages()
+    public function getInstalledTestPackages(): array
     {
         $packages = [];
         /** @var CompletePackageInterface $package */

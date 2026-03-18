@@ -15,10 +15,7 @@ interface FormatterInterface
     /**
      * Return formatted path (file path, url, etc) from input string, or false on error.
      *
-     * @param string  $input
-     * @param boolean $withTrailingSeparator
      *
-     * @return string
      * @throws TestFrameworkException
      */
     public static function format(string $input, bool $withTrailingSeparator = true): string;

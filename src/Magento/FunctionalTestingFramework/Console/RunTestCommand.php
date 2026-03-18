@@ -28,17 +28,13 @@ class RunTestCommand extends BaseGenerateCommand
 {
     /**
      * The return code. Determined by all tests that run.
-     *
-     * @var integer
      */
-    private $returnCode = 0;
+    private int $returnCode = 0;
 
     /**
      * Configures the current command.
-     *
-     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName("run:test")
             ->setDescription("generation and execution of test(s) defined in xml")
@@ -68,9 +64,6 @@ class RunTestCommand extends BaseGenerateCommand
     /**
      * Executes the current command.
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return integer
      * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -112,7 +105,7 @@ class RunTestCommand extends BaseGenerateCommand
             $testConfiguration = $this->getTestAndSuiteConfiguration($tests);
         }
 
-        if ($testConfiguration !== null && !json_decode($testConfiguration)) {
+        if ($testConfiguration !== null && !json_decode((string) $testConfiguration)) {
             // stop execution if we have failed to properly parse any json passed in by the user
             throw new TestFrameworkException("JSON could not be parsed: " . json_last_error_msg());
         }
@@ -137,7 +130,7 @@ class RunTestCommand extends BaseGenerateCommand
             }
         }
 
-        $testConfigArray = json_decode($testConfiguration, true);
+        $testConfigArray = json_decode((string) $testConfiguration, true);
 
         if (isset($testConfigArray['tests'])) {
             $this->runTests($testConfigArray['tests'], $output, $input);
@@ -156,14 +149,10 @@ class RunTestCommand extends BaseGenerateCommand
     /**
      * Run tests not referenced in suites
      *
-     * @param array           $tests
-     * @param OutputInterface $output
-     * @param InputInterface  $input
-     * @return void
      * @throws TestFrameworkException
      * @throws \Exception
      */
-    private function runTests(array $tests, OutputInterface $output, InputInterface $input)
+    private function runTests(array $tests, OutputInterface $output, InputInterface $input): void
     {
         $xml = ($input->getOption('xml')) ? '--xml' : "";
         $noAnsi = ($input->getOption('no-ansi')) ? '--no-ansi' : "";
@@ -208,13 +197,9 @@ class RunTestCommand extends BaseGenerateCommand
     /**
      * Run tests referenced in suites within suites' context.
      *
-     * @param array           $suitesConfig
-     * @param OutputInterface $output
-     * @param InputInterface  $input
-     * @return void
      * @throws \Exception
      */
-    private function runTestsInSuite(array $suitesConfig, OutputInterface $output, InputInterface $input)
+    private function runTestsInSuite(array $suitesConfig, OutputInterface $output, InputInterface $input): void
     {
         $xml = ($input->getOption('xml')) ? '--xml' : "";
         $noAnsi = ($input->getOption('no-ansi')) ? '--no-ansi' : "";
@@ -251,31 +236,23 @@ class RunTestCommand extends BaseGenerateCommand
     /**
      * Runs the codeception test command and returns exit code
      *
-     * @param string          $command
-     * @param OutputInterface $output
-     * @return integer
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    private function executeTestCommand(string $command, OutputInterface $output, $noAnsi)
+    private function executeTestCommand(string $command, OutputInterface $output, string $noAnsi): int
     {
         $process = Process::fromShellCommandline($command);
         $process->setWorkingDirectory(TESTS_BP);
         $process->setIdleTimeout(600);
         $process->setTimeout(0);
 
-        return $process->run(function ($type, $buffer) use ($output, $noAnsi) {
+        return $process->run(function ($type, $buffer) use ($output, $noAnsi): void {
             $buffer = $this->disableAnsiColorCodes($buffer, $noAnsi);
             $output->write($buffer);
         });
     }
 
-    /**
-     * @param string $buffer
-     * @param string $noAnsi
-     * @return string
-     */
-    private function disableAnsiColorCodes($buffer, $noAnsi) :string
+    private function disableAnsiColorCodes(string $buffer, string $noAnsi) :string
     {
         if (empty($noAnsi)) {
             return $buffer;

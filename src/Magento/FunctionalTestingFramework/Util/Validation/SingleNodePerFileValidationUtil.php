@@ -15,20 +15,17 @@ use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
 class SingleNodePerFileValidationUtil
 {
     /**
-     * ExceptionColletor used to catch errors
-     *
-     * @var ExceptionCollector
-     */
-    private $exceptionCollector;
-
-    /**
      * SingleNodePerDocumentValidationUtil constructor
      *
      * @param ExceptionCollector $exceptionCollector
      */
-    public function __construct($exceptionCollector)
+    public function __construct(
+        /**
+         * ExceptionColletor used to catch errors
+         */
+        private $exceptionCollector
+    )
     {
-        $this->exceptionCollector = $exceptionCollector;
     }
 
     /**
@@ -37,9 +34,8 @@ class SingleNodePerFileValidationUtil
      * @param \DOMDocument $dom
      * @param string       $tag
      * @param string       $filename
-     * @return void
      */
-    public function validateSingleNodeForTag($dom, $tag, $filename = '')
+    public function validateSingleNodeForTag($dom, $tag, $filename = ''): void
     {
         $tagNodes = $dom->getElementsByTagName($tag);
         $count = $tagNodes->length;

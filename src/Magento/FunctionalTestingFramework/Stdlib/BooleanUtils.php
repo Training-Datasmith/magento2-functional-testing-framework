@@ -13,40 +13,28 @@ namespace Magento\FunctionalTestingFramework\Stdlib;
 class BooleanUtils
 {
     /**
-     * Expressions that mean boolean TRUE
-     *
-     * @var array
-     */
-    private $trueValues;
-
-    /**
-     * Expressions that mean boolean FALSE
-     *
-     * @var array
-     */
-    private $falseValues;
-
-    /**
      * BooleanUtils constructor.
-     * @param array $trueValues
-     * @param array $falseValues
      */
     public function __construct(
-        array $trueValues = [true, 1, 'true', '1'],
-        array $falseValues = [false, 0, 'false', '0']
-    ) {
-        $this->trueValues = $trueValues;
-        $this->falseValues = $falseValues;
+        /**
+         * Expressions that mean boolean TRUE
+         */
+        private readonly array $trueValues = [true, 1, 'true', '1'],
+        /**
+         * Expressions that mean boolean FALSE
+         */
+        private readonly array $falseValues = [false, 0, 'false', '0']
+    )
+    {
     }
 
     /**
      * Retrieve boolean value for an expression
      *
      * @param mixed $value Boolean expression
-     * @return bool
      * @throws \InvalidArgumentException
      */
-    public function toBoolean($value)
+    public function toBoolean($value): bool
     {
         /**
          * Built-in function filter_var() is not used, because such values as on/off are irrelevant in some contexts

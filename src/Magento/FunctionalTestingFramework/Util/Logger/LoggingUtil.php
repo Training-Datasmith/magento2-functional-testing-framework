@@ -14,22 +14,16 @@ class LoggingUtil
 {
     /**
      * Private Map of Logger instances, indexed by Class Name.
-     *
-     * @var array
      */
-    private $loggers = [];
+    private array $loggers = [];
 
     /**
      * Singleton LoggingUtil Instance
-     *
-     * @var LoggingUtil
      */
-    private static $instance;
+    private static ?\Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil $instance = null;
 
     /**
      * Singleton accessor for instance variable
-     *
-     * @return LoggingUtil
      */
     public static function getInstance(): LoggingUtil
     {
@@ -41,7 +35,6 @@ class LoggingUtil
 
     /**
      * Avoids instantiation of LoggingUtil by new.
-     * @return void
      */
     private function __construct()
     {
@@ -49,7 +42,6 @@ class LoggingUtil
 
     /**
      * Avoids instantiation of LoggingUtil by clone.
-     * @return void
      */
     private function __clone()
     {
@@ -60,7 +52,6 @@ class LoggingUtil
      * existing instance is simply returned.
      *
      * @param string $className
-     * @return MftfLogger
      * @throws TestFrameworkException
      */
     public function getLogger($className): MftfLogger
@@ -81,7 +72,6 @@ class LoggingUtil
     /**
      * Function which returns a static path to the the log file.
      *
-     * @return string
      * @throws TestFrameworkException
      */
     public function getLoggingPath(): string

@@ -15,10 +15,9 @@ class Constant implements InterpreterInterface
 {
     /**
      * {@inheritdoc}
-     * @return mixed
      * @throws \InvalidArgumentException
      */
-    public function evaluate(array $data)
+    public function evaluate(array $data): mixed
     {
         if (!isset($data['value']) || !defined($data['value'])) {
             throw new \InvalidArgumentException('Constant name is expected.');

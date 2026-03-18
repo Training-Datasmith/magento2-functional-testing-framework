@@ -16,36 +16,29 @@ use Magento\FunctionalTestingFramework\Exceptions\XmlException;
 class DuplicateNodeValidationUtil
 {
     /**
-     * Key to use as unique identifier in validation
-     * @var string
-     */
-    private $uniqueKey;
-
-    /**
-     * ExceptionColletor used to catch errors.
-     * @var ExceptionCollector
-     */
-    private $exceptionCollector;
-
-    /**
      * DuplicateNodeValidationUtil constructor.
      * @param string             $uniqueKey
      * @param ExceptionCollector $exceptionCollector
      */
-    public function __construct($uniqueKey, $exceptionCollector)
+    public function __construct(
+        /**
+         * Key to use as unique identifier in validation
+         */
+        private $uniqueKey,
+        /**
+         * ExceptionColletor used to catch errors.
+         */
+        private $exceptionCollector
+    )
     {
-        $this->uniqueKey = $uniqueKey;
-        $this->exceptionCollector = $exceptionCollector;
     }
 
     /**
      * Parses through parent's children to find and flag duplicate values in given uniqueKey.
      *
-     * @param \DOMElement $parentNode
      * @param string      $filename
-     * @return void
      */
-    public function validateChildUniqueness(\DOMElement $parentNode, $filename, $parentKey)
+    public function validateChildUniqueness(\DOMElement $parentNode, $filename, $parentKey): void
     {
         $childNodes = $parentNode->childNodes;
         $type = ucfirst($parentNode->tagName);

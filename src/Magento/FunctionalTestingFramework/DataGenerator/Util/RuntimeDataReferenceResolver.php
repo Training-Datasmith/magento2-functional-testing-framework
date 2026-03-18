@@ -20,8 +20,6 @@ class RuntimeDataReferenceResolver implements DataReferenceResolverInterface
     /**
      * Returns data by reference if reference exist.
      *
-     * @param string $data
-     * @param string $originalDataEntity
      * @return array|false|string|null
      * @throws TestReferenceException
      * @throws TestFrameworkException
@@ -36,7 +34,7 @@ class RuntimeDataReferenceResolver implements DataReferenceResolverInterface
         }
 
         $strippedReference = str_replace(['{{', '}}'], '', $matches['reference']);
-        list($entity, $var) = explode('.', $strippedReference);
+        [$entity, $var] = explode('.', $strippedReference);
         switch ($entity) {
             case ActionObject::__ENV:
                 $result = str_replace($matches['reference'], getenv($var), $data);
@@ -73,8 +71,6 @@ class RuntimeDataReferenceResolver implements DataReferenceResolverInterface
     /**
      * Returns data uniqueness for data entity field.
      *
-     * @param string $data
-     * @param string $originalDataEntity
      * @return string|null
      * @throws TestReferenceException
      */
@@ -91,7 +87,7 @@ class RuntimeDataReferenceResolver implements DataReferenceResolverInterface
         }
 
         $strippedReference = str_replace(['{{', '}}'], '', $matches['reference']);
-        list($entity, $var) = explode('.', $strippedReference);
+        [$entity, $var] = explode('.', $strippedReference);
         $entityObject = DataObjectHandler::getInstance()->getObject($entity);
         if ($entityObject === null) {
             throw new TestReferenceException(

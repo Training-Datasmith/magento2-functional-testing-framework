@@ -40,14 +40,7 @@ class AwsSecretsManagerStorage extends BaseStorage
      *
      * @var SecretsManagerClient
      */
-    private $client = null;
-
-    /**
-     * AWS account id
-     *
-     * @var string
-     */
-    private $awsAccountId;
+    private $client;
 
     /**
      * AWS account region
@@ -61,16 +54,18 @@ class AwsSecretsManagerStorage extends BaseStorage
      *
      * @param string $region
      * @param string $profile
-     * @param string $accountId
+     * @param string $awsAccountId
      * @throws TestFrameworkException
      * @throws InvalidArgumentException
      */
-    public function __construct($region, $profile = null, $accountId = null)
+    public function __construct($region, $profile = null, /**
+     * AWS account id
+     */
+    private $awsAccountId = null)
     {
         parent::__construct();
         $this->createAwsSecretsManagerClient($region, $profile);
         $this->region = $region;
-        $this->awsAccountId = $accountId;
     }
 
     /**
@@ -96,7 +91,7 @@ class AwsSecretsManagerStorage extends BaseStorage
         $reValue = null;
         try {
             // Split vendor/key to construct secret id
-            list($vendor, $key) = explode('/', trim($key, '/'), 2);
+            [$vendor, $key] = explode('/', trim($key, '/'), 2);
             // If AWS account id is specified, create and use full ARN, otherwise use partial ARN as secret id
             $secretId = '';
             if (!empty($this->awsAccountId)) {
@@ -151,11 +146,10 @@ class AwsSecretsManagerStorage extends BaseStorage
      * Parse AWS result object and return secret for key
      *
      * @param Result $awsResult
-     * @param string $key
      * @return string
      * @throws TestFrameworkException
      */
-    private function parseAwsSecretResult($awsResult, $key)
+    private function parseAwsSecretResult(array $awsResult, string $key)
     {
         // Return secret from the associated KMS CMK
         if (isset($awsResult['SecretString'])) {
@@ -171,7 +165,8 @@ class AwsSecretsManagerStorage extends BaseStorage
         $secret = json_decode($rawSecret, true);
         if (isset($secret[$key])) {
             return $secret[$key];
-        } elseif (is_string($rawSecret)) {
+        }
+        if (is_string($rawSecret)) {
             return $rawSecret;
         }
         throw new TestFrameworkException(
@@ -184,11 +179,10 @@ class AwsSecretsManagerStorage extends BaseStorage
      *
      * @param string $region
      * @param string $profile
-     * @return void
      * @throws TestFrameworkException
      * @throws InvalidArgumentException
      */
-    private function createAwsSecretsManagerClient($region, $profile)
+    private function createAwsSecretsManagerClient($region, $profile): void
     {
         if (null !== $this->client) {
             return;

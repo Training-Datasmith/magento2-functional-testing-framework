@@ -13,10 +13,8 @@ class ParallelGroupSorter
 {
     /**
      * An array of newly split suite object names mapped to their corresponding objects.
-     *
-     * @var array
      */
-    private $suiteConfig = [];
+    private array $suiteConfig = [];
 
     /**
      * ParallelGroupSorter constructor.
@@ -32,10 +30,9 @@ class ParallelGroupSorter
      * @param array   $suiteConfiguration
      * @param array   $testNameToSize
      * @param integer $time
-     * @return array
      * @throws FastFailException
      */
-    public function getTestsGroupedBySize($suiteConfiguration, $testNameToSize, $time)
+    public function getTestsGroupedBySize($suiteConfiguration, $testNameToSize, $time): array
     {
         // we must have the lines argument in order to create the test groups
         if ($time == 0) {
@@ -102,12 +99,13 @@ class ParallelGroupSorter
         $minSuiteGroupTotal = count($suiteNameToTestSize);
         $minTestGroupTotal = empty($testNameToSize) ? 0 : 1;
         $minRequiredGroupTotal = $minSuiteGroupTotal + $minTestGroupTotal;
-
         if ($groupTotal < $minRequiredGroupTotal) {
             throw new FastFailException(
                 "Invalid parameter 'groupTotal': must be equal or greater than {$minRequiredGroupTotal}"
             );
-        } elseif ($groupTotal < $suitesGroupTotal + $minTestGroupTotal) {
+        }
+
+        if ($groupTotal < $suitesGroupTotal + $minTestGroupTotal) {
             // Split in savvy mode when $groupTotal requested is very small
             $testGroupTotal = $minTestGroupTotal;
             // Reduce suite group total
@@ -115,7 +113,8 @@ class ParallelGroupSorter
                 $suiteNameToGroupCount,
                 $groupTotal - $minTestGroupTotal
             );
-        } else {
+        }
+        else {
             // Calculate test group total
             $testGroupTotal = $groupTotal - $suitesGroupTotal;
         }
@@ -203,12 +202,10 @@ class ParallelGroupSorter
      * Reduce total suite groups to a given $total.
      * This method will reduce 1 from a suite that's greater than 1 repeatedly until sum of all groups reaches $total.
      *
-     * @param array   $suiteNameToGroupCount
      * @param integer $total
-     * @return array
      * @throws FastFailException
      */
-    private function reduceSuiteGroupTotal($suiteNameToGroupCount, $total)
+    private function reduceSuiteGroupTotal(array $suiteNameToGroupCount, int|float $total): array
     {
         if (count($suiteNameToGroupCount) > $total) {
             throw new FastFailException(
@@ -237,9 +234,8 @@ class ParallelGroupSorter
      *
      * @param array   $suiteNameToTestSize
      * @param integer $time
-     * @return array
      */
-    private function getSuiteGroupCountFromGroupTime($suiteNameToTestSize, $time)
+    private function getSuiteGroupCountFromGroupTime($suiteNameToTestSize, $time): array
     {
         $suiteNameToGroupCount = [];
         foreach ($suiteNameToTestSize as $suiteName => $tests) {
@@ -259,18 +255,15 @@ class ParallelGroupSorter
      *
      * @param array   $tests
      * @param integer $groupCnt
-     * @return array
      */
-    private function splitTestsIntoGroups($tests, $groupCnt)
+    private function splitTestsIntoGroups($tests, $groupCnt): array
     {
         if (empty($tests)) {
             return [];
         }
 
         // Reverse sort the test array by size
-        uasort($tests, function ($a, $b) {
-            return $a >= $b ? -1 : 1;
-        });
+        uasort($tests, fn($a, $b) => $a >= $b ? -1 : 1);
         $groups = array_fill(0, $groupCnt, []);
         $sums = array_fill(0, $groupCnt, 0);
 
@@ -288,10 +281,8 @@ class ParallelGroupSorter
      * Split suites into given number of groups.
      *
      * @param array $suiteNameToTestSize
-     * @param array $suiteNameToGroupCount
-     * @return array
      */
-    private function splitSuitesIntoGroups($suiteNameToTestSize, $suiteNameToGroupCount)
+    private function splitSuitesIntoGroups($suiteNameToTestSize, array $suiteNameToGroupCount): array
     {
         $groups = [];
         foreach ($suiteNameToTestSize as $suiteName => $suiteTests) {
@@ -333,10 +324,9 @@ class ParallelGroupSorter
      * @param integer $timeMaximum
      * @param string  $testName
      * @param integer $testSize
-     * @param array   $testNameToSizeForUse
      * @return array
      */
-    private function createTestGroup($timeMaximum, $testName, $testSize, $testNameToSizeForUse)
+    private function createTestGroup($timeMaximum, int|string $testName, $testSize, array $testNameToSizeForUse)
     {
         $group[$testName] = $testSize;
 
@@ -362,11 +352,10 @@ class ParallelGroupSorter
      * Function which takes a group of available tests mapped to size and a desired number of lines matching with the
      * test of closest size and returning.
      *
-     * @param array   $testGroup
      * @param integer $desiredValue
      * @return string
      */
-    private function getClosestLineCount($testGroup, $desiredValue)
+    private function getClosestLineCount(array $testGroup, float|int $desiredValue): int|string|null
     {
         $winner = key($testGroup);
         $closestThreshold = $desiredValue;
@@ -391,17 +380,14 @@ class ParallelGroupSorter
      *
      * @param array   $suiteConfiguration
      * @param integer $lineLimit
-     * @return array
      */
-    private function createGroupsWithinSuites($suiteConfiguration, $lineLimit)
+    private function createGroupsWithinSuites($suiteConfiguration, $lineLimit): array
     {
         $suiteNameToTestSize = $this->getSuiteNameToTestSize($suiteConfiguration);
         $suiteNameToSize = $this->getSuiteToSize($suiteNameToTestSize);
 
         // divide the suites up within the array
-        $suitesForResize = array_filter($suiteNameToSize, function ($val) use ($lineLimit) {
-            return $val > $lineLimit;
-        });
+        $suitesForResize = array_filter($suiteNameToSize, fn($val) => $val > $lineLimit);
 
         // remove the suites for resize from the original list
         $remainingSuites = array_diff_key($suiteNameToTestSize, $suitesForResize);
@@ -426,9 +412,8 @@ class ParallelGroupSorter
      * Function which takes the given suite configuration and returns an array of suite to test size.
      *
      * @param array $suiteConfiguration
-     * @return array
      */
-    private function getSuiteNameToTestSize($suiteConfiguration)
+    private function getSuiteNameToTestSize($suiteConfiguration): array
     {
         $suiteNameToTestSize = [];
         foreach ($suiteConfiguration as $suite => $test) {
@@ -448,9 +433,8 @@ class ParallelGroupSorter
      * tests.
      *
      * @param array $suiteNamesToTests
-     * @return array
      */
-    private function getSuiteToSize($suiteNamesToTests)
+    private function getSuiteToSize($suiteNamesToTests): array
     {
         $suiteNamesToSize = [];
         foreach ($suiteNamesToTests as $name => $tests) {
@@ -473,9 +457,8 @@ class ParallelGroupSorter
      * @param string  $suiteName
      * @param array   $tests
      * @param integer $maxTime
-     * @return array
      */
-    private function splitTestSuite($suiteName, $tests, $maxTime)
+    private function splitTestSuite(int|string $suiteName, $tests, $maxTime): array
     {
         arsort($tests);
         $splitSuites = [];
@@ -506,9 +489,8 @@ class ParallelGroupSorter
      * @param string $originalSuiteName
      * @param string $newSuiteName
      * @param array  $tests
-     * @return void
      */
-    private function addSuiteToConfig($originalSuiteName, $newSuiteName, $tests)
+    private function addSuiteToConfig($originalSuiteName, ?string $newSuiteName, $tests): void
     {
         if ($newSuiteName === null) {
             $this->suiteConfig[$originalSuiteName] = array_keys($tests);
@@ -522,9 +504,8 @@ class ParallelGroupSorter
      * Convert array index starting at 1
      *
      * @param array $inArray
-     * @return array
      */
-    private function convertArrayIndexStartingAtOne($inArray)
+    private function convertArrayIndexStartingAtOne($inArray): array
     {
         $outArray = [];
         $index = 1;

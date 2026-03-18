@@ -28,20 +28,14 @@ class Sequence extends Module
      * @var array<int|string,string>
      */
     public static array $suiteHash = [];// phpcs:ignore
-
-    /**
-     * @var string
-     */
     public static string $prefix = '';// phpcs:ignore
 
     /**
      * @var array<string, string>
      */
     protected array $config = ['prefix' => '{id}_'];// phpcs:ignore
-
     /**
      * Initialise method
-     * @return  void
      */
     public function _initialize(): void
     {
@@ -51,7 +45,6 @@ class Sequence extends Module
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * after method
-     * @return  void
      */
     public function _after(TestInterface $test): void
     {
@@ -60,7 +53,6 @@ class Sequence extends Module
 
     /**
      * after suite method
-     * @return  void
      */
     public function _afterSuite(): void
     {

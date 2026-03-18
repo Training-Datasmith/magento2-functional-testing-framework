@@ -22,24 +22,22 @@ class ModuleResolverService
 {
     /**
      * Singleton ModuleResolverCreator Instance.
-     *
-     * @var ModuleResolverService
      */
-    private static $INSTANCE;
+    private static ?\Magento\FunctionalTestingFramework\Util\ModuleResolver\ModuleResolverService $INSTANCE = null;
 
     /**
      * Composer json based test module paths.
      *
      * @var array
      */
-    private $composerJsonModulePaths = null;
+    private $composerJsonModulePaths;
 
     /**
      * Composer installed test module paths.
      *
      * @var array
      */
-    private $composerInstalledModulePaths = null;
+    private $composerInstalledModulePaths;
 
     /**
      * ModuleResolverService constructor.
@@ -99,7 +97,7 @@ class ModuleResolverService
                 $allComponents = array_merge($allComponents, $components->getPaths($componentType));
             }
 
-            array_walk($allComponents, function (&$value) {
+            array_walk($allComponents, function (&$value): void {
                 // Magento stores component paths with unix DIRECTORY_SEPARATOR, need to stay uniform and convert
                 $value = realpath($value);
                 $value .= DIRECTORY_SEPARATOR . ModuleResolver::TEST_MFTF_PATTERN;
@@ -117,10 +115,7 @@ class ModuleResolverService
      * are returned as an associative array keyed by basename (the last dir excluding pattern) to an array containing
      * the matching path.
      *
-     * @param string $testPath
-     * @param string $pattern
      *
-     * @return array
      * @throws TestFrameworkException
      */
     public function globRelevantPaths(string $testPath, string $pattern): array
@@ -129,7 +124,7 @@ class ModuleResolverService
         $relevantPaths = [];
 
         if (file_exists($testPath)) {
-            $relevantPaths = $this->globRelevantWrapper($testPath, $pattern);
+            $relevantPaths = self::globRelevantWrapper($testPath, $pattern);
         }
 
         foreach ($relevantPaths as $codePath) {
@@ -156,10 +151,7 @@ class ModuleResolverService
     /**
      * Glob wrapper for globRelevantPaths function.
      *
-     * @param string $testPath
-     * @param string $pattern
      *
-     * @return array
      */
     private static function globRelevantWrapper(string $testPath, string $pattern): array
     {
@@ -180,9 +172,7 @@ class ModuleResolverService
     /**
      * Retrieve all module code paths that have test module composer json files.
      *
-     * @param array $codePaths
      *
-     * @return array
      */
     public function getComposerJsonTestModulePaths(array $codePaths): array
     {
@@ -194,7 +184,7 @@ class ModuleResolverService
             $this->composerJsonModulePaths = [];
             $resolver = new ComposerModuleResolver();
             $this->composerJsonModulePaths = $resolver->getTestModulesFromPaths($codePaths);
-        } catch (TestFrameworkException $e) {
+        } catch (TestFrameworkException) {
         }
 
         return $this->composerJsonModulePaths;
@@ -203,9 +193,7 @@ class ModuleResolverService
     /**
      * Retrieve composer installed test module code paths.
      *
-     * @param string $composerFile
      *
-     * @return array
      */
     public function getComposerInstalledTestModulePaths(string $composerFile): array
     {
@@ -217,7 +205,7 @@ class ModuleResolverService
             $this->composerInstalledModulePaths = [];
             $resolver = new ComposerModuleResolver();
             $this->composerInstalledModulePaths = $resolver->getComposerInstalledTestModules($composerFile);
-        } catch (TestFrameworkException $e) {
+        } catch (TestFrameworkException) {
         }
 
         return $this->composerInstalledModulePaths;
@@ -226,7 +214,6 @@ class ModuleResolverService
     /**
      * Retrieves all module directories which might contain pertinent test code.
      *
-     * @return array
      * @throws TestFrameworkException
      */
     public function aggregateTestModulePaths(): array
@@ -241,7 +228,7 @@ class ModuleResolverService
         $modulePath = FilePathFormatter::format($modulePath, false);
 
         // If $modulePath is DEV_TESTS path, we don't need to search by pattern
-        if (strpos($modulePath, ModuleResolver::DEV_TESTS) === false) {
+        if (!str_contains($modulePath, ModuleResolver::DEV_TESTS)) {
             $codePathsToPattern[$modulePath] = '';
         }
 
@@ -282,9 +269,7 @@ class ModuleResolverService
     /**
      * Find vendor and module name from path.
      *
-     * @param string $path
      *
-     * @return string
      */
     private function findVendorAndModuleNameFromPath(string $path): string
     {
@@ -296,9 +281,7 @@ class ModuleResolverService
     /**
      * Find vendor name from path.
      *
-     * @param string $path
      *
-     * @return string
      */
     private function findVendorNameFromPath(string $path): string
     {
@@ -315,8 +298,7 @@ class ModuleResolverService
             preg_match($regex, $path, $match);
 
             if (isset($match[ModuleResolver::VENDOR])) {
-                $possibleVendorName = ucfirst($match[ModuleResolver::VENDOR]);
-                return $possibleVendorName;
+                return ucfirst($match[ModuleResolver::VENDOR]);
             }
         }
 
@@ -326,7 +308,6 @@ class ModuleResolverService
     /**
      * Get admin token.
      *
-     * @return string
      * @throws FastFailException
      */
     public function getAdminToken(): string

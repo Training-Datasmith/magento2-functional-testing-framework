@@ -17,24 +17,15 @@ class ComposerModuleResolver
 {
     /**
      * Code path array from composer json search
-     *
-     * @var array
      */
-    private $searchedTestModules = null;
+    private ?array $searchedTestModules = null;
 
     /**
      * Code path array from composer installed test packages
      *
      * @var array
      */
-    private $installedTestModules = null;
-
-    /**
-     * ComposerModuleResolver constructor
-     */
-    public function __construct()
-    {
-    }
+    private $installedTestModules;
 
     /**
      * Get code paths for installed test modules
@@ -56,7 +47,7 @@ class ComposerModuleResolver
         $this->installedTestModules = [];
         $composer = new ComposerInstall($rootComposerFile);
 
-        foreach ($composer->getInstalledTestPackages() as $packageName => $packageData) {
+        foreach ($composer->getInstalledTestPackages() as $packageData) {
             $suggestedModuleNames = $packageData[ComposerInstall::PACKAGE_SUGGESTED_MAGENTO_MODULES];
             $path = $packageData[ComposerInstall::PACKAGE_INSTALLEDPATH];
             $this->installedTestModules[$path] = $suggestedModuleNames;
@@ -91,10 +82,9 @@ class ComposerModuleResolver
      * Get code paths by searching test module composer json file from input directory
      *
      * @param string $directory
-     * @return array
      * @throws TestFrameworkException
      */
-    private function getTestModules($directory)
+    private function getTestModules($directory): array
     {
         $normalizedDir = realpath($directory);
         if (!is_dir($normalizedDir)) {
@@ -126,11 +116,8 @@ class ComposerModuleResolver
 
     /**
      * Find absolute paths of all composer json files in a given directory
-     *
-     * @param string $directory
-     * @return array
      */
-    private function findAllComposerJsonFiles($directory)
+    private function findAllComposerJsonFiles(string $directory): array
     {
         $directory = realpath($directory);
         $jsonPattern = DIRECTORY_SEPARATOR . "composer.json";
@@ -143,7 +130,7 @@ class ComposerModuleResolver
 
         $curJsonFiles = glob($directory . $jsonPattern);
         if ($curJsonFiles !== false && !empty($curJsonFiles)) {
-            $jsonFileList = array_merge_recursive($jsonFileList, $curJsonFiles);
+            return array_merge_recursive($jsonFileList, $curJsonFiles);
         }
         return $jsonFileList;
     }
@@ -155,7 +142,7 @@ class ComposerModuleResolver
      * @param integer $depth
      * @return array
      */
-    private function findComposerJsonFilesAtDepth($directory, $depth)
+    private function findComposerJsonFilesAtDepth($directory, int|float $depth)
     {
         $directory = realpath($directory);
         $jsonPattern = DIRECTORY_SEPARATOR . "composer.json";

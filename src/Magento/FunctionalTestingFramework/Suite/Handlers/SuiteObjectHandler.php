@@ -27,10 +27,8 @@ class SuiteObjectHandler implements ObjectHandlerInterface
 {
     /**
      * Singleton instance of suite object handler.
-     *
-     * @var SuiteObjectHandler
      */
-    private static $instance;
+    private static ?\Magento\FunctionalTestingFramework\Suite\Handlers\SuiteObjectHandler $instance = null;
 
     /**
      * Array of suite objects keyed by suite name.
@@ -41,7 +39,6 @@ class SuiteObjectHandler implements ObjectHandlerInterface
 
     /**
      * Avoids instantiation of SuiteObjectHandler by new.
-     * @return void
      */
     private function __construct()
     {
@@ -49,7 +46,6 @@ class SuiteObjectHandler implements ObjectHandlerInterface
 
     /**
      * Avoids instantiation of SuiteObjectHandler by clone.
-     * @return void
      */
     private function __clone()
     {
@@ -58,7 +54,6 @@ class SuiteObjectHandler implements ObjectHandlerInterface
     /**
      * Function to enforce singleton design pattern
      *
-     * @return ObjectHandlerInterface
      * @throws FastFailException
      */
     public static function getInstance(): ObjectHandlerInterface
@@ -75,7 +70,6 @@ class SuiteObjectHandler implements ObjectHandlerInterface
      * Function to return a single suite object by name
      *
      * @param string $objectName
-     * @return SuiteObject
      */
     public function getObject($objectName): SuiteObject
     {
@@ -89,8 +83,6 @@ class SuiteObjectHandler implements ObjectHandlerInterface
 
     /**
      * Function to return all objects the handler is responsible for
-     *
-     * @return array
      */
     public function getAllObjects(): array
     {
@@ -100,7 +92,6 @@ class SuiteObjectHandler implements ObjectHandlerInterface
     /**
      * Function which return all tests referenced by suites.
      *
-     * @return array
      * @throws TestFrameworkException
      */
     public function getAllTestReferences(): array
@@ -121,11 +112,10 @@ class SuiteObjectHandler implements ObjectHandlerInterface
     /**
      * Method to parse all suite data xml into objects.
      *
-     * @return void
      * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
      * @throws FastFailException
      */
-    private function initSuiteData()
+    private function initSuiteData(): void
     {
         try {
             $suiteDataParser = ObjectManagerFactory::getObjectManager()->create(SuiteDataParser::class);

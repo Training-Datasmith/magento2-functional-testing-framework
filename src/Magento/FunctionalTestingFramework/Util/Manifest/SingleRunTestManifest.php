@@ -24,10 +24,8 @@ class SingleRunTestManifest extends DefaultTestManifest
 
     /**
      * Function which generates the actual manifest once the relevant tests have been added to the array.
-     *
-     * @return void
      */
-    public function generate()
+    public function generate(): void
     {
         $fileResource = fopen($this->manifestPath, 'a');
         $line = $this->relativeDirPath . DIRECTORY_SEPARATOR;

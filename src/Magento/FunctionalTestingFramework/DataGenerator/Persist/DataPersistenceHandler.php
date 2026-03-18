@@ -21,27 +21,22 @@ class DataPersistenceHandler
      *
      * @var EntityDataObject $entityObject
      */
-    private $entityObject;
+    private object $entityObject;
 
     /**
      * Resulting created object from create or update.
-     *
-     * @var EntityDataObject $createdObject
      */
-    private $createdObject;
+    private ?\Magento\FunctionalTestingFramework\DataGenerator\Objects\EntityDataObject $createdObject = null;
 
     /**
      * Array of dependent entities, handed to CurlHandler when entity is created.
-     * @var array|null
      */
-    private $dependentObjects;
+    private ?array $dependentObjects = null;
 
     /**
      * Store code in web api rest url.
-     *
-     * @var string
      */
-    private $storeCode;
+    private ?string $storeCode = null;
 
     /**
      * DataPersistenceHandler constructor.
@@ -79,10 +74,9 @@ class DataPersistenceHandler
      * Function which executes a create request based on specific operation metadata
      *
      * @param string $storeCode
-     * @return void
      * @throws TestFrameworkException
      */
-    public function createEntity(?string $storeCode = null)
+    public function createEntity(?string $storeCode = null): void
     {
         if (!empty($storeCode)) {
             $this->storeCode = $storeCode;
@@ -105,11 +99,10 @@ class DataPersistenceHandler
      *
      * @param string $updateDataName
      * @param array  $updateDependentObjects
-     * @return void
      * @throws TestFrameworkException
      * @throws \Exception
      */
-    public function updateEntity($updateDataName, $updateDependentObjects = [])
+    public function updateEntity($updateDataName, $updateDependentObjects = []): void
     {
         foreach ($updateDependentObjects as $dependentObject) {
             $this->dependentObjects[] = $dependentObject->getCreatedObject();
@@ -133,10 +126,9 @@ class DataPersistenceHandler
      *
      * @param integer|null $index
      * @param string       $storeCode
-     * @return void
      * @throws TestFrameworkException
      */
-    public function getEntity(?string $index = null, ?string $storeCode = null)
+    public function getEntity(?string $index = null, ?string $storeCode = null): void
     {
         if (!empty($storeCode)) {
             $this->storeCode = $storeCode;
@@ -157,10 +149,9 @@ class DataPersistenceHandler
     /**
      * Function which executes a delete request based on specific operation metadata
      *
-     * @return void
      * @throws TestFrameworkException
      */
-    public function deleteEntity()
+    public function deleteEntity(): void
     {
         $curlHandler = ObjectManagerFactory::getObjectManager()->create(
             CurlHandler::class,
@@ -198,9 +189,8 @@ class DataPersistenceHandler
      * @param integer|null $index
      * @param array        $requestDataArray
      * @param boolean      $isJson
-     * @return void
      */
-    private function setCreatedObject($response, $index, $requestDataArray, $isJson)
+    private function setCreatedObject($response, ?string $index, $requestDataArray, $isJson): void
     {
         if ($isJson) {
             $responseData = json_decode($response, true);
@@ -233,9 +223,8 @@ class DataPersistenceHandler
      *
      * @param array  $arrayIn
      * @param string $rootKey
-     * @return array
      */
-    private function convertToFlatArray($arrayIn, $rootKey = '')
+    private function convertToFlatArray($arrayIn, ?string $rootKey = ''): array
     {
         $arrayOut = [];
         foreach ($arrayIn as $key => $value) {
@@ -275,11 +264,8 @@ class DataPersistenceHandler
      *      'code1' => 'value1',
      *      'code2' => 'value2',
      *  ]
-     *
-     * @param array $arrayIn
-     * @return array
      */
-    private function convertCustomAttributesArray($arrayIn)
+    private function convertCustomAttributesArray(array $arrayIn): array
     {
         $keys = ['custom_attributes'];
         foreach ($keys as $key) {
@@ -287,7 +273,7 @@ class DataPersistenceHandler
                 continue;
             }
             $arrayCopy = $arrayIn[$key];
-            foreach ($arrayCopy as $index => $attributes) {
+            foreach ($arrayCopy as $attributes) {
                 $arrayIn[$key][$attributes['attribute_code']] = $attributes['value'];
             }
         }

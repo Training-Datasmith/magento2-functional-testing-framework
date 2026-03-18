@@ -29,11 +29,9 @@ class OperationElementExtractor
     /**
      * Takes an array representative of a dataObject and converts the array into a OperationElement
      *
-     * @param array $operationElementArray
-     * @return OperationElement
      * @throws \Exception
      */
-    public function extractOperationElement($operationElementArray)
+    public function extractOperationElement(array $operationElementArray): \Magento\FunctionalTestingFramework\DataGenerator\Objects\OperationElement
     {
         // extract key
         $operationDefKey = $operationElementArray[OperationElementExtractor::OPERATION_OBJECT_KEY];
@@ -86,11 +84,9 @@ class OperationElementExtractor
     /**
      * Creates and Adds relevant DataElements from data entries defined within dataObject array
      *
-     * @param array $operationElements
      * @param array $operationFieldArray
-     * @return void
      */
-    private function extractOperationField(&$operationElements, $operationFieldArray)
+    private function extractOperationField(array &$operationElements, $operationFieldArray): void
     {
         foreach ($operationFieldArray as $operationFieldType) {
             $operationElements[] = new OperationElement(
@@ -105,11 +101,9 @@ class OperationElementExtractor
     /**
      * Creates and Adds relevant DataElements from data arrays defined within dataObject array
      *
-     * @param array $operationArrayData
      * @param array $operationArrayArray
-     * @return void
      */
-    private function extractOperationArray(&$operationArrayData, $operationArrayArray)
+    private function extractOperationArray(array &$operationArrayData, $operationArrayArray): void
     {
         foreach ($operationArrayArray as $operationFieldType) {
             $operationElementValue = [];

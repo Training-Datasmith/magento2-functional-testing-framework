@@ -22,10 +22,8 @@ class RunTestGroupCommand extends BaseGenerateCommand
 {
     /**
      * Configures the current command.
-     *
-     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('run:group')
             ->setDescription(
@@ -54,11 +52,7 @@ class RunTestGroupCommand extends BaseGenerateCommand
     /**
      * Executes the current command.
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return integer
      * @throws \Exception
-     *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
@@ -137,7 +131,7 @@ class RunTestGroupCommand extends BaseGenerateCommand
                 $process->setIdleTimeout(600);
                 $process->setTimeout(0);
                 $returnCodes[] = $process->run(
-                    function ($type, $buffer) use ($output) {
+                    function ($type, string|iterable $buffer) use ($output): void {
                         $output->write($buffer);
                     }
                 );

@@ -44,7 +44,7 @@ class ModulePathExtractor
             return "NO MODULE DETECTED";
         }
         $parts = $this->splitKeyForParts($key);
-        return isset($parts[1]) ? $parts[1] : "NO MODULE DETECTED";
+        return $parts[1] ?? "NO MODULE DETECTED";
     }
 
     /**
@@ -60,16 +60,15 @@ class ModulePathExtractor
             return "NO VENDOR DETECTED";
         }
         $parts = $this->splitKeyForParts($key);
-        return isset($parts[0]) ? $parts[0] : "NO VENDOR DETECTED";
+        return $parts[0] ?? "NO VENDOR DETECTED";
     }
 
     /**
      * Split key by SPLIT_DELIMITER and return parts array
      *
      * @param string $key
-     * @return array
      */
-    private function splitKeyForParts($key)
+    private function splitKeyForParts($key): array
     {
         $parts = explode(self::SPLIT_DELIMITER, $key);
         return count($parts) === 2 ? $parts : [];
@@ -83,14 +82,14 @@ class ModulePathExtractor
      */
     private function extractKeyByPath($path)
     {
-        $shortenedPath = dirname(dirname($path));
+        $shortenedPath = dirname($path, 2);
         // Ignore this path if we cannot go to parent directory two levels up
         if (empty($shortenedPath) || $shortenedPath === '.') {
             return '';
         }
 
         foreach ($this->testModulePaths as $key => $value) {
-            if (substr($path, 0, strlen($value)) === $value) {
+            if (str_starts_with($path, (string) $value)) {
                 return $key;
             }
         }

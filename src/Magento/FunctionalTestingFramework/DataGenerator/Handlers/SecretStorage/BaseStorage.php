@@ -15,14 +15,14 @@ abstract class BaseStorage
      *
      * @var string
      */
-    protected static $iv = null;
+    protected static $iv;
 
     /**
      * Key for open_ssl encryption/decryption
      *
      * @var string
      */
-    protected static $encodedKey = null;
+    protected static $encodedKey;
 
     /**
      * Accessed key/value secret data pairs
@@ -78,8 +78,8 @@ abstract class BaseStorage
     public static function getAllDecryptedValuesInString($string)
     {
         $decrypted = false;
-        foreach (self::$cachedSecretData as $key => $secretValue) {
-            if (strpos($string, $secretValue) !== false) {
+        foreach (self::$cachedSecretData as $secretValue) {
+            if (str_contains($string, (string) $secretValue)) {
                 $decryptedValue = self::getDecryptedValue($secretValue);
                 if ($decryptedValue === false) {
                     return false;

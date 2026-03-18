@@ -20,51 +20,31 @@ class Converter implements \Magento\FunctionalTestingFramework\Config\ConverterI
     const NAME_ATTRIBUTE = 'name';
 
     /**
-     * Argument parser.
-     *
-     * @var ArgumentParser
-     */
-    protected $argumentParser;
-
-    /**
-     * Argument interpreter.
-     *
-     * @var InterpreterInterface
-     */
-    protected $argumentInterpreter;
-
-    /**
-     * Argument node name.
-     *
-     * @var string
-     */
-    protected $argumentNodeName;
-
-    /**
-     * Id attributes.
-     *
-     * @var string[]
-     */
-    protected $idAttributes;
-
-    /**
      * Constructor for Converter object.
      *
-     * @param ArgumentParser       $argumentParser
-     * @param InterpreterInterface $argumentInterpreter
      * @param string               $argumentNodeName
-     * @param array                $idAttributes
      */
     public function __construct(
-        ArgumentParser $argumentParser,
-        InterpreterInterface $argumentInterpreter,
-        $argumentNodeName,
-        array $idAttributes = []
-    ) {
-        $this->argumentParser = $argumentParser;
-        $this->argumentInterpreter = $argumentInterpreter;
-        $this->argumentNodeName = $argumentNodeName;
-        $this->idAttributes = $idAttributes;
+        /**
+         * Argument parser.
+         */
+        protected \Magento\FunctionalTestingFramework\ObjectManager\Config\Mapper\ArgumentParser $argumentParser,
+        /**
+         * Argument interpreter.
+         */
+        protected \Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface $argumentInterpreter,
+        /**
+         * Argument node name.
+         */
+        protected $argumentNodeName,
+        /**
+         * Id attributes.
+         *
+         * @var string[]
+         */
+        protected array $idAttributes = []
+    )
+    {
     }
 
     /**
@@ -82,11 +62,10 @@ class Converter implements \Magento\FunctionalTestingFramework\Config\ConverterI
      * Convert XML node to array or string recursive.
      *
      * @param \DOMNodeList|array $elements
-     * @return array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @TODO ported magento code - to be refactored later
      */
-    protected function convertXml($elements)
+    protected function convertXml($elements): array
     {
         $result = [];
 
@@ -120,7 +99,7 @@ class Converter implements \Magento\FunctionalTestingFramework\Config\ConverterI
                 } elseif (!empty($elementData)) {
                     $result[$element->nodeName][] = $elementData;
                 }
-            } elseif ($element->nodeType === XML_TEXT_NODE && trim($element->nodeValue) !== '') {
+            } elseif ($element->nodeType === XML_TEXT_NODE && trim((string) $element->nodeValue) !== '') {
                 return ['value' => $element->nodeValue];
             }
         }
@@ -130,11 +109,8 @@ class Converter implements \Magento\FunctionalTestingFramework\Config\ConverterI
 
     /**
      * Get key for DOM element
-     *
-     * @param \DOMElement $element
-     * @return boolean|string
      */
-    protected function getElementKey(\DOMElement $element)
+    protected function getElementKey(\DOMElement $element): string|false
     {
         if (isset($this->idAttributes[$element->nodeName])) {
             if ($element->hasAttribute($this->idAttributes[$element->nodeName])) {
@@ -149,33 +125,25 @@ class Converter implements \Magento\FunctionalTestingFramework\Config\ConverterI
 
     /**
      * Verify attribute is main key for element.
-     *
-     * @param \DOMElement $element
-     * @param \DOMAttr    $attribute
-     * @return boolean
      */
-    protected function isKeyAttribute(\DOMElement $element, \DOMAttr $attribute)
+    protected function isKeyAttribute(\DOMElement $element, \DOMAttr $attribute): bool
     {
         if (isset($this->idAttributes[$element->nodeName])) {
             return $attribute->name === $this->idAttributes[$element->nodeName];
-        } else {
-            return $attribute->name === self::NAME_ATTRIBUTE;
         }
+        return $attribute->name === self::NAME_ATTRIBUTE;
     }
 
     /**
      * Get node attributes.
-     *
-     * @param \DOMElement $element
-     * @return array
      */
-    protected function getAttributes(\DOMElement $element)
+    protected function getAttributes(\DOMElement $element): array
     {
         $attributes = [];
         if ($element->hasAttributes()) {
             /** @var \DomAttr $attribute */
             foreach ($element->attributes as $attribute) {
-                if (trim($attribute->nodeValue) !== '' && !$this->isKeyAttribute($element, $attribute)) {
+                if (trim((string) $attribute->nodeValue) !== '' && !$this->isKeyAttribute($element, $attribute)) {
                     $attributes[$attribute->nodeName] = $this->castNumeric($attribute->nodeValue);
                 }
             }
@@ -186,16 +154,14 @@ class Converter implements \Magento\FunctionalTestingFramework\Config\ConverterI
     /**
      * Get child nodes data.
      *
-     * @param \DOMElement $element
      * @return array
      */
     protected function getChildNodes(\DOMElement $element)
     {
-        $children = [];
         if ($element->hasChildNodes()) {
-            $children = $this->convertXml($element->childNodes);
+            return $this->convertXml($element->childNodes);
         }
-        return $children;
+        return [];
     }
 
     /**

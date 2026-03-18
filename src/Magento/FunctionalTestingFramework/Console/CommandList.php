@@ -19,12 +19,10 @@ class CommandList implements CommandListInterface
      * List of Commands
      * @var \Symfony\Component\Console\Command\Command[]
      */
-    private $commands;
+    private readonly array $commands;
 
     /**
      * Constructor
-     *
-     * @param array $commands
      */
     public function __construct(array $commands = [])
     {

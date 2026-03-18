@@ -19,18 +19,17 @@ class FilterList
      * List of filters
      * @var \Magento\FunctionalTestingFramework\Filter\FilterInterface[]
      */
-    private $filters = [];
+    private array $filters = [];
 
     /**
      * Constructor for Filter list.
      *
-     * @param array $filters
      * @throws \Exception
      */
     public function __construct(array $filters = [])
     {
         foreach ($filters as $filterType => $filterValue) {
-            $className = "Magento\FunctionalTestingFramework\Filter\Test\\" . ucfirst($filterType);
+            $className = "Magento\FunctionalTestingFramework\Filter\Test\\" . ucfirst((string) $filterType);
             if (!class_exists($className)) {
                 throw new TestFrameworkException("Filter type '" . $filterType . "' do not exist.");
             }
@@ -38,18 +37,11 @@ class FilterList
         }
     }
 
-    /**
-     * @return array
-     */
     public function getFilters(): array
     {
         return $this->filters;
     }
 
-    /**
-     * @param string $filterType
-     * @return \Magento\FunctionalTestingFramework\Filter\FilterInterface
-     */
     public function getFilter(string $filterType): FilterInterface
     {
         return $this->filters[$filterType];

@@ -25,7 +25,7 @@ class WebApiAuth
      *
      * @var string[]
      */
-    private static $headers = [
+    private static array $headers = [
         'Accept: application/json',
         'Content-Type: application/json',
     ];
@@ -35,14 +35,14 @@ class WebApiAuth
      *
      * @var string[]
      */
-    private static $adminAuthTokens = [];
+    private static array $adminAuthTokens = [];
 
     /**
      * Timestamps of when admin user tokens were created.  They need to be refreshed every ~4 hours
      *
      * @var int[]
      */
-    private static $adminAuthTokenTimestamps = [];
+    private static array $adminAuthTokenTimestamps = [];
 
     /**
      * Return the API token for an admin user
@@ -62,7 +62,7 @@ class WebApiAuth
         try {
             $encryptedSecret = CredentialStore::getInstance()->getSecret('magento/MAGENTO_ADMIN_PASSWORD');
             $secret = CredentialStore::getInstance()->decryptSecretValue($encryptedSecret);
-            $password = $password ?? $secret;
+            $password ??= $secret;
         } catch (TestFrameworkException $e) {
             $message = "Password not found in credentials file";
             throw new FastFailException($message . $e->getMessage(), $e->getContext());
@@ -126,7 +126,7 @@ class WebApiAuth
         try {
             // No exception will ever throw from here
             $message .= Tfa::isEnabled() ? ' and 2FA settings:' : ':' . PHP_EOL;
-        } catch (TestFrameworkException $e) {
+        } catch (TestFrameworkException) {
         }
         $message .= $errMessage;
         $context = ['url' => $authUrl];
@@ -136,7 +136,6 @@ class WebApiAuth
     /**
      * Is there an existing WebAPI admin token for this login?
      *
-     * @param string $login
      * @return boolean
      */
     private static function hasExistingToken(string $login)

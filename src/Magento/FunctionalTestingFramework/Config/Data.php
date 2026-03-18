@@ -12,13 +12,6 @@ namespace Magento\FunctionalTestingFramework\Config;
 class Data implements \Magento\FunctionalTestingFramework\Config\DataInterface
 {
     /**
-     * Configuration reader model
-     *
-     * @var \Magento\FunctionalTestingFramework\Config\ReaderInterface
-     */
-    protected $reader;
-
-    /**
      * Config data
      *
      * @var array
@@ -27,22 +20,19 @@ class Data implements \Magento\FunctionalTestingFramework\Config\DataInterface
 
     /**
      * Constructor
-     *
-     * @param \Magento\FunctionalTestingFramework\Config\ReaderInterface $reader
      */
-    public function __construct(\Magento\FunctionalTestingFramework\Config\ReaderInterface $reader)
+    public function __construct(/**
+     * Configuration reader model
+     */
+    protected \Magento\FunctionalTestingFramework\Config\ReaderInterface $reader)
     {
-        $this->reader = $reader;
         $this->load();
     }
 
     /**
      * Merge config data to the object
-     *
-     * @param array $config
-     * @return void
      */
-    public function merge(array $config)
+    public function merge(array $config): void
     {
         $this->data = array_replace_recursive($this->data, $config);
     }
@@ -73,14 +63,12 @@ class Data implements \Magento\FunctionalTestingFramework\Config\DataInterface
         return $data;
     }
     // @codingStandardsIgnoreEnd
-
     /**
      * Set name of the config file
      *
      * @param string $fileName
-     * @return self
      */
-    public function setFileName($fileName)
+    public function setFileName($fileName): static
     {
         if ($fileName !== null) {
             $this->reader->setFileName($fileName);
@@ -90,11 +78,8 @@ class Data implements \Magento\FunctionalTestingFramework\Config\DataInterface
 
     /**
      * Load config data
-     *
-     * @param string|null $scope
-     * @return void
      */
-    public function load(?string $scope = null)
+    public function load(?string $scope = null): void
     {
         $this->merge(
             $this->reader->read($scope)

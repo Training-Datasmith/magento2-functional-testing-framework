@@ -53,10 +53,8 @@ class StaticChecksCommand extends Command
 
     /**
      * Configures the current command.
-     *
-     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $list = new StaticChecksList();
         $this->allStaticCheckObjects = $list->getStaticChecks();
@@ -81,9 +79,6 @@ class StaticChecksCommand extends Command
     /**
      * Run required static check scripts
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
      * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -100,7 +95,7 @@ class StaticChecksCommand extends Command
         $cmdFailed = false;
         $errors = [];
         foreach ($this->staticCheckObjects as $name => $staticCheck) {
-            LoggingUtil::getInstance()->getLogger(get_class($staticCheck))->info(
+            LoggingUtil::getInstance()->getLogger($staticCheck::class)->info(
                 'Running static check script for: ' . $name . PHP_EOL
             );
 
@@ -110,33 +105,30 @@ class StaticChecksCommand extends Command
                 $staticCheck->execute($input);
             } catch (Exception $e) {
                 $cmdFailed = true;
-                LoggingUtil::getInstance()->getLogger(get_class($staticCheck))->error($e->getMessage() . PHP_EOL);
+                LoggingUtil::getInstance()->getLogger($staticCheck::class)->error($e->getMessage() . PHP_EOL);
                 $this->ioStyle->error($e->getMessage());
             }
             $end = microtime(true);
             $errors += $staticCheck->getErrors();
 
             $staticOutput = $staticCheck->getOutput();
-            LoggingUtil::getInstance()->getLogger(get_class($staticCheck))->info($staticOutput);
+            LoggingUtil::getInstance()->getLogger($staticCheck::class)->info($staticOutput);
             $this->ioStyle->text($staticOutput??"");
 
-            $this->ioStyle->text('Total execution time is ' . (string)($end - $start) . ' seconds.' . PHP_EOL);
+            $this->ioStyle->text('Total execution time is ' . ($end - $start) . ' seconds.' . PHP_EOL);
         }
         if (!$cmdFailed && empty($errors)) {
             return 0;
-        } else {
-            return 1;
         }
+        return 1;
     }
 
     /**
      * Validate input arguments
      *
-     * @param InputInterface $input
-     * @return void
      * @throws InvalidArgumentException
      */
-    private function validateInput(InputInterface $input)
+    private function validateInput(InputInterface $input): void
     {
         $this->staticCheckObjects = [];
         $requiredChecksNames = $input->getArgument('names');
@@ -170,9 +162,8 @@ class StaticChecksCommand extends Command
     /**
      * Validates that all passed in static-check names match an existing static check
      * @param string[] $requiredChecksNames
-     * @return void
      */
-    private function validateTestNames($requiredChecksNames)
+    private function validateTestNames(array $requiredChecksNames): void
     {
         $invalidCheckNames = [];
         for ($index = 0; $index < count($requiredChecksNames); $index++) {
@@ -195,7 +186,7 @@ class StaticChecksCommand extends Command
      * Parses and sets local ruleSet. If not found, simply returns and lets script continue.
      * @return void;
      */
-    private function parseRulesetJson()
+    private function parseRulesetJson(): void
     {
         $pathAddition = "/dev/tests/acceptance/";
         // MFTF is both NOT attached and no MAGENTO_BP defined in .env

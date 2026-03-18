@@ -13,10 +13,8 @@ class Runtime implements \Magento\FunctionalTestingFramework\ObjectManager\Relat
 {
     /**
      * Class reader.
-     *
-     * @var \Magento\FunctionalTestingFramework\Code\Reader\ClassReader
      */
-    protected $classReader;
+    protected \Magento\FunctionalTestingFramework\Code\Reader\ClassReader $classReader;
 
     /**
      * Default behavior
@@ -27,7 +25,6 @@ class Runtime implements \Magento\FunctionalTestingFramework\ObjectManager\Relat
 
     /**
      * Runtime constructor.
-     * @param \Magento\FunctionalTestingFramework\Code\Reader\ClassReader|null $classReader
      */
     public function __construct(?\Magento\FunctionalTestingFramework\Code\Reader\ClassReader $classReader = null)
     {
@@ -38,9 +35,8 @@ class Runtime implements \Magento\FunctionalTestingFramework\ObjectManager\Relat
      * Check whether requested type is available for read
      *
      * @param string $type
-     * @return boolean
      */
-    public function has($type)
+    public function has($type): bool
     {
         return class_exists($type) || interface_exists($type);
     }

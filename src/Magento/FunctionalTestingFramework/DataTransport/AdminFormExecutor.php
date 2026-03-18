@@ -21,17 +21,13 @@ class AdminFormExecutor implements CurlInterface
 {
     /**
      * Curl transport protocol.
-     *
-     * @var CurlTransport
      */
-    private $transport;
+    private readonly \Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlTransport $transport;
 
     /**
      * Form key.
-     *
-     * @var string
      */
-    private $formKey = null;
+    private ?string $formKey = null;
 
     /**
      * Response data.
@@ -41,21 +37,17 @@ class AdminFormExecutor implements CurlInterface
     private $response;
 
     /**
-     * Flag describes whether the request is to Magento Base URL, removes backend_name from api url
-     * @var boolean
-     */
-    private $removeBackend;
-
-    /**
      * Constructor.
      * @param boolean $removeBackend
      *
      * @constructor
      * @throws TestFrameworkException
      */
-    public function __construct($removeBackend)
+    public function __construct(/**
+     * Flag describes whether the request is to Magento Base URL, removes backend_name from api url
+     */
+    private $removeBackend)
     {
-        $this->removeBackend = $removeBackend;
         $this->transport = new CurlTransport();
         $this->authorize();
     }
@@ -63,10 +55,9 @@ class AdminFormExecutor implements CurlInterface
     /**
      * Authorize admin on backend.
      *
-     * @return void
      * @throws TestFrameworkException
      */
-    private function authorize()
+    private function authorize(): void
     {
         // Perform GET to backend url so form_key is set
         $this->transport->write(MftfGlobals::getBackendBaseUrl(), [], CurlInterface::GET);
@@ -106,10 +97,8 @@ class AdminFormExecutor implements CurlInterface
 
     /**
      * Set Form Key from response.
-     *
-     * @return void
      */
-    private function setFormKey()
+    private function setFormKey(): void
     {
         preg_match('!var FORM_KEY = \'(\w+)\';!', $this->response, $matches);
         if (!empty($matches[1])) {
@@ -124,10 +113,9 @@ class AdminFormExecutor implements CurlInterface
      * @param array  $data
      * @param string $method
      * @param array  $headers
-     * @return void
      * @throws TestFrameworkException
      */
-    public function write($url, $data = [], $method = CurlInterface::POST, $headers = [])
+    public function write($url, $data = [], $method = CurlInterface::POST, $headers = []): void
     {
         $url = ltrim($url, "/");
         $apiUrl = MftfGlobals::getBackendBaseUrl() . $url;
@@ -153,7 +141,6 @@ class AdminFormExecutor implements CurlInterface
      *
      * @param string      $successRegex
      * @param string      $returnRegex
-     * @param string|null $returnIndex
      * @return string|array
      * @throws TestFrameworkException
      */
@@ -183,19 +170,16 @@ class AdminFormExecutor implements CurlInterface
      *
      * @param integer                      $option CURLOPT_* constants.
      * @param integer|string|boolean|array $value
-     * @return void
      */
-    public function addOption($option, $value)
+    public function addOption($option, $value): void
     {
         $this->transport->addOption($option, $value);
     }
 
     /**
      * Close the connection to the server.
-     *
-     * @return void
      */
-    public function close()
+    public function close(): void
     {
         $this->transport->close();
     }

@@ -16,27 +16,6 @@ use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
 class Filesystem implements \Magento\FunctionalTestingFramework\Config\ReaderInterface
 {
     /**
-     * File locator
-     *
-     * @var \Magento\FunctionalTestingFramework\Config\FileResolverInterface
-     */
-    protected $fileResolver;
-
-    /**
-     * Config converter
-     *
-     * @var \Magento\FunctionalTestingFramework\Config\ConverterInterface
-     */
-    protected $converter;
-
-    /**
-     * The name of file that stores configuration
-     *
-     * @var string
-     */
-    protected $fileName;
-
-    /**
      * Path to corresponding XSD file with validation rules for merged config
      *
      * @var string
@@ -52,31 +31,8 @@ class Filesystem implements \Magento\FunctionalTestingFramework\Config\ReaderInt
 
     /**
      * List of id attributes for merge
-     *
-     * @var array
      */
-    protected $idAttributes = [];
-
-    /**
-     * Class of dom configuration document used for merge
-     *
-     * @var string
-     */
-    protected $domDocumentClass;
-
-    /**
-     * Config validation state object.
-     *
-     * @var \Magento\FunctionalTestingFramework\Config\ValidationStateInterface
-     */
-    protected $validationState;
-
-    /**
-     * Default scope.
-     *
-     * @var string
-     */
-    protected $defaultScope;
+    protected array $idAttributes = [];
 
     /**
      * File path to schema file.
@@ -88,41 +44,48 @@ class Filesystem implements \Magento\FunctionalTestingFramework\Config\ReaderInt
     /**
      * Constructor
      *
-     * @param \Magento\FunctionalTestingFramework\Config\FileResolverInterface    $fileResolver
-     * @param \Magento\FunctionalTestingFramework\Config\ConverterInterface       $converter
-     * @param \Magento\FunctionalTestingFramework\Config\SchemaLocatorInterface   $schemaLocator
-     * @param \Magento\FunctionalTestingFramework\Config\ValidationStateInterface $validationState
      * @param string                                                              $fileName
      * @param array                                                               $idAttributes
      * @param string                                                              $domDocumentClass
      * @param string                                                              $defaultScope
      */
     public function __construct(
-        \Magento\FunctionalTestingFramework\Config\FileResolverInterface $fileResolver,
-        \Magento\FunctionalTestingFramework\Config\ConverterInterface $converter,
+        /**
+         * File locator
+         */
+        protected \Magento\FunctionalTestingFramework\Config\FileResolverInterface $fileResolver,
+        /**
+         * Config converter
+         */
+        protected \Magento\FunctionalTestingFramework\Config\ConverterInterface $converter,
         \Magento\FunctionalTestingFramework\Config\SchemaLocatorInterface $schemaLocator,
-        \Magento\FunctionalTestingFramework\Config\ValidationStateInterface $validationState,
-        $fileName,
+        /**
+         * Config validation state object.
+         */
+        protected \Magento\FunctionalTestingFramework\Config\ValidationStateInterface $validationState,
+        /**
+         * The name of file that stores configuration
+         */
+        protected $fileName,
         $idAttributes = [],
-        $domDocumentClass = \Magento\FunctionalTestingFramework\Config\Dom::class,
-        $defaultScope = 'global'
+        /**
+         * Class of dom configuration document used for merge
+         */
+        protected $domDocumentClass = \Magento\FunctionalTestingFramework\Config\Dom::class,
+        /**
+         * Default scope.
+         */
+        protected $defaultScope = 'global'
     ) {
-        $this->fileResolver = $fileResolver;
-        $this->converter = $converter;
-        $this->fileName = $fileName;
         $this->idAttributes = array_replace($this->idAttributes, $idAttributes);
-        $this->validationState = $validationState;
         $this->schemaFile = $schemaLocator->getSchema();
-        $this->perFileSchema = $schemaLocator->getPerFileSchema() && $validationState->isValidationRequired()
+        $this->perFileSchema = $schemaLocator->getPerFileSchema() && $this->validationState->isValidationRequired()
             ? $schemaLocator->getPerFileSchema() : null;
-        $this->domDocumentClass = $domDocumentClass;
-        $this->defaultScope = $defaultScope;
     }
 
     /**
      * Load configuration scope
      *
-     * @param string|null $scope
      * @return array
      */
     public function read(?string $scope = null)
@@ -132,9 +95,8 @@ class Filesystem implements \Magento\FunctionalTestingFramework\Config\ReaderInt
         if (!count($fileList)) {
             return [];
         }
-        $output = $this->readFiles($fileList);
 
-        return $output;
+        return $this->readFiles($fileList);
     }
 
     /**
@@ -168,12 +130,10 @@ class Filesystem implements \Magento\FunctionalTestingFramework\Config\ReaderInt
             }
         }
         $this->validateSchema($configMerger);
-
-        $output = [];
         if ($configMerger) {
-            $output = $this->converter->convert($configMerger->getDom());
+            return $this->converter->convert($configMerger->getDom());
         }
-        return $output;
+        return [];
     }
 
     /**
@@ -205,9 +165,8 @@ class Filesystem implements \Magento\FunctionalTestingFramework\Config\ReaderInt
      *
      * @param string $content
      * @param string $fileName
-     * @return boolean
      */
-    protected function verifyFileEmpty($content, $fileName)
+    protected function verifyFileEmpty($content, $fileName): bool
     {
         if (empty($content)) {
             if (MftfApplicationConfig::getConfig()->verboseEnabled()) {

@@ -37,9 +37,8 @@ class ParallelByTimeTestManifest extends BaseParallelTestManifest
      * limit.
      *
      * @param integer $time
-     * @return void
      */
-    public function createTestGroups($time)
+    public function createTestGroups($time): void
     {
         $this->testGroups = $this->parallelGroupSorter->getTestsGroupedBySize(
             $this->getSuiteConfig(),

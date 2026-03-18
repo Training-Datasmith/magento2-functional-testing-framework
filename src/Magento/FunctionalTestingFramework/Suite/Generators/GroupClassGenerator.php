@@ -40,19 +40,15 @@ class GroupClassGenerator
 
     /**
      * Mustache_Engine instance for template loading
-     *
-     * @var Mustache_Engine
      */
-    private $mustacheEngine;
+    private readonly \Mustache_Engine $mustacheEngine;
 
     /**
      * Static function to return group directory path for precondition files.
-     *
-     * @return string
      */
-    public static function getGroupDirPath()
+    public static function getGroupDirPath(): string
     {
-        return dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . self::GROUP_DIR_NAME . DIRECTORY_SEPARATOR;
+        return dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . self::GROUP_DIR_NAME . DIRECTORY_SEPARATOR;
     }
 
     /**
@@ -73,10 +69,9 @@ class GroupClassGenerator
      * the method returns the config path for the group file.
      *
      * @param SuiteObject $suiteObject
-     * @return string
      * @throws TestReferenceException
      */
-    public function generateGroupClass($suiteObject)
+    public function generateGroupClass($suiteObject): string
     {
         $classContent = $this->createClassContent($suiteObject);
         $configEntry = self::GROUP_DIR_NAME . DIRECTORY_SEPARATOR . $suiteObject->getName();
@@ -112,12 +107,8 @@ class GroupClassGenerator
     /**
      * Function which takes the before and after arrays containing the steps for the hook objects and extracts
      * any variables names needed by the class template.
-     *
-     * @param array $beforeArray
-     * @param array $afterArray
-     * @return array
      */
-    private function extractClassVar($beforeArray, $afterArray)
+    private function extractClassVar(array $beforeArray, array $afterArray): array
     {
         $beforeVar = $beforeArray[self::MUSTACHE_VAR_TAG] ?? [];
         $afterVar = $afterArray[self::MUSTACHE_VAR_TAG] ?? [];
@@ -203,17 +194,15 @@ class GroupClassGenerator
      * Takes a generated php step, an array containing generated php entries for the template, and the actor name
      * for the generated step.
      *
-     * @param string $formattedStep
      * @param array  $actionEntries
-     * @param string $actor
      * @return array
      */
-    private function replaceReservedTesterFunctions($formattedStep, $actionEntries, $actor)
+    private function replaceReservedTesterFunctions(string $formattedStep, $actionEntries, string $actor)
     {
         $formattedStep = rtrim($formattedStep);
         foreach (self::REPLACEMENT_ACTIONS as $testAction => $replacement) {
             $testActionCall = "\${$actor}->{$testAction}";
-            if (substr($formattedStep, 0, strlen($testActionCall)) === $testActionCall) {
+            if (str_starts_with($formattedStep, $testActionCall)) {
                 $resultingStep = str_replace($testActionCall, $replacement, $formattedStep);
                 $actionEntries[] = ['action' => $resultingStep];
             } else {
@@ -222,9 +211,7 @@ class GroupClassGenerator
                 $end = self::FUNCTION_END;
                 $resultingStep = preg_replace_callback(
                     self::FUNCTION_REPLACE_REGEX,
-                    function ($matches) use ($placeholder, $begin, $end) {
-                        return str_replace($placeholder, $begin . $matches[2] . $end, $matches[1]) . '(';
-                    },
+                    fn($matches) => str_replace($placeholder, $begin . $matches[2] . $end, $matches[1]) . '(',
                     $formattedStep
                 );
                 $actionEntries[] = ['action' => $resultingStep];
@@ -238,10 +225,8 @@ class GroupClassGenerator
      * Takes an action object of persistence type and formats an array entiry for mustache template interpretation.
      *
      * @param ActionObject $action
-     * @param array        $entityArray
-     * @return array
      */
-    private function buildPersistenceMustacheArray($action, $entityArray)
+    private function buildPersistenceMustacheArray($action, array $entityArray): array
     {
         $entityArray[self::ENTITY_NAME_TAG] =
             $action->getCustomActionAttributes()['entity'] ??
@@ -268,9 +253,8 @@ class GroupClassGenerator
      *      <requiredEntity'...)
      *
      * @param array $customAttributes
-     * @return array
      */
-    private function buildReqEntitiesMustacheArray($customAttributes)
+    private function buildReqEntitiesMustacheArray($customAttributes): array
     {
         $requiredEntities = [];
         foreach ($customAttributes as $attribute) {

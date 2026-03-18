@@ -26,10 +26,8 @@ class GenerateTestFailedCommand extends BaseGenerateCommand
 
     /**
      * Configures the current command.
-     *
-     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('generate:failed')
             ->setDescription('Generate a set of tests failed');
@@ -40,9 +38,6 @@ class GenerateTestFailedCommand extends BaseGenerateCommand
     /**
      * Executes the current command.
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return integer
      * @throws \Exception
      *
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
@@ -104,13 +99,11 @@ class GenerateTestFailedCommand extends BaseGenerateCommand
             foreach ($testList as $test) {
                 if (!empty($test)) {
                     $this->writeFailedTestToFile($test, $testsReRunFile);
-                    $testInfo = explode(DIRECTORY_SEPARATOR, $test);
+                    $testInfo = explode(DIRECTORY_SEPARATOR, (string) $test);
                     $testName = isset($testInfo[count($testInfo) - 1][1])
                         ? explode(":", $testInfo[count($testInfo) - 1])[1]
                         : [];
-                    $suiteName = isset($testInfo[count($testInfo) - 2])
-                        ?  $testInfo[count($testInfo) - 2]
-                        : [];
+                    $suiteName = $testInfo[count($testInfo) - 2] ?? [];
                     if ($suiteName === self::DEFAULT_TEST_GROUP) {
                         array_push($failedTestDetails['tests'], $testName);
                     } else {
@@ -132,8 +125,7 @@ class GenerateTestFailedCommand extends BaseGenerateCommand
         if (empty($failedTestDetails['suites'])) {
             $failedTestDetails['suites'] = null;
         }
-        $testConfigurationJson = json_encode($failedTestDetails);
-        return $testConfigurationJson;
+        return json_encode($failedTestDetails);
     }
 
     /**
@@ -142,7 +134,7 @@ class GenerateTestFailedCommand extends BaseGenerateCommand
      * @param string $suiteName
      * @return string
      */
-    private function sanitizeSuiteName($suiteName)
+    private function sanitizeSuiteName(string|array $suiteName): string|array
     {
         $suiteNameArray = explode("_", $suiteName);
         if (array_pop($suiteNameArray) === 'G') {
@@ -170,14 +162,12 @@ class GenerateTestFailedCommand extends BaseGenerateCommand
     /**
      * Writes the test name to a file if it does not already exist
      *
-     * @param string $test
      * @param string $filePath
-     * @return void
      */
-    public function writeFailedTestToFile($test, $filePath)
+    public function writeFailedTestToFile(string $test, $filePath): void
     {
         if (file_exists($filePath)) {
-            if (strpos(file_get_contents($filePath), $test) === false) {
+            if (!str_contains(file_get_contents($filePath), $test)) {
                 file_put_contents($filePath, "\n" . $test, FILE_APPEND);
             }
         } else {

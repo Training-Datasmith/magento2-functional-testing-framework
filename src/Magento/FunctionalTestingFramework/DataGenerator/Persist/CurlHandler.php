@@ -23,20 +23,6 @@ use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlInterface;
 class CurlHandler
 {
     /**
-     * Describes the operation for the executor ('create','update','delete')
-     *
-     * @var string
-     */
-    private $operation;
-
-    /**
-     * The entity object data being created, updated, or deleted.
-     *
-     * @var EntityDataObject $entityObject
-     */
-    private $entityObject;
-
-    /**
      * The data definitions used to map the operation.
      *
      * @var OperationDefinitionObject $operationDefinition
@@ -51,25 +37,14 @@ class CurlHandler
     private $requestData;
 
     /**
-     * Store code in web api rest url.
-     *
-     * @var string
-     */
-    private $storeCode;
-
-    /**
      * If the content type is Json.
-     *
-     * @var boolean
      */
-    private $isJson;
+    private bool $isJson;
 
     /**
      * Operation to Curl method mapping.
-     *
-     * @var array
      */
-    private static $curlMethodMapping = [
+    private static array $curlMethodMapping = [
             'create' => CurlInterface::POST,
             'delete' => CurlInterface::DELETE,
             'update' => CurlInterface::PUT,
@@ -83,12 +58,17 @@ class CurlHandler
      * @param EntityDataObject $entityObject
      * @param string           $storeCode
      */
-    public function __construct($operation, $entityObject, $storeCode = null)
+    public function __construct(/**
+     * Describes the operation for the executor ('create','update','delete')
+     */
+    private $operation, /**
+     * The entity object data being created, updated, or deleted.
+     */
+    private $entityObject, /**
+     * Store code in web api rest url.
+     */
+    private $storeCode = null)
     {
-        $this->operation = $operation;
-        $this->entityObject = $entityObject;
-        $this->storeCode = $storeCode;
-
         $this->operationDefinition = OperationDefinitionObjectHandler::getInstance()->getOperationDefinition(
             $this->operation,
             $this->entityObject->getType()
@@ -205,44 +185,41 @@ class CurlHandler
      * Resolve rul reference from entity objects.
      *
      * @param string $urlIn
-     * @param array  $entityObjects
      * @return string
      */
-    private function resolveUrlReference($urlIn, $entityObjects)
+    private function resolveUrlReference($urlIn, array $entityObjects)
     {
         $urlOut = $urlIn;
         $matchedParams = [];
         // Find all the params ({}) references
         preg_match_all("/[{](.+?)[}]/", $urlIn, $matchedParams);
 
-        if (!empty($matchedParams)) {
-            foreach ($matchedParams[0] as $paramKey => $paramValue) {
-                $paramEntityParent = "";
-                $matchedParent = [];
-                $dataItem = $matchedParams[1][$paramKey];
-                // Find all the parent property (Type.key) references, assuming there will be only one
-                // parent property reference within one param
-                preg_match_all("/(.+?)\./", $dataItem, $matchedParent);
+        foreach ($matchedParams[0] as $paramKey => $paramValue) {
+            $paramEntityParent = "";
+            $matchedParent = [];
+            $dataItem = $matchedParams[1][$paramKey];
+            // Find all the parent property (Type.key) references, assuming there will be only one
+            // parent property reference within one param
+            preg_match_all("/(.+?)\./", $dataItem, $matchedParent);
 
-                if (!empty($matchedParent) && !empty($matchedParent[0])) {
-                    $paramEntityParent = $matchedParent[1][0];
-                    $dataItem = preg_replace('/^'.$matchedParent[0][0].'/', '', $dataItem);
+            if (!empty($matchedParent[0])) {
+                $paramEntityParent = $matchedParent[1][0];
+                $dataItem = preg_replace('/^'.$matchedParent[0][0].'/', '', $dataItem);
+            }
+
+            foreach ($entityObjects as $entityObject) {
+                $param = null;
+
+                if ($paramEntityParent === "" || $entityObject->getType() === $paramEntityParent) {
+                    $param = $entityObject->getDataByName(
+                        $dataItem,
+                        EntityDataObject::CEST_UNIQUE_VALUE
+                    );
                 }
 
-                foreach ($entityObjects as $entityObject) {
-                    $param = null;
-
-                    if ($paramEntityParent === "" || $entityObject->getType() === $paramEntityParent) {
-                        $param = $entityObject->getDataByName(
-                            $dataItem,
-                            EntityDataObject::CEST_UNIQUE_VALUE
-                        );
-                    }
-
-                    if (null !== $param) {
-                        $urlOut = str_replace($paramValue, $param, $urlOut);
-                        continue;
-                    }
+                if (null !== $param) {
+                    $urlOut = str_replace($paramValue, $param, $urlOut);
+                    continue;
                 }
             }
         }

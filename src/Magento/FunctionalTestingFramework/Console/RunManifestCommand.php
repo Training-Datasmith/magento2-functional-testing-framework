@@ -21,10 +21,8 @@ class RunManifestCommand extends Command
 {
     /**
      * The return code. Determined by all tests that run.
-     *
-     * @var integer
      */
-    private $returnCode = 0;
+    private int $returnCode = 0;
 
     /**
      * A list of tests that failed.
@@ -32,21 +30,17 @@ class RunManifestCommand extends Command
      *
      * @var string[]
      */
-    private $failedTests = [];
+    private array $failedTests = [];
 
     /**
      * Path for a failed test
-     *
-     * @var string
      */
-    private $testsFailedFile;
+    private ?string $testsFailedFile = null;
 
     /**
      * Configure the run:manifest command.
-     *
-     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName("run:manifest")
             ->setDescription("runs a manifest file")
@@ -56,10 +50,7 @@ class RunManifestCommand extends Command
     /**
      * Executes the run:manifest command.
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      * @throws TestFrameworkException
-     * @return integer
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -107,15 +98,11 @@ class RunManifestCommand extends Command
     /**
      * Runs a test (or group) line from the manifest file
      *
-     * @param string          $manifestLine
-     * @param OutputInterface $output
-     * @param boolean         $exit
-     * @return void
      * @throws \Exception
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter) Need this because of the unused $type variable in the closure
      */
-    private function runManifestLine($manifestLine, $output, $exit = false)
+    private function runManifestLine(string $manifestLine, \Symfony\Component\Console\Output\OutputInterface $output, bool $exit = false): void
     {
         if (getenv('ENABLE_PAUSE') === 'true') {
             $codeceptionCommand = BaseGenerateCommand::CODECEPT_RUN_FUNCTIONAL
@@ -136,7 +123,7 @@ class RunManifestCommand extends Command
             $process->setWorkingDirectory(TESTS_BP);
             $process->setIdleTimeout(600);
             $process->setTimeout(0);
-            $subReturnCode = $process->run(function ($type, $buffer) use ($output) {
+            $subReturnCode = $process->run(function ($type, string|iterable $buffer) use ($output): void {
                 $output->write($buffer);
             });
         }
@@ -149,10 +136,8 @@ class RunManifestCommand extends Command
      *
      * Each codecept command executions overwrites the failed file. Since we are running multiple codecept commands,
      * we need to hold on to any failures in order to write a final failed file containing all tests.
-     *
-     * @return void
      */
-    private function aggregateFailed()
+    private function aggregateFailed(): void
     {
         if (file_exists($this->testsFailedFile)) {
             $currentFile = file($this->testsFailedFile, FILE_IGNORE_NEW_LINES);
@@ -165,10 +150,8 @@ class RunManifestCommand extends Command
 
     /**
      * Delete the Codeception failed file.
-     *
-     * @return void
      */
-    private function deleteFailedFile()
+    private function deleteFailedFile(): void
     {
         if (file_exists($this->testsFailedFile)) {
             unlink($this->testsFailedFile);
@@ -177,10 +160,8 @@ class RunManifestCommand extends Command
 
     /**
      * Writes any tests that failed to the Codeception failed file.
-     *
-     * @return void
      */
-    private function writeFailedFile()
+    private function writeFailedFile(): void
     {
         foreach ($this->failedTests as $test) {
             file_put_contents($this->testsFailedFile, $test . "\n", FILE_APPEND);

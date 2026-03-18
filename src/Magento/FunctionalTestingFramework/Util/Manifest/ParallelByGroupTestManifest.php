@@ -31,10 +31,9 @@ class ParallelByGroupTestManifest extends BaseParallelTestManifest
      * Function which generates test groups based on arg passed.
      *
      * @param integer $totalGroups
-     * @return void
      * @throws TestFrameworkException
      */
-    public function createTestGroups($totalGroups)
+    public function createTestGroups($totalGroups): void
     {
         $this->testGroups = $this->parallelGroupSorter->getTestsGroupedByFixedGroupCount(
             $this->getSuiteConfig(),

@@ -40,10 +40,8 @@ class DataObjectHandler implements ObjectHandlerInterface
 
     /**
      * The singleton instance of this class
-     *
-     * @var DataObjectHandler $INSTANCE
      */
-    private static $INSTANCE;
+    private static ?\Magento\FunctionalTestingFramework\DataGenerator\Handlers\DataObjectHandler $INSTANCE = null;
 
     /**
      * A collection of entity data objects that were seen in XML files and the .env file
@@ -54,24 +52,18 @@ class DataObjectHandler implements ObjectHandlerInterface
 
     /**
      * Instance of DataExtensionUtil class
-     *
-     * @var DataExtensionUtil
      */
-    private $extendUtil;
+    private readonly \Magento\FunctionalTestingFramework\DataGenerator\Util\DataExtensionUtil $extendUtil;
 
     /**
      * Validates and keeps track of entity name violations.
-     *
-     * @var NameValidationUtil
      */
-    private $entityNameValidator;
+    private readonly \Magento\FunctionalTestingFramework\Util\Validation\NameValidationUtil $entityNameValidator;
 
     /**
      * Validates and keeps track of entity key violations.
-     *
-     * @var NameValidationUtil
      */
-    private $entityKeyValidator;
+    private readonly \Magento\FunctionalTestingFramework\Util\Validation\NameValidationUtil $entityKeyValidator;
 
     /**
      * Constructor
@@ -139,13 +131,13 @@ class DataObjectHandler implements ObjectHandlerInterface
      * @throws XmlException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    private function processParserOutput($parserOutput)
+    private function processParserOutput(array $parserOutput): array
     {
         $entityDataObjects = [];
         $rawEntities = $parserOutput[self::_ENTITY];
 
         foreach ($rawEntities as $name => $rawEntity) {
-            if (preg_match('/[^a-zA-Z0-9_]/', $name)) {
+            if (preg_match('/[^a-zA-Z0-9_]/', (string) $name)) {
                 throw new XmlException(sprintf(self::DATA_NAME_ERROR_MSG, $name));
             }
 
@@ -175,7 +167,7 @@ class DataObjectHandler implements ObjectHandlerInterface
             if (array_key_exists(self::_ARRAY, $rawEntity)) {
                 $arrays = $rawEntity[self::_ARRAY];
                 foreach ($arrays as $array) {
-                    $key = strtolower($array[self::_KEY]);
+                    $key = strtolower((string) $array[self::_KEY]);
                     $data[$key] = $this->processArray($array[self::_ITEM], $data, $key);
                 }
             }
@@ -219,11 +211,9 @@ class DataObjectHandler implements ObjectHandlerInterface
      * Takes an array of items and a top level entity data array and merges in elements from parsed entity definitions.
      *
      * @param array  $arrayItems
-     * @param array  $data
      * @param string $key
-     * @return array
      */
-    private function processArray($arrayItems, $data, $key)
+    private function processArray($arrayItems, array $data, $key): array
     {
         $items = [];
         foreach ($arrayItems as $key => $item) {
@@ -239,7 +229,7 @@ class DataObjectHandler implements ObjectHandlerInterface
      * @param string[] $entityData
      * @return string[]
      */
-    private function processDataElements($entityData)
+    private function processDataElements(array $entityData): array
     {
         $dataValues = [];
         foreach ($entityData[self::_DATA] as $dataElement) {
@@ -250,7 +240,7 @@ class DataObjectHandler implements ObjectHandlerInterface
                 NameValidationUtil::DATA_ENTITY_KEY,
                 $filename
             );
-            $dataElementKey = strtolower($originalDataElementKey);
+            $dataElementKey = strtolower((string) $originalDataElementKey);
             $dataElementValue = $dataElement[self::_VALUE] ?? "";
             $dataValues[$dataElementKey] = $dataElementValue;
         }
@@ -263,12 +253,12 @@ class DataObjectHandler implements ObjectHandlerInterface
      * @param string[] $entityData
      * @return string[]
      */
-    private function processUniquenessData($entityData)
+    private function processUniquenessData(array $entityData): array
     {
         $uniquenessValues = [];
         foreach ($entityData[self::_DATA] as $dataElement) {
             if (array_key_exists(self::_UNIQUE, $dataElement)) {
-                $dataElementKey = strtolower($dataElement[self::_KEY]);
+                $dataElementKey = strtolower((string) $dataElement[self::_KEY]);
                 $uniquenessValues[$dataElementKey] = $dataElement[self::_UNIQUE];
             }
         }
@@ -281,7 +271,7 @@ class DataObjectHandler implements ObjectHandlerInterface
      * @param string[] $entityData
      * @return string[]
      */
-    private function processLinkedEntities($entityData)
+    private function processLinkedEntities(array $entityData): array
     {
         $linkedEntities = [];
         foreach ($entityData[self::_REQUIRED_ENTITY] as $linkedEntity) {
@@ -299,7 +289,7 @@ class DataObjectHandler implements ObjectHandlerInterface
      * @param string[] $entityData
      * @return string[]
      */
-    private function processVarElements($entityData)
+    private function processVarElements(array $entityData): array
     {
         $vars = [];
         foreach ($entityData[self::_VAR] as $varElement) {

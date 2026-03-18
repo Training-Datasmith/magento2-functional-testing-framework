@@ -16,9 +16,8 @@ class NodePathMatcher
      *
      * @param string $pathPattern  Example: '/some/static/path' or '/some/regexp/path(/item)+'.
      * @param string $xpathSubject Example: '/some[@attr="value"]/static/ns:path'.
-     * @return boolean
      */
-    public function pathMatch($pathPattern, $xpathSubject)
+    public function pathMatch($pathPattern, $xpathSubject): bool
     {
         $pathSubject = $this->simplifyXpath($xpathSubject);
         $pathPattern = '#^' . $pathPattern . '$#';
@@ -31,11 +30,10 @@ class NodePathMatcher
      * @param string $xpath
      * @return string
      */
-    public function simplifyXpath($xpath)
+    public function simplifyXpath($xpath): ?string
     {
         $result = $xpath;
         $result = preg_replace('/\[@[^\]]+?\]/', '', $result);
-        $result = preg_replace('/\/[^:]+?\:/', '/', $result);
-        return $result;
+        return preg_replace('/\/[^:]+?\:/', '/', (string) $result);
     }
 }

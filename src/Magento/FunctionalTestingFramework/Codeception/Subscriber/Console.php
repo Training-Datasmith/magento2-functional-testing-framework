@@ -30,24 +30,18 @@ class Console extends \Codeception\Subscriber\Console
 
     /**
      * Test files cache.
-     *
-     * @var array
      */
-    private $testFiles = [];
+    private array $testFiles = [];
 
     /**
      * Action group step key.
-     *
-     * @var null|string
      */
-    private $actionGroupStepKey = null;
+    private ?string $actionGroupStepKey = null;
 
     /**
      * Boolean value to indicate if steps are invisible steps
-     *
-     * @var boolean
      */
-    private $atInvisibleSteps = false;
+    private bool $atInvisibleSteps = false;
 
     /**
      * Console constructor. Parent constructor requires codeception CLI options, and does not have its own configs.
@@ -66,8 +60,6 @@ class Console extends \Codeception\Subscriber\Console
     /**
      * Triggered event before each test.
      *
-     * @param TestEvent $e
-     * @return void
      * @throws \Exception
      */
     public function startTest(TestEvent $e): void
@@ -97,9 +89,6 @@ class Console extends \Codeception\Subscriber\Console
 
     /**
      * Printing stepKey in before step action.
-     *
-     * @param StepEvent $e
-     * @return void
      */
     public function beforeStep(StepEvent $e): void
     {
@@ -134,11 +123,8 @@ class Console extends \Codeception\Subscriber\Console
 
     /**
      * If step failed we move back from action group to test scope
-     *
-     * @param StepEvent $e
-     * @return void
      */
-    public function afterStep(StepEvent $e)
+    public function afterStep(StepEvent $e): void
     {
         // Do usual after step if step is not INVISIBLE_STEP_ACTIONS
         if (!$this->atInvisibleSteps) {
@@ -154,11 +140,9 @@ class Console extends \Codeception\Subscriber\Console
     /**
      * Print output to cli with stepKey.
      *
-     * @param Step $step
-     * @return void
      * @SuppressWarnings(PHPMD)
      */
-    private function printStepKeys(Step $step)
+    private function printStepKeys(Step $step): void
     {
         if ($step instanceof Comment and $step->__toString() === '') {
             return; // don't print empty comments
@@ -166,7 +150,7 @@ class Console extends \Codeception\Subscriber\Console
 
         $stepKey = $this->retrieveStepKey($step);
 
-        $isActionGroup = (strpos($step->__toString(), ActionGroupObject::ACTION_GROUP_CONTEXT_START) !== false);
+        $isActionGroup = (str_contains($step->__toString(), ActionGroupObject::ACTION_GROUP_CONTEXT_START));
         if ($isActionGroup) {
             preg_match(TestGenerator::ACTION_GROUP_STEP_KEY_REGEX, $step->__toString(), $matches);
             if (!empty($matches['actionGroupStepKey'])) {
@@ -174,7 +158,7 @@ class Console extends \Codeception\Subscriber\Console
             }
         }
 
-        if (strpos($step->__toString(), ActionGroupObject::ACTION_GROUP_CONTEXT_END) !== false) {
+        if (str_contains($step->__toString(), ActionGroupObject::ACTION_GROUP_CONTEXT_END)) {
             $this->actionGroupStepKey = null;
             return;
         }
@@ -211,10 +195,9 @@ class Console extends \Codeception\Subscriber\Console
     /**
      * Message instance.
      *
-     * @param string $string
      * @return Message
      */
-    private function message($string = '')
+    private function message(string $string = '')
     {
         return $this->messageFactory->message($string);
     }
@@ -222,10 +205,9 @@ class Console extends \Codeception\Subscriber\Console
     /**
      * Reading stepKey from file.
      *
-     * @param Step $step
      * @return string|null
      */
-    private function retrieveStepKey(Step $step)
+    private function retrieveStepKey(Step $step): string|array|null
     {
         $stepKey = null;
         $stepLine = $step->getLineNumber();
@@ -236,7 +218,7 @@ class Console extends \Codeception\Subscriber\Console
             $this->testFiles[$filePath] = explode(PHP_EOL, file_get_contents($filePath));
         }
 
-        preg_match(TestGenerator::ACTION_STEP_KEY_REGEX, $this->testFiles[$filePath][$stepLine], $matches);
+        preg_match(TestGenerator::ACTION_STEP_KEY_REGEX, (string) $this->testFiles[$filePath][$stepLine], $matches);
         if (!empty($matches['stepKey'])) {
             $stepKey = $matches['stepKey'];
         }
@@ -245,8 +227,6 @@ class Console extends \Codeception\Subscriber\Console
             $stepKey = str_replace($this->actionGroupStepKey, '', $stepKey);
         }
 
-        $stepKey = $stepKey === '[]' ? null : $stepKey;
-
-        return $stepKey;
+        return $stepKey === '[]' ? null : $stepKey;
     }
 }

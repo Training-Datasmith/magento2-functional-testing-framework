@@ -11,9 +11,6 @@ class ModuleUtils
     /**
      * Module util function that returns UTF-8 encoding string with control/invisible characters removed,
      * and it returns the original string when on error.
-     *
-     * @param string $input
-     * @return string
      */
     public function utf8SafeControlCharacterTrim(string $input): string
     {
@@ -25,10 +22,9 @@ class ModuleUtils
             $cleanInput = preg_replace('/[^\PC\s]|\x{FFFD}/u', '', $convInput);
             if ($cleanInput !== null) {
                 return $cleanInput;
-            } else {
-                $err = preg_last_error_msg();
-                print("MagentoCLI response preg_replace() with error $err.\n");
             }
+            $err = preg_last_error_msg();
+            print("MagentoCLI response preg_replace() with error $err.\n");
         }
 
         return $input;

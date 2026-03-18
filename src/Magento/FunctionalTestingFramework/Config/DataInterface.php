@@ -14,7 +14,6 @@ interface DataInterface
     /**
      * Merge config data to the object
      *
-     * @param array $config
      * @return void
      */
     public function merge(array $config);
@@ -29,11 +28,9 @@ interface DataInterface
      */
     public function get(mixed $key = null, mixed $default = null);
     // @codingStandardsIgnoreEnd
-
     /**
      * Load config data
      *
-     * @param string|null $scope
      * @return void
      */
     public function load(?string $scope = null);

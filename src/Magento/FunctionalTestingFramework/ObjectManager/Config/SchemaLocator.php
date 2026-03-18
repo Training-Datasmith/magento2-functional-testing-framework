@@ -17,10 +17,8 @@ class SchemaLocator implements SchemaLocatorInterface
 {
     /**
      * Get path to merged config schema
-     *
-     * @return string
      */
-    public function getSchema()
+    public function getSchema(): string
     {
         return realpath(__DIR__ .  DIRECTORY_SEPARATOR . '..'  . DIRECTORY_SEPARATOR . 'etc' . DIRECTORY_SEPARATOR)
             . DIRECTORY_SEPARATOR . 'config.xsd';
@@ -28,10 +26,8 @@ class SchemaLocator implements SchemaLocatorInterface
 
     /**
      * Get path to pre file validation schema
-     *
-     * @return null
      */
-    public function getPerFileSchema()
+    public function getPerFileSchema(): null
     {
         return null;
     }

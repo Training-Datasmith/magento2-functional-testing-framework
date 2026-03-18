@@ -14,29 +14,24 @@ use Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface;
 class ArrayType implements InterpreterInterface
 {
     /**
-     * Interpreter of individual array item
-     *
-     * @var InterpreterInterface
-     */
-    private $itemInterpreter;
-
-    /**
      * ArrayType constructor.
-     * @param InterpreterInterface $itemInterpreter
      */
-    public function __construct(InterpreterInterface $itemInterpreter)
+    public function __construct(
+        /**
+         * Interpreter of individual array item
+         */
+        private readonly InterpreterInterface $itemInterpreter
+    )
     {
-        $this->itemInterpreter = $itemInterpreter;
     }
 
     /**
      * {@inheritdoc}
-     * @return array
      * @throws \InvalidArgumentException
      */
-    public function evaluate(array $data)
+    public function evaluate(array $data): array
     {
-        $items = isset($data['item']) ? $data['item'] : [];
+        $items = $data['item'] ?? [];
         if (!is_array($items)) {
             throw new \InvalidArgumentException('Array items are expected.');
         }
@@ -51,10 +46,9 @@ class ArrayType implements InterpreterInterface
     /**
      * Sort items by sort order attribute.
      *
-     * @param array $items
      * @return array
      */
-    private function sortItems($items)
+    private function sortItems(array $items)
     {
         $sortOrderDefined = $this->isSortOrderDefined($items);
         if ($sortOrderDefined) {
@@ -64,9 +58,7 @@ class ArrayType implements InterpreterInterface
             }
             uksort(
                 $indexedItems,
-                function ($firstItemKey, $secondItemKey) use ($indexedItems) {
-                    return $this->compareItems($firstItemKey, $secondItemKey, $indexedItems);
-                }
+                fn($firstItemKey, $secondItemKey) => $this->compareItems($firstItemKey, $secondItemKey, $indexedItems)
             );
             // Convert array of sorted items back to initial format
             $items = [];
@@ -79,13 +71,8 @@ class ArrayType implements InterpreterInterface
 
     /**
      * Compare sortOrder of item
-     *
-     * @param string|integer $firstItemKey
-     * @param string|integer $secondItemKey
-     * @param array          $indexedItems
-     * @return integer
      */
-    private function compareItems($firstItemKey, $secondItemKey, $indexedItems)
+    private function compareItems(int $firstItemKey, int $secondItemKey, array $indexedItems): int
     {
         $firstItem = $indexedItems[$firstItemKey]['item'];
         $secondItem = $indexedItems[$secondItemKey]['item'];
@@ -111,9 +98,8 @@ class ArrayType implements InterpreterInterface
      * Determine if a sort order exists for any of the items.
      *
      * @param array $items
-     * @return boolean
      */
-    private function isSortOrderDefined($items)
+    private function isSortOrderDefined($items): bool
     {
         foreach ($items as $itemData) {
             if (isset($itemData['sortOrder'])) {

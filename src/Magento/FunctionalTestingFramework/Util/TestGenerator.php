@@ -69,10 +69,8 @@ class TestGenerator
 
     /**
      * Array with helpers classes and methods.
-     *
-     * @var array
      */
-    private $customHelpers = [];
+    private array $customHelpers = [];
 
     /**
      * Actor name for AcceptanceTest
@@ -83,10 +81,8 @@ class TestGenerator
 
     /**
      * Path to the export dir.
-     *
-     * @var string
      */
-    private $exportDirectory;
+    private readonly string $exportDirectory;
 
     /**
      * Export dir name.
@@ -96,39 +92,19 @@ class TestGenerator
     private $exportDirName;
 
     /**
-     * Array of testObjects to be generated
-     *
-     * @var array
-     */
-    private $tests;
-
-    /**
      * Symfony console output interface.
-     *
-     * @var \Symfony\Component\Console\Output\ConsoleOutput
      */
-    private $consoleOutput;
-
-    /**
-     * Debug flag.
-     *
-     * @var boolean
-     */
-    private $debug;
+    private readonly \Symfony\Component\Console\Output\ConsoleOutput $consoleOutput;
 
     /**
      * Current generation scope.
-     *
-     * @var string
      */
-    private $currentGenerationScope = TestGenerator::TEST_SCOPE;
+    private string $currentGenerationScope = TestGenerator::TEST_SCOPE;
 
     /**
      * Test deprecation messages.
-     *
-     * @var array
      */
-    private $deprecationMessages = [];
+    private array $deprecationMessages = [];
 
     /**
      * Private constructor for Factory
@@ -138,16 +114,20 @@ class TestGenerator
      * @param boolean $debug
      * @throws TestFrameworkException
      */
-    private function __construct($exportDir, $tests, $debug = false)
+    private function __construct($exportDir, /**
+     * Array of testObjects to be generated
+     */
+    private $tests, /**
+     * Debug flag.
+     */
+    private $debug = false)
     {
         $this->exportDirName = $exportDir ?? self::DEFAULT_DIR;
         $this->exportDirectory = FilePathFormatter::format(TESTS_MODULE_PATH)
             . self::GENERATED_DIR
             . DIRECTORY_SEPARATOR
             . $this->exportDirName;
-        $this->tests = $tests;
         $this->consoleOutput = new \Symfony\Component\Console\Output\ConsoleOutput();
-        $this->debug = $debug;
     }
 
     /**
@@ -156,9 +136,8 @@ class TestGenerator
      * @param string  $dir
      * @param array   $tests
      * @param boolean $debug
-     * @return TestGenerator
      */
-    public static function getInstance(?string $dir = null, $tests = [], $debug = false)
+    public static function getInstance(?string $dir = null, $tests = [], $debug = false): \Magento\FunctionalTestingFramework\Util\TestGenerator
     {
         return new TestGenerator($dir, $tests, $debug);
     }
@@ -177,13 +156,12 @@ class TestGenerator
      * Load all Test files as Objects using the Test Object Handler, additionally validates test references being loaded
      * for validity.
      *
-     * @param array $testsToIgnore
      * @return array
      * @throws TestReferenceException
      * @throws TestFrameworkException
      * @throws FastFailException
      */
-    private function loadAllTestObjects($testsToIgnore)
+    private function loadAllTestObjects(array $testsToIgnore)
     {
         if ($this->tests === null || empty($this->tests)) {
             $testObjects = TestObjectHandler::getInstance()->getAllObjects();
@@ -207,13 +185,10 @@ class TestGenerator
      * Create a single PHP file containing the $cestPhp using the $filename.
      * If the _generated directory doesn't exist it will be created.
      *
-     * @param string $testPhp
-     * @param string $filename
      *
-     * @return void
      * @throws TestFrameworkException
      */
-    private function createCestFile(string $testPhp, string $filename)
+    private function createCestFile(string $testPhp, string $filename): void
     {
         CestFileCreatorUtil::getInstance()->create($filename, $this->exportDirectory, $testPhp);
     }
@@ -224,13 +199,12 @@ class TestGenerator
      *
      * @param BaseTestManifest $testManifest
      * @param array            $testsToIgnore
-     * @return void
      * @throws TestFrameworkException
      * @throws XmlException
      * @throws FastFailException
      * @throws TestReferenceException
      */
-    public function createAllTestFiles(?BaseTestManifest $testManifest = null, ?array $testsToIgnore = null)
+    public function createAllTestFiles(?BaseTestManifest $testManifest = null, ?array $testsToIgnore = null): void
     {
         if ($this->tests === null) {
             // no-op if the test configuration is null
@@ -251,7 +225,6 @@ class TestGenerator
     /**
      * Throw exception if duplicate arguments found
      * @param TestObject $testObject
-     * @return void
      * @throws TestFrameworkException
      */
     public function throwExceptionIfDuplicateArgumentsFound($testObject): void
@@ -282,7 +255,7 @@ class TestGenerator
             foreach ($fileToArr as $fileVal) {
                 $fileVal = trim($fileVal);
                 if ((str_contains($fileVal, '<actionGroup') || str_contains($fileVal, '<helper')) &&
-                    str_contains($fileVal, $stepKey)) {
+                    str_contains($fileVal, (string) $stepKey)) {
                     $actionGroupStart = true;
                     continue;
                 }
@@ -320,15 +293,14 @@ class TestGenerator
      * Create all of the PHP strings for a Test. Concatenate the strings together.
      *
      * @param \Magento\FunctionalTestingFramework\Test\Objects\TestObject $testObject
-     * @return string
      * @throws TestReferenceException
      * @throws \Exception
      */
-    public function assembleTestPhp($testObject)
+    public function assembleTestPhp($testObject): string
     {
         if (!empty($testObject->getFilename()) && file_exists($testObject->getFilename())) {
             $fileContents = file_get_contents($testObject->getFilename());
-            $this->throwExceptionIfDuplicateArgumentsFound($fileContents, $testObject->getFilename());
+            $this->throwExceptionIfDuplicateArgumentsFound($fileContents);
         }
         $this->customHelpers = [];
         $usePhp = $this->generateUseStatementsPhp();
@@ -359,9 +331,8 @@ class TestGenerator
         $cestPhp .= $this->generateInjectMethod();
         $cestPhp .= $hookPhp;
         $cestPhp .= $testsPhp;
-        $cestPhp .= "}\n";
 
-        return $cestPhp;
+        return $cestPhp . "}\n";
     }
 
     /**
@@ -397,13 +368,11 @@ class TestGenerator
      * Load ALL Test objects. Loop over and pass each to the assembleTestPhp function.
      *
      * @param BaseTestManifest $testManifest
-     * @param array            $testsToIgnore
-     * @return array
      * @throws TestFrameworkException
      * @throws TestReferenceException
      * @throws FastFailException
      */
-    private function assembleAllTestPhp($testManifest, array $testsToIgnore)
+    private function assembleAllTestPhp(?\Magento\FunctionalTestingFramework\Util\Manifest\BaseTestManifest $testManifest, array $testsToIgnore): array
     {
         /** @var TestObject[] $testObjects */
         $testObjects = $this->loadAllTestObjects($testsToIgnore);
@@ -422,7 +391,7 @@ class TestGenerator
                 if ($test->isSkipped() && !empty($test->getParentName())) {
                     try {
                         TestObjectHandler::getInstance()->getObject($test->getParentName());
-                    } catch (TestReferenceException $e) {
+                    } catch (TestReferenceException) {
                         TestObjectHandler::getInstance()->sanitizeTests([$test->getName()]);
                         $errMessage = "{$test->getName()} will not be generated. "
                             . "Parent test {$test->getParentName()} not defined in xml.";
@@ -475,9 +444,8 @@ class TestGenerator
      * Output information in console when debug flag is enabled.
      *
      * @param array|string $messages
-     * @return void
      */
-    private function debug($messages)
+    private function debug($messages): void
     {
         if ($this->debug && $messages) {
             $messages = (array)$messages;
@@ -490,10 +458,8 @@ class TestGenerator
     /**
      * Creates a PHP string for the necessary Allure and AcceptanceTester use statements.
      * Since we don't support other dependencies at this time, this function takes no parameter.
-     *
-     * @return string
      */
-    private function generateUseStatementsPhp()
+    private function generateUseStatementsPhp(): string
     {
         $useStatementsPhp = "use Magento\FunctionalTestingFramework\AcceptanceTester;\n";
         $useStatementsPhp .= "use \Codeception\Util\Locator;\n";
@@ -520,10 +486,8 @@ class TestGenerator
      * Generates Annotations PHP for given object, using given scope to determine indentation and additional output.
      *
      * @param array   $testObject
-     * @param boolean $isMethod
-     * @return string
      */
-    private function generateAnnotationsPhp($testObject, $isMethod = false)
+    private function generateAnnotationsPhp($testObject, bool $isMethod = false): string
     {
         $annotationsObject = $testObject->getAnnotations();
         //TODO: Refactor to deal with PHPMD.CyclomaticComplexity
@@ -551,9 +515,7 @@ class TestGenerator
             $annotationsPhp .= $this->generateMethodAnnotations();
         }
 
-        $annotationsPhp .= "{$indent} */\n";
-
-        return $annotationsPhp;
+        return $annotationsPhp . "{$indent} */\n";
     }
 
     /**
@@ -561,9 +523,8 @@ class TestGenerator
      *
      * @param string      $annotationType
      * @param string|null $annotationName
-     * @return null|string
      */
-    private function generateMethodAnnotations(?string $annotationType = null, mixed $annotationName = null)
+    private function generateMethodAnnotations(?string $annotationType = null, mixed $annotationName = null): ?string
     {
         $annotationToAppend = null;
         $indent = "\t";
@@ -611,27 +572,22 @@ class TestGenerator
      * Returs required credentials to configure
      *
      * @param TestObject $testObject
-     * @return string
      */
-    public function requiredCredentials($testObject)
+    public function requiredCredentials($testObject): string
     {
-        $requiredCredentials = (!empty($testObject->getCredentials()))
+        return (!empty($testObject->getCredentials()))
             ?  implode(",", $testObject->getCredentials())
             : "";
-
-        return $requiredCredentials;
     }
 
     /**
      * Method which return formatted class level annotations based on type and name(s).
      *
      * @param string $annotationType
-     * @param array  $annotationName
      * @param array  $testObject
-     * @return null|string
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    private function generateClassAnnotations($annotationType, $annotationName, $testObject)
+    private function generateClassAnnotations($annotationType, array $annotationName, $testObject): ?string
     {
         $annotationToAppend = null;
         if (!$testObject->isSkipped() && !empty($annotationName['main'])) {
@@ -672,11 +628,8 @@ class TestGenerator
 
     /**
      * Generates Description
-     *
-     * @param array $descriptions
-     * @return string
      */
-    private function generateDescriptionAnnotation(array $descriptions)
+    private function generateDescriptionAnnotation(array $descriptions): string
     {
         $descriptionText = "";
 
@@ -695,9 +648,8 @@ class TestGenerator
             }
             $descriptionText .= "</ul>";
         }
-        $descriptionText .= $descriptions["test_files"];
 
-        return $descriptionText;
+        return $descriptionText . $descriptions["test_files"];
     }
 
     /**
@@ -707,14 +659,12 @@ class TestGenerator
      * construct the PHP string for nearly half of all Codeception actions.
      *
      * @param array  $actionObjects
-     * @param string $generationScope
      * @param string $actor
-     * @return string
      * @throws TestReferenceException
      * @throws \Exception
      * @SuppressWarnings(PHPMD)
      */
-    public function generateStepsPhp($actionObjects, $generationScope = TestGenerator::TEST_SCOPE, $actor = "I")
+    public function generateStepsPhp($actionObjects, string $generationScope = TestGenerator::TEST_SCOPE, $actor = "I"): string
     {
         //TODO: Refactor Method according to PHPMD warnings, remove @SuppressWarnings accordingly.
         $testSteps = '';
@@ -815,13 +765,13 @@ class TestGenerator
             if (isset($customActionAttributes['expected'])) {
                 $assertExpected = $this->resolveValueByType(
                     $customActionAttributes['expected'],
-                    isset($customActionAttributes['expectedType']) ? $customActionAttributes['expectedType'] : null
+                    $customActionAttributes['expectedType'] ?? null
                 );
             }
             if (isset($customActionAttributes['actual'])) {
                 $assertActual = $this->resolveValueByType(
                     $customActionAttributes['actual'],
-                    isset($customActionAttributes['actualType']) ? $customActionAttributes['actualType'] : null
+                    $customActionAttributes['actualType'] ?? null
                 );
             }
             if (isset($customActionAttributes['message'])) {
@@ -842,9 +792,9 @@ class TestGenerator
             }
 
             if (in_array($actionObject->getType(), ActionObject::COMMAND_ACTION_ATTRIBUTES)) {
-                $time = $time ?? ActionObject::getDefaultMagentoCLIWaitTimeout();
+                $time ??= ActionObject::getDefaultMagentoCLIWaitTimeout();
             } else {
-                $time = $time ?? ActionObject::getDefaultWaitTimeout();
+                $time ??= ActionObject::getDefaultWaitTimeout();
             }
 
             if (isset($customActionAttributes['parameterArray']) && $actionObject->getType() !== 'pressKey') {
@@ -1575,7 +1525,7 @@ class TestGenerator
                     $input = (isset($actionObject->getCustomActionAttributes()['unique'])) ?
                         $this->getUniqueIdForInput($actionObject->getCustomActionAttributes()['unique'], $input)
                         : $input;
-                    $argRef .= str_replace(ucfirst($fieldKey), "", $stepKey) .
+                    $argRef .= str_replace(ucfirst((string) $fieldKey), "", $stepKey) .
                         "Fields['{$fieldKey}'] = {$input};";
                     $testSteps .= $argRef;
                     break;
@@ -1603,7 +1553,7 @@ class TestGenerator
                     }
                     break;
                 case "comment":
-                    $input = $input === null ? strtr($value, ['$' => '\$', '{' => '\{', '}' => '\}']) : $input;
+                    $input ??= strtr($value, ['$' => '\$', '{' => '\{', '}' => '\}']);
                 // Combining userInput from native XML comment and <comment/> action to fall-through 'default' case
                 default:
                     $testSteps .= $this->wrapFunctionCall(
@@ -1627,14 +1577,12 @@ class TestGenerator
      *
      * @param string $uniqueValue
      * @param string $input
-     * @return string
      */
-    public function getUniqueIdForInput($uniqueValue, $input)
+    public function getUniqueIdForInput($uniqueValue, $input): string
     {
-        $input = ($uniqueValue == 'prefix')
+        return ($uniqueValue == 'prefix')
             ? '"'.uniqid().str_replace('"', '', $input).'"'
             : '"'.str_replace('"', '', $input).uniqid().'"';
-        return $input;
     }
 
     /**
@@ -1645,7 +1593,7 @@ class TestGenerator
      */
     private function resolveLocatorFunctionInAttribute($attribute)
     {
-        if (strpos($attribute, "Locator::") !== false) {
+        if (str_contains($attribute, "Locator::")) {
             $attribute = $this->stripWrappedQuotes($attribute);
             $attribute = $this->wrapFunctionArgsWithQuotes("/Locator::[\w]+\(([\s\S]+)\)/", $attribute);
         }
@@ -1658,10 +1606,9 @@ class TestGenerator
      *
      * @param array $args
      * @param array $actionOrigin
-     * @return array
      * @throws \Exception
      */
-    private function resolveTestVariable($args, $actionOrigin)
+    private function resolveTestVariable($args, $actionOrigin): array
     {
         $newArgs = [];
         foreach ($args as $key => $arg) {
@@ -1686,11 +1633,8 @@ class TestGenerator
 
     /**
      * Trims given $input of "{$var}" to $var if needed. Returns $input if format fails.
-     *
-     * @param string $input
-     * @return string
      */
-    private function trimVariableIfNeeded($input)
+    private function trimVariableIfNeeded(string $input): string
     {
         preg_match('/"{\$[a-z][a-zA-Z\d]+}"/', $input, $match);
         if (isset($match[0])) {
@@ -1703,12 +1647,10 @@ class TestGenerator
     /**
      * Replaces all matches into given outputArg with. Variable scope determined by delimiter given.
      *
-     * @param array  $matches
      * @param string $outputArg
-     * @return void
      * @throws \Exception
      */
-    private function replaceMatchesIntoArg($matches, &$outputArg)
+    private function replaceMatchesIntoArg(array $matches, &$outputArg): void
     {
         // Remove Duplicate $matches from array. Duplicate matches are replaced all in one go.
         $matches = array_unique($matches);
@@ -1731,7 +1673,7 @@ class TestGenerator
             $replacement .= "('{$variable[0]}', '$variable[1]', '{$this->currentGenerationScope}')";
 
             //Determine if quoteBreak check is necessary. Assume replacement is surrounded in quotes, then override
-            if (strpos($outputArg, "\"") !== false) {
+            if (str_contains($outputArg, "\"")) {
                 $outputArg = $this->processQuoteBreaks($match, $outputArg, $replacement);
             } else {
                 $outputArg = str_replace($match, $replacement, $outputArg);
@@ -1745,10 +1687,9 @@ class TestGenerator
      *
      * @param string $match
      * @param string $argument
-     * @param string $replacement
      * @return string
      */
-    private function processQuoteBreaks($match, $argument, $replacement)
+    private function processQuoteBreaks($match, $argument, string $replacement): string|array|null
     {
         $outputArg = str_replace($match, '" . ' . $replacement . ' . "', $argument);
 
@@ -1763,10 +1704,9 @@ class TestGenerator
      * Replaces any occurrences of stepKeys in input, if they are found within the given actionGroup.
      * Necessary to allow for use of grab/createData actions in actionGroups.
      * @param string $input
-     * @param array  $actionGroupOrigin
      * @return string
      */
-    private function resolveStepKeyReferences($input, $actionGroupOrigin, $matchAll = false)
+    private function resolveStepKeyReferences($input, array $actionGroupOrigin, bool $matchAll = false)
     {
         if ($actionGroupOrigin === null) {
             return $input;
@@ -1777,7 +1717,7 @@ class TestGenerator
             $actionGroupOrigin[ActionGroupObject::ACTION_GROUP_ORIGIN_NAME]
         );
         $stepKeys = $actionGroup->extractStepKeys();
-        $testInvocationKey = ucfirst($actionGroupOrigin[ActionGroupObject::ACTION_GROUP_ORIGIN_TEST_REF]);
+        $testInvocationKey = ucfirst((string) $actionGroupOrigin[ActionGroupObject::ACTION_GROUP_ORIGIN_TEST_REF]);
 
         foreach ($stepKeys as $stepKey) {
             // MQE-1011
@@ -1794,15 +1734,15 @@ class TestGenerator
 
             // only replace when whole word matches exactly
             // e.g. testVar => $testVar but not $testVar2
-            if (strpos($output, $stepKeyVarRef) !== false) {
-                $output = preg_replace('/\B\\' . $stepKeyVarRef . '\b/', $stepKeyVarRef . $testInvocationKey, $output);
+            if (str_contains((string) $output, $stepKeyVarRef)) {
+                $output = preg_replace('/\B\\' . $stepKeyVarRef . '\b/', $stepKeyVarRef . $testInvocationKey, (string) $output);
             }
 
-            if (strpos($output, $persistedVarRef) !== false) {
+            if (str_contains((string) $output, $persistedVarRef)) {
                 $output = str_replace($persistedVarRef, $persistedVarRefInvoked, $output);
             }
 
-            if ($matchAll && strpos($output, $stepKey) !== false) {
+            if ($matchAll && str_contains((string) $output, $stepKey)) {
                 $output = str_replace($stepKey, $stepKey . $testInvocationKey, $output);
             }
         }
@@ -1812,11 +1752,10 @@ class TestGenerator
     /**
      * Wraps all args inside function give with double quotes. Uses regex to locate arguments of function.
      *
-     * @param string $functionRegex
      * @param string $input
      * @return string
      */
-    private function wrapFunctionArgsWithQuotes($functionRegex, $input)
+    private function wrapFunctionArgsWithQuotes(string $functionRegex, $input)
     {
         $output = $input;
         preg_match_all($functionRegex, $input, $matches);
@@ -1850,10 +1789,8 @@ class TestGenerator
      * Performs str_replace on variable reference, dependent on delimiter and returns exploded array.
      *
      * @param string $reference
-     * @param string $delimiter
-     * @return array
      */
-    private function stripAndSplitReference($reference, $delimiter)
+    private function stripAndSplitReference($reference, string $delimiter): array
     {
         $strippedReference = str_replace($delimiter, '', $reference);
         return explode('.', $strippedReference);
@@ -1863,12 +1800,11 @@ class TestGenerator
      * Creates a PHP string for the _before/_after methods if the Test contains an <before> or <after> block.
      *
      * @param TestHookObject[] $hookObjects
-     * @return string
      * @throws TestReferenceException
      * @throws \Exception
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    private function generateHooksPhp($hookObjects)
+    private function generateHooksPhp(array $hookObjects): string
     {
         $hooks = "";
 
@@ -1939,11 +1875,10 @@ class TestGenerator
      * Concatenates the Test Annotations PHP and Test PHP for a single Test.
      *
      * @param TestObject $test
-     * @return string
      * @throws TestReferenceException
      * @throws \Exception
      */
-    private function generateTestPhp($test)
+    private function generateTestPhp($test): string
     {
         $testPhp = "";
 
@@ -1991,9 +1926,8 @@ class TestGenerator
      * Detects uniqueness function calls on given attribute, and calls addUniquenessFunctionCall on matches.
      *
      * @param string $input
-     * @return string
      */
-    private function addUniquenessToParamArray($input)
+    private function addUniquenessToParamArray($input): string
     {
         $tempInput = trim($input, "[]");
         $paramArray = explode(",", $tempInput);
@@ -2028,7 +1962,7 @@ class TestGenerator
      * @param string $input
      * @return string
      */
-    private function processPressKey($input)
+    private function processPressKey($input): string|array
     {
         // validate the param array is in the correct format
         $input = trim($input);
@@ -2042,14 +1976,12 @@ class TestGenerator
 
         // matches all arrays and replaces them with placeholder to prevent later param manipulation
         preg_match_all('/[\[][^\]]*?[\]]/', $input, $paramInput);
-        if (!empty($paramInput)) {
-            foreach ($paramInput[0] as $param) {
-                $arrayResult[self::PRESSKEY_ARRAY_ANCHOR_KEY . $count] = $this->wrapParameterArray(
-                    trim($this->addUniquenessToParamArray($param))
-                );
-                $input = str_replace($param, self::PRESSKEY_ARRAY_ANCHOR_KEY . $count, $input);
-                $count++;
-            }
+        foreach ($paramInput[0] as $param) {
+            $arrayResult[self::PRESSKEY_ARRAY_ANCHOR_KEY . $count] = $this->wrapParameterArray(
+                trim($this->addUniquenessToParamArray($param))
+            );
+            $input = str_replace($param, self::PRESSKEY_ARRAY_ANCHOR_KEY . $count, $input);
+            $count++;
         }
 
         $paramArray = explode(",", $input);
@@ -2061,7 +1993,7 @@ class TestGenerator
             }
 
             // matches \ for Facebook WebDriverKeys classes
-            if (substr(trim($param), 0, 1) === '\\') {
+            if (str_starts_with(trim($param), '\\')) {
                 $result[] = trim($param);
                 continue;
             }
@@ -2079,10 +2011,8 @@ class TestGenerator
 
         $result = implode(',', $result);
         // reinsert arrays into result
-        if (!empty($arrayResult)) {
-            foreach ($arrayResult as $key => $value) {
-                $result = str_replace($key, $value, $result);
-            }
+        foreach ($arrayResult as $key => $value) {
+            $result = str_replace($key, $value, $result);
         }
         return $result;
     }
@@ -2091,10 +2021,9 @@ class TestGenerator
      * Add uniqueness function call to input string based on regex pattern.
      *
      * @param string  $input
-     * @param boolean $wrapWithDoubleQuotes
      * @return string
      */
-    private function addUniquenessFunctionCall($input, $wrapWithDoubleQuotes = true)
+    private function addUniquenessFunctionCall($input, bool $wrapWithDoubleQuotes = true): ?string
     {
         if ($wrapWithDoubleQuotes) {
             $output = $this->wrapWithDoubleQuotes($input);
@@ -2117,9 +2046,8 @@ class TestGenerator
      * Wrap input string with double quotes, and replaces " with \" to prevent broken PHP when generated.
      *
      * @param string $input
-     * @return string
      */
-    private function wrapWithDoubleQuotes($input)
+    private function wrapWithDoubleQuotes($input): string
     {
         if ($input === null || $input === '') {
             return '';
@@ -2131,11 +2059,8 @@ class TestGenerator
 
     /**
      * Strip beginning and ending double quotes of input string.
-     *
-     * @param string $input
-     * @return string
      */
-    private function stripWrappedQuotes($input)
+    private function stripWrappedQuotes(string $input): string
     {
         if (empty($input)) {
             return '';
@@ -2146,11 +2071,8 @@ class TestGenerator
 
     /**
      * Add dollar sign at the beginning of input string.
-     *
-     * @param string $input
-     * @return string
      */
-    private function addDollarSign($input)
+    private function addDollarSign(string $input): string
     {
         return sprintf("$%s", ltrim($this->stripQuotes($input), '$'));
     }
@@ -2158,12 +2080,9 @@ class TestGenerator
     /**
      * Check if the entity exists
      *
-     * @param string $entity
-     * @param string $stepKey
-     * @return void
      * @throws TestReferenceException
      */
-    public function entityExistsCheck($entity, $stepKey)
+    public function entityExistsCheck(string $entity, string $stepKey): void
     {
         $retrievedEntity = DataObjectHandler::getInstance()->getObject($entity);
         if ($retrievedEntity === null) {
@@ -2176,13 +2095,11 @@ class TestGenerator
     /**
      * Wrap parameters into a function call.
      *
-     * @param string       $actor
      * @param actionObject $action
      * @param array        ...$args
-     * @return string
      * @throws \Exception
      */
-    private function wrapFunctionCall($actor, $action, ...$args)
+    private function wrapFunctionCall(string $actor, $action, ...$args): string
     {
         $output = sprintf("\t\t$%s->%s(", $actor, $action->getType());
         for ($i = 0; $i < count($args); $i++) {
@@ -2198,21 +2115,18 @@ class TestGenerator
         }
         $args = $this->resolveAllRuntimeReferences($args);
         $args = $this->resolveTestVariable($args, $action->getActionOrigin());
-        $output .= implode(", ", array_filter($args, $this->filterNullCallback())) . ");";
-        return $output;
+        return $output . (implode(", ", array_filter($args, $this->filterNullCallback())) . ");");
     }
 
     /**
      * Wrap parameters into a function call with a return value.
      *
-     * @param string       $returnVariable
      * @param string       $actor
      * @param actionObject $action
      * @param array        ...$args
-     * @return string
      * @throws \Exception
      */
-    private function wrapFunctionCallWithReturnValue($returnVariable, $actor, $action, ...$args)
+    private function wrapFunctionCallWithReturnValue(string $returnVariable, $actor, $action, ...$args): string
     {
         $actionType = $action->getType();
         if ($actionType === 'helper') {
@@ -2234,8 +2148,7 @@ class TestGenerator
         }
         $args = $this->resolveAllRuntimeReferences($args);
         $args = $this->resolveTestVariable($args, $action->getActionOrigin());
-        $output .= implode(", ", array_filter($args, $this->filterNullCallback())) . ");";
-        return $output;
+        return $output . (implode(", ", array_filter($args, $this->filterNullCallback())) . ");");
     }
 
     /**
@@ -2245,20 +2158,15 @@ class TestGenerator
      */
     private function filterNullCallback()
     {
-        return function ($value) {
-            return $value !== null;
-        };
+        return fn($value) => $value !== null;
     }
 
     /**
      * Resolves {{_ENV.variable}} into getenv("variable") for test-runtime ENV referencing.
      *
      * @param array  $args
-     * @param string $regex
-     * @param string $func
-     * @return array
      */
-    private function resolveRuntimeReference($args, $regex, $func)
+    private function resolveRuntimeReference($args, string $regex, string $func): array
     {
         $newArgs = [];
 
@@ -2287,10 +2195,9 @@ class TestGenerator
      * Takes a predefined list of potentially matching special paramts and they needed function replacement and performs
      * replacements on the tests args.
      *
-     * @param array $args
      * @return array
      */
-    private function resolveAllRuntimeReferences($args)
+    private function resolveAllRuntimeReferences(array $args)
     {
         $runtimeReferenceRegex = [
             "/{{_ENV\.([\w]+)}}/" => 'getenv',
@@ -2309,10 +2216,9 @@ class TestGenerator
      * Validates parameter array format, making sure user has enclosed string with square brackets.
      *
      * @param string $paramArray
-     * @return void
      * @throws TestReferenceException
      */
-    private function validateParameterArray($paramArray)
+    private function validateParameterArray($paramArray): void
     {
         if (!$this->isWrappedArray($paramArray)) {
             throw new TestReferenceException(sprintf(
@@ -2325,21 +2231,16 @@ class TestGenerator
 
     /**
      * Verifies whether we have correctly wrapped array syntax
-     *
-     * @param string $paramArray
-     * @return boolean
      */
-    private function isWrappedArray(string $paramArray)
+    private function isWrappedArray(string $paramArray): bool
     {
-        return 0 === strpos($paramArray, self::ARRAY_WRAP_OPEN)
+        return str_starts_with($paramArray, self::ARRAY_WRAP_OPEN)
             && substr($paramArray, -1) === self::ARRAY_WRAP_CLOSE;
     }
 
     /**
      * Resolve value based on type.
      *
-     * @param string|null $value
-     * @param string|null $type
      * @return string|null
      * @throws TestReferenceException
      */
@@ -2373,40 +2274,28 @@ class TestGenerator
 
     /**
      * Determines correct scope based on parameter
-     *
-     * @param string $generationScope
-     * @return string
      */
     private function getObjectScope(string $generationScope): string
     {
-        switch ($generationScope) {
-            case TestGenerator::SUITE_SCOPE:
-                return PersistedObjectHandler::SUITE_SCOPE;
-            case TestGenerator::HOOK_SCOPE:
-                return PersistedObjectHandler::HOOK_SCOPE;
-        }
-
-        return PersistedObjectHandler::TEST_SCOPE;
+        return match ($generationScope) {
+            TestGenerator::SUITE_SCOPE => PersistedObjectHandler::SUITE_SCOPE,
+            TestGenerator::HOOK_SCOPE => PersistedObjectHandler::HOOK_SCOPE,
+            default => PersistedObjectHandler::TEST_SCOPE,
+        };
     }
 
     /**
      * Convert input string to boolean equivalent.
-     *
-     * @param string $inStr
-     * @return boolean|null
      */
-    private function toBoolean($inStr)
+    private function toBoolean(string $inStr): bool
     {
         return boolval($this->stripQuotes($inStr));
     }
 
     /**
      * Convert input string to number equivalent.
-     *
-     * @param string $inStr
-     * @return integer|float|null
      */
-    private function toNumber($inStr)
+    private function toNumber(string $inStr): float|int
     {
         $outStr = $this->stripQuotes($inStr);
         if ($this->hasDecimalPoint($outStr)) {
@@ -2419,13 +2308,11 @@ class TestGenerator
     /**
      * Strip single or double quotes from begin and end of input string.
      *
-     * @param string $inStr
      * @return string
      */
-    private function stripQuotes($inStr)
+    private function stripQuotes(string $inStr): ?string
     {
-        $unquoted = preg_replace('/^(\'(.*)\'|"(.*)")$/', '$2$3', $inStr);
-        return $unquoted;
+        return preg_replace('/^(\'(.*)\'|"(.*)")$/', '$2$3', $inStr);
     }
 
     /**
@@ -2433,10 +2320,8 @@ class TestGenerator
      *
      * @param string $key
      * @param string $tagName
-     * @param array  $attributes
-     * @return void
      */
-    private function validateXmlAttributesMutuallyExclusive($key, $tagName, $attributes)
+    private function validateXmlAttributesMutuallyExclusive($key, $tagName, array $attributes): void
     {
         $rules = [
             [
@@ -2493,10 +2378,8 @@ class TestGenerator
      *
      * @param string $key
      * @param string $tagName
-     * @param array  $attributes
-     * @return void
      */
-    private function printRuleErrorToConsole($key, $tagName, $attributes)
+    private function printRuleErrorToConsole($key, $tagName, array $attributes): void
     {
         if (empty($tagName) || empty($attributes)) {
             return;
@@ -2507,9 +2390,6 @@ class TestGenerator
 
     /**
      * Wraps parameters array with opening and closing symbol.
-     *
-     * @param string $value
-     * @return string
      */
     private function wrapParameterArray(string $value): string
     {
@@ -2518,13 +2398,10 @@ class TestGenerator
 
     /**
      * Determines whether string provided contains decimal point characteristic for current locale
-     *
-     * @param string $outStr
-     * @return boolean
      */
-    private function hasDecimalPoint(string $outStr)
+    private function hasDecimalPoint(string $outStr): bool
     {
-        return strpos($outStr, localeconv()['decimal_point']) !== false;
+        return str_contains($outStr, (string) localeconv()['decimal_point']);
     }
 
     /**
@@ -2543,21 +2420,14 @@ class TestGenerator
 
         $intPattern = '/^\s*([+-]?[0-9]+)\s*$/';
         preg_match($intPattern, $userInput, $int);
-        if (isset($int[1])) {
-            return $int[1];
-        }
 
-        return $this->addUniquenessFunctionCall($userInput);
+        return $int[1] ?? $this->addUniquenessFunctionCall($userInput);
     }
 
     /**
      * Supports fallback for BACKEND URL
-     *
-     * @param string $func
-     * @param string $refVariable
-     * @return string
      */
-    private function getReplacement($func, $refVariable): string
+    private function getReplacement(string $func, string $refVariable): string
     {
         if ($refVariable === 'MAGENTO_BACKEND_BASE_URL') {
             return "({$func}(\"{$refVariable}\") ? rtrim({$func}(\"{$refVariable}\"), \"/\") : \"\")";

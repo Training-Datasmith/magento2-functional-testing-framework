@@ -33,24 +33,18 @@ class SplitMultipleEntitiesFiles implements UpgradeInterface
 
     /**
      * OutputInterface
-     *
-     * @var OutputInterface
      */
-    private $output;
+    private ?\Symfony\Component\Console\Output\OutputInterface $output = null;
 
     /**
      * Total test updated
-     *
-     * @var integer
      */
-    private $testsUpdated = 0;
+    private int $testsUpdated = 0;
 
     /**
      * Entity categories for the upgrade script
-     *
-     * @var array
      */
-    private $entityCategories = [
+    private array $entityCategories = [
         'Suite' => 'Suite/etc/suiteSchema.xsd',
         'Test' => 'Test/etc/testSchema.xsd',
         'ActionGroup' => 'Test/etc/actionGroupSchema.xsd',
@@ -62,12 +56,9 @@ class SplitMultipleEntitiesFiles implements UpgradeInterface
      * Scan all xml files and split xml files that contains more than one entities
      * for Test, Action Group, Page, Section, Suite types.
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return string
      * @throws TestFrameworkException
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): string
     {
         $scriptUtil = new ScriptUtil();
         $this->output = $output;
@@ -92,9 +83,8 @@ class SplitMultipleEntitiesFiles implements UpgradeInterface
      * @param Finder $xmlFiles
      * @param string $type
      * @param string $urn
-     * @return void
      */
-    private function processXmlFiles($xmlFiles, $type, $urn)
+    private function processXmlFiles($xmlFiles, $type, $urn): void
     {
         foreach ($xmlFiles as $file) {
             $contents = $file->getContents();
@@ -139,13 +129,9 @@ class SplitMultipleEntitiesFiles implements UpgradeInterface
     /**
      * Create file with contents and create dir if needed
      *
-     * @param string $fullPath
      * @param string $type
-     * @param string $urn
-     * @param string $contents
-     * @return void
      */
-    private function filePutContents($fullPath, $type, $urn, $contents)
+    private function filePutContents(string $fullPath, $type, string $urn, string $contents): void
     {
         $dir = dirname($fullPath);
 
@@ -172,9 +158,8 @@ class SplitMultipleEntitiesFiles implements UpgradeInterface
      *
      * @param string $name
      * @param string $type
-     * @return string
      */
-    private function formatName($name, $type)
+    private function formatName($name, $type): string
     {
         $name = ucfirst($name);
         $type = ucfirst($type);
@@ -193,11 +178,9 @@ class SplitMultipleEntitiesFiles implements UpgradeInterface
     /**
      * Vary the input to return a non-existing file name
      *
-     * @param string $fullPath
      * @param string $type
-     * @return string
      */
-    private function getNonExistingFileFullPath($fullPath, $type)
+    private function getNonExistingFileFullPath(string $fullPath, $type): string
     {
         $type = ucfirst($type);
         $dir = dirname($fullPath);
@@ -216,16 +199,12 @@ class SplitMultipleEntitiesFiles implements UpgradeInterface
 
     /**
      * Split filename into two parts and return it in an associate array with keys FILENAME_BASE and FILENAME_SUFFIX
-     *
-     * @param string $filename
-     * @param string $type
-     * @return array
      */
-    private function getFileNameParts($filename, $type)
+    private function getFileNameParts(string $filename, string $type): array
     {
         $type = ucfirst($type);
         $fileNameParts = [];
-        if (substr($filename, -strlen($type)) === $type) {
+        if (str_ends_with($filename, $type)) {
             $fileNameParts[self::FILENAME_BASE] = substr($filename, 0, strlen($filename) - strlen($type));
             $fileNameParts[self::FILENAME_SUFFIX] = $type;
         } else {

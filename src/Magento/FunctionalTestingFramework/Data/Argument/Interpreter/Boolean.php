@@ -15,19 +15,15 @@ use Magento\FunctionalTestingFramework\Stdlib\BooleanUtils;
 class Boolean implements InterpreterInterface
 {
     /**
-     * Utility methods for the boolean data type
-     *
-     * @var BooleanUtils
-     */
-    private $booleanUtils;
-
-    /**
      * Boolean constructor.
-     * @param BooleanUtils $booleanUtils
      */
-    public function __construct(BooleanUtils $booleanUtils)
+    public function __construct(
+        /**
+         * Utility methods for the boolean data type
+         */
+        private readonly BooleanUtils $booleanUtils
+    )
     {
-        $this->booleanUtils = $booleanUtils;
     }
 
     /**

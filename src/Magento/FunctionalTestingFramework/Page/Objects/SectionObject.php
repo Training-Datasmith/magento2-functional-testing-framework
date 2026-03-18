@@ -12,46 +12,31 @@ namespace Magento\FunctionalTestingFramework\Page\Objects;
 class SectionObject
 {
     /**
-     * Section name.
-     *
-     * @var string
-     */
-    private $name;
-
-    /**
-     * Section elements.
-     *
-     * @var array
-     */
-    private $elements = [];
-
-    /**
-     * Filename of where the section came from
-     *
-     * @var string
-     */
-    private $filename;
-
-    /**
-     * Deprecated message.
-     *
-     * @var string
-     */
-    private $deprecated;
-
-    /**
      * SectionObject constructor.
      * @param string      $name
      * @param array       $elements
      * @param string|null $filename
      * @param string|null $deprecated
      */
-    public function __construct($name, $elements, $filename = null, $deprecated = null)
+    public function __construct(
+        /**
+         * Section name.
+         */
+        private $name,
+        /**
+         * Section elements.
+         */
+        private $elements,
+        /**
+         * Filename of where the section came from
+         */
+        private $filename = null,
+        /**
+         * Deprecated message.
+         */
+        private $deprecated = null
+    )
     {
-        $this->name = $name;
-        $this->elements = $elements;
-        $this->filename = $filename;
-        $this->deprecated = $deprecated;
     }
 
     /**
@@ -97,9 +82,8 @@ class SectionObject
     /**
      * Checks to see if this section contains any element by the name of elementName
      * @param string $elementName
-     * @return boolean
      */
-    public function hasElement($elementName)
+    public function hasElement($elementName): bool
     {
         return array_key_exists($elementName, $this->elements);
     }

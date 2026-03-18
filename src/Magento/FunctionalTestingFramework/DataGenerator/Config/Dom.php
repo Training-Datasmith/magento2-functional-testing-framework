@@ -23,16 +23,14 @@ class Dom extends \Magento\FunctionalTestingFramework\Config\MftfDom
 
     /**
      * NodeValidationUtil
-     * @var DuplicateNodeValidationUtil
      */
-    private $validationUtil;
+    private readonly \Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUtil $validationUtil;
 
     /**
      * Entity Dom constructor.
      * @param string             $xml
      * @param string             $filename
      * @param ExceptionCollector $exceptionCollector
-     * @param array              $idAttributes
      * @param string             $typeAttributeName
      * @param string             $schemaFile
      * @param string             $errorFormat
@@ -69,7 +67,7 @@ class Dom extends \Magento\FunctionalTestingFramework\Config\MftfDom
     {
         $dom = parent::initDom($xml, $filename);
 
-        if (strpos($filename, self::DATA_FILE_NAME_ENDING)) {
+        if (strpos((string) $filename, self::DATA_FILE_NAME_ENDING)) {
             $entityNodes = $dom->getElementsByTagName('entity');
             foreach ($entityNodes as $entityNode) {
                 /** @var \DOMElement $entityNode */

@@ -28,51 +28,23 @@ class MftfApplicationConfig
 
     /**
      * Contains object with test filters.
-     *
-     * @var FilterList
      */
-    private $filterList;
-
-    /**
-     * Determines whether the user has specified a force option for generation
-     *
-     * @var boolean
-     */
-    private $forceGenerate;
+    private readonly \Magento\FunctionalTestingFramework\Filter\FilterList $filterList;
 
     /**
      * String which identifies the current phase of mftf execution
-     *
-     * @var string
      */
-    private $phase;
-
-    /**
-     * Determines whether the user would like to execute mftf in a verbose run.
-     *
-     * @var boolean
-     */
-    private $verboseEnabled;
+    private readonly string $phase;
 
     /**
      * String which identifies the current debug level of mftf execution
-     *
-     * @var string
      */
-    private $debugLevel;
-
-    /**
-     * Boolean which allows MFTF to fully generate skipped tests
-     * @var boolean
-     */
-    private $allowSkipped;
+    private ?string $debugLevel = null;
 
     /**
      * MftfApplicationConfig Singelton Instance
-     *
-     * @var MftfApplicationConfig
      */
-    private static $MFTF_APPLICATION_CONTEXT;
+    private static ?\Magento\FunctionalTestingFramework\Config\MftfApplicationConfig $MFTF_APPLICATION_CONTEXT = null;
 
     /**
      * MftfApplicationConfig constructor.
@@ -86,32 +58,34 @@ class MftfApplicationConfig
      * @throws TestFrameworkException
      */
     private function __construct(
-        $forceGenerate = false,
+        /**
+         * Determines whether the user has specified a force option for generation
+         */
+        private $forceGenerate = false,
         $phase = self::EXECUTION_PHASE,
-        $verboseEnabled = null,
+        /**
+         * Determines whether the user would like to execute mftf in a verbose run.
+         */
+        private $verboseEnabled = null,
         $debugLevel = self::LEVEL_DEFAULT,
-        $allowSkipped = false,
+        /**
+         * Boolean which allows MFTF to fully generate skipped tests
+         */
+        private $allowSkipped = false,
         $filters = []
     ) {
-        $this->forceGenerate = $forceGenerate;
-
         if (!in_array($phase, self::MFTF_PHASES)) {
             throw new TestFrameworkException("{$phase} is not an mftf phase");
         }
 
         $this->phase = $phase;
-        $this->verboseEnabled = $verboseEnabled;
         if (!in_array(strtolower($debugLevel), self::MFTF_DEBUG_LEVEL)) {
             throw new TestFrameworkException("{$debugLevel} is not a debug level. Use 'DEFAULT' or 'DEVELOPER'");
         }
-        switch (strtolower($debugLevel)) {
-            case self::LEVEL_DEFAULT:
-                $this->debugLevel = self::LEVEL_DEFAULT;
-                break;
-            default:
-                $this->debugLevel = self::LEVEL_DEVELOPER;
-        }
-        $this->allowSkipped = $allowSkipped;
+        $this->debugLevel = match (strtolower($debugLevel)) {
+            self::LEVEL_DEFAULT => self::LEVEL_DEFAULT,
+            default => self::LEVEL_DEVELOPER,
+        };
         $this->filterList = new FilterList($filters);
     }
 
@@ -125,7 +99,6 @@ class MftfApplicationConfig
      * @param string  $debugLevel
      * @param boolean $allowSkipped
      * @param array   $filters
-     * @return void
      * @throws TestFrameworkException
      */
     public static function create(
@@ -135,7 +108,7 @@ class MftfApplicationConfig
         $debugLevel = self::LEVEL_DEFAULT,
         $allowSkipped = false,
         $filters = []
-    ) {
+    ): void {
         if (self::$MFTF_APPLICATION_CONTEXT === null) {
             self::$MFTF_APPLICATION_CONTEXT =
                 new MftfApplicationConfig(

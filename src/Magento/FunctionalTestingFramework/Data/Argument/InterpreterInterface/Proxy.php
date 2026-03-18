@@ -12,48 +12,33 @@ namespace Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface;
 class Proxy implements \Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface
 {
     /**
-     * Object Manager instance
-     *
-     * @var \Magento\FunctionalTestingFramework\ObjectManagerInterface
-     */
-    protected $objectManager = null;
-
-    /**
-     * Proxied instance name
-     *
-     * @var string
-     */
-    protected $instanceName = null;
-
-    /**
      * Proxied instance
      *
      * @var \Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface
      */
-    protected $subject = null;
-
-    /**
-     * Instance shareability flag
-     *
-     * @var boolean
-     */
-    protected $isShared = null;
+    protected $subject;
 
     /**
      * Proxy constructor
      *
-     * @param \Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager
      * @param string                                                     $instanceName
-     * @param boolean                                                    $shared
+     * @param boolean $isShared
      */
     public function __construct(
-        \Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager,
-        $instanceName = \Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface::class,
-        $shared = true
-    ) {
-        $this->objectManager = $objectManager;
-        $this->instanceName = $instanceName;
-        $this->isShared = $shared;
+        /**
+         * Object Manager instance
+         */
+        protected \Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager,
+        /**
+         * Proxied instance name
+         */
+        protected $instanceName = \Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface::class,
+        /**
+         * Instance shareability flag
+         */
+        protected $isShared = true
+    )
+    {
     }
 
     /**
@@ -77,7 +62,6 @@ class Proxy implements \Magento\FunctionalTestingFramework\Data\Argument\Interpr
 
     /**
      * Clone proxied instance
-     * @return void
      */
     public function __clone()
     {

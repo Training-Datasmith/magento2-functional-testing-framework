@@ -28,10 +28,8 @@ class OperationDataArrayResolver
     /**
      * The array of entity name and number of objects being created,
      * we don't need to track objects in update and delete operations.
-     *
-     * @var array
      */
-    private static $entitySequences = [];
+    private static array $entitySequences = [];
 
     /**
      * The array of dependentEntities this class can be given. When finding linked entities, APIExecutor
@@ -87,7 +85,8 @@ class OperationDataArrayResolver
                         $operationElement->getKey(),
                         $entityObject->getName()
                     ));
-                } elseif (null === $entityObj) {
+                }
+                if (null === $entityObj) {
                     continue;
                 }
                 $operationData = $this->resolveOperationDataArray(
@@ -149,13 +148,11 @@ class OperationDataArrayResolver
 
     /**
      * Resolve data references at run time.
-     * @param array            $operationDataArray
      * @param EntityDataObject $entityObject
-     * @return array
      * @throws TestFrameworkException
      * @throws TestReferenceException
      */
-    private function resolveRunTimeDataReferences($operationDataArray, $entityObject)
+    private function resolveRunTimeDataReferences(array $operationDataArray, $entityObject): array
     {
         $dataReferenceResolver = new RuntimeDataReferenceResolver();
         foreach ($operationDataArray as $key => $operationDataValue) {
@@ -190,7 +187,7 @@ class OperationDataArrayResolver
         );
 
         if ($elementData === null && $entityObject->getVarReference($operationKey) !== null) {
-            list($type, $field) = explode(
+            [$type, $field] = explode(
                 DataObjectHandler::_SEPARATOR,
                 $entityObject->getVarReference($operationKey)
             );
@@ -215,11 +212,8 @@ class OperationDataArrayResolver
     /**
      * Returns all dependent entities of the type passed in as an arg (the dependent entities are given at runtime,
      * and are not statically defined).
-     *
-     * @param string $type
-     * @return array
      */
-    private function getDependentEntitiesOfType($type)
+    private function getDependentEntitiesOfType(string $type): array
     {
         $entitiesOfType = [];
 
@@ -277,14 +271,12 @@ class OperationDataArrayResolver
             && !empty($operationElement->getNestedOperationElement($operationElement->getValue()))
             && $operationElement->getType() === OperationDefinitionObjectHandler::ENTITY_OPERATION_ARRAY
         ) {
-            $operationSubArray = $this->resolveOperationDataArray(
+            return $this->resolveOperationDataArray(
                 $linkedEntityObj,
                 [$operationElement->getNestedOperationElement($operationElement->getValue())],
                 $operation,
                 true
             );
-
-            return $operationSubArray;
         }
 
         $operationMetadata = OperationDefinitionObjectHandler::getInstance()->getOperationDefinition(
@@ -316,9 +308,8 @@ class OperationDataArrayResolver
      * Increment an entity's sequence number by 1.
      *
      * @param string $entityName
-     * @return void
      */
-    private static function incrementSequence($entityName)
+    private static function incrementSequence($entityName): void
     {
         if (array_key_exists($entityName, self::$entitySequences)) {
             self::$entitySequences[$entityName]++;
@@ -389,10 +380,9 @@ class OperationDataArrayResolver
      * @param EntityDataObject $entityObject
      * @param $operationElement
      * @param $operationElementType
-     * @param array $operationDataArray
      * @throws TestFrameworkException
      */
-    private function resolvePrimitiveReferenceElement($entityObject, $operationElement, $operationElementType, array &$operationDataArray)
+    private function resolvePrimitiveReferenceElement($entityObject, $operationElement, $operationElementType, array &$operationDataArray): void
     {
         $elementData = $this->resolvePrimitiveReference(
             $entityObject,
@@ -409,7 +399,7 @@ class OperationDataArrayResolver
                 if ($uniqueData === 'suffix') {
                     $elementData .= (string)self::getSequence($entityObject->getName());
                 } else {
-                    $elementData = (string)self::getSequence($entityObject->getName()) . $elementData;
+                    $elementData = self::getSequence($entityObject->getName()) . $elementData;
                 }
             }
             $operationDataArray[$operationElement->getKey()] = $this->castValue(
@@ -434,14 +424,13 @@ class OperationDataArrayResolver
      * @param $fromArray
      * @param $operationElementType
      * @param $operationElement
-     * @param array $operationDataArray
      * @throws TestFrameworkException
      */
-    private function resolveNonPrimitiveReferenceElement($entityObject, $operation, $fromArray, &$operationElementType, $operationElement, array &$operationDataArray)
+    private function resolveNonPrimitiveReferenceElement($entityObject, $operation, $fromArray, &$operationElementType, $operationElement, array &$operationDataArray): void
     {
         $operationElementProperty = null;
-        if (strpos($operationElementType, '.') !== false) {
-            $operationElementComponents = explode('.', $operationElementType);
+        if (str_contains((string) $operationElementType, '.')) {
+            $operationElementComponents = explode('.', (string) $operationElementType);
             $operationElementType = $operationElementComponents[0];
             $operationElementProperty = $operationElementComponents[1];
         }

@@ -35,25 +35,20 @@ class ActionGroupStandardsCheck implements StaticCheckInterface
 
     /**
      * String representing the output summary found after running the execute() function.
-     * @var string
      */
-    private $output;
+    private ?string $output = null;
 
     /**
      * ScriptUtil instance
-     *
-     * @var ScriptUtil
      */
-    private $scriptUtil;
+    private ?\Magento\FunctionalTestingFramework\Util\Script\ScriptUtil $scriptUtil = null;
 
     /**
      * Checks unused arguments in action groups and prints out error to file.
      *
-     * @param  InputInterface $input
-     * @return void
      * @throws Exception
      */
-    public function execute(InputInterface $input)
+    public function execute(InputInterface $input): void
     {
         $this->scriptUtil = new ScriptUtil();
         $allModules = $this->scriptUtil->getAllModulePaths();
@@ -95,7 +90,7 @@ class ActionGroupStandardsCheck implements StaticCheckInterface
      * @param Finder $files
      * @return array $testErrors
      */
-    private function findErrorsInFileSet($files)
+    private function findErrorsInFileSet($files): array
     {
         $actionGroupErrors = [];
         /** @var SplFileInfo $filePath */
@@ -105,7 +100,7 @@ class ActionGroupStandardsCheck implements StaticCheckInterface
             $contents = $filePath->getContents();
             preg_match_all(
                 self::STEP_KEY_REGEX_PATTERN,
-                preg_replace('/<!--(.|\s)*?-->/', '', $contents),
+                (string) preg_replace('/<!--(.|\s)*?-->/', '', $contents),
                 $actionGroupReferences
             );
             foreach ($actionGroupReferences[0] as $actionGroupReferencesData) {
@@ -122,7 +117,7 @@ class ActionGroupStandardsCheck implements StaticCheckInterface
                 )
             );
             unset($actionGroupReferencesDataArray);
-            if (isset($duplicateStepKeys) && count($duplicateStepKeys) > 0) {
+            if (count($duplicateStepKeys) > 0) {
                 throw new TestFrameworkException('Action group has duplicate step keys '
                   .implode(",", array_unique($duplicateStepKeys))." File Path ".$filePath);
             }
@@ -155,7 +150,7 @@ class ActionGroupStandardsCheck implements StaticCheckInterface
      * @param \DOMElement $actionGroup
      * @return array $arguments
      */
-    public function extractActionGroupArguments($actionGroup)
+    public function extractActionGroupArguments($actionGroup): array
     {
         $arguments = [];
         $argumentsNodes = $actionGroup->getElementsByTagName('arguments');
@@ -172,9 +167,8 @@ class ActionGroupStandardsCheck implements StaticCheckInterface
      * Returns unused arguments in an action group
      * @param array  $arguments
      * @param string $contents
-     * @return array
      */
-    public function findUnusedArguments($arguments, $contents)
+    public function findUnusedArguments($arguments, $contents): array
     {
         $unusedArguments = [];
         preg_match(self::ACTIONGROUP_NAME_REGEX_PATTERN, $contents, $actionGroupName);
@@ -184,7 +178,7 @@ class ActionGroupStandardsCheck implements StaticCheckInterface
             if ($actionGroup) {
                 $validActionGroup = true;
             }
-        } catch (Exception $e) {
+        } catch (Exception) {
         }
 
         if (!$validActionGroup) {
@@ -218,9 +212,8 @@ class ActionGroupStandardsCheck implements StaticCheckInterface
      * Checks if the argument is also defined in the parent for extending action groups.
      * @param string            $argument
      * @param ActionGroupObject $actionGroup
-     * @return boolean
      */
-    private function isParentActionGroupArgument($argument, $actionGroup)
+    private function isParentActionGroupArgument($argument, $actionGroup): bool
     {
         $parentActionGroupName = $actionGroup->getParentName();
         if ($parentActionGroupName !== null) {
@@ -238,11 +231,10 @@ class ActionGroupStandardsCheck implements StaticCheckInterface
     /**
      * Builds and returns error output for violating references
      *
-     * @param array       $actionGroupToArguments
      * @param SplFileInfo $path
-     * @return mixed
+     * @return array{non-falsy-string}[]
      */
-    private function setErrorOutput($actionGroupToArguments, $path)
+    private function setErrorOutput(array $actionGroupToArguments, $path): array
     {
         $actionGroupErrors = [];
         if (!empty($actionGroupToArguments)) {

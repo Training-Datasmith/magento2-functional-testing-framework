@@ -14,29 +14,21 @@ use Magento\FunctionalTestingFramework\Config\Dom\ArrayNodeConfig;
 class Flat
 {
     /**
-     * Array node configuration.
-     *
-     * @var ArrayNodeConfig
-     */
-    protected $arrayNodeConfig;
-
-    /**
      * Constructor
-     *
-     * @param ArrayNodeConfig $arrayNodeConfig
      */
-    public function __construct(ArrayNodeConfig $arrayNodeConfig)
+    public function __construct(
+        /**
+         * Array node configuration.
+         */
+        protected \Magento\FunctionalTestingFramework\Config\Dom\ArrayNodeConfig $arrayNodeConfig
+    )
     {
-        $this->arrayNodeConfig = $arrayNodeConfig;
     }
 
     /**
      * Retrieve key-value pairs of node attributes
-     *
-     * @param \DOMNode $node
-     * @return array
      */
-    protected function getNodeAttributes(\DOMNode $node)
+    protected function getNodeAttributes(\DOMNode $node): array
     {
         $result = [];
         $attributes = $node->attributes ?: [];
@@ -66,14 +58,12 @@ class Flat
      *     )
      * )
      *
-     * @param \DOMNode $source
-     * @param string   $basePath
      * @return string|array
      * @throws \UnexpectedValueException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * Revisited to reduce cyclomatic complexity, left unrefactored for readability
      */
-    public function convert(\DOMNode $source, $basePath = '')
+    public function convert(\DOMNode $source, string $basePath = '')
     {
         $value = [];
         /** @var \DOMNode $node */
@@ -109,7 +99,7 @@ class Flat
                     $value[$nodeName] = $nodeData;
                 }
             } elseif ($node->nodeType === XML_CDATA_SECTION_NODE
-                || ($node->nodeType === XML_TEXT_NODE && trim($node->nodeValue) !== '')
+                || ($node->nodeType === XML_TEXT_NODE && trim((string) $node->nodeValue) !== '')
             ) {
                 $value = $node->nodeValue;
                 break;

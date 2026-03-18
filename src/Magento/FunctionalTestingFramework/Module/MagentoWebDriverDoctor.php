@@ -26,15 +26,14 @@ class MagentoWebDriverDoctor extends MagentoWebDriver
      *
      * @var RemoteWebDriver
      */
-    private $remoteWebDriver = null;
+    private $remoteWebDriver;
 
     /**
      * Go through parent initialization routines and in addition diagnose potential environment issues
      *
-     * @return void
      * @throws TestFrameworkException
      */
-    public function _initialize()
+    public function _initialize(): void
     {
         parent::_initialize();
 
@@ -80,10 +79,9 @@ class MagentoWebDriverDoctor extends MagentoWebDriver
     /**
      * Check connecting to running selenium server
      *
-     * @return void
      * @throws TestFrameworkException
      */
-    private function connectToSeleniumServer()
+    private function connectToSeleniumServer(): void
     {
         try {
             $this->remoteWebDriver = RemoteWebDriver::create(
@@ -97,7 +95,7 @@ class MagentoWebDriverDoctor extends MagentoWebDriver
             if (null !== $this->remoteWebDriver) {
                 return;
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
         }
 
         throw new TestFrameworkException(
@@ -110,10 +108,9 @@ class MagentoWebDriverDoctor extends MagentoWebDriver
      * Validate loading a web page at url in the browser controlled by selenium
      *
      * @param string $url
-     * @return void
      * @throws TestFrameworkException
      */
-    private function loadPageAtUrl($url)
+    private function loadPageAtUrl(string|array|bool $url): void
     {
         try {
             if (null !== $this->remoteWebDriver) {
@@ -132,7 +129,7 @@ class MagentoWebDriverDoctor extends MagentoWebDriver
                     return;
                 }
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
         }
 
         throw new TestFrameworkException(
@@ -144,10 +141,9 @@ class MagentoWebDriverDoctor extends MagentoWebDriver
     /**
      * Check running Magento CLI command
      *
-     * @return void
      * @throws TestFrameworkException
      */
-    private function runMagentoCLI()
+    private function runMagentoCLI(): void
     {
         try {
             $regex = '~^.*[\r\n]+.*(?<name>Currency).*(?<code>Code).*~';
@@ -157,7 +153,7 @@ class MagentoWebDriverDoctor extends MagentoWebDriver
             if (isset($matches['name']) && isset($matches['code'])) {
                 return;
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
         }
 
         throw new TestFrameworkException(

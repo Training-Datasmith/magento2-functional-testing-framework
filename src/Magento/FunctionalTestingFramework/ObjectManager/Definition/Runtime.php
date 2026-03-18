@@ -20,14 +20,11 @@ class Runtime implements \Magento\FunctionalTestingFramework\ObjectManager\Defin
 
     /**
      * Reader.
-     *
-     * @var \Magento\FunctionalTestingFramework\Code\Reader\ClassReader
      */
-    private $reader;
+    private readonly \Magento\FunctionalTestingFramework\Code\Reader\ClassReader $reader;
 
     /**
      * Runtime constructor.
-     * @param \Magento\FunctionalTestingFramework\Code\Reader\ClassReader|null $reader
      */
     public function __construct(?\Magento\FunctionalTestingFramework\Code\Reader\ClassReader $reader = null)
     {
@@ -60,10 +57,8 @@ class Runtime implements \Magento\FunctionalTestingFramework\ObjectManager\Defin
 
     /**
      * Retrieve list of all classes covered with definitions
-     *
-     * @return array
      */
-    public function getClasses()
+    public function getClasses(): array
     {
         return [];
     }

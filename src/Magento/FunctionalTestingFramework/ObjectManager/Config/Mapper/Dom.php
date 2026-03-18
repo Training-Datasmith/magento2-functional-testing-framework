@@ -12,32 +12,19 @@ use Magento\FunctionalTestingFramework\Stdlib\BooleanUtils;
 // @codingStandardsIgnoreFile
 class Dom implements \Magento\FunctionalTestingFramework\Config\ConverterInterface
 {
-    /**
-     * @var BooleanUtils
-     */
-    private $booleanUtils;
+    private readonly \Magento\FunctionalTestingFramework\Stdlib\BooleanUtils $booleanUtils;
 
-    /**
-     * @var ArgumentParser
-     */
-    private $argumentParser;
-
-    /**
-     * @var InterpreterInterface
-     */
-    private $argumentInterpreter;
+    private readonly \Magento\FunctionalTestingFramework\ObjectManager\Config\Mapper\ArgumentParser $argumentParser;
 
     /**
      * @param BooleanUtils $booleanUtils
      * @param ArgumentParser $argumentParser
-     * @param InterpreterInterface $argumentInterpreter
      */
     public function __construct(
-        InterpreterInterface $argumentInterpreter,
+        private readonly InterpreterInterface $argumentInterpreter,
         ?BooleanUtils $booleanUtils = null,
         ?ArgumentParser $argumentParser = null
     ) {
-        $this->argumentInterpreter = $argumentInterpreter;
         $this->booleanUtils = $booleanUtils ?: new BooleanUtils();
         $this->argumentParser = $argumentParser ?: new ArgumentParser();
     }
@@ -46,11 +33,10 @@ class Dom implements \Magento\FunctionalTestingFramework\Config\ConverterInterfa
      * Convert configuration in DOM format to assoc array that can be used by object manager
      *
      * @param \DOMDocument $config
-     * @return array
      * @throws \Exception
      * @todo this method has high cyclomatic complexity in order to avoid performance issues
      */
-    public function convert($config)
+    public function convert($config): array
     {
         $output = [];
         /** @var \DOMNode $node */
@@ -94,10 +80,10 @@ class Dom implements \Magento\FunctionalTestingFramework\Config\ConverterInterfa
 
     /** Read typeChildNodes and set typeArguments
      * @param DOMNode $node
-     * @return mixed
+     * @return mixed[]
      * @throws \Exception
      */
-    private function setTypeArguments($node)
+    private function setTypeArguments($node): array
     {
         $typeArguments = [];
 

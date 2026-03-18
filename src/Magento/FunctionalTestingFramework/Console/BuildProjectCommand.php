@@ -34,18 +34,15 @@ class BuildProjectCommand extends Command
 
     /**
      * Env processor manages .env files.
-     *
-     * @var \Magento\FunctionalTestingFramework\Util\Env\EnvProcessor
      */
-    private $envProcessor;
+    private ?\Magento\FunctionalTestingFramework\Util\Env\EnvProcessor $envProcessor = null;
 
     /**
      * Configures the current command.
      *
-     * @return void
      * @throws TestFrameworkException
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('build:project')
             ->setDescription('Generate configuration files for the project. Build the Codeception project.')
@@ -65,9 +62,6 @@ class BuildProjectCommand extends Command
     /**
      * Executes the current command.
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return integer
      * @throws \Exception
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -98,7 +92,7 @@ class BuildProjectCommand extends Command
         $process->setIdleTimeout(600);
         $process->setTimeout(0);
         $codeceptReturnCode = $process->run(
-            function ($type, $buffer) use ($output) {
+            function ($type, string|iterable $buffer) use ($output): void {
                 $output->write($buffer);
             }
         );
@@ -121,11 +115,9 @@ class BuildProjectCommand extends Command
     /**
      * Generates needed codeception configuration files to the TEST_BP directory
      *
-     * @param OutputInterface $output
-     * @return void
      * @throws TestFrameworkException
      */
-    private function generateConfigFiles(OutputInterface $output)
+    private function generateConfigFiles(OutputInterface $output): void
     {
         $fileSystem = new Filesystem();
         //Find travel path from codeception.yml to FW_BP

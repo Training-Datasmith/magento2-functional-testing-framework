@@ -13,17 +13,13 @@ class GenerationErrorHandler
 {
     /**
      * Generation Error Handler Instance
-     *
-     * @var GenerationErrorHandler
      */
-    private static $instance;
+    private static ?\Magento\FunctionalTestingFramework\Util\GenerationErrorHandler $instance = null;
 
     /**
      * Collected errors
-     *
-     * @var array
      */
-    private $errors = [];
+    private array $errors = [];
 
     /**
      * Singleton method to return GenerationErrorHandler
@@ -53,10 +49,9 @@ class GenerationErrorHandler
      * @param string  $entityName
      * @param string  $message
      * @param boolean $generated
-     * @return void
      * @throws \Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException
      */
-    public function addError($type, $entityName, $message, $generated = false)
+    public function addError($type, $entityName, $message, $generated = false): void
     {
         $error[$entityName] = [
             'message' => $message,
@@ -81,14 +76,12 @@ class GenerationErrorHandler
 
     /**
      * Return all error message in a string
-     *
-     * @return string
      */
-    public function getAllErrorMessages()
+    public function getAllErrorMessages(): string
     {
         $errMessages = '';
 
-        foreach ($this->errors as $type => $errors) {
+        foreach ($this->errors as $errors) {
             foreach ($errors as $error) {
                 if (is_array($error['message'])) {
                     $errMessages .= (!empty($errMessages) ? PHP_EOL : '') . implode(PHP_EOL, $error['message']);
@@ -114,25 +107,21 @@ class GenerationErrorHandler
 
     /**
      * Reset error to empty array
-     *
-     * @return void
      */
-    public function reset()
+    public function reset(): void
     {
         $this->errors = [];
     }
 
     /**
      * Print error summary in console
-     *
-     * @return void
      */
-    public function printErrorSummary()
+    public function printErrorSummary(): void
     {
         foreach (array_keys($this->errors) as $type) {
             $totalErrors = count($this->getErrorsByType($type));
             $totalAnnotationErrors = 0;
-            foreach ($this->getErrorsByType($type) as $entity => $error) {
+            foreach ($this->getErrorsByType($type) as $error) {
                 if ((is_array($error['generated']) && $error['generated'][0] === true)
                     || ($error['generated'] === true)) {
                     $totalAnnotationErrors++;
@@ -144,7 +133,7 @@ class GenerationErrorHandler
                     'ERROR: '
                     . strval($totalNotGenErrors)
                     . ' '
-                    . ucfirst($type)
+                    . ucfirst((string) $type)
                     . "(s) failed to generate. See mftf.log for details."
                     . PHP_EOL
                 );
@@ -155,7 +144,7 @@ class GenerationErrorHandler
                         'ERROR: '
                         . strval($totalAnnotationErrors)
                         . ' '
-                        . ucfirst($type)
+                        . ucfirst((string) $type)
                         . "(s) generated with annotation errors. See mftf.log for details."
                         . PHP_EOL
                     );

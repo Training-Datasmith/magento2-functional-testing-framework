@@ -39,7 +39,6 @@ class ScriptUtil
     /**
      * Return all installed Magento module paths
      *
-     * @return array
      * @throws TestFrameworkException
      */
     public function getAllModulePaths(): array
@@ -57,10 +56,6 @@ class ScriptUtil
 
     /**
      * Prints out given errors to file, and returns summary result string
-     * @param array  $errors
-     * @param string $filePath
-     * @param string $message
-     * @return string
      */
     public function printErrorsToFile(array $errors, string $filePath, string $message): string
     {
@@ -77,10 +72,6 @@ class ScriptUtil
 
     /**
      * Prints out given warnings to file, and returns summary result string
-     * @param array  $warnings
-     * @param string $filePath
-     * @param string $message
-     * @return string
      */
     public function printWarningsToFile(array $warnings, string $filePath, string $message): string
     {
@@ -95,11 +86,8 @@ class ScriptUtil
 
     /**
      * Writes contents to filePath
-     * @param array  $contents
-     * @param string $filePath
-     * @return void
      */
-    private function printTofile(array $contents, string $filePath)
+    private function printTofile(array $contents, string $filePath): void
     {
         $dirname = dirname($filePath);
         if (!file_exists($dirname)) {
@@ -108,7 +96,7 @@ class ScriptUtil
 
         $fileResource = fopen($filePath, 'w');
 
-        foreach ($contents as $test => $error) {
+        foreach ($contents as $error) {
             fwrite($fileResource, $error[0] . PHP_EOL);
         }
 
@@ -117,12 +105,8 @@ class ScriptUtil
 
     /**
      * Return all XML files for $scope in given module paths, empty array if no path is valid
-     *
-     * @param array  $modulePaths
-     * @param string $scope
-     * @return Finder|array
      */
-    public function getModuleXmlFilesByScope(array $modulePaths, string $scope)
+    public function getModuleXmlFilesByScope(array $modulePaths, string $scope): \Symfony\Component\Finder\Finder|array
     {
         $found = false;
         $scopePath = DIRECTORY_SEPARATOR . ucfirst($scope) . DIRECTORY_SEPARATOR;
@@ -141,10 +125,9 @@ class ScriptUtil
     /**
      * Return suite XML files in TESTS_BP/ROOT_SUITE_DIR directory
      *
-     * @return Finder|array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    public function getRootSuiteXmlFiles()
+    public function getRootSuiteXmlFiles(): \Symfony\Component\Finder\Finder|array
     {
         $rootSuitePaths = [];
         $defaultTestPath = null;
@@ -152,12 +135,12 @@ class ScriptUtil
 
         try {
             $defaultTestPath = FilePathFormatter::format(TESTS_BP);
-        } catch (TestFrameworkException $e) {
+        } catch (TestFrameworkException) {
         }
 
         try {
             $devTestsPath = FilePathFormatter::format(MAGENTO_BP) . self::DEV_TESTS_DIR;
-        } catch (TestFrameworkException $e) {
+        } catch (TestFrameworkException) {
         }
 
         if ($defaultTestPath) {
@@ -187,15 +170,14 @@ class ScriptUtil
      * @param array   $braceReferences
      * @param string  $contents
      * @param boolean $resolveSectionElement
-     * @return array
      * @throws XmlException
      */
-    public function resolveEntityReferences($braceReferences, $contents, $resolveSectionElement = false)
+    public function resolveEntityReferences($braceReferences, $contents, $resolveSectionElement = false): array
     {
         $entities = [];
         foreach ($braceReferences as $reference) {
             // trim `{{data.field}}` to `data`
-            preg_match('/{{([^.]+)/', $reference, $entityName);
+            preg_match('/{{([^.]+)/', (string) $reference, $entityName);
             // Double check that {{data.field}} isn't an argument for an ActionGroup
             $entity = $this->findEntity($entityName[1]);
             preg_match_all(self::ACTIONGROUP_ARGUMENT_REGEX_PATTERN, $contents, $possibleArgument);
@@ -205,9 +187,9 @@ class ScriptUtil
             if ($entity !== null) {
                 $entities[$entity->getName()] = $entity;
                 if ($resolveSectionElement) {
-                    if (get_class($entity) === SectionObject::class) {
+                    if ($entity::class === SectionObject::class) {
                         // trim `{{data.field}}` to `field`
-                        preg_match('/.([^.]+)}}/', $reference, $elementName);
+                        preg_match('/.([^.]+)}}/', (string) $reference, $elementName);
                         /** @var ElementObject $element */
                         $element = $entity->getElement($elementName[1]);
                         if ($element) {
@@ -226,7 +208,6 @@ class ScriptUtil
      * @param array   $braceReferences
      * @param string  $contents
      * @param boolean $resolveSectionElement
-     * @return array
      * @throws XmlException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
@@ -236,7 +217,7 @@ class ScriptUtil
         foreach ($braceReferences as $parameterizedReference) {
             preg_match(
                 ActionObject::ACTION_ATTRIBUTE_VARIABLE_REGEX_PARAMETER,
-                $parameterizedReference,
+                (string) $parameterizedReference,
                 $arguments
             );
             $splitArguments = explode(',', ltrim(rtrim($arguments[0], ")"), "("));
@@ -244,7 +225,9 @@ class ScriptUtil
                 // Do nothing for 'string' or $persisted.data$
                 if (preg_match(ActionObject::STRING_PARAMETER_REGEX, $argument)) {
                     continue;
-                } elseif (preg_match(TestGenerator::PERSISTED_OBJECT_NOTATION_REGEX, $argument)) {
+                }
+                // Do nothing for 'string' or $persisted.data$
+                if (preg_match(TestGenerator::PERSISTED_OBJECT_NOTATION_REGEX, $argument)) {
                     continue;
                 }
                 // trim `data.field` to `data`
@@ -258,7 +241,7 @@ class ScriptUtil
                 if ($entity !== null) {
                     $entities[$entity->getName()] = $entity;
                     if ($resolveSectionElement) {
-                        if (get_class($entity) === SectionObject::class) {
+                        if ($entity::class === SectionObject::class) {
                             // trim `data.field` to `field`
                             preg_match('/.([^.]+)/', $argument, $elementName);
                             /** @var ElementObject $element */
@@ -277,8 +260,6 @@ class ScriptUtil
     /**
      * Resolve entity by names
      *
-     * @param array $references
-     * @return array
      * @throws XmlException
      */
     public function resolveEntityByNames(array $references): array
@@ -296,7 +277,6 @@ class ScriptUtil
     /**
      * Attempts to find any MFTF entity by its name. Returns null if none are found
      *
-     * @param string $name
      * @return mixed
      * @throws XmlException
      * @throws Exception
@@ -306,33 +286,35 @@ class ScriptUtil
         if ($name === '_ENV' || $name === '_CREDS') {
             return null;
         }
-
         if (DataObjectHandler::getInstance()->getObject($name)) {
             return DataObjectHandler::getInstance()->getObject($name);
-        } elseif (PageObjectHandler::getInstance()->getObject($name)) {
+        }
+        if (PageObjectHandler::getInstance()->getObject($name)) {
             return PageObjectHandler::getInstance()->getObject($name);
-        } elseif (SectionObjectHandler::getInstance()->getObject($name)) {
+        }
+        if (SectionObjectHandler::getInstance()->getObject($name)) {
             return SectionObjectHandler::getInstance()->getObject($name);
-        } elseif (ActionGroupObjectHandler::getInstance()->getObject($name)) {
+        }
+
+        if (ActionGroupObjectHandler::getInstance()->getObject($name)) {
             return ActionGroupObjectHandler::getInstance()->getObject($name);
         }
 
         try {
             return TestObjectHandler::getInstance()->getObject($name);
-        } catch (TestReferenceException $e) {
+        } catch (TestReferenceException) {
         }
         return null;
     }
 
     /**
      * Return all XML files in given test name, empty array if no path is valid
-     * @param array $testNames
      * @return array|Finder
      */
     public function getModuleXmlFilesByTestNames(array $testNames)
     {
         $finder = new Finder();
-        array_walk($testNames, function (&$value) {
+        array_walk($testNames, function (&$value): void {
             $value = $value . ".xml";
         });
         $finder->files()->followLinks()->in(MAGENTO_BP)->name($testNames)->sortByName();

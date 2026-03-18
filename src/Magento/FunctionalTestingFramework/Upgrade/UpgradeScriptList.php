@@ -19,12 +19,10 @@ class UpgradeScriptList implements UpgradeScriptListInterface
      *
      * @var \Magento\FunctionalTestingFramework\Upgrade\UpgradeInterface[]
      */
-    private $scripts;
+    private readonly array $scripts;
 
     /**
      * Constructor
-     *
-     * @param array $scripts
      */
     public function __construct(array $scripts = [])
     {

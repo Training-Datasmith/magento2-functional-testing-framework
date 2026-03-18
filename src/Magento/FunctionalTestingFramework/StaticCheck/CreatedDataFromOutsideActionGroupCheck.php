@@ -40,11 +40,9 @@ class CreatedDataFromOutsideActionGroupCheck implements StaticCheckInterface
     const ERROR_MESSAGE = 'Created Data From Outside Action Group';
 
     /**
-     * Array containing all errors found after running the execute() function
-     *
-     * @var array
-     */
-      private $errors = [];
+       * Array containing all errors found after running the execute() function
+       */
+      private array $errors = [];
 
     /**
      * String representing the output summary found after running the execute() function
@@ -55,10 +53,8 @@ class CreatedDataFromOutsideActionGroupCheck implements StaticCheckInterface
 
     /**
      * ScriptUtil instance
-     *
-     * @var ScriptUtil
      */
-    private $scriptUtil;
+    private ?\Magento\FunctionalTestingFramework\Util\Script\ScriptUtil $scriptUtil = null;
 
     /**
      * @var array
@@ -68,11 +64,9 @@ class CreatedDataFromOutsideActionGroupCheck implements StaticCheckInterface
     /**
      * Checks test dependencies, determined by references in tests versus the dependencies listed in the Magento module
      *
-     * @param InputInterface $input
-     * @return void
      * @throws Exception
      */
-    public function execute(InputInterface $input)
+    public function execute(InputInterface $input): void
     {
         $this->scriptUtil = new ScriptUtil();
         $this->loadAllXmlFiles($input);
@@ -109,12 +103,10 @@ class CreatedDataFromOutsideActionGroupCheck implements StaticCheckInterface
     /**
      * Read all XML files for scanning
      *
-     * @param InputInterface $input
-     * @return void
      * @throws Exception
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    private function loadAllXmlFiles($input)
+    private function loadAllXmlFiles(\Symfony\Component\Console\Input\InputInterface $input): void
     {
         $modulePaths = [];
         $path = $input->getOption('path');
@@ -145,7 +137,8 @@ class CreatedDataFromOutsideActionGroupCheck implements StaticCheckInterface
                     . PHP_EOL
                     . 'Please make sure --path points to a valid MFTF Test Module.'
                 );
-            } elseif (empty($this->rootSuiteXmlFiles)) {
+            }
+            if (empty($this->rootSuiteXmlFiles)) {
                 throw new TestFrameworkException('No xml file to scan.');
             }
         }
@@ -155,10 +148,9 @@ class CreatedDataFromOutsideActionGroupCheck implements StaticCheckInterface
      * Find reference errors in set of action files
      *
      * @param Finder $files
-     * @return array
      * @throws XmlException
      */
-    private function findReferenceErrorsInActionFiles($files)
+    private function findReferenceErrorsInActionFiles($files): array
     {
         $testErrors = [];
         /** @var SplFileInfo $filePath */
@@ -174,19 +166,18 @@ class CreatedDataFromOutsideActionGroupCheck implements StaticCheckInterface
     }
 
      /**
-      * Build and return error output for violating references
-      *
-      * @param array       $actionGroupReferences
-      * @param SplFileInfo $path
-      * @return mixed
-      */
-    private function setErrorOutput($actionGroupReferences, $path)
+     * Build and return error output for violating references
+     *
+     * @param SplFileInfo $path
+     * @return \non-empty-list<\non-falsy-string>[]
+     */
+    private function setErrorOutput(array $actionGroupReferences, $path): array
     {
         $testErrors = [];
         $errorOutput = "";
         $filePath = StaticChecksList::getFilePath($path->getRealPath());
        
-        foreach ($actionGroupReferences as $key => $actionGroupReferencesData) {
+        foreach ($actionGroupReferences as $actionGroupReferencesData) {
             foreach ($actionGroupReferencesData as $actionGroupReferencesDataResult) {
                 $errorOutput .= "\nFile \"{$filePath}\" contains: ". "\n\t 
                 {$actionGroupReferencesDataResult}  in {$filePath}";

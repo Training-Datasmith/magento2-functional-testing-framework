@@ -13,11 +13,8 @@ class SequenceSorter implements SequenceSorterInterface
 {
     /**
      * Sort files according to specified sequence.
-     *
-     * @param array $paths
-     * @return array
      */
-    public function sort(array $paths)
+    public function sort(array $paths): array
     {
         return $paths;
     }

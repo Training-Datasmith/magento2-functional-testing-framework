@@ -17,90 +17,51 @@ class PageObject
     const ADMIN_AREA = 'admin';
 
     /**
-     * Page name
-     *
-     * @var string
-     */
-    private $name;
-
-    /**
-     * Page url
-     *
-     * @var string
-     */
-    private $url;
-
-    /**
-     * Page module
-     *
-     * @var string
-     */
-    private $module;
-
-    /**
-     * Page url is parameterized
-     *
-     * @var bool $parameterized
-     */
-    private $parameterized;
-
-    /**
-     * Array of page section names
-     *
-     * @var array
-     */
-    private $sectionNames = [];
-
-    /**
-     * String identifying the area the page belongs to
-     *
-     * @var string
-     */
-    private $area;
-
-    /**
-     * Filename of where the page came from
-     *
-     * @var string
-     */
-    private $filename;
-
-    /**
-     * Deprecated message.
-     *
-     * @var string
-     */
-    private $deprecated;
-
-    /**
      * PageObject constructor.
      * @param string      $name
      * @param string      $url
      * @param string      $module
-     * @param array       $sections
+     * @param array $sectionNames
      * @param boolean     $parameterized
      * @param string      $area
      * @param string|null $filename
      * @param string|null $deprecated
      */
     public function __construct(
-        $name,
-        $url,
-        $module,
-        $sections,
-        $parameterized,
-        $area,
-        $filename = null,
-        $deprecated = null
-    ) {
-        $this->name = $name;
-        $this->url = $url;
-        $this->module = $module;
-        $this->sectionNames = $sections;
-        $this->parameterized = $parameterized;
-        $this->area = $area;
-        $this->filename = $filename;
-        $this->deprecated = $deprecated;
+        /**
+         * Page name
+         */
+        private $name,
+        /**
+         * Page url
+         */
+        private $url,
+        /**
+         * Page module
+         */
+        private $module,
+        /**
+         * Array of page section names
+         */
+        private $sectionNames,
+        /**
+         * Page url is parameterized
+         */
+        private $parameterized,
+        /**
+         * String identifying the area the page belongs to
+         */
+        private $area,
+        /**
+         * Filename of where the page came from
+         */
+        private $filename = null,
+        /**
+         * Deprecated message.
+         */
+        private $deprecated = null
+    )
+    {
     }
 
     /**
@@ -177,9 +138,8 @@ class PageObject
      * Checks the section names in the page for existence of the section name passed into the method.
      *
      * @param string $sectionName
-     * @return boolean
      */
-    public function hasSection($sectionName)
+    public function hasSection($sectionName): bool
     {
         return in_array($sectionName, $this->sectionNames);
     }

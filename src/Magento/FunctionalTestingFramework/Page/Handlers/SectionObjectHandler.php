@@ -30,17 +30,15 @@ class SectionObjectHandler implements ObjectHandlerInterface
 
     /**
      * Singleton instance of this class
-     *
-     * @var SectionObjectHandler
      */
-    private static $INSTANCE;
+    private static ?\Magento\FunctionalTestingFramework\Page\Handlers\SectionObjectHandler $INSTANCE = null;
 
     /**
      * All section objects. Set during initialize().
      *
      * @var SectionObject[]
      */
-    private $sectionObjects = [];
+    private array $sectionObjects = [];
 
     /**
      * Constructor
@@ -63,7 +61,7 @@ class SectionObjectHandler implements ObjectHandlerInterface
         foreach ($parserOutput as $sectionName => $sectionData) {
             $elements = [];
 
-            if (preg_match('/[^a-zA-Z0-9_]/', $sectionName)) {
+            if (preg_match('/[^a-zA-Z0-9_]/', (string) $sectionName)) {
                 throw new XmlException(sprintf(self::SECTION_NAME_ERROR_MSG, $sectionName));
             }
 
@@ -72,7 +70,7 @@ class SectionObjectHandler implements ObjectHandlerInterface
 
             try {
                 foreach ($sectionData[SectionObjectHandler::ELEMENT] as $elementName => $elementData) {
-                    if (preg_match('/[^a-zA-Z0-9_]/', $elementName)) {
+                    if (preg_match('/[^a-zA-Z0-9_]/', (string) $elementName)) {
                         throw new XmlException(sprintf(self::ELEMENT_NAME_ERROR_MSG, $elementName, $sectionName));
                     }
 
@@ -146,9 +144,8 @@ class SectionObjectHandler implements ObjectHandlerInterface
      * Get a SectionObject by name
      *
      * @param string $name The section name.
-     * @return SectionObject | null
      */
-    public function getObject($name)
+    public function getObject($name): ?\Magento\FunctionalTestingFramework\Page\Objects\SectionObject
     {
         if (array_key_exists($name, $this->getAllObjects())) {
             return $this->getAllObjects()[$name];

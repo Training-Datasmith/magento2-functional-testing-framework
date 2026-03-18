@@ -13,18 +13,15 @@ class DirSetupUtil
 {
     /**
      * Array which will track any previously cleared directories, to prevent any unintended removal.
-     *
-     * @var array
      */
-    private static $DIR_CONTEXT = [];
+    private static array $DIR_CONTEXT = [];
 
     /**
      * Method used to clean export dir if needed and create new empty export dir.
      *
      * @param string $fullPath
-     * @return void
      */
-    public static function createGroupDir($fullPath)
+    public static function createGroupDir($fullPath): void
     {
         //prevent redundant calls to these directories
         $sanitizedPath = rtrim($fullPath, DIRECTORY_SEPARATOR);
@@ -43,11 +40,8 @@ class DirSetupUtil
 
     /**
      * Takes a directory path and recursively deletes all files and folders.
-     *
-     * @param string $directory
-     * @return void
      */
-    public static function rmdirRecursive($directory)
+    public static function rmdirRecursive(string $directory): void
     {
         if (!is_dir($directory)) {
             return;

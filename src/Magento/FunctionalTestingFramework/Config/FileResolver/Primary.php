@@ -25,7 +25,7 @@ class Primary implements FileResolverInterface
      * @param string $scope
      * @return array
      */
-    public function get($filename, $scope)
+    public function get($filename, $scope): array|\Magento\FunctionalTestingFramework\Util\Iterator\File
     {
         if (!$filename) {
             return [];
@@ -39,9 +39,8 @@ class Primary implements FileResolverInterface
      *
      * @param string $filename
      * @param string $scope
-     * @return array
      */
-    private function getFilePaths($filename, $scope)
+    private function getFilePaths($filename, string|array $scope): array
     {
         $paths = [];
         foreach ($this->getPathPatterns($filename, $scope) as $pattern) {
@@ -53,20 +52,17 @@ class Primary implements FileResolverInterface
     /**
      * Retrieve patterns for glob function
      *
-     * @param string $filename
-     * @param string $scope
-     * @return array
      * @throws TestFrameworkException
      */
-    private function getPathPatterns($filename, $scope)
+    private function getPathPatterns(string $filename, string $scope): array
     {
-        if (substr($scope, 0, strlen(FW_BP)) === FW_BP) {
+        if (str_starts_with($scope, FW_BP)) {
             $patterns = [
                 $scope . DIRECTORY_SEPARATOR . $filename,
                 $scope . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $filename
             ];
         } else {
-            $defaultPath = dirname(dirname(dirname(dirname(__DIR__))));
+            $defaultPath = dirname(__DIR__, 4);
             $defaultPath = str_replace('\\', DIRECTORY_SEPARATOR, $defaultPath);
             $patterns = [
                 $defaultPath . DIRECTORY_SEPARATOR . $scope . DIRECTORY_SEPARATOR . $filename,

@@ -44,10 +44,8 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
 
     /**
      * Array containing all errors found after running the execute() function
-     *
-     * @var array
      */
-    private $errors = [];
+    private array $errors = [];
 
     /**
      * String representing the output summary found after running the execute() function
@@ -58,17 +56,13 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
 
     /**
      * ScriptUtil instance
-     *
-     * @var ScriptUtil
      */
-    private $scriptUtil;
+    private ?\Magento\FunctionalTestingFramework\Util\Script\ScriptUtil $scriptUtil = null;
 
     /**
      * Data operations
-     *
-     * @var array
      */
-    private $dataOperations = ['create', 'update', 'get', 'delete'];
+    private array $dataOperations = ['create', 'update', 'get', 'delete'];
 
     /**
      * Test xml files to scan
@@ -108,11 +102,9 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
     /**
      * Checks test dependencies, determined by references in tests versus the dependencies listed in the Magento module
      *
-     * @param InputInterface $input
-     * @return void
      * @throws Exception
      */
-    public function execute(InputInterface $input)
+    public function execute(InputInterface $input): void
     {
         $this->scriptUtil = new ScriptUtil();
         $this->loadAllXmlFiles($input);
@@ -157,12 +149,10 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
     /**
      * Read all XML files for scanning
      *
-     * @param InputInterface $input
-     * @return void
      * @throws Exception
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    private function loadAllXmlFiles($input)
+    private function loadAllXmlFiles(\Symfony\Component\Console\Input\InputInterface $input): void
     {
         $modulePaths = [];
         $includeRootPath = true;
@@ -205,7 +195,8 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
                     . PHP_EOL
                     . 'Please make sure --path points to a valid MFTF Test Module.'
                 );
-            } elseif (empty($this->rootSuiteXmlFiles)) {
+            }
+            if (empty($this->rootSuiteXmlFiles)) {
                 throw new TestFrameworkException('No xml file to scan.');
             }
         }
@@ -215,11 +206,9 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
      * Find reference errors in set of action files
      *
      * @param Finder  $files
-     * @param boolean $checkTestRef
-     * @return array
      * @throws XmlException
      */
-    private function findReferenceErrorsInActionFiles($files, $checkTestRef = false)
+    private function findReferenceErrorsInActionFiles($files, bool $checkTestRef = false): array
     {
         $testErrors = [];
         /** @var SplFileInfo $filePath */
@@ -322,9 +311,8 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
     /**
      * Checks if entity is deprecated in action files.
      * @param string $contents
-     * @return boolean
      */
-    private function isDeprecated($contents)
+    private function isDeprecated(string|bool $contents): bool
     {
         preg_match_all(self::DEPRECATED_REGEX_PATTERN, $contents, $deprecatedEntity);
         return (!empty($deprecatedEntity[1]));
@@ -334,10 +322,9 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
      * Find reference errors in a set of data files
      *
      * @param Finder $files
-     * @return array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    private function findReferenceErrorsInDataFiles($files)
+    private function findReferenceErrorsInDataFiles($files): array
     {
         $testErrors = [];
         /** @var SplFileInfo $filePath */
@@ -402,11 +389,8 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
 
     /**
      * Trim duplicate values from two-dimensional array. Dimension 1 array key is unique.
-     *
-     * @param array $inArray
-     * @return array
      */
-    private function twoDimensionArrayUnique($inArray)
+    private function twoDimensionArrayUnique(array $inArray): array
     {
         $outArray = [];
         foreach ($inArray as $key => $arr) {
@@ -417,12 +401,8 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
 
     /**
      * Return attribute value for each node in DOMNodeList as an array
-     *
-     * @param DOMNodeList $nodes
-     * @param string      $attributeName
-     * @return array
      */
-    private function getAttributesFromDOMNodeList($nodes, $attributeName)
+    private function getAttributesFromDOMNodeList(\DOMNodeList $nodes, string $attributeName): array
     {
         $attributes = [];
         /** @var DOMElement $node */
@@ -437,12 +417,8 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
 
     /**
      * Find metadata from data array
-     *
-     * @param array  $references
-     * @param string $type
-     * @return array
      */
-    private function getMetadataFromData($references, $type)
+    private function getMetadataFromData(array $references, string $type): array
     {
         $metaDataReferences = [];
         try {
@@ -456,7 +432,7 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
                     }
                 }
             }
-        } catch (Exception $e) {
+        } catch (Exception) {
         }
         return $metaDataReferences;
     }
@@ -505,12 +481,10 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
      *      ...
      *  ]
      *
-     * @param array $references
-     * @return array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
-    private function findViolatingMetadataReferences($references)
+    private function findViolatingMetadataReferences(array $references): array
     {
         $allObjects = OperationDefinitionObjectHandler::getInstance()->getAllObjects();
 
@@ -577,9 +551,8 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
      *  ]
      *
      * @param array $references
-     * @return array
      */
-    private function findViolatingDataReferences($references)
+    private function findViolatingDataReferences($references): array
     {
         // Find Violations
         $violatingReferences = [];
@@ -594,7 +567,7 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
                             'file' => $requiredData->getFilename(),
                         ];
                     }
-                } catch (Exception $e) {
+                } catch (Exception) {
                 }
             }
         }
@@ -612,21 +585,18 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
      *      'section.field' => $fieldElementEntity,
      *      ...
      *  ]
-     *
-     * @param array $references
-     * @return array
      */
-    private function findViolatingReferences($references)
+    private function findViolatingReferences(array $references): array
     {
         // Find Violations
         $violatingReferences = [];
         foreach ($references as $key => $entity) {
             if ($entity->getDeprecated()) {
-                $classType = get_class($entity);
+                $classType = $entity::class;
                 $name = $entity->getName();
                 if ($classType === ElementObject::class) {
                     $name = $key;
-                    list($section,) = explode('.', $key, 2);
+                    list($section,) = explode('.', (string) $key, 2);
                     /** @var SectionObject $references[$section] */
                     $file = StaticChecksList::getFilePath($references[$section]->getFilename());
                 } else {
@@ -644,11 +614,10 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
     /**
      * Build and return error output for violating references
      *
-     * @param array       $violatingReferences
      * @param SplFileInfo $path
-     * @return mixed
+     * @return array{non-falsy-string}[]
      */
-    private function setErrorOutput($violatingReferences, $path)
+    private function setErrorOutput(array $violatingReferences, $path): array
     {
         $testErrors = [];
 
@@ -671,11 +640,8 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
 
     /**
      * Resolve test entity in suite
-     *
-     * @param \DOMDocument $domDocument
-     * @return array
      */
-    private function resolveTestEntityInSuite($domDocument)
+    private function resolveTestEntityInSuite(\DOMDocument $domDocument): array
     {
         $testReferences = $this->getAttributesFromDOMNodeList(
             $domDocument->getElementsByTagName('test'),
@@ -688,18 +654,15 @@ class DeprecatedEntityUsageCheck implements StaticCheckInterface
         // Resolve test entity by names
         try {
             return $this->scriptUtil->resolveEntityByNames($testReferences);
-        } catch (XmlException $e) {
+        } catch (XmlException) {
             return [];
         }
     }
 
     /**
      * Return subject string for a class name
-     *
-     * @param string $classname
-     * @return string|null
      */
-    private function getSubjectFromClassType($classname)
+    private function getSubjectFromClassType(string $classname): ?string
     {
         $subject = null;
         if ($classname === ActionGroupObject::class) {

@@ -18,17 +18,14 @@ class SuiteDom extends \Magento\FunctionalTestingFramework\Config\MftfDom
     const SUITE_META_FILENAME_ATTRIBUTE = "filename";
 
     /** SingleNodePerFileValidationUtil
-     *
-     * @var SingleNodePerFileValidationUtil
      */
-    private $singleNodePerFileValidationUtil;
+    private readonly \Magento\FunctionalTestingFramework\Util\Validation\SingleNodePerFileValidationUtil $singleNodePerFileValidationUtil;
 
     /**
      * Entity Dom constructor.
      * @param string             $xml
      * @param string             $filename
      * @param ExceptionCollector $exceptionCollector
-     * @param array              $idAttributes
      * @param string             $typeAttributeName
      * @param string             $schemaFile
      * @param string             $errorFormat

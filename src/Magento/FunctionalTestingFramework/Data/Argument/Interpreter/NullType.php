@@ -15,10 +15,9 @@ class NullType implements InterpreterInterface
 {
     /**
      * {@inheritdoc}
-     * @return null
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function evaluate(array $data)
+    public function evaluate(array $data): null
     {
         return null;
     }

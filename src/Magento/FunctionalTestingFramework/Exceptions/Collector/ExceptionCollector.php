@@ -10,19 +10,16 @@ class ExceptionCollector
 {
     /**
      * Private array containing all errors to be thrown as part of the exception.
-     *
-     * @var array
      */
-    private $errors = [];
+    private array $errors = [];
 
     /**
      * Function to add a filename and message for the filename
      *
      * @param string $filename
      * @param string $message
-     * @return void
      */
-    public function addError($filename, $message)
+    public function addError($filename, $message): void
     {
         $error[$filename] = $message;
         $this->errors = array_merge_recursive($this->errors, $error);
@@ -31,10 +28,9 @@ class ExceptionCollector
     /**
      * Function which throws an exception when there are errors present.
      *
-     * @return void
      * @throws \Exception
      */
-    public function throwException()
+    public function throwException(): void
     {
         if (empty($this->errors)) {
             return;
@@ -56,10 +52,8 @@ class ExceptionCollector
 
     /**
      * Reset error to empty array
-     *
-     * @return void
      */
-    public function reset()
+    public function reset(): void
     {
         $this->errors = [];
     }
@@ -69,9 +63,8 @@ class ExceptionCollector
      * as separate messages.
      *
      * @param array $errors
-     * @return array
      */
-    private function formatErrors($errors)
+    private function formatErrors($errors): array
     {
         $flattenedErrors = [];
         foreach ($errors as $errorMsg) {

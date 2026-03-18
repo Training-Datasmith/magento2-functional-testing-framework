@@ -16,18 +16,12 @@ use Vault\ResponseModels\Auth;
 class VaultTokenAuthStrategy extends AbstractAuthenticationStrategy
 {
     /**
-     * @var string
-     */
-    protected $token;
-
-    /**
      * VaultTokenAuthStrategy constructor
      *
      * @param string $token
      */
-    public function __construct($token)
+    public function __construct(protected $token)
     {
-        $this->token = $token;
     }
 
     /**
@@ -40,7 +34,7 @@ class VaultTokenAuthStrategy extends AbstractAuthenticationStrategy
     {
         try {
             return new Auth(['clientToken' => $this->token]);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new TestFrameworkException("Cannot authenticate Vault token.");
         }
     }

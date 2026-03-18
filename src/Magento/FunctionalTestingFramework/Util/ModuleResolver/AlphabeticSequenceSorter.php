@@ -13,11 +13,8 @@ class AlphabeticSequenceSorter implements SequenceSorterInterface
 {
     /**
      * Sort files alphabetically.
-     *
-     * @param array $paths
-     * @return array
      */
-    public function sort(array $paths)
+    public function sort(array $paths): array
     {
         asort($paths);
         return $paths;

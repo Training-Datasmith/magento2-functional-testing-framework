@@ -22,17 +22,13 @@ class UpgradeTestsCommand extends Command
 
     /**
      * Pool of upgrade scripts to run
-     *
-     * @var \Magento\FunctionalTestingFramework\Upgrade\UpgradeScriptListInterface
      */
-    private $upgradeScriptsList;
+    private ?\Magento\FunctionalTestingFramework\Upgrade\UpgradeScriptList $upgradeScriptsList = null;
 
     /**
      * Configures the current command.
-     *
-     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('upgrade:tests')
             ->setDescription(
@@ -47,9 +43,6 @@ class UpgradeTestsCommand extends Command
     /**
      *
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
      * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -59,7 +52,7 @@ class UpgradeTestsCommand extends Command
         foreach ($upgradeScriptObjects as $scriptName => $upgradeScriptObject) {
             $output->writeln('Running upgrade script: ' . $scriptName . PHP_EOL);
             $upgradeOutput = $upgradeScriptObject->execute($input, $output);
-            LoggingUtil::getInstance()->getLogger(get_class($upgradeScriptObject))->info($upgradeOutput);
+            LoggingUtil::getInstance()->getLogger($upgradeScriptObject::class)->info($upgradeOutput);
             $output->writeln($upgradeOutput . PHP_EOL);
         }
 

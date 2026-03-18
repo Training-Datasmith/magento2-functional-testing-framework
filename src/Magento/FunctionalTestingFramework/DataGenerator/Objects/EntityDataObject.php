@@ -26,66 +26,11 @@ class EntityDataObject
     const CEST_UNIQUE_FUNCTION = 'msq';
 
     /**
-     * Name of the entity
-     *
-     * @var string
-     */
-    private $name;
-
-    /**
-     * Type of the entity
-     *
-     * @var string
-     */
-    private $type;
-
-    /**
-     * An array of required entity name to corresponding type
-     *
-     * @var string[]
-     */
-    private $linkedEntities = [];
-
-    /**
-     * An array of variable mappings for static data
-     *
-     * @var string[]
-     */
-    private $vars;
-
-    /**
-     * An array of Data Name to Data Value
-     *
-     * @var string[]
-     */
-    private $data = [];
-
-    /**
      * Array of data name and its uniqueness attribute value.
      *
      * @var string[]
      */
     private $uniquenessData = [];
-
-    /**
-     * String of parent Entity
-     *
-     * @var string
-     */
-    private $parentEntity;
-
-    /**
-     * String of filename
-     * @var string
-     */
-    private $filename;
-
-    /**
-     * Deprecated message.
-     *
-     * @var string
-     */
-    private $deprecated;
 
     /**
      * Constructor
@@ -101,28 +46,43 @@ class EntityDataObject
      * @param string|null $deprecated
      */
     public function __construct(
-        $name,
-        $type,
-        $data,
-        $linkedEntities,
+        /**
+         * Name of the entity
+         */
+        private $name,
+        /**
+         * Type of the entity
+         */
+        private $type,
+        /**
+         * An array of Data Name to Data Value
+         */
+        private $data,
+        /**
+         * An array of required entity name to corresponding type
+         */
+        private $linkedEntities,
         $uniquenessData,
-        $vars = [],
-        $parentEntity = null,
-        $filename = null,
-        $deprecated = null
+        /**
+         * An array of variable mappings for static data
+         */
+        private $vars = [],
+        /**
+         * String of parent Entity
+         */
+        private $parentEntity = null,
+        /**
+         * String of filename
+         */
+        private $filename = null,
+        /**
+         * Deprecated message.
+         */
+        private $deprecated = null
     ) {
-        $this->name = $name;
-        $this->type = $type;
-        $this->data = $data;
-        $this->linkedEntities = $linkedEntities;
         if ($uniquenessData) {
             $this->uniquenessData = $uniquenessData;
         }
-
-        $this->vars = $vars;
-        $this->parentEntity = $parentEntity;
-        $this->filename = $filename;
-        $this->deprecated = $deprecated;
     }
 
     /**
@@ -220,12 +180,10 @@ class EntityDataObject
             if (is_array($this->data[$name_lower])) {
                 return $this->data[$name_lower];
             }
-            $uniquenessData = $this->getUniquenessDataByName($name_lower) === null
-                ? $dataReferenceResolver->getDataUniqueness(
-                    $this->data[$name_lower],
-                    $this->name . '.' . $name
-                )
-                : $this->getUniquenessDataByName($name_lower);
+            $uniquenessData = $this->getUniquenessDataByName($name_lower) ?? $dataReferenceResolver->getDataUniqueness(
+                $this->data[$name_lower],
+                $this->name . '.' . $name
+            );
             if ($uniquenessData !== null) {
                 $this->uniquenessData[$name] = $uniquenessData;
             }
@@ -237,7 +195,8 @@ class EntityDataObject
                 return $this->data[$name_lower];
             }
             return $this->formatUniqueData($name_lower, $uniquenessData, $uniquenessFormat);
-        } elseif (array_key_exists($name, $this->data)) {
+        }
+        if (array_key_exists($name, $this->data)) {
             if (is_array($this->data[$name])) {
                 return $this->data[$name];
             }
@@ -247,9 +206,8 @@ class EntityDataObject
             );
             // Data returned by the API may be camelCase so we need to check for the original $name also.
             return $this->data[$name];
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -268,42 +226,37 @@ class EntityDataObject
      * @param string $name
      * @param string $uniqueData
      * @param string $uniqueDataFormat
-     * @return null|string
      * @throws TestFrameworkException
      */
-    private function formatUniqueData($name, $uniqueData, $uniqueDataFormat)
+    private function formatUniqueData($name, $uniqueData, $uniqueDataFormat): ?string
     {
         switch ($uniqueDataFormat) {
             case self::SUITE_UNIQUE_VALUE:
                 $this->checkUniquenessFunctionExists(self::SUITE_UNIQUE_FUNCTION, $uniqueDataFormat);
                 if ($uniqueData === 'prefix') {
                     return msqs($this->getName()) . $this->data[$name];
-                } else { // $uniData == 'suffix'
-                    return $this->data[$name] . msqs($this->getName());
                 }
-                break;
+                // $uniData == 'suffix'
+                return $this->data[$name] . msqs($this->getName());
             case self::CEST_UNIQUE_VALUE:
                 $this->checkUniquenessFunctionExists(self::CEST_UNIQUE_FUNCTION, $uniqueDataFormat);
                 if ($uniqueData === 'prefix') {
                     return msq($this->getName()) . $this->data[$name];
-                } else { // $uniqueData == 'suffix'
-                    return $this->data[$name] . msq($this->getName());
                 }
-                break;
+                // $uniqueData == 'suffix'
+                return $this->data[$name] . msq($this->getName());
             case self::SUITE_UNIQUE_NOTATION:
                 if ($uniqueData === 'prefix') {
                     return self::SUITE_UNIQUE_FUNCTION . '("' . $this->getName() . '")' . $this->data[$name];
-                } else { // $uniqueData == 'suffix'
-                    return $this->data[$name] . self::SUITE_UNIQUE_FUNCTION . '("' . $this->getName() . '")';
                 }
-                break;
+                // $uniqueData == 'suffix'
+                return $this->data[$name] . self::SUITE_UNIQUE_FUNCTION . '("' . $this->getName() . '")';
             case self::CEST_UNIQUE_NOTATION:
                 if ($uniqueData === 'prefix') {
                     return self::CEST_UNIQUE_FUNCTION . '("' . $this->getName() . '")' . $this->data[$name];
-                } else { // $uniqueData == 'suffix'
-                    return $this->data[$name] . self::CEST_UNIQUE_FUNCTION . '("' . $this->getName() . '")';
                 }
-                break;
+                // $uniqueData == 'suffix'
+                return $this->data[$name] . self::CEST_UNIQUE_FUNCTION . '("' . $this->getName() . '")';
             default:
                 break;
         }
@@ -313,12 +266,9 @@ class EntityDataObject
     /**
      * Performs a check that the given uniqueness function exists, throws an exception if it doesn't.
      *
-     * @param string $function
-     * @param string $uniqueDataFormat
-     * @return void
      * @throws TestFrameworkException
      */
-    private function checkUniquenessFunctionExists($function, $uniqueDataFormat)
+    private function checkUniquenessFunctionExists(string $function, string $uniqueDataFormat): void
     {
         if (!function_exists($function)) {
             $exceptionMessage = sprintf(
@@ -335,9 +285,8 @@ class EntityDataObject
      * category->id)
      *
      * @param string $key
-     * @return string|null
      */
-    public function getVarReference($key)
+    public function getVarReference($key): ?string
     {
         if (array_key_exists($key, $this->vars)) {
             return $this->vars[$key];
@@ -351,9 +300,8 @@ class EntityDataObject
      * The function returns an array of entityNames relevant to the specified type.
      *
      * @param string $type
-     * @return array
      */
-    public function getLinkedEntitiesOfType($type)
+    public function getLinkedEntitiesOfType($type): array
     {
         $groupedArray = [];
 
@@ -390,9 +338,8 @@ class EntityDataObject
      * This function retrieves uniqueness data by its name.
      *
      * @param string $dataName
-     * @return string|null
      */
-    public function getUniquenessDataByName($dataName)
+    public function getUniquenessDataByName($dataName): ?string
     {
         $name = strtolower($dataName);
 
@@ -417,9 +364,8 @@ class EntityDataObject
      * Validate if input value is a valid unique data format.
      *
      * @param integer $uniDataFormat
-     * @return boolean
      */
-    private function isValidUniqueDataFormat($uniDataFormat)
+    private function isValidUniqueDataFormat($uniDataFormat): bool
     {
         return in_array(
             $uniDataFormat,

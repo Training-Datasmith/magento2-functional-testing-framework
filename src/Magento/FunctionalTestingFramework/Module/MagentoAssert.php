@@ -19,21 +19,19 @@ class MagentoAssert extends \Codeception\Module
      * Asserts that all items in the array are sorted by given direction. Can be given int, string, double, dates.
      * Converts given date strings to epoch for comparison.
      *
-     * @param array  $data
      * @param string $sortOrder
-     * @return void
      */
-    public function assertArrayIsSorted(array $data, $sortOrder = "asc")
+    public function assertArrayIsSorted(array $data, $sortOrder = "asc"): void
     {
         $elementTotal = count($data);
         $message = null;
 
         // If value can be converted to a date and it isn't 1.1 number (strtotime is overzealous)
-        if (strtotime($data[0]) !== false && !is_numeric($data[0])) {
+        if (strtotime((string) $data[0]) !== false && !is_numeric($data[0])) {
             $message = "Array of dates converted to unix timestamp for comparison";
-            $data = array_map('strtotime', $data);
+            $data = array_map(strtotime(...), $data);
         } else {
-            $data = array_map('strtolower', $data);
+            $data = array_map(strtolower(...), $data);
         }
 
         if ($sortOrder === 'asc') {

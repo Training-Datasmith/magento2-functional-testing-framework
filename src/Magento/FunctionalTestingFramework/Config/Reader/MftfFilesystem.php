@@ -55,12 +55,10 @@ class MftfFilesystem extends \Magento\FunctionalTestingFramework\Config\Reader\F
         if (strcasecmp($debugLevel, MftfApplicationConfig::LEVEL_DEFAULT) === 0) {
             $this->validateSchema($configMerger);
         }
-
-        $output = [];
         if ($configMerger) {
-            $output = $this->converter->convert($configMerger->getDom());
+            return $this->converter->convert($configMerger->getDom());
         }
-        return $output;
+        return [];
     }
 
     /**

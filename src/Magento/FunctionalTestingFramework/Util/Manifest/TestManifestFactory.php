@@ -26,29 +26,21 @@ class TestManifestFactory
      *
      * @param string $runConfig
      * @param array  $suiteConfiguration
-     * @param string $testPath
      * @return BaseTestManifest
      * @throws TestFrameworkException
      */
-    public static function makeManifest($runConfig, $suiteConfiguration, $testPath = TestGenerator::DEFAULT_DIR)
+    public static function makeManifest($runConfig, $suiteConfiguration, string $testPath = TestGenerator::DEFAULT_DIR): \Magento\FunctionalTestingFramework\Util\Manifest\SingleRunTestManifest|\Magento\FunctionalTestingFramework\Util\Manifest\ParallelByTimeTestManifest|\Magento\FunctionalTestingFramework\Util\Manifest\ParallelByGroupTestManifest|\Magento\FunctionalTestingFramework\Util\Manifest\DefaultTestManifest
     {
         $testDirFullPath = FilePathFormatter::format(TESTS_MODULE_PATH)
         . TestGenerator::GENERATED_DIR
         . DIRECTORY_SEPARATOR
         . $testPath;
 
-        switch ($runConfig) {
-            case 'singleRun':
-                return new SingleRunTestManifest($suiteConfiguration, $testDirFullPath);
-
-            case 'parallelByTime':
-                return new ParallelByTimeTestManifest($suiteConfiguration, $testDirFullPath);
-
-            case 'parallelByGroup':
-                return new ParallelByGroupTestManifest($suiteConfiguration, $testDirFullPath);
-
-            default:
-                return new DefaultTestManifest($suiteConfiguration, $testDirFullPath);
-        }
+        return match ($runConfig) {
+            'singleRun' => new SingleRunTestManifest($suiteConfiguration, $testDirFullPath),
+            'parallelByTime' => new ParallelByTimeTestManifest($suiteConfiguration, $testDirFullPath),
+            'parallelByGroup' => new ParallelByGroupTestManifest($suiteConfiguration, $testDirFullPath),
+            default => new DefaultTestManifest($suiteConfiguration, $testDirFullPath),
+        };
     }
 }

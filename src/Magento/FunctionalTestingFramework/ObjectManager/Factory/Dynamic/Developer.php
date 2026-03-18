@@ -12,25 +12,9 @@ namespace Magento\FunctionalTestingFramework\ObjectManager\Factory\Dynamic;
 class Developer implements \Magento\FunctionalTestingFramework\ObjectManager\FactoryInterface
 {
     /**
-     * Object manager
-     *
-     * @var \Magento\FunctionalTestingFramework\ObjectManagerInterface
-     */
-    protected $objectManager;
-
-    /**
-     * Object manager config
-     *
-     * @var \Magento\FunctionalTestingFramework\ObjectManager\ConfigInterface
-     */
-    protected $config;
-
-    /**
      * Definition list
-     *
-     * @var \Magento\FunctionalTestingFramework\ObjectManager\DefinitionInterface
      */
-    protected $definitions;
+    protected \Magento\FunctionalTestingFramework\ObjectManager\DefinitionInterface $definitions;
 
     /**
      * Object creation stack
@@ -40,38 +24,31 @@ class Developer implements \Magento\FunctionalTestingFramework\ObjectManager\Fac
     protected $creationStack = [];
 
     /**
-     * Global arguments.
-     *
-     * @var array
-     */
-    protected $globalArguments;
-
-    /**
      * Developer constructor.
-     * @param \Magento\FunctionalTestingFramework\ObjectManager\ConfigInterface          $config
-     * @param \Magento\FunctionalTestingFramework\ObjectManagerInterface|null            $objectManager
-     * @param \Magento\FunctionalTestingFramework\ObjectManager\DefinitionInterface|null $definitions
      * @param array                                                                      $globalArguments
      */
     public function __construct(
-        \Magento\FunctionalTestingFramework\ObjectManager\ConfigInterface $config,
-        ?\Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager = null,
+        /**
+         * Object manager config
+         */
+        protected \Magento\FunctionalTestingFramework\ObjectManager\ConfigInterface $config,
+        /**
+         * Object manager
+         */
+        protected ?\Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager = null,
         ?\Magento\FunctionalTestingFramework\ObjectManager\DefinitionInterface $definitions = null,
-        $globalArguments = []
+        /**
+         * Global arguments.
+         */
+        protected $globalArguments = []
     ) {
-        $this->config = $config;
-        $this->objectManager = $objectManager;
         $this->definitions = $definitions ?: new \Magento\FunctionalTestingFramework\ObjectManager\Definition\Runtime();
-        $this->globalArguments = $globalArguments;
     }
 
     /**
      * Set object manager
-     *
-     * @param \Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager
-     * @return void
      */
-    public function setObjectManager(\Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager)
+    public function setObjectManager(\Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager): void
     {
         $this->objectManager = $objectManager;
     }
@@ -79,10 +56,6 @@ class Developer implements \Magento\FunctionalTestingFramework\ObjectManager\Fac
     /**
      * Resolve constructor arguments
      *
-     * @param string $requestedType
-     * @param array  $parameters
-     * @param array  $arguments
-     * @return array
      * @throws \UnexpectedValueException
      * @throws \BadMethodCallException
      *
@@ -90,14 +63,14 @@ class Developer implements \Magento\FunctionalTestingFramework\ObjectManager\Fac
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * Revisited to reduce cyclomatic complexity, left unrefactored for readability
      */
-    protected function resolveArguments($requestedType, array $parameters, array $arguments = [])
+    protected function resolveArguments(string $requestedType, array $parameters, array $arguments = []): array
     {
         $resolvedArguments = [];
         $arguments = count($arguments)
             ? array_replace($this->config->getArguments($requestedType), $arguments)
             : $this->config->getArguments($requestedType);
         foreach ($parameters as $parameter) {
-            list($paramName, $paramType, $paramRequired, $paramDefault) = $parameter;
+            [$paramName, $paramType, $paramRequired, $paramDefault] = $parameter;
             $argument = null;
             if (!empty($arguments) && (isset($arguments[$paramName]) || array_key_exists($paramName, $arguments))) {
                 $argument = $arguments[$paramName];
@@ -120,15 +93,13 @@ class Developer implements \Magento\FunctionalTestingFramework\ObjectManager\Fac
                     );
                 }
                 $argumentType = $argument['instance'];
-                $isShared = (isset($argument['shared']) ? $argument['shared'] : $this->config->isShared($argumentType));
+                $isShared = ($argument['shared'] ?? $this->config->isShared($argumentType));
                 $argument = $isShared
                     ? $this->objectManager->get($argumentType)
                     : $this->objectManager->create($argumentType);
             } elseif (is_array($argument)) {
                 if (isset($argument['argument'])) {
-                    $argument = isset($this->globalArguments[$argument['argument']])
-                        ? $this->globalArguments[$argument['argument']]
-                        : $paramDefault;
+                    $argument = $this->globalArguments[$argument['argument']] ?? $paramDefault;
                 } elseif (!empty($argument)) {
                     $this->parseArray($argument);
                 }
@@ -141,23 +112,20 @@ class Developer implements \Magento\FunctionalTestingFramework\ObjectManager\Fac
     /**
      * Parse array argument
      *
-     * @param array $array
      * @return void
      */
-    protected function parseArray(&$array)
+    protected function parseArray(array &$array)
     {
         foreach ($array as $key => $item) {
             if (is_array($item)) {
                 if (isset($item['instance'])) {
                     $itemType = $item['instance'];
-                    $isShared = (isset($item['shared'])) ? $item['shared'] : $this->config->isShared($itemType);
+                    $isShared = $item['shared'] ?? $this->config->isShared($itemType);
                     $array[$key] = $isShared
                         ? $this->objectManager->get($itemType)
                         : $this->objectManager->create($itemType);
                 } elseif (isset($item['argument'])) {
-                    $array[$key] = isset($this->globalArguments[$item['argument']])
-                        ? $this->globalArguments[$item['argument']]
-                        : null;
+                    $array[$key] = $this->globalArguments[$item['argument']] ?? null;
                 } else {
                     $this->parseArray($array[$key]);
                 }
@@ -169,10 +137,8 @@ class Developer implements \Magento\FunctionalTestingFramework\ObjectManager\Fac
      * Create instance with call time arguments
      *
      * @param string $requestedType
-     * @param array  $arguments
      * @return object
      * @throws \Exception
-     *
      * @SuppressWarnings(PHPCPD)
      */
     public function create($requestedType, array $arguments = [])
@@ -206,9 +172,8 @@ class Developer implements \Magento\FunctionalTestingFramework\ObjectManager\Fac
      * Set global arguments
      *
      * @param array $arguments
-     * @return void
      */
-    public function setArguments($arguments)
+    public function setArguments($arguments): void
     {
         $this->globalArguments = $arguments;
     }

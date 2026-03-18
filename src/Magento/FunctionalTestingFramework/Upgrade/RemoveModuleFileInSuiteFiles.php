@@ -21,48 +21,35 @@ class RemoveModuleFileInSuiteFiles implements UpgradeInterface
 {
     /**
      * OutputInterface
-     *
-     * @var OutputInterface
      */
-    private $output;
+    private ?\Symfony\Component\Console\Output\OutputInterface $output = null;
 
     /**
      * Console output style
-     *
-     * @var SymfonyStyle
      */
-    private $ioStyle = null;
+    private ?\Symfony\Component\Console\Style\SymfonyStyle $ioStyle = null;
 
     /**
      * Indicate if notice is print
-     *
-     * @var boolean
      */
-    private $printNotice = false;
+    private bool $printNotice = false;
 
     /**
      * Number of test being updated
-     *
-     * @var integer
      */
-    private $testsUpdated = 0;
+    private int $testsUpdated = 0;
 
     /**
      * Indicate if a match and replace has happened
-     *
-     * @var boolean
      */
-    private $replaced = false;
+    private bool $replaced = false;
 
     /**
      * Scan all suite xml files, remove <module file="".../> node, and print update message
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return string
      * @throws TestFrameworkException
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): string
     {
         $scriptUtil = new ScriptUtil();
         $this->setOutputStyle($input, $output);
@@ -83,9 +70,8 @@ class RemoveModuleFileInSuiteFiles implements UpgradeInterface
      * Process on list of xml files
      *
      * @param Finder $xmlFiles
-     * @return void
      */
-    private function processXmlFiles($xmlFiles)
+    private function processXmlFiles($xmlFiles): void
     {
         foreach ($xmlFiles as $file) {
             $contents = $file->getContents();
@@ -106,12 +92,12 @@ class RemoveModuleFileInSuiteFiles implements UpgradeInterface
      * @param string $file
      * @return string|string[]|null
      */
-    private function removeModuleFileAttributeInSuite($contents, $file)
+    private function removeModuleFileAttributeInSuite($contents, $file): ?string
     {
         $pattern = '/<module[^\<\>]+file[\s]*=[\s]*"(?<file>[^"\<\>]*)"[^\>\<]*>/';
-        $contents = preg_replace_callback(
+        return preg_replace_callback(
             $pattern,
-            function ($matches) use ($file) {
+            function ($matches) use ($file): string|array {
                 if (!$this->printNotice) {
                     $this->ioStyle->note(
                         '`file` is not a valid attribute for <module> in Suite XML schema.' . PHP_EOL
@@ -122,7 +108,7 @@ class RemoveModuleFileInSuiteFiles implements UpgradeInterface
                 }
                 $this->output->writeln(
                     PHP_EOL
-                    . '"' . trim($matches[0]) . '"' . PHP_EOL
+                    . '"' . trim((string) $matches[0]) . '"' . PHP_EOL
                     . 'is commented out from file: ' . $file . PHP_EOL
                 );
                 $result = str_replace('<module', '<!--module', $matches[0]);
@@ -132,17 +118,12 @@ class RemoveModuleFileInSuiteFiles implements UpgradeInterface
             },
             $contents
         );
-        return $contents;
     }
 
     /**
      * Set Symfony Style for output
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return void
      */
-    private function setOutputStyle(InputInterface $input, OutputInterface $output)
+    private function setOutputStyle(InputInterface $input, OutputInterface $output): void
     {
         // For output style
         if (null === $this->ioStyle) {

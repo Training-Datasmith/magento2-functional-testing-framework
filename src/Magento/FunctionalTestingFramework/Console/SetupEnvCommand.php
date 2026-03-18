@@ -23,18 +23,15 @@ class SetupEnvCommand extends Command
 
     /**
      * Env processor manages .env files.
-     *
-     * @var \Magento\FunctionalTestingFramework\Util\Env\EnvProcessor
      */
-    private $envProcessor;
+    private ?\Magento\FunctionalTestingFramework\Util\Env\EnvProcessor $envProcessor = null;
 
     /**
      * Configures the current command.
      *
-     * @return void
      * @throws TestFrameworkException
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('setup:env')
             ->setDescription("Generate .env file.");
@@ -48,9 +45,6 @@ class SetupEnvCommand extends Command
     /**
      * Executes the current command.
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return integer
      * @throws \Symfony\Component\Console\Exception\LogicException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int

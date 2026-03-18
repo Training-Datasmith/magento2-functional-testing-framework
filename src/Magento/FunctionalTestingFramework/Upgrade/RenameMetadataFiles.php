@@ -19,12 +19,8 @@ class RenameMetadataFiles implements UpgradeInterface
 {
     /**
      * Upgrades all test xml files
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return string
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): string
     {
         $scriptUtil = new ScriptUtil();
         $testPaths[] = $input->getArgument('path');
@@ -53,11 +49,8 @@ class RenameMetadataFiles implements UpgradeInterface
      * Convert filenames like:
      *     user_role-meta.xml => UserRoleMeta.xml
      *     store-meta.xml => StoreMeta.xml
-     *
-     * @param string $oldFileName
-     * @return string
      */
-    private function convertFileName(string $oldFileName)
+    private function convertFileName(string $oldFileName): string
     {
         $stripEnding = preg_replace("/-meta.xml/", "", $oldFileName);
         $hyphenToUnderscore = str_replace("-", "_", $stripEnding);
@@ -67,7 +60,6 @@ class RenameMetadataFiles implements UpgradeInterface
             $ucParts[] = ucfirst($part);
         }
         $recombine = join("", $ucParts);
-        $addEnding = $recombine . "Meta.xml";
-        return $addEnding;
+        return $recombine . "Meta.xml";
     }
 }

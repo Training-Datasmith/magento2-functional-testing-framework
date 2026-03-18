@@ -14,10 +14,8 @@ class CestFileCreatorUtil
 {
     /**
      * Singleton CestFileCreatorUtil Instance.
-     *
-     * @var CestFileCreatorUtil
      */
-    private static $INSTANCE;
+    private static ?\Magento\FunctionalTestingFramework\Util\Filesystem\CestFileCreatorUtil $INSTANCE = null;
 
     /**
      * CestFileCreatorUtil constructor.
@@ -28,8 +26,6 @@ class CestFileCreatorUtil
 
     /**
      * Get CestFileCreatorUtil instance.
-     *
-     * @return CestFileCreatorUtil
      */
     public static function getInstance(): CestFileCreatorUtil
     {
@@ -44,11 +40,7 @@ class CestFileCreatorUtil
      * Create a single PHP file containing the $cestPhp using the $filename.
      * If the _generated directory doesn't exist it will be created.
      *
-     * @param string $filename
-     * @param string $exportDirectory
-     * @param string $testPhp
      *
-     * @return void
      * @throws TestFrameworkException
      */
     public function create(string $filename, string $exportDirectory, string $testPhp): void

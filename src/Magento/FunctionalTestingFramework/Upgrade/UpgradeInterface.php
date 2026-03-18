@@ -16,8 +16,6 @@ interface UpgradeInterface
 {
     /**
      * Executes upgrade script, returns output.
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      * @return string
      */
     public function execute(InputInterface $input, OutputInterface $output);

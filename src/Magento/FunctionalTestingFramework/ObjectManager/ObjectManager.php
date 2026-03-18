@@ -12,13 +12,6 @@ namespace Magento\FunctionalTestingFramework\ObjectManager;
 class ObjectManager implements \Magento\FunctionalTestingFramework\ObjectManagerInterface
 {
     /**
-     * Create instance with call time arguments.
-     *
-     * @var \Magento\FunctionalTestingFramework\ObjectManager\FactoryInterface
-     */
-    protected $factory;
-
-    /**
      * List of shared instances
      *
      * @var array
@@ -26,22 +19,18 @@ class ObjectManager implements \Magento\FunctionalTestingFramework\ObjectManager
     protected $sharedInstances = [];
 
     /**
+     * ObjectManager constructor.
+     */
+    public function __construct(/**
+     * Create instance with call time arguments.
+     */
+    protected \Magento\FunctionalTestingFramework\ObjectManager\FactoryInterface $factory, /**
      * Class config.
      *
      * @var Config\Config
      */
-    protected $config;
-
-    /**
-     * ObjectManager constructor.
-     * @param FactoryInterface $factory
-     * @param ConfigInterface  $config
-     * @param array            $sharedInstances
-     */
-    public function __construct(FactoryInterface $factory, ConfigInterface $config, array $sharedInstances = [])
+    protected \Magento\FunctionalTestingFramework\ObjectManager\ConfigInterface $config, array $sharedInstances = [])
     {
-        $this->config = $config;
-        $this->factory = $factory;
         $this->sharedInstances = $sharedInstances;
         $this->sharedInstances[\Magento\FunctionalTestingFramework\ObjectManagerInterface::class] = $this;
     }
@@ -50,7 +39,6 @@ class ObjectManager implements \Magento\FunctionalTestingFramework\ObjectManager
      * Create new object instance
      *
      * @param string $type
-     * @param array  $arguments
      * @return object
      */
     public function create($type, array $arguments = [])
@@ -75,11 +63,8 @@ class ObjectManager implements \Magento\FunctionalTestingFramework\ObjectManager
 
     /**
      * Configure di instance
-     *
-     * @param array $configuration
-     * @return void
      */
-    public function configure(array $configuration)
+    public function configure(array $configuration): void
     {
         $this->config->extend($configuration);
     }

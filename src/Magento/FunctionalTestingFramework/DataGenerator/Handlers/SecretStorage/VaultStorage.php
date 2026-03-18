@@ -54,14 +54,14 @@ class VaultStorage extends BaseStorage
      *
      * @var Client
      */
-    private $client = null;
+    private $client;
 
     /**
      * Vault token
      *
      * @var string
      */
-    private $token = null;
+    private $token;
 
     /**
      * Vault secret base path
@@ -122,7 +122,7 @@ class VaultStorage extends BaseStorage
         $reValue = null;
         try {
             // Split vendor/key to construct secret path
-            list($vendor, $key) = explode('/', trim($key, '/'), 2);
+            [$vendor, $key] = explode('/', trim($key, '/'), 2);
             $url = $this->secretBasePath
                 . (empty(self::KV2_DATA) ? '' : '/' . self::KV2_DATA)
                 . self::MFTF_PATH
@@ -151,10 +151,8 @@ class VaultStorage extends BaseStorage
 
     /**
      * Check if vault token is valid
-     *
-     * @return boolean
      */
-    private function authenticated()
+    private function authenticated(): bool
     {
         try {
             // Authenticating using token auth backend
@@ -180,10 +178,9 @@ class VaultStorage extends BaseStorage
     /**
      * Read vault token from file system
      *
-     * @return void
      * @throws TestFrameworkException
      */
-    private function readVaultTokenFromFileSystem()
+    private function readVaultTokenFromFileSystem(): void
     {
         // Find user home directory
         $homeDir = getenv('HOME');
@@ -228,13 +225,12 @@ class VaultStorage extends BaseStorage
      * Get vault token helper script by parsing lines in vault config file
      *
      * @param array $lines
-     * @return string
      */
-    private function getTokenHelperScript($lines)
+    private function getTokenHelperScript($lines): string
     {
         $tokenHelper = '';
         foreach ($lines as $line) {
-            preg_match(self::TOKEN_HELPER_REGEX, $line, $matches);
+            preg_match(self::TOKEN_HELPER_REGEX, (string) $line, $matches);
             if (isset($matches[self::TOKEN_HELPER_REGEX_GROUP_NAME])) {
                 $tokenHelper = trim(trim(trim($matches[self::TOKEN_HELPER_REGEX_GROUP_NAME]), '"'));
             }
@@ -245,11 +241,9 @@ class VaultStorage extends BaseStorage
     /**
      * Execute vault token helper script and return the token it contains
      *
-     * @param string $cmd
-     * @return string
      * @throws TestFrameworkException
      */
-    private function execVaultTokenHelper($cmd)
+    private function execVaultTokenHelper(string $cmd): string
     {
         exec($cmd, $out, $status);
         if ($status === 0 && isset($out[0]) && !empty($out[0])) {

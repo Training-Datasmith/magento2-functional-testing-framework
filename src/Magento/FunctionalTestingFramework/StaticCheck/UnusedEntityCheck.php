@@ -32,10 +32,8 @@ class UnusedEntityCheck implements StaticCheckInterface
 
     /**
      * ScriptUtil instance
-     *
-     * @var ScriptUtil $scriptUtil
      */
-    private $scriptUtil;
+    private ?\Magento\FunctionalTestingFramework\Util\Script\ScriptUtil $scriptUtil = null;
 
     /**
      * @var array
@@ -50,11 +48,9 @@ class UnusedEntityCheck implements StaticCheckInterface
     /**
      * Checks test dependencies, determined by references in tests versus the dependencies listed in the Magento module
      *
-     * @param  InputInterface $input
-     * @return void
      * @throws Exception
      */
-    public function execute(InputInterface $input)
+    public function execute(InputInterface $input): void
     {
         $this->errors  = $this->unusedEntities();
         $this->output = $this->scriptUtil->printErrorsToFile(
@@ -153,10 +149,9 @@ class UnusedEntityCheck implements StaticCheckInterface
     /**
      * Setting error message
      *
-     * @return array
      * @throws Exception
      */
-    private function setErrorOutput($unusedFilePath)
+    private function setErrorOutput(array $unusedFilePath): array
     {
         $testErrors = [];
         foreach ($unusedFilePath as $files) {
@@ -177,16 +172,15 @@ class UnusedEntityCheck implements StaticCheckInterface
      * @param  ScriptUtil  $testXmlFiles
      * @param  ScriptUtil  $allActionGroupFileNames
      * @param  ScriptUtil  $suiteXmlFiles
-     * @return array
      * @throws Exception
      */
     public function unusedActionEntity(
         $domDocument,
         $actionGroupXmlFiles,
         $testXmlFiles,
-        $allActionGroupFileNames,
+        array $allActionGroupFileNames,
         $suiteXmlFiles
-    ) {
+    ): array {
         foreach ($suiteXmlFiles as $filePath) {
             $domDocument->load($filePath);
             $referencesSuite= $this->getAttributesFromDOMNodeList(
@@ -243,7 +237,7 @@ class UnusedEntityCheck implements StaticCheckInterface
             foreach ($pagesReferencesInSuites as $pagesReferencesInSuitesResult) {
                 $explodepagesReferencesResult = explode(
                     ".",
-                    trim($pagesReferencesInSuitesResult, "{}")
+                    trim((string) $pagesReferencesInSuitesResult, "{}")
                 );
                 unset($pageNames[$explodepagesReferencesResult[0]]);
             }
@@ -259,7 +253,7 @@ class UnusedEntityCheck implements StaticCheckInterface
             foreach ($pagesReferences as $pagesReferencesResult) {
                 $explodepagesReferencesResult = explode(
                     ".",
-                    trim($pagesReferencesResult, "{}")
+                    trim((string) $pagesReferencesResult, "{}")
                 );
                 unset($pageNames[$explodepagesReferencesResult[0]]);
             }
@@ -276,7 +270,7 @@ class UnusedEntityCheck implements StaticCheckInterface
             foreach ($testReferences as $pagesReferencesResult) {
                 $explodepagesReferencesResult = explode(
                     ".",
-                    trim($pagesReferencesResult, "{}")
+                    trim((string) $pagesReferencesResult, "{}")
                 );
                 unset($pageNames[$explodepagesReferencesResult[0]]);
             }
@@ -289,12 +283,10 @@ class UnusedEntityCheck implements StaticCheckInterface
      * Common Pattern Check Method
      *
      * @param  DOMDocument $domDocument
-     * @param  array       $fileNames
      * @param  string      $contents
-     * @return array
      * @throws Exception
      */
-    private function entityReferencePatternCheck($domDocument, $fileNames, $contents, $data, $removeDataFilePath)
+    private function entityReferencePatternCheck($domDocument, array $fileNames, string|bool $contents, bool $data, $removeDataFilePath): array
     {
         $sectionArgumentValueReference = $this->getAttributesFromDOMNodeList(
             $domDocument->getElementsByTagName("argument"),
@@ -306,13 +298,11 @@ class UnusedEntityCheck implements StaticCheckInterface
         );
         $sectionArgumentValue = array_merge($sectionArgumentValueReference, $sectionDefaultValueArgumentReference);
         foreach ($sectionArgumentValue as $sectionArgumentValueResult) {
-            $explodedReference = str_contains($sectionArgumentValueResult, '$')
-                ? explode(".", trim($sectionArgumentValueResult, '$'))
-                : explode(".", trim($sectionArgumentValueResult, "{}"));
+            $explodedReference = str_contains((string) $sectionArgumentValueResult, '$')
+                ? explode(".", trim((string) $sectionArgumentValueResult, '$'))
+                : explode(".", trim((string) $sectionArgumentValueResult, "{}"));
             if (in_array($explodedReference[0], array_keys($fileNames))) {
-                $removeDataFilePath[] = isset($fileNames[$explodedReference[0]]["dataFilePath"])
-                    ? $fileNames[$explodedReference[0]]["dataFilePath"]
-                    : [];
+                $removeDataFilePath[] = $fileNames[$explodedReference[0]]["dataFilePath"] ?? [];
                 unset($fileNames[$explodedReference[0]]);
             }
         }
@@ -330,9 +320,7 @@ class UnusedEntityCheck implements StaticCheckInterface
         foreach (array_unique($entityReferenceDataResultActionGroup) as $bracketReferencesResults) {
             $bracketReferencesDataResultOutput = explode(".", trim($bracketReferencesResults, "{}"));
             if (in_array($bracketReferencesDataResultOutput[0], array_keys($fileNames))) {
-                $removeDataFilePath[] = isset($fileNames[$bracketReferencesDataResultOutput[0]]["dataFilePath"])
-                    ? $fileNames[$bracketReferencesDataResultOutput[0]]["dataFilePath"]
-                    : [];
+                $removeDataFilePath[] = $fileNames[$bracketReferencesDataResultOutput[0]]["dataFilePath"] ?? [];
                 unset($fileNames[$bracketReferencesDataResultOutput[0]]);
             }
         }
@@ -410,13 +398,12 @@ class UnusedEntityCheck implements StaticCheckInterface
                 []
             );
         }
-        $sectionFileNames = $this->getUnusedSectionEntitiesReferenceInActionGroupAndTestFiles(
+        return $this->getUnusedSectionEntitiesReferenceInActionGroupAndTestFiles(
             $testXmlFiles,
             $pageXmlFiles,
             $domDocument,
             $sectionFileNames
         );
-        return $sectionFileNames;
     }
 
     /**
@@ -488,15 +475,14 @@ class UnusedEntityCheck implements StaticCheckInterface
      * Return Unused Data entities
      *
      * @param  DOMDocument $domDocument
-     * @return array
      */
     public function unusedData(
         $domDocument,
         $actionGroupXmlFiles,
         $testXmlFiles,
-        $dataNames,
+        array $dataNames,
         $dataXmlFiles
-    ) {
+    ): array {
         $removeDataFilePath = [];
         foreach ($dataXmlFiles as $filePath) {
             $domDocument->load($filePath);
@@ -554,12 +540,10 @@ class UnusedEntityCheck implements StaticCheckInterface
                     $getDataReferences
                 )
             );
-            if (count($dataReferences) > 0) {
-                foreach ($dataReferences as $dataReferencesResult) {
-                    if (isset($dataNames[$dataReferencesResult])) {
-                        $removeDataFilePath[] = $dataNames[$dataReferencesResult]["dataFilePath"];
-                        unset($dataNames[$dataReferencesResult]);
-                    }
+            foreach ($dataReferences as $dataReferencesResult) {
+                if (isset($dataNames[$dataReferencesResult])) {
+                    $removeDataFilePath[] = $dataNames[$dataReferencesResult]["dataFilePath"];
+                    unset($dataNames[$dataReferencesResult]);
                 }
             }
         }
@@ -569,10 +553,8 @@ class UnusedEntityCheck implements StaticCheckInterface
 
     /**
      * Remove used entities file path from unused entities array
-     *
-     * @return array
      */
-    private function unsetFilePath($dataNames, $removeDataFilePath)
+    private function unsetFilePath(array $dataNames, $removeDataFilePath): array
     {
         $dataFilePathResult = [];
         foreach ($dataNames as $key => $dataNamesResult) {
@@ -590,9 +572,8 @@ class UnusedEntityCheck implements StaticCheckInterface
      *
      * @param  DOMNodeList $nodes
      * @param  string      $attributeName
-     * @return array
      */
-    private function getAttributesFromDOMNodeList($nodes, $attributeName)
+    private function getAttributesFromDOMNodeList($nodes, array|string $attributeName): array
     {
         $attributes = [];
         foreach ($nodes as $node) {
@@ -611,9 +592,6 @@ class UnusedEntityCheck implements StaticCheckInterface
 
     /**
      * Extract actionGroup DomElement from xml file
-     *
-     * @param  string $contents
-     * @return \DOMElement
      */
     public function getActionGroupDomElement(string $contents): DOMElement
     {

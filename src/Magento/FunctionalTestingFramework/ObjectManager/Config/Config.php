@@ -18,10 +18,8 @@ class Config implements \Magento\FunctionalTestingFramework\ObjectManager\Config
 {
     /**
      * Class definitions
-     *
-     * @var \Magento\FunctionalTestingFramework\ObjectManager\DefinitionInterface
      */
-    protected $definitions;
+    protected \Magento\FunctionalTestingFramework\ObjectManager\DefinitionInterface $definitions;
 
     /**
      * Current cache key
@@ -60,10 +58,8 @@ class Config implements \Magento\FunctionalTestingFramework\ObjectManager\Config
 
     /**
      * List of relations
-     *
-     * @var RelationsInterface
      */
-    protected $relations;
+    protected \Magento\FunctionalTestingFramework\ObjectManager\RelationsInterface $relations;
 
     /**
      * List of merged arguments
@@ -74,8 +70,6 @@ class Config implements \Magento\FunctionalTestingFramework\ObjectManager\Config
 
     /**
      * Config constructor.
-     * @param RelationsInterface|null  $relations
-     * @param DefinitionInterface|null $definitions
      */
     public function __construct(?RelationsInterface $relations = null, ?DefinitionInterface $definitions = null)
     {
@@ -91,18 +85,15 @@ class Config implements \Magento\FunctionalTestingFramework\ObjectManager\Config
      */
     public function getArguments($type)
     {
-        return isset($this->mergedArguments[$type])
-            ? $this->mergedArguments[$type]
-            : $this->collectConfiguration($type);
+        return $this->mergedArguments[$type] ?? $this->collectConfiguration($type);
     }
 
     /**
      * Check whether type is shared
      *
      * @param string $type
-     * @return boolean
      */
-    public function isShared($type)
+    public function isShared($type): bool
     {
         return !isset($this->nonShared[$type]);
     }
@@ -194,7 +185,6 @@ class Config implements \Magento\FunctionalTestingFramework\ObjectManager\Config
     /**
      * Merge configuration
      *
-     * @param array $configuration
      * @return void
      */
     protected function mergeConfiguration(array $configuration)
@@ -203,7 +193,7 @@ class Config implements \Magento\FunctionalTestingFramework\ObjectManager\Config
             switch ($key) {
                 case 'preferences':
                     foreach ($curConfig as $for => $to) {
-                        $this->preferences[ltrim($for, '\\')] = ltrim($to, '\\');
+                        $this->preferences[ltrim((string) $for, '\\')] = ltrim((string) $to, '\\');
                     }
                     break;
 
@@ -217,12 +207,10 @@ class Config implements \Magento\FunctionalTestingFramework\ObjectManager\Config
      * Set configuration
      *
      * @param string $key
-     * @param array  $config
-     * @return void
      */
-    private function setConfiguration($key, $config)
+    private function setConfiguration(int|string $key, array $config): void
     {
-        $key = ltrim($key, '\\');
+        $key = ltrim((string) $key, '\\');
         if (isset($config['type'])) {
             $this->virtualTypes[$key] = ltrim($config['type'], '\\');
         }
@@ -247,11 +235,8 @@ class Config implements \Magento\FunctionalTestingFramework\ObjectManager\Config
 
     /**
      * Extend configuration
-     *
-     * @param array $configuration
-     * @return void
      */
-    public function extend(array $configuration)
+    public function extend(array $configuration): void
     {
         $this->mergeConfiguration($configuration);
     }

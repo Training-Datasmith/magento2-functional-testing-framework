@@ -25,10 +25,8 @@ class NameValidationUtil
 
     /**
      * The number of violations this instance has detected.
-     *
-     * @var integer
      */
-    private $count;
+    private int $count;
 
     /**
      * NameValidationUtil constructor.
@@ -45,10 +43,9 @@ class NameValidationUtil
      *
      * @param string $name
      * @param string $type
-     * @return void
      * @throws XmlException
      */
-    public static function validateName($name, $type)
+    public static function validateName($name, $type): void
     {
         $startingPos = 0;
         $illegalCharArray = [];
@@ -85,9 +82,8 @@ class NameValidationUtil
      * @param string $type
      * @param string $filename
      * @throws TestFrameworkException
-     * @return void
      */
-    public function validatePascalCase($str, $type, $filename = null)
+    public function validatePascalCase($str, $type, $filename = null): void
     {
         if (!is_string($str) || !ctype_upper($str[0])) {
             $message = "The {$type} {$str} should be PascalCase with an uppercase first letter.";
@@ -113,9 +109,8 @@ class NameValidationUtil
      * @param string $type
      * @param string $filename
      * @throws TestFrameworkException
-     * @return void
      */
-    public function validateCamelCase($str, $type, $filename = null)
+    public function validateCamelCase($str, $type, $filename = null): void
     {
         if (!is_string($str) || !ctype_lower($str[0])) {
             $message = "The {$type} {$str} should be camelCase with a lowercase first letter.";
@@ -141,13 +136,12 @@ class NameValidationUtil
      * @param string $type
      * @param string $filename
      * @throws TestFrameworkException
-     * @return void
      */
-    public function validateAffixes($str, $type, $filename = null)
+    public function validateAffixes($str, $type, $filename = null): void
     {
-        $isPrefixAdmin = substr($str, 0, 5) === "Admin";
-        $isPrefixStorefront = substr($str, 0, 10) === "Storefront";
-        $isSuffixType = substr($str, -strlen($type)) === $type;
+        $isPrefixAdmin = str_starts_with($str, "Admin");
+        $isPrefixStorefront = str_starts_with($str, "Storefront");
+        $isSuffixType = str_ends_with($str, $type);
 
         if ((!$isPrefixAdmin && !$isPrefixStorefront) || !$isSuffixType) {
             $message = "The {$type} name {$str} should follow the pattern {Admin or Storefront}{Description}{$type}.";
@@ -171,9 +165,8 @@ class NameValidationUtil
      *
      * @param string $type
      * @throws TestFrameworkException
-     * @return void
      */
-    public function summarize($type)
+    public function summarize($type): void
     {
         if ($this->count > 0) {
             LoggingUtil::getInstance()->getLogger(self::class)->notification(

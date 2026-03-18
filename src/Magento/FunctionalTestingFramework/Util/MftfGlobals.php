@@ -19,30 +19,28 @@ class MftfGlobals
      *
      * @var string null
      */
-    private static $baseUrl = null;
+    private static ?string $baseUrl = null;
 
     /**
      * Magento Backend Base URL
      *
      * @var string null
      */
-    private static $backendBaseUrl = null;
+    private static ?string $backendBaseUrl = null;
 
     /**
      * Magento Web API Base URL
      *
      * @var string null
      */
-    private static $webApiBaseUrl = null;
+    private static ?string $webApiBaseUrl = null;
 
     /**
      * Returns Magento Base URL
      *
-     * @param boolean $withTrailingSeparator
-     * @return string
      * @throws TestFrameworkException
      */
-    public static function getBaseUrl($withTrailingSeparator = true)
+    public static function getBaseUrl(bool $withTrailingSeparator = true): string
     {
         if (!self::$baseUrl) {
             try {
@@ -50,7 +48,7 @@ class MftfGlobals
                 if ($url) {
                     self::$baseUrl = UrlFormatter::format($url, false);
                 }
-            } catch (TestFrameworkException $e) {
+            } catch (TestFrameworkException) {
             }
         }
 
@@ -68,11 +66,9 @@ class MftfGlobals
     /**
      * Return Magento Backend Base URL
      *
-     * @param boolean $withTrailingSeparator
-     * @return string
      * @throws TestFrameworkException
      */
-    public static function getBackendBaseUrl($withTrailingSeparator = true)
+    public static function getBackendBaseUrl(bool $withTrailingSeparator = true): string
     {
         if (!self::$backendBaseUrl) {
             try {
@@ -92,7 +88,7 @@ class MftfGlobals
                         );
                     }
                 }
-            } catch (TestFrameworkException $e) {
+            } catch (TestFrameworkException) {
             }
         }
 
@@ -114,11 +110,9 @@ class MftfGlobals
     /**
      * Return Web API Base URL
      *
-     * @param boolean $withTrailingSeparator
-     * @return string
      * @throws TestFrameworkException
      */
-    public static function getWebApiBaseUrl($withTrailingSeparator = true)
+    public static function getWebApiBaseUrl(bool $withTrailingSeparator = true): string
     {
         if (!self::$webApiBaseUrl) {
             try {
@@ -144,7 +138,7 @@ class MftfGlobals
                 }
 
                 self::$webApiBaseUrl = $baseUrl . '/rest';
-            } catch (TestFrameworkException $e) {
+            } catch (TestFrameworkException) {
             }
         }
         if (self::$webApiBaseUrl) {

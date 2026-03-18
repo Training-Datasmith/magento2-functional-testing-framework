@@ -29,7 +29,6 @@ class MagentoActionProxies extends CodeceptionModule
      * @param array  $dependentObjectKeys StepKeys of other createData actions that are required.
      * @param array  $overrideFields      Array of FieldName => Value of override fields.
      * @param string $storeCode
-     * @return void
      */
     public function createEntity(
         $key,
@@ -38,7 +37,7 @@ class MagentoActionProxies extends CodeceptionModule
         $dependentObjectKeys = [],
         $overrideFields = [],
         $storeCode = ''
-    ) {
+    ): void {
         PersistedObjectHandler::getInstance()->createEntity(
             $key,
             $scope,
@@ -56,9 +55,8 @@ class MagentoActionProxies extends CodeceptionModule
      * @param string $scope
      * @param string $updateEntity        Name of the static XML data to update the entity with.
      * @param array  $dependentObjectKeys StepKeys of other createData actions that are required.
-     * @return void
      */
-    public function updateEntity($key, $scope, $updateEntity, $dependentObjectKeys = [])
+    public function updateEntity($key, $scope, $updateEntity, $dependentObjectKeys = []): void
     {
         PersistedObjectHandler::getInstance()->updateEntity(
             $key,
@@ -77,9 +75,8 @@ class MagentoActionProxies extends CodeceptionModule
      * @param array   $dependentObjectKeys StepKeys of other createData actions that are required.
      * @param string  $storeCode
      * @param integer $index
-     * @return void
      */
-    public function getEntity($key, $scope, $entity, $dependentObjectKeys = [], $storeCode = '', $index = null)
+    public function getEntity($key, $scope, $entity, $dependentObjectKeys = [], $storeCode = '', $index = null): void
     {
         PersistedObjectHandler::getInstance()->getEntity(
             $key,
@@ -96,9 +93,8 @@ class MagentoActionProxies extends CodeceptionModule
      *
      * @param string $key   StepKey of the createData action.
      * @param string $scope
-     * @return void
      */
-    public function deleteEntity($key, $scope)
+    public function deleteEntity($key, $scope): void
     {
         PersistedObjectHandler::getInstance()->deleteEntity($key, $scope);
     }

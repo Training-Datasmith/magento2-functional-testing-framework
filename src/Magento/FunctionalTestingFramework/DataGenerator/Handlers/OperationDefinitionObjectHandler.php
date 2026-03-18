@@ -49,24 +49,20 @@ class OperationDefinitionObjectHandler implements ObjectHandlerInterface
 
     /**
      * The singleton instance of this class
-     *
-     * @var OperationDefinitionObjectHandler
      */
-    private static $INSTANCE;
+    private static ?\Magento\FunctionalTestingFramework\DataGenerator\Handlers\OperationDefinitionObjectHandler $INSTANCE = null;
 
     /**
      * An array containing all <operation>
      *
      * @var OperationDefinitionObject[]
      */
-    private $operationDefinitionObjects = [];
+    private array $operationDefinitionObjects = [];
 
     /**
      * A helper used to convert the primitive array parser output into objects.
-     *
-     * @var OperationElementExtractor
      */
-    private $operationElementExtractor;
+    private readonly \Magento\FunctionalTestingFramework\DataGenerator\Util\OperationElementExtractor $operationElementExtractor;
 
     /**
      * The constructor
@@ -115,11 +111,9 @@ class OperationDefinitionObjectHandler implements ObjectHandlerInterface
     /**
      * Return an <operation> by operation and type. Eg. "create" and "address"
      *
-     * @param string $operation
-     * @param string $dataType
      * @return OperationDefinitionObject
      */
-    public function getOperationDefinition($operation, $dataType)
+    public function getOperationDefinition(string $operation, string $dataType)
     {
         return $this->getObject($operation . $dataType);
     }
@@ -128,12 +122,10 @@ class OperationDefinitionObjectHandler implements ObjectHandlerInterface
      * Read metadata xml via the Magento parser and then convert the primitive array output
      * into an array of objects.
      *
-     * @return void
      * @throws \Exception
-     *
      * @SuppressWarnings(PHPMD)
      */
-    private function initialize()
+    private function initialize(): void
     {
         $objectManager = ObjectManagerFactory::getObjectManager();
         $parser = $objectManager->create(OperationDefinitionParser::class);
@@ -244,9 +236,6 @@ class OperationDefinitionObjectHandler implements ObjectHandlerInterface
 
     /**
      * Convert headers metadata into an array of objects for further use in.
-     *
-     * @param array $opDefArray
-     * @return array
      */
     private function initializeHeaders(array $opDefArray): array
     {
@@ -266,9 +255,6 @@ class OperationDefinitionObjectHandler implements ObjectHandlerInterface
 
     /**
      * Convert params metadata into an array of objects.
-     *
-     * @param array $opDefArray
-     * @return array
      */
     private function initializeParams(array $opDefArray): array
     {

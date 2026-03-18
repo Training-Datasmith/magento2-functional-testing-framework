@@ -25,10 +25,6 @@ class Reader extends \Magento\FunctionalTestingFramework\Config\Reader\Filesyste
 
     /**
      * Reader constructor.
-     * @param FileResolverInterface    $fileResolver
-     * @param ConverterInterface       $converter
-     * @param SchemaLocatorInterface   $schemaLocator
-     * @param ValidationStateInterface $validationState
      * @param string                   $fileName
      * @param array                    $idAttributes
      * @param string                   $domDocumentClass

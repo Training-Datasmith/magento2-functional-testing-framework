@@ -25,22 +25,18 @@ class PauseActionUsageCheck implements StaticCheckInterface
 
     /**
      * Array containing all errors found after running the execute() function.
-     * @var array
      */
-    private $errors = [];
+    private array $errors = [];
 
     /**
      * String representing the output summary found after running the execute() function.
-     * @var string
      */
-    private $output;
+    private ?string $output = null;
 
     /**
      * ScriptUtil instance
-     *
-     * @var ScriptUtil
      */
-    private $scriptUtil;
+    private ?\Magento\FunctionalTestingFramework\Util\Script\ScriptUtil $scriptUtil = null;
 
     /**
      * Test xml files to scan
@@ -73,11 +69,9 @@ class PauseActionUsageCheck implements StaticCheckInterface
     /**
      * Checks usage of pause action in action groups, tests and suites and prints out error to file.
      *
-     * @param InputInterface $input
-     * @return void
      * @throws Exception
      */
-    public function execute(InputInterface $input)
+    public function execute(InputInterface $input): void
     {
         $this->scriptUtil = new ScriptUtil();
         $modulePaths = [];
@@ -115,9 +109,8 @@ class PauseActionUsageCheck implements StaticCheckInterface
     /**
      * Finds usages of pause action in action group files
      * @param array $actionGroupXmlFiles
-     * @return array
      */
-    private function validatePauseActionUsageInActionGroups($actionGroupXmlFiles)
+    private function validatePauseActionUsageInActionGroups($actionGroupXmlFiles): array
     {
         $actionGroupErrors = [];
         foreach ($actionGroupXmlFiles as $filePath) {
@@ -133,9 +126,8 @@ class PauseActionUsageCheck implements StaticCheckInterface
     /**
      * Finds usages of pause action in test files
      * @param array $testXmlFiles
-     * @return array
      */
-    private function validatePauseActionUsageInTests($testXmlFiles)
+    private function validatePauseActionUsageInTests($testXmlFiles): array
     {
         $testErrors = [];
         foreach ($testXmlFiles as $filePath) {
@@ -151,9 +143,8 @@ class PauseActionUsageCheck implements StaticCheckInterface
     /**
      * Finds usages of pause action in suite files
      * @param array $suiteXmlFiles
-     * @return array
      */
-    private function validatePauseActionUsageInSuites($suiteXmlFiles)
+    private function validatePauseActionUsageInSuites($suiteXmlFiles): array
     {
         $suiteErrors = [];
         foreach ($suiteXmlFiles as $filePath) {
@@ -169,9 +160,8 @@ class PauseActionUsageCheck implements StaticCheckInterface
     /**
      * Finds violating pause action step keys
      * @param \DomNode $entity
-     * @return array
      */
-    private function findViolatingPauseStepKeys($entity)
+    private function findViolatingPauseStepKeys($entity): array
     {
         $violatingStepKeys = [];
         $entityName = $entity->getAttribute('name');
@@ -207,9 +197,9 @@ class PauseActionUsageCheck implements StaticCheckInterface
      *
      * @param array       $violatingReferences
      * @param SplFileInfo $path
-     * @return mixed
+     * @return array{non-falsy-string}[]
      */
-    private function setErrorOutput($violatingReferences, $path)
+    private function setErrorOutput($violatingReferences, $path): array
     {
         $testErrors = [];
 

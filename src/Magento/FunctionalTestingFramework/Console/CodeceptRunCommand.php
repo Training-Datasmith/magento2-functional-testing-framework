@@ -18,8 +18,6 @@ class CodeceptRunCommand extends Run
 {
     /**
      * Configures the current command
-     *
-     * @return void
      */
     protected function configure():void
     {
@@ -34,9 +32,6 @@ class CodeceptRunCommand extends Run
     /**
      * Executes the current command
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return integer
      * @throws \Exception
      */
     public function execute(InputInterface $input, OutputInterface $output): int

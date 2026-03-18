@@ -23,12 +23,8 @@ class RemoveUnusedArguments implements UpgradeInterface
 
     /**
      * Updates all actionGroup xml files
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return string
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): string
     {
         $scriptUtil = new ScriptUtil();
         $testPaths[] = $input->getArgument('path');

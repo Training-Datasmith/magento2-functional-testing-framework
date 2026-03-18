@@ -23,7 +23,6 @@ class FileStorage extends BaseStorage
     /**
      * Initialize secret data value which represents encrypted credentials
      *
-     * @return void
      * @throws TestFrameworkException
      */
     public function initialize(): void
@@ -38,7 +37,6 @@ class FileStorage extends BaseStorage
      * Returns the value of a secret based on corresponding key
      *
      * @param string $key
-     * @return string|null
      * @throws TestFrameworkException
      */
     public function getEncryptedValue($key): ?string
@@ -92,22 +90,25 @@ class FileStorage extends BaseStorage
      * Function which takes the contents of the credentials file and encrypts the entries
      *
      * @param array $credContents
-     * @return array
      * @throws TestFrameworkException
      */
-    private function encryptCredFileContents($credContents)
+    private function encryptCredFileContents($credContents): array
     {
         $encryptedCreds = [];
         foreach ($credContents as $credValue) {
-            if (substr($credValue, 0, 1) === '#' || empty($credValue)) {
+            if (str_starts_with((string) $credValue, '#')) {
                 continue;
-            } elseif (strpos($credValue, "=") === false) {
+            }
+            if (empty($credValue)) {
+                continue;
+            }
+            if (!str_contains((string) $credValue, "=")) {
                 throw new TestFrameworkException(
                     $credValue . " not configured correctly in .credentials file"
                 );
             }
 
-            list($key, $value) = explode("=", $credValue, 2);
+            [$key, $value] = explode("=", (string) $credValue, 2);
             if (!empty($value)) {
                 $encryptedCreds[$key] = openssl_encrypt(
                     $value,

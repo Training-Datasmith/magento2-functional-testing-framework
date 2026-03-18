@@ -24,7 +24,6 @@ class MftfDom extends \Magento\FunctionalTestingFramework\Config\Dom
      * @param string             $xml
      * @param string             $filename
      * @param ExceptionCollector $exceptionCollector
-     * @param array              $idAttributes
      * @param string             $typeAttributeName
      * @param string             $schemaFile
      * @param string             $errorFormat
@@ -42,7 +41,7 @@ class MftfDom extends \Magento\FunctionalTestingFramework\Config\Dom
         $this->nodeMergingConfig = new NodeMergingConfig(new NodePathMatcher(), $idAttributes);
         $this->typeAttributeName = $typeAttributeName;
         $this->errorFormat = $errorFormat;
-        $this->dom = $this->initDom($xml, $filename, $exceptionCollector);
+        $this->dom = $this->initDom($xml, $filename);
         $this->rootNamespace = $this->dom->lookupNamespaceUri($this->dom->namespaceURI);
     }
 
@@ -52,11 +51,10 @@ class MftfDom extends \Magento\FunctionalTestingFramework\Config\Dom
      * @param string             $xml
      * @param string|null        $filename
      * @param ExceptionCollector $exceptionCollector
-     * @return void
      */
-    public function merge($xml, $filename = null, $exceptionCollector = null)
+    public function merge($xml, $filename = null, $exceptionCollector = null): void
     {
-        $dom = $this->initDom($xml, $filename, $exceptionCollector);
+        $dom = $this->initDom($xml, $filename);
         $this->mergeNode($dom->documentElement, '');
     }
 
@@ -64,11 +62,10 @@ class MftfDom extends \Magento\FunctionalTestingFramework\Config\Dom
      * Checks if the filename given ends with the correct suffix.
      * @param string $filename
      * @param string $suffix
-     * @return boolean
      */
-    public function checkFilenameSuffix($filename, $suffix)
+    public function checkFilenameSuffix($filename, $suffix): bool
     {
-        if (substr_compare($filename, $suffix, -strlen($suffix)) === 0) {
+        if (str_ends_with($filename, $suffix)) {
             return true;
         }
         return false;

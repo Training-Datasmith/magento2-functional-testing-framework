@@ -20,28 +20,26 @@ class PersistedObjectHandler
 
     /**
      * The singleton instance of this class
-     *
-     * @var PersistedObjectHandler $INSTANCE
      */
-    private static $INSTANCE;
+    private static ?\Magento\FunctionalTestingFramework\DataGenerator\Handlers\PersistedObjectHandler $INSTANCE = null;
 
     /**
      * Store of all hook created objects
      * @var DataPersistenceHandler[] array
      */
-    private $hookObjects = [];
+    private array $hookObjects = [];
 
     /**
      * Store of all test created objects
      * @var DataPersistenceHandler[] array
      */
-    private $testObjects = [];
+    private array $testObjects = [];
 
     /**
      * Store of all suite created objects
      * @var DataPersistenceHandler[] array
      */
-    private $suiteObjects = [];
+    private array $suiteObjects = [];
 
     /**
      * Constructor
@@ -72,16 +70,15 @@ class PersistedObjectHandler
      * @param array  $dependentObjectKeys StepKeys of other createData actions that are required.
      * @param array  $overrideFields      Array of FieldName => Value of override fields.
      * @param string $storeCode
-     * @return void
      */
     public function createEntity(
-        $key,
+        string $key,
         $scope,
-        $entity,
+        string $entity,
         $dependentObjectKeys = [],
         $overrideFields = [],
-        $storeCode = ""
-    ) {
+        ?string $storeCode = ""
+    ): void {
         $retrievedDependentObjects = [];
         foreach ($dependentObjectKeys as $objectKey) {
             $retrievedDependentObjects[] = $this->retrieveEntity($objectKey, $scope);
@@ -121,9 +118,8 @@ class PersistedObjectHandler
      * @param string $scope
      * @param string $updateEntity        Name of the static XML data to update the entity with.
      * @param array  $dependentObjectKeys StepKeys of other createData actions that are required.
-     * @return void
      */
-    public function updateEntity($key, $scope, $updateEntity, $dependentObjectKeys = [])
+    public function updateEntity($key, $scope, $updateEntity, $dependentObjectKeys = []): void
     {
         $retrievedDependentObjects = [];
         foreach ($dependentObjectKeys as $objectKey) {
@@ -138,9 +134,8 @@ class PersistedObjectHandler
      * Retrieves and deletes a previously created entity.
      * @param string $key   StepKey of the createData action.
      * @param string $scope
-     * @return void
      */
-    public function deleteEntity($key, $scope)
+    public function deleteEntity($key, $scope): void
     {
         $originalEntity = $this->retrieveEntity($key, $scope);
         $originalEntity->deleteEntity();
@@ -154,9 +149,8 @@ class PersistedObjectHandler
      * @param array   $dependentObjectKeys StepKeys of other createData actions that are required.
      * @param string  $storeCode
      * @param integer $index
-     * @return void
      */
-    public function getEntity($key, $scope, $entity, $dependentObjectKeys = [], $storeCode = "", $index = null)
+    public function getEntity($key, $scope, $entity, $dependentObjectKeys = [], ?string $storeCode = "", ?string $index = null): void
     {
         $retrievedDependentObjects = [];
         foreach ($dependentObjectKeys as $objectKey) {
@@ -230,38 +224,32 @@ class PersistedObjectHandler
 
     /**
      * Clears store of all test persisted Objects
-     * @return void
      */
-    public function clearTestObjects()
+    public function clearTestObjects(): void
     {
         $this->testObjects = [];
     }
 
     /**
      * Clears store of all hook persisted Objects
-     * @return void
      */
-    public function clearHookObjects()
+    public function clearHookObjects(): void
     {
         $this->hookObjects = [];
     }
 
     /**
      * Clears store of all suite persisted Objects
-     * @return void
      */
-    public function clearSuiteObjects()
+    public function clearSuiteObjects(): void
     {
         $this->suiteObjects = [];
     }
 
     /**
      * Resolve secret values in $overrideFields
-     *
-     * @param array $overrideFields
-     * @return array
      */
-    private function resolveOverrideFields($overrideFields)
+    private function resolveOverrideFields(array $overrideFields): array
     {
         foreach ($overrideFields as $index => $field) {
             if (is_array($field)) {
@@ -272,7 +260,7 @@ class PersistedObjectHandler
                     if ($decrptedField !== false) {
                         $overrideFields[$index] = $decrptedField;
                     }
-                } catch (TestFrameworkException $e) {
+                } catch (TestFrameworkException) {
                     //catch exception if Credentials are not defined
                 }
             }

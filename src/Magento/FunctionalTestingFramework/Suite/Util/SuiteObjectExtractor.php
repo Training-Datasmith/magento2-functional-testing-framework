@@ -41,10 +41,8 @@ class SuiteObjectExtractor extends BaseObjectExtractor
 
     /**
      * TestHookObjectExtractor initialized in constructor.
-     *
-     * @var TestHookObjectExtractor
      */
-    private $testHookObjectExtractor;
+    private readonly \Magento\FunctionalTestingFramework\Test\Util\TestHookObjectExtractor $testHookObjectExtractor;
 
     /**
      * SuiteObjectExtractor constructor
@@ -57,15 +55,13 @@ class SuiteObjectExtractor extends BaseObjectExtractor
     /**
      * Takes an array of parsed xml and converts into an array of suite objects.
      *
-     * @param array $parsedSuiteData
-     * @return array
      * @throws FastFailException
      *
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    public function parseSuiteDataIntoObjects($parsedSuiteData)
+    public function parseSuiteDataIntoObjects(array $parsedSuiteData): array
     {
         $suiteObjects = [];
 
@@ -177,11 +173,9 @@ class SuiteObjectExtractor extends BaseObjectExtractor
      * 1. the name used is using special char or the "default" reserved name
      * 2. collisions between suite name and existing group name
      *
-     * @param array $parsedSuite
-     * @return void
      * @throws FastFailException
      */
-    private function validateSuiteName($parsedSuite)
+    private function validateSuiteName(array $parsedSuite): void
     {
         //check if name used is using special char or the "default" reserved name
         NameValidationUtil::validateName($parsedSuite[self::NAME], 'Suite');
@@ -206,12 +200,10 @@ class SuiteObjectExtractor extends BaseObjectExtractor
     /**
      * Parse object hooks
      *
-     * @param array $parsedSuite
-     * @return array
      * @throws XmlException
      * @throws TestReferenceException
      */
-    private function parseObjectHooks($parsedSuite)
+    private function parseObjectHooks(array $parsedSuite): array
     {
         $suiteHooks = [];
 
@@ -249,12 +241,10 @@ class SuiteObjectExtractor extends BaseObjectExtractor
     /**
      * Check if suite hooks are empty/not included and there are no included tests/groups/modules
      *
-     * @param array $suiteHooks
      * @param array $includeTests
      * @param array $excludeTests
-     * @return boolean
      */
-    private function isSuiteEmpty($suiteHooks, $includeTests, $excludeTests)
+    private function isSuiteEmpty(array $suiteHooks, $includeTests, $excludeTests): bool
     {
         $noHooks = count($suiteHooks) === 0 ||
             (
@@ -273,14 +263,13 @@ class SuiteObjectExtractor extends BaseObjectExtractor
      * resolver for each suite reference.
      *
      * @param array $suiteReferences
-     * @return array
      * @throws FastFailException
      */
-    private function extractTestObjectsFromSuiteRef($suiteReferences)
+    private function extractTestObjectsFromSuiteRef($suiteReferences): array
     {
         $testObjectList = [];
         $errCount = 0;
-        foreach ($suiteReferences as $suiteRefName => $suiteRefData) {
+        foreach ($suiteReferences as $suiteRefData) {
             if (!is_array($suiteRefData)) {
                 continue;
             }
@@ -304,7 +293,7 @@ class SuiteObjectExtractor extends BaseObjectExtractor
                 }
             } catch (FastFailException $e) {
                 throw $e;
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $errCount++;
                 LoggingUtil::getInstance()->getLogger(self::class)->error(
                     "Unable to find <"
@@ -330,7 +319,7 @@ class SuiteObjectExtractor extends BaseObjectExtractor
      * @return TestObject[]
      * @throws Exception
      */
-    private function getTestsByModuleName($moduleName)
+    private function getTestsByModuleName($moduleName): array
     {
         $testObjects = [];
         $pathExtractor = new ModulePathExtractor();

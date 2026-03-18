@@ -24,19 +24,18 @@ class ObjectManagerFactory
      *
      * @var string
      */
-    protected $locatorClassName = '\Magento\FunctionalTestingFramework\ObjectManager';
+    protected $locatorClassName = \Magento\FunctionalTestingFramework\ObjectManager::class;
 
     /**
      * DI Config class name.
      *
      * @var string
      */
-    protected $configClassName = '\Magento\FunctionalTestingFramework\ObjectManager\Config';
+    protected $configClassName = \Magento\FunctionalTestingFramework\ObjectManager\Config::class;
 
     /**
      * Create Object Manager.
      *
-     * @param array $sharedInstances
      * @return ObjectManager
      */
     public function create(array $sharedInstances = [])
@@ -49,8 +48,8 @@ class ObjectManagerFactory
         $argumentMapper = new \Magento\FunctionalTestingFramework\ObjectManager\Config\Mapper\Dom($argInterpreter);
 
 
-        $sharedInstances['Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface'] = $argInterpreter;
-        $sharedInstances['Magento\FunctionalTestingFramework\ObjectManager\Config\Mapper\Dom'] = $argumentMapper;
+        $sharedInstances[\Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface::class] = $argInterpreter;
+        $sharedInstances[\Magento\FunctionalTestingFramework\ObjectManager\Config\Mapper\Dom::class] = $argumentMapper;
 
         /** @var \Magento\FunctionalTestingFramework\ObjectManager $objectManager */
         $objectManager = new $this->locatorClassName($factory, $diConfig, $sharedInstances);
@@ -66,12 +65,11 @@ class ObjectManagerFactory
     /**
      * Return newly created instance on an argument interpreter, suitable for processing DI arguments.
      *
-     * @param \Magento\FunctionalTestingFramework\Stdlib\BooleanUtils $booleanUtils
      * @return \Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface
      */
     protected function createArgumentInterpreter(
         \Magento\FunctionalTestingFramework\Stdlib\BooleanUtils $booleanUtils
-    ) {
+    ): \Magento\FunctionalTestingFramework\Data\Argument\Interpreter\Composite {
         $constInterpreter = new \Magento\FunctionalTestingFramework\Data\Argument\Interpreter\Constant();
         $result = new \Magento\FunctionalTestingFramework\Data\Argument\Interpreter\Composite(
             [
@@ -108,11 +106,8 @@ class ObjectManagerFactory
     /**
      * Configure Object Manager.
      * This method is static to have the ability to configure multiple instances of Object manager when needed.
-     *
-     * @param \Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager
-     * @return void
      */
-    public static function configure(\Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager)
+    public static function configure(\Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager): void
     {
         $objectManager->configure(
             $objectManager->get(\Magento\FunctionalTestingFramework\ObjectManager\ConfigLoader\Primary::class)->load()

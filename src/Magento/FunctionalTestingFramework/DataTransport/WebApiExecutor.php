@@ -20,27 +20,18 @@ class WebApiExecutor implements CurlInterface
 {
     /**
      * Curl transport protocol
-     *
-     * @var CurlTransport
      */
-    private $transport;
+    private readonly \Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlTransport $transport;
 
     /**
      * Rest request headers
      *
      * @var string[]
      */
-    private $headers = [
+    private array $headers = [
         'Accept: application/json',
         'Content-Type: application/json',
     ];
-
-    /**
-     * Store code in API request
-     *
-     * @var string
-     */
-    private $storeCode;
 
     /**
      * WebApiExecutor Constructor
@@ -48,9 +39,11 @@ class WebApiExecutor implements CurlInterface
      * @param string $storeCode
      * @throws FastFailException
      */
-    public function __construct(?string $storeCode = null)
+    public function __construct(/**
+     * Store code in API request
+     */
+    private readonly ?string $storeCode = null)
     {
-        $this->storeCode = $storeCode;
         $this->transport = new CurlTransport();
         $this->authorize();
     }
@@ -76,10 +69,9 @@ class WebApiExecutor implements CurlInterface
      * @param array  $data
      * @param string $method
      * @param array  $headers
-     * @return void
      * @throws TestFrameworkException
      */
-    public function write($url, $data = [], $method = CurlInterface::POST, $headers = [])
+    public function write($url, $data = [], $method = CurlInterface::POST, $headers = []): void
     {
         $this->transport->write(
             $this->getFormattedUrl($url),
@@ -94,7 +86,6 @@ class WebApiExecutor implements CurlInterface
      *
      * @param string      $successRegex
      * @param string      $returnRegex
-     * @param string|null $returnIndex
      * @return string
      * @throws TestFrameworkException
      */
@@ -108,19 +99,16 @@ class WebApiExecutor implements CurlInterface
      *
      * @param  integer                      $option CURLOPT_* constants.
      * @param  integer|string|boolean|array $value
-     * @return void
      */
-    public function addOption($option, $value)
+    public function addOption($option, $value): void
     {
         $this->transport->addOption($option, $value);
     }
 
     /**
      * Close the connection to the server.
-     *
-     * @return void
      */
-    public function close()
+    public function close(): void
     {
         $this->transport->close();
     }
@@ -129,16 +117,14 @@ class WebApiExecutor implements CurlInterface
      * Builds and returns URL for request, appending storeCode if needed
      *
      * @param string $resource
-     * @return string
      * @throws TestFrameworkException
      */
-    protected function getFormattedUrl($resource)
+    protected function getFormattedUrl($resource): string
     {
         $urlResult = MftfGlobals::getWebApiBaseUrl();
         if ($this->storeCode !== null) {
             $urlResult .= $this->storeCode . '/';
         }
-        $urlResult .= trim($resource, '/');
-        return $urlResult;
+        return $urlResult . trim($resource, '/');
     }
 }

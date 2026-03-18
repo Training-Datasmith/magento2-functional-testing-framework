@@ -18,15 +18,13 @@ class AllureHelper
      *
      * @param mixed  $data
      * @param string $caption
-     *
-     * @return void
      */
     public static function addAttachmentToCurrentStep($data, $caption): void
     {
         if (!is_string($data)) {
             try {
                 $data = serialize($data);
-            } catch (\Exception $exception) {
+            } catch (\Exception) {
                 throw  new \Exception($data->getMessage());
             }
         }
@@ -43,8 +41,6 @@ class AllureHelper
      *
      * @param mixed  $data
      * @param string $caption
-     *
-     * @return void
      */
     public static function addAttachmentToLastStep($data, $caption): void
     {
@@ -58,13 +54,6 @@ class AllureHelper
         }
     }
 
-    /**
-     * @param DataSourceInterface $dataSource
-     * @param string              $name
-     * @param string|null         $type
-     * @param string|null         $fileExtension
-     * @return void
-     */
     public static function doAddAttachment(
         DataSourceInterface $dataSource,
         string $name,

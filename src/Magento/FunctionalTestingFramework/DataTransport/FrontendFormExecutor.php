@@ -18,17 +18,13 @@ class FrontendFormExecutor implements CurlInterface
 {
     /**
      * Curl transport protocol.
-     *
-     * @var CurlTransport
      */
-    private $transport;
+    private readonly \Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlTransport $transport;
 
     /**
      * Form key.
-     *
-     * @var string
      */
-    private $formKey = null;
+    private ?string $formKey = null;
 
     /**
      * Response data.
@@ -39,48 +35,35 @@ class FrontendFormExecutor implements CurlInterface
 
     /**
      * Cookies data.
-     *
-     * @var string
      */
-    private $cookies = '';
-
-    /**
-     * Customer email used for authentication.
-     *
-     * @var string
-     */
-    private $customerEmail;
-
-    /**
-     * Customer password used for authentication.
-     *
-     * @var string
-     */
-    private $customerPassword;
+    private string $cookies = '';
 
     /**
      * FrontendFormExecutor constructor.
      *
      * @param string $customerEmail
-     * @param string $customerPassWord
+     * @param string $customerPassword
      *
      * @throws TestFrameworkException
      */
-    public function __construct($customerEmail, $customerPassWord)
+    public function __construct(/**
+     * Customer email used for authentication.
+     */
+    private $customerEmail, /**
+     * Customer password used for authentication.
+     */
+    private $customerPassword)
     {
         $this->transport = new CurlTransport();
-        $this->customerEmail = $customerEmail;
-        $this->customerPassword = $customerPassWord;
         $this->authorize();
     }
 
     /**
      * Authorize customer on frontend.
      *
-     * @return void
      * @throws TestFrameworkException
      */
-    private function authorize()
+    private function authorize(): void
     {
         $url = MftfGlobals::getBaseUrl() . 'customer/account/login/';
         $this->transport->write($url, [], CurlInterface::GET);
@@ -101,10 +84,8 @@ class FrontendFormExecutor implements CurlInterface
 
     /**
      * Set Form Key from response.
-     *
-     * @return void
      */
-    private function setFormKey()
+    private function setFormKey(): void
     {
         $str = substr($this->response, strpos($this->response, 'form_key'));
         preg_match('/value="(.*)" \/>/', $str, $matches);
@@ -133,10 +114,9 @@ class FrontendFormExecutor implements CurlInterface
      * @param array  $data
      * @param string $method
      * @param array  $headers
-     * @return void
      * @throws TestFrameworkException
      */
-    public function write($url, $data = [], $method = CurlInterface::POST, $headers = [])
+    public function write($url, $data = [], $method = CurlInterface::POST, $headers = []): void
     {
         if (isset($data['customer_email'])) {
             unset($data['customer_email']);
@@ -161,7 +141,6 @@ class FrontendFormExecutor implements CurlInterface
      *
      * @param string      $successRegex
      * @param string      $returnRegex
-     * @param string|null $returnIndex
      * @return string|array
      * @throws TestFrameworkException
      */
@@ -192,19 +171,16 @@ class FrontendFormExecutor implements CurlInterface
      *
      * @param integer                      $option CURLOPT_* constants.
      * @param integer|string|boolean|array $value
-     * @return void
      */
-    public function addOption($option, $value)
+    public function addOption($option, $value): void
     {
         $this->transport->addOption($option, $value);
     }
 
     /**
      * Close the connection to the server.
-     *
-     * @return void
      */
-    public function close()
+    public function close(): void
     {
         $this->transport->close();
     }

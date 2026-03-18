@@ -25,7 +25,6 @@ class AddUniqueAttachmentEvent extends AddAttachmentEvent
      * @param mixed  $filePathOrContents
      * @param string $type
      *
-     * @return string
      * @throws AllureException
      */
     public function getAttachmentFileName($filePathOrContents, $type): string
@@ -57,10 +56,7 @@ class AddUniqueAttachmentEvent extends AddAttachmentEvent
     /**
      * Copies file from one path to another. Wrapper for mocking in unit test.
      *
-     * @param string $filePath
-     * @param string $outputPath
      *
-     * @return boolean
      * @throws TestFrameworkException
      */
     private function copyFile(string $filePath, string $outputPath): bool
@@ -74,9 +70,7 @@ class AddUniqueAttachmentEvent extends AddAttachmentEvent
     /**
      * Copy of parent private function.
      *
-     * @param string $filePath
      *
-     * @return string
      */
     private function guessFileMimeType(string $filePath): string
     {
@@ -91,9 +85,7 @@ class AddUniqueAttachmentEvent extends AddAttachmentEvent
     /**
      * Copy of parent private function.
      *
-     * @param string $mimeType
      *
-     * @return string
      */
     private function guessFileExtension(string $mimeType): string
     {

@@ -15,7 +15,6 @@ interface ObjectManagerInterface
      * Create new object instance
      *
      * @param string $type
-     * @param array  $arguments
      * @return object
      */
     public function create($type, array $arguments = []);
@@ -31,7 +30,6 @@ interface ObjectManagerInterface
     /**
      * Configure object manager
      *
-     * @param array $configuration
      * @return void
      */
     public function configure(array $configuration);

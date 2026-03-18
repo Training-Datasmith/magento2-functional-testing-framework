@@ -34,9 +34,6 @@ class ObjectManager extends \Magento\FunctionalTestingFramework\ObjectManager\Ob
 
     /**
      * ObjectManager constructor.
-     * @param ObjectManager\Factory|null         $factory
-     * @param ObjectManager\ConfigInterface|null $config
-     * @param array                              $sharedInstances
      */
     public function __construct(
         ?\Magento\FunctionalTestingFramework\ObjectManager\Factory $factory = null,
@@ -64,7 +61,6 @@ class ObjectManager extends \Magento\FunctionalTestingFramework\ObjectManager\Ob
      *
      * @param object $object
      * @param string $method
-     * @param array  $arguments
      * @return array
      */
     public function prepareArguments($object, $method, array $arguments = [])
@@ -78,7 +74,6 @@ class ObjectManager extends \Magento\FunctionalTestingFramework\ObjectManager\Ob
      *
      * @param object $object
      * @param string $method
-     * @param array $arguments
      * @return mixed
      */
     public function invoke($object, $method, array $arguments = [])
@@ -86,14 +81,10 @@ class ObjectManager extends \Magento\FunctionalTestingFramework\ObjectManager\Ob
         return $this->factory->invoke($object, $method, $arguments);
     }
     // @codingStandardsIgnoreEnd
-
     /**
      * Set object manager instance
-     *
-     * @param ObjectManager $objectManager
-     * @return void
      */
-    public static function setInstance(ObjectManager $objectManager)
+    public static function setInstance(ObjectManager $objectManager): void
     {
         self::$instance = $objectManager;
     }
@@ -101,10 +92,9 @@ class ObjectManager extends \Magento\FunctionalTestingFramework\ObjectManager\Ob
     /**
      * Retrieve object manager
      *
-     * @return ObjectManager|boolean
      * @throws \RuntimeException
      */
-    public static function getInstance()
+    public static function getInstance(): false|\Magento\FunctionalTestingFramework\ObjectManager
     {
         if (!self::$instance instanceof ObjectManager) {
             return false;

@@ -13,39 +13,27 @@ use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
 abstract class BaseTestManifest
 {
     /**
-     * Type of manifest to generate. (Currently describes whether to path to a dir or for each test).
-     *
-     * @var string
-     */
-    protected $runTypeConfig;
-
-    /**
      * Relative dir path from functional yml file. For devOps execution flexibility.
-     *
-     * @var string
      */
-    protected $relativeDirPath;
-
-    /**
-     * Suite configuration in the format suite name to test name. Overwritten during a custom configuration.
-     *
-     * @var array
-     */
-    protected $suiteConfiguration;
+    protected string $relativeDirPath;
 
     /**
      * TestManifest constructor.
      *
      * @param string $path
-     * @param string $runConfig
+     * @param string $runTypeConfig
      * @param array  $suiteConfiguration
      */
-    public function __construct($path, $runConfig, $suiteConfiguration)
+    public function __construct($path, /**
+     * Type of manifest to generate. (Currently describes whether to path to a dir or for each test).
+     */
+    protected $runTypeConfig, /**
+     * Suite configuration in the format suite name to test name. Overwritten during a custom configuration.
+     */
+    protected $suiteConfiguration)
     {
-        $this->runTypeConfig = $runConfig;
         $relativeDirPath = substr($path, strlen(TESTS_BP));
         $this->relativeDirPath = ltrim($relativeDirPath, DIRECTORY_SEPARATOR);
-        $this->suiteConfiguration = $suiteConfiguration;
     }
 
     /**
@@ -88,7 +76,6 @@ abstract class BaseTestManifest
         if (empty($this->suiteConfiguration)) {
             // if there is no configuration passed we can assume the user wants all suites generated as specified.
             foreach (SuiteObjectHandler::getInstance()->getAllObjects() as $suite => $suiteObj) {
-                /** @var SuiteObject $suitObj */
                 $suiteToTestNames[$suite] = array_keys($suiteObj->getTests());
             }
         } else {

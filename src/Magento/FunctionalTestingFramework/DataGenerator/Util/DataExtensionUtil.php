@@ -25,10 +25,9 @@ class DataExtensionUtil
      * Resolves test references for extending test objects
      *
      * @param EntityDataObject $entityObject
-     * @return EntityDataObject
      * @throws XmlException
      */
-    public function extendEntity($entityObject)
+    public function extendEntity($entityObject): \Magento\FunctionalTestingFramework\DataGenerator\Objects\EntityDataObject
     {
         // Check to see if the parent entity exists
         $parentEntity = DataObjectHandler::getInstance()->getObject($entityObject->getParentName());

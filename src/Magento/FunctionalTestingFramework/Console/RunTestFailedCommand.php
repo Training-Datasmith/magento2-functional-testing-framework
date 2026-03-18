@@ -16,22 +16,14 @@ class RunTestFailedCommand extends BaseGenerateCommand
 {
     const DEFAULT_TEST_GROUP = 'default';
 
-    /**
-     * @var string
-     */
-    private $testsReRunFile = "rerun_tests";
+    private string $testsReRunFile = "rerun_tests";
 
-    /**
-     * @var array
-     */
-    private $failedList = [];
+    private array $failedList = [];
 
     /**
      * Configures the current command.
-     *
-     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('run:failed')
             ->setDescription('Execute a set of tests referenced via failed file');
@@ -42,9 +34,6 @@ class RunTestFailedCommand extends BaseGenerateCommand
     /**
      * Executes the current command.
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return integer
      * @throws \Exception
      *
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
@@ -79,7 +68,7 @@ class RunTestFailedCommand extends BaseGenerateCommand
                 $process->setIdleTimeout(600);
                 $process->setTimeout(0);
                 $returnCode = max($returnCode, $process->run(
-                    function ($type, $buffer) use ($output) {
+                    function ($type, string|iterable $buffer) use ($output): void {
                         $output->write($buffer);
                     }
                 ));
@@ -104,9 +93,6 @@ class RunTestFailedCommand extends BaseGenerateCommand
 
     /**
      * Returns a list of tests/suites which should have an additional run.
-     *
-     * @param array $failedTests
-     * @return array
      */
     private function filterTestsForExecution(array $failedTests): array
     {
@@ -115,9 +101,9 @@ class RunTestFailedCommand extends BaseGenerateCommand
         foreach ($failedTests as $test) {
             if (!empty($test)) {
                 $this->writeFailedTestToFile($test, $this->testsReRunFile);
-                $testInfo = explode(DIRECTORY_SEPARATOR, $test);
+                $testInfo = explode(DIRECTORY_SEPARATOR, (string) $test);
                 $suiteName = $testInfo[count($testInfo) - 2];
-                list($testPath) = explode(":", $test);
+                [$testPath] = explode(":", (string) $test);
 
                 if ($suiteName === self::DEFAULT_TEST_GROUP) {
                     $testsOrGroupsToRerun[] = $testPath;
@@ -135,9 +121,6 @@ class RunTestFailedCommand extends BaseGenerateCommand
 
     /**
      * Returns an array of tests read from the failed test file in _output
-     *
-     * @param string $filePath
-     * @return array
      */
     private function readFailedTestFile(string $filePath): array
     {
@@ -152,14 +135,12 @@ class RunTestFailedCommand extends BaseGenerateCommand
     /**
      * Writes the test name to a file if it does not already exist
      *
-     * @param string $test
      * @param string $filePath
-     * @return void
      */
-    private function writeFailedTestToFile($test, $filePath)
+    private function writeFailedTestToFile(string $test, $filePath): void
     {
         if (file_exists($filePath)) {
-            if (strpos(file_get_contents($filePath), $test) === false) {
+            if (!str_contains(file_get_contents($filePath), $test)) {
                 file_put_contents($filePath, "\n" . $test, FILE_APPEND);
             }
         } else {

@@ -34,24 +34,20 @@ class TestContextExtension extends BaseExtension
     
     /**
      * Test files cache.
-     *
-     * @var array
      */
-    private $testFiles = [];
+    private array $testFiles = [];
 
     /**
      * Action group step key.
      *
      * @var null|string
      */
-    private $actionGroupStepKey = null;
+    private $actionGroupStepKey;
 
     /**
      * Boolean value to indicate if steps are invisible steps
-     *
-     * @var boolean
      */
-    private $atInvisibleSteps = false;
+    private bool $atInvisibleSteps = false;
     const TEST_PHASE_AFTER = "_after";
     const TEST_PHASE_BEFORE = "_before";
 
@@ -76,7 +72,6 @@ class TestContextExtension extends BaseExtension
     /**
      * Initialize local vars
      *
-     * @return void
      * @throws \Exception
      */
     public function _initialize(): void
@@ -88,15 +83,13 @@ class TestContextExtension extends BaseExtension
             Events::RESULT_PRINT_AFTER => 'saveFailed'
         ];
         self::$events = array_merge(parent::$events, $events);
-        parent::_initialize();
     }
 
     /**
      * Codeception event listener function, triggered on test start.
      * @throws \Exception
-     * @return void
      */
-    public function testStart(\Codeception\Event\TestEvent $e)
+    public function testStart(\Codeception\Event\TestEvent $e): void
     {
         if (getenv('ENABLE_CODE_COVERAGE') === 'true') {
             // Curl against test.php and pass in the test name. Used when gathering code coverage.
@@ -115,19 +108,15 @@ class TestContextExtension extends BaseExtension
 
     /**
      * Codeception event listener function, triggered on test ending naturally or by errors/failures.
-     * @param \Codeception\Event\TestEvent $e
-     * @return void
      * @throws \Exception
      */
-    public function testEnd(\Codeception\Event\TestEvent $e)
+    public function testEnd(\Codeception\Event\TestEvent $e): void
     {
         $cest = $e->getTest();
 
         //Access private TestResultObject to find stack and if there are any errors/failures
         $testResultObject = call_user_func(\Closure::bind(
-            function () use ($cest) {
-                return $cest->getResultAggregator();
-            },
+            fn() => $cest->getResultAggregator(),
             $cest
         ));
 
@@ -153,7 +142,7 @@ class TestContextExtension extends BaseExtension
 
         $lifecycle = Allure::getLifecycle();
         $lifecycle->updateTest(
-            function (TestResult $testResult) {
+            function (TestResult $testResult): void {
                 $this->getFormattedSteps($testResult);
             }
         );
@@ -166,8 +155,6 @@ class TestContextExtension extends BaseExtension
      *
      * @param object $lifecycle
      * @param object $cest
-     *
-     * @return void
      */
     private function addTestsInSuites($lifecycle, $cest): void
     {
@@ -177,7 +164,7 @@ class TestContextExtension extends BaseExtension
             $groupName = $this->sanitizeGroupName($group);
         }
         $lifecycle->updateTest(
-            function (TestResult $testResult) use ($groupName, $cest) {
+            function (TestResult $testResult) use ($groupName, $cest): void {
                 $labels = $testResult->getLabels();
                 foreach ($labels as $label) {
                     if ($groupName !== null && $label->getName() === "parentSuite") {
@@ -197,7 +184,6 @@ class TestContextExtension extends BaseExtension
      * Function which santizes any group names changed by the framework for execution in order to consolidate reporting.
      *
      * @param string $group
-     * @return string
      */
     private function sanitizeGroupName($group): string
     {
@@ -205,7 +191,7 @@ class TestContextExtension extends BaseExtension
         $exactMatch = in_array($group, $suiteNames);
 
         // if this is an existing suite name we dont' need to worry about changing it
-        if ($exactMatch || strpos($group, "_") === false) {
+        if ($exactMatch || !str_contains($group, "_")) {
             return $group;
         }
 
@@ -222,9 +208,6 @@ class TestContextExtension extends BaseExtension
     }
 
     /**
-     * @param TestResult $testResult
-     * @return void
-     *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * Revisited to reduce cyclomatic complexity, left unrefactored for readability
@@ -235,28 +218,28 @@ class TestContextExtension extends BaseExtension
         $formattedSteps = [];
         $actionGroupKey = null;
         foreach ($steps as $key => $step) {
-            if (str_contains($step->getName(), 'start before hook')
-                || str_contains($step->getName(), 'end before hook')
-                || str_contains($step->getName(), 'start after hook')
-                || str_contains($step->getName(), 'end after hook')
+            if (str_contains((string) $step->getName(), 'start before hook')
+                || str_contains((string) $step->getName(), 'end before hook')
+                || str_contains((string) $step->getName(), 'start after hook')
+                || str_contains((string) $step->getName(), 'end after hook')
              ) {
-                 $step->setName(strtoupper($step->getName()));
+                 $step->setName(strtoupper((string) $step->getName()));
             }
             // Remove all parameters from step because parameters already added in formatted step
             call_user_func(\Closure::bind(
-                function () use ($step) {
+                function () use ($step): void {
                     $step->parameters = [];
                 },
                 null,
                 $step
             ));
-            if (strpos($step->getName(), ActionGroupObject::ACTION_GROUP_CONTEXT_START) !== false) {
+            if (str_contains((string) $step->getName(), ActionGroupObject::ACTION_GROUP_CONTEXT_START)) {
                 $step->setName(str_replace(ActionGroupObject::ACTION_GROUP_CONTEXT_START, '', $step->getName()));
                 $actionGroupKey = $key;
                 $formattedSteps[$actionGroupKey] = $step;
                 continue;
             }
-            if (stripos($step->getName(), ActionGroupObject::ACTION_GROUP_CONTEXT_END) !== false) {
+            if (stripos((string) $step->getName(), ActionGroupObject::ACTION_GROUP_CONTEXT_END) !== false) {
                 $actionGroupKey = null;
                 continue;
             }
@@ -279,7 +262,7 @@ class TestContextExtension extends BaseExtension
 
         // No public function for setting the testResult steps
         call_user_func(\Closure::bind(
-            function () use ($testResult, $formattedSteps) {
+            function () use ($testResult, $formattedSteps): void {
                 $testResult->steps = $formattedSteps;
             },
             null,
@@ -297,7 +280,7 @@ class TestContextExtension extends BaseExtension
     {
         foreach ($trace as $entry) {
             $traceClass = $entry["class"] ?? null;
-            if (strpos($traceClass, $class) !== 0) {
+            if (!str_starts_with($traceClass, $class)) {
                 return $entry["function"];
             }
         }
@@ -308,9 +291,8 @@ class TestContextExtension extends BaseExtension
      * Attach stack trace of exceptions thrown in each test hook to allure.
      * @param  \Exception $exception
      * @param  string     $testMethod
-     * @return mixed
      */
-    public function attachExceptionToAllure($exception, $testMethod)
+    public function attachExceptionToAllure($exception, $testMethod): void
     {
         if (is_subclass_of($exception, \PHPUnit\Framework\Exception::class)) {
             $trace = $exception->getSerializableTrace();
@@ -344,20 +326,17 @@ class TestContextExtension extends BaseExtension
      * Codeception event listener function, triggered before step.
      * Check if it's a new page.
      *
-     * @param \Codeception\Event\StepEvent $e
-     * @return void
      * @throws \Exception
      */
-    public function beforeStep(\Codeception\Event\StepEvent $e)
+    public function beforeStep(\Codeception\Event\StepEvent $e): void
     {
 
-        if ($this->pageChanged($e->getStep())) {
+        if ($this->pageChanged()) {
             $this->getDriver()->cleanJsError();
         }
     }
 
     /**
-     * @param \Codeception\Event\StepEvent $e
      * @return string|void
      *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
@@ -382,43 +361,38 @@ class TestContextExtension extends BaseExtension
         if (!($e->getStep() instanceof Comment)) {
             $stepKey = $this->retrieveStepKeyForAllure($e->getStep(), $e->getTest()->getMetadata()->getFilename());
             $isActionGroup = (
-                strpos(
-                    $e->getStep()->__toString(),
+                str_contains(
+                    (string) $e->getStep()->__toString(),
                     ActionGroupObject::ACTION_GROUP_CONTEXT_START
-                ) !== false
+                )
             );
             if ($isActionGroup) {
-                preg_match(TestGenerator::ACTION_GROUP_STEP_KEY_REGEX, $e->getStep()->__toString(), $matches);
+                preg_match(TestGenerator::ACTION_GROUP_STEP_KEY_REGEX, (string) $e->getStep()->__toString(), $matches);
                 if (!empty($matches['actionGroupStepKey'])) {
                     $this->actionGroupStepKey = ucfirst($matches['actionGroupStepKey']);
                 }
             }
         }
         // DO NOT alter action if actionGroup is starting, need the exact actionGroup name for good logging
-        if (strpos($stepAction, ActionGroupObject::ACTION_GROUP_CONTEXT_START) === false) {
+        if (!str_contains((string) $stepAction, ActionGroupObject::ACTION_GROUP_CONTEXT_START)) {
             $stepAction = $e->getStep()->getHumanizedActionWithoutArguments();
         }
         $stepArgs = $e->getStep()->getArgumentsAsString($argumentsLength);
         $stepName = '';
-
-        if (isset($stepName)) {
-            $stepName .= '[' . $stepKey . '] ';
-            if (empty($stepKey)) {
-                $stepName = "";
-            }
+        $stepName .= '[' . $stepKey . '] ';
+        if (empty($stepKey)) {
+            $stepName = "";
         }
         $stepName .= $stepAction . ' ' . $stepArgs;
         // Strip control characters so that report generation does not fail
         $stepName = preg_replace('/[[:cntrl:]]/', '', $stepName);
-        if (stripos($stepName, "\mftf\helper")) {
-            preg_match("/\[(.*?)\]/", $stepName, $matches);
+        if (stripos((string) $stepName, "\mftf\helper")) {
+            preg_match("/\[(.*?)\]/", (string) $stepName, $matches);
             $stepKeyData = preg_split('/\s+/', ucwords($matches[1]));
             if (count($stepKeyData) > 0) {
-                $this->actionGroupStepKey = (isset($this->actionGroupStepKey))
-                    ?$this->actionGroupStepKey
-                    : "";
+                $this->actionGroupStepKey ??= "";
                 $stepKeyHelper = str_replace($this->actionGroupStepKey, '', lcfirst(implode("", $stepKeyData)));
-                $stepName= '['.$stepKeyHelper.'] '.preg_replace('#\[.*\]#', '', $stepName);
+                $stepName= '['.$stepKeyHelper.'] '.preg_replace('#\[.*\]#', '', (string) $stepName);
             }
         }
         return ucfirst($stepName);
@@ -427,23 +401,21 @@ class TestContextExtension extends BaseExtension
     /**
      * Codeception event listener function, triggered after step.
      * Calls ErrorLogger to log JS errors encountered.
-     * @param \Codeception\Event\StepEvent $e
-     * @return void
      * @throws \Exception
      */
-    public function afterStep(\Codeception\Event\StepEvent $e)
+    public function afterStep(\Codeception\Event\StepEvent $e): void
     {
         $lifecycle = Allure::getLifecycle();
         $stepName = $this->stepName($e);
         $lifecycle->updateStep(
-            function (StepResult $step) use ($stepName) {
+            function (StepResult $step) use ($stepName): void {
                 $step->setName($stepName);
             }
         );
         $browserLog = [];
         try {
             $browserLog = $this->getDriver()->webDriver->manage()->getLog("browser");
-        } catch (\Exception $exception) {
+        } catch (\Exception) {
         }
         if (getenv('ENABLE_BROWSER_LOG') === 'true') {
             foreach (explode(',', getenv('BROWSER_LOG_BLOCKLIST')) as $source) {
@@ -459,10 +431,8 @@ class TestContextExtension extends BaseExtension
     /**
      * Saves failed tests from last codecept run command into a file in _output directory
      * Removes file if there were no failures in last run command
-     * @param \Codeception\Event\PrintResultEvent $e
-     * @return void
      */
-    public function saveFailed(\Codeception\Event\PrintResultEvent $e)
+    public function saveFailed(\Codeception\Event\PrintResultEvent $e): void
     {
         $file = $this->getLogDir() . self::TEST_FAILED_FILE;
         $result = $e->getResult();
@@ -498,7 +468,7 @@ class TestContextExtension extends BaseExtension
     protected function localizePath($path)
     {
         $root = realpath($this->getRootDir()) . DIRECTORY_SEPARATOR;
-        if (substr($path, 0, strlen($root)) === $root) {
+        if (str_starts_with($path, $root)) {
             return substr($path, strlen($root));
         }
         return $path;
@@ -507,11 +477,9 @@ class TestContextExtension extends BaseExtension
     /**
      * Reading stepKey from file.
      *
-     * @param Step   $step
-     * @param string $filePath
      * @return string|null
      */
-    private function retrieveStepKeyForAllure(Step $step, string $filePath)
+    private function retrieveStepKeyForAllure(Step $step, string $filePath): string|array|null
     {
         $stepKey = null;
         $stepLine = $step->getLineNumber();
@@ -526,15 +494,13 @@ class TestContextExtension extends BaseExtension
             $this->testFiles[$filePath] = explode(PHP_EOL, file_get_contents($filePath));
         }
 
-        preg_match(TestGenerator::ACTION_STEP_KEY_REGEX, $this->testFiles[$filePath][$stepLine], $matches);
+        preg_match(TestGenerator::ACTION_STEP_KEY_REGEX, (string) $this->testFiles[$filePath][$stepLine], $matches);
         if (!empty($matches['stepKey'])) {
             $stepKey = $matches['stepKey'];
         }
         if ($this->actionGroupStepKey !== null) {
             $stepKey = str_replace($this->actionGroupStepKey, '', $stepKey);
         }
-
-        $stepKey = $stepKey === '[]' ? null : $stepKey;
-        return $stepKey;
+        return $stepKey === '[]' ? null : $stepKey;
     }
 }

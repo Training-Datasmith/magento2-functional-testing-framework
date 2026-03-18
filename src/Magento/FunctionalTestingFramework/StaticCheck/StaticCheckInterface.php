@@ -15,7 +15,6 @@ interface StaticCheckInterface
 {
     /**
      * Executes static check script, returns output.
-     * @param InputInterface $input
      * @return void
      */
     public function execute(InputInterface $input);

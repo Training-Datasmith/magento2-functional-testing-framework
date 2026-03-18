@@ -12,20 +12,6 @@ namespace Magento\FunctionalTestingFramework\Config\Dom;
 class ArrayNodeConfig
 {
     /**
-     * Matching of XPath expressions to path patterns.
-     *
-     * @var NodePathMatcher
-     */
-    private $nodePathMatcher;
-
-    /**
-     * Format: array('/associative/array/path' => '<array_key_attribute>', ...)
-     *
-     * @var array
-     */
-    private $assocArrays = [];
-
-    /**
      * Flat array of expanded patterns for matching xpath
      *
      * @var array
@@ -33,36 +19,31 @@ class ArrayNodeConfig
     private $flatAssocArray = [];
 
     /**
-     * Format: array('/numeric/array/path', ...)
-     *
-     * @var array
-     */
-    private $numericArrays = [];
-
-    /**
      * ArrayNodeConfig constructor.
-     * @param NodePathMatcher $nodePathMatcher
-     * @param array           $assocArrayAttributes
-     * @param array           $numericArrays
      */
     public function __construct(
-        NodePathMatcher $nodePathMatcher,
-        array $assocArrayAttributes,
-        array $numericArrays = []
+        /**
+         * Matching of XPath expressions to path patterns.
+         */
+        private readonly NodePathMatcher $nodePathMatcher,
+        /**
+         * Format: array('/associative/array/path' => '<array_key_attribute>', ...)
+         */
+        private readonly array $assocArrays,
+        /**
+         * Format: array('/numeric/array/path', ...)
+         */
+        private readonly array $numericArrays = []
     ) {
-        $this->nodePathMatcher = $nodePathMatcher;
-        $this->assocArrays = $assocArrayAttributes;
-        $this->flatAssocArray = $this->flattenToAssocKeyAttributes($assocArrayAttributes);
-        $this->numericArrays = $numericArrays;
+        $this->flatAssocArray = $this->flattenToAssocKeyAttributes($this->assocArrays);
     }
 
     /**
      * Whether a node is a numeric array or not
      *
      * @param string $nodeXpath
-     * @return boolean
      */
-    public function isNumericArray($nodeXpath)
+    public function isNumericArray($nodeXpath): bool
     {
         foreach ($this->numericArrays as $pathPattern) {
             if ($this->nodePathMatcher->pathMatch($pathPattern, $nodeXpath)) {
@@ -97,13 +78,12 @@ class ArrayNodeConfig
      * performance improvement
      *
      * @param array $assocArrayAttributes
-     * @return array
      */
-    private function flattenToAssocKeyAttributes($assocArrayAttributes)
+    private function flattenToAssocKeyAttributes($assocArrayAttributes): array
     {
         $finalPatterns = [];
         foreach ($assocArrayAttributes as $pattern => $key) {
-            $vars = explode("/", ltrim($pattern, "/"));
+            $vars = explode("/", ltrim((string) $pattern, "/"));
             $stringPatterns = [""];
             foreach ($vars as $var) {
                 if (strstr($var, "|")) {
@@ -115,7 +95,7 @@ class ArrayNodeConfig
                 }
 
                 // append this path to all of the paths that currently exist
-                array_walk($stringPatterns, function (&$value, $key) use ($var) {
+                array_walk($stringPatterns, function (string &$value, $key) use ($var): void {
                     $value .= "/" . $var;
                 });
             }
@@ -131,9 +111,8 @@ class ArrayNodeConfig
      *
      * @param string[] $parentStrings
      * @param string[] $childStrings
-     * @return array
      */
-    private function mergeStrings($parentStrings, $childStrings)
+    private function mergeStrings($parentStrings, array $childStrings): array
     {
         $result = [];
         foreach ($parentStrings as $pString) {

@@ -17,34 +17,6 @@ class OperationDefinitionObject
     const HTTP_CONTENT_TYPE_HEADER = 'Content-Type';
 
     /**
-     * Data Definitions Name
-     *
-     * @var string
-     */
-    private $name;
-
-    /**
-     * Operation which the data defintion describes
-     *
-     * @var string
-     */
-    private $operation;
-
-    /**
-     * Data type for which the data defintiion is used
-     *
-     * @var string
-     */
-    private $dataType;
-
-    /**
-     * Api method such as ('POST', 'PUT', 'GET', DELETE', etc.)
-     *
-     * @var string
-     */
-    private $apiMethod;
-
-    /**
      * Api request url.
      *
      * @var string
@@ -53,17 +25,8 @@ class OperationDefinitionObject
 
     /**
      * Resource specific URI for the request
-     *
-     * @var string
      */
-    private $apiUri;
-
-    /**
-     * Authorization path for retrieving a token
-     *
-     * @var string
-     */
-    private $auth;
+    private readonly string $apiUri;
 
     /**
      * Content type of body
@@ -71,61 +34,6 @@ class OperationDefinitionObject
      * @var string
      */
     private $contentType;
-
-    /**
-     * Relevant headers for the request
-     *
-     * @var array
-     */
-    private $headers = [];
-
-    /**
-     * Relevant params for the request (e.g. query, path)
-     *
-     * @var array
-     */
-    private $params = [];
-
-    /**
-     * The metadata describing the data fields and values themselves
-     *
-     * @var array
-     */
-    private $operationMetadata = [];
-
-    /**
-     * Regex to check for request success.
-     *
-     * @var string
-     */
-    private $successRegex;
-
-    /**
-     * Regex to grab return value from response.
-     *
-     * @var string
-     */
-    private $returnRegex;
-
-    /**
-     * Index of element to be returned from "returnRegex" matches.
-     *
-     * @var string
-     */
-    private $returnIndex;
-
-    /**
-     * Determines if operation should remove backend_name from URL.
-     * @var boolean
-     */
-    private $removeBackend;
-
-    /**
-     * Deprecated message.
-     *
-     * @var string
-     */
-    private $deprecated;
 
     /**
      * OperationDefinitionObject constructor.
@@ -137,7 +45,7 @@ class OperationDefinitionObject
      * @param string      $auth
      * @param array       $headers
      * @param array       $params
-     * @param array       $metaData
+     * @param array $operationMetadata
      * @param string      $contentType
      * @param boolean     $removeBackend
      * @param string      $successRegex
@@ -147,36 +55,62 @@ class OperationDefinitionObject
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        $name,
-        $operation,
-        $dataType,
-        $apiMethod,
+        /**
+         * Data Definitions Name
+         */
+        private $name,
+        /**
+         * Operation which the data defintion describes
+         */
+        private $operation,
+        /**
+         * Data type for which the data defintiion is used
+         */
+        private $dataType,
+        /**
+         * Api method such as ('POST', 'PUT', 'GET', DELETE', etc.)
+         */
+        private $apiMethod,
         $apiUri,
-        $auth,
-        $headers,
-        $params,
-        $metaData,
+        /**
+         * Authorization path for retrieving a token
+         */
+        private $auth,
+        /**
+         * Relevant headers for the request
+         */
+        private $headers,
+        /**
+         * Relevant params for the request (e.g. query, path)
+         */
+        private $params,
+        /**
+         * The metadata describing the data fields and values themselves
+         */
+        private $operationMetadata,
         $contentType,
-        $removeBackend,
-        $successRegex = null,
-        $returnRegex = null,
-        $returnIndex = null,
-        $deprecated = null
+        /**
+         * Determines if operation should remove backend_name from URL.
+         */
+        private $removeBackend,
+        /**
+         * Regex to check for request success.
+         */
+        private $successRegex = null,
+        /**
+         * Regex to grab return value from response.
+         */
+        private $returnRegex = null,
+        /**
+         * Index of element to be returned from "returnRegex" matches.
+         */
+        private $returnIndex = null,
+        /**
+         * Deprecated message.
+         */
+        private $deprecated = null
     ) {
-        $this->name = $name;
-        $this->operation = $operation;
-        $this->dataType = $dataType;
-        $this->apiMethod = $apiMethod;
         $this->apiUri = trim($apiUri ?? '', '/');
-        $this->auth = $auth;
-        $this->headers = $headers;
-        $this->params = $params;
-        $this->operationMetadata = $metaData;
-        $this->successRegex = $successRegex;
-        $this->returnRegex = $returnRegex;
-        $this->returnIndex = $returnIndex;
-        $this->removeBackend = $removeBackend;
-        $this->deprecated = $deprecated;
         $this->apiUrl = null;
 
         if (!empty($contentType)) {
@@ -329,13 +263,11 @@ class OperationDefinitionObject
 
     /**
      * Function to append or add query parameters
-     *
-     * @return void
      */
-    public function addQueryParams()
+    public function addQueryParams(): void
     {
         foreach ($this->params['query'] as $paramName => $paramValue) {
-            if (strpos($this->apiUrl, '?') === false) {
+            if (!str_contains($this->apiUrl, '?')) {
                 $this->apiUrl = $this->apiUrl . "?";
             } else {
                 $this->apiUrl = $this->apiUrl . "&";
@@ -346,10 +278,8 @@ class OperationDefinitionObject
 
     /**
      * Function to log a referenced deprecated operation at runtime.
-     *
-     * @return void
      */
-    public function logDeprecated()
+    public function logDeprecated(): void
     {
         if ($this->deprecated !== null) {
             LoggingUtil::getInstance()->getLogger(self::class)->deprecation(

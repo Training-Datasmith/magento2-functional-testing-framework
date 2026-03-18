@@ -59,7 +59,7 @@ class CurlTransport implements CurlInterface
      *
      * @return $this
      */
-    protected function applyConfig()
+    protected function applyConfig(): static
     {
         // apply additional options to cURL
         foreach ($this->options as $option => $value) {
@@ -80,10 +80,9 @@ class CurlTransport implements CurlInterface
     /**
      * Set array of additional cURL options.
      *
-     * @param array $options
      * @return $this
      */
-    public function setOptions(array $options = [])
+    public function setOptions(array $options = []): static
     {
         $this->options = $options;
         return $this;
@@ -96,7 +95,7 @@ class CurlTransport implements CurlInterface
      * @param integer|string|boolean|array $value
      * @return $this
      */
-    public function addOption($option, $value)
+    public function addOption($option, $value): static
     {
         $this->options[$option] = $value;
         return $this;
@@ -105,10 +104,9 @@ class CurlTransport implements CurlInterface
     /**
      * Set the configuration array for the adapter.
      *
-     * @param array $config
      * @return $this
      */
-    public function setConfig(array $config = [])
+    public function setConfig(array $config = []): static
     {
         $this->config = $config;
         return $this;
@@ -121,10 +119,9 @@ class CurlTransport implements CurlInterface
      * @param array|string $body
      * @param string       $method
      * @param array        $headers
-     * @return void
      * @throws TestFrameworkException
      */
-    public function write($url, $body = [], $method = CurlInterface::POST, $headers = [])
+    public function write($url, $body = [], $method = CurlInterface::POST, $headers = []): void
     {
         $this->applyConfig();
         $options = [
@@ -163,11 +160,10 @@ class CurlTransport implements CurlInterface
      *
      * @param string      $successRegex
      * @param string      $returnRegex
-     * @param string|null $returnIndex
      * @return string
      * @throws TestFrameworkException
      */
-    public function read(?string $successRegex = null, ?string $returnRegex = null, ?string $returnIndex = null)
+    public function read(?string $successRegex = null, ?string $returnRegex = null, ?string $returnIndex = null): string|true
     {
         $response = curl_exec($this->getResource());
 
@@ -184,10 +180,8 @@ class CurlTransport implements CurlInterface
 
     /**
      * Close the connection to the server.
-     *
-     * @return void
      */
-    public function close()
+    public function close(): void
     {
         $this->resource = null;
     }
@@ -207,20 +201,16 @@ class CurlTransport implements CurlInterface
 
     /**
      * Get last error number.
-     *
-     * @return integer
      */
-    public function getErrno()
+    public function getErrno(): int
     {
         return curl_errno($this->getResource());
     }
 
     /**
      * Get string with last error for the current session.
-     *
-     * @return string
      */
-    public function getError()
+    public function getError(): string
     {
         return curl_error($this->getResource());
     }
@@ -231,19 +221,15 @@ class CurlTransport implements CurlInterface
      * @param integer $opt CURLINFO option.
      * @return string|array
      */
-    public function getInfo($opt = 0)
+    public function getInfo($opt = 0): array|false
     {
         return curl_getinfo($this->getResource(), $opt);
     }
 
     /**
      * Provide curl_multi_* requests support.
-     *
-     * @param array $urls
-     * @param array $options
-     * @return array
      */
-    public function multiRequest(array $urls, array $options = [])
+    public function multiRequest(array $urls, array $options = []): array
     {
         $handles = [];
         $result = [];
@@ -284,14 +270,13 @@ class CurlTransport implements CurlInterface
      * @param string $responseStr
      * @return integer
      */
-    public static function extractCode($responseStr)
+    public static function extractCode($responseStr): int|false
     {
         preg_match("|^HTTP/[\d\.x]+ (\d+)|", $responseStr, $m);
 
         if (isset($m[1])) {
             return (int)$m[1];
-        } else {
-            return false;
         }
+        return false;
     }
 }

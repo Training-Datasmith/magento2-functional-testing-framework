@@ -32,9 +32,8 @@ class TestDependencyCheck implements StaticCheckInterface
 
     /**
      * Array of FullModuleName => [dependencies], including flattened dependency tree
-     * @var array
      */
-    private $flattenedDependencies;
+    private ?array $flattenedDependencies = null;
 
     /**
      * Array of FullModuleName => PathToModule
@@ -44,21 +43,18 @@ class TestDependencyCheck implements StaticCheckInterface
 
     /**
      * Array of FullModuleName => ComposerModuleName
-     * @var array
      */
-    private $moduleNameToComposerName;
+    private ?array $moduleNameToComposerName = null;
 
     /**
      * Array containing all errors found after running the execute() function.
-     * @var array
      */
-    private $errors = [];
+    private array $errors = [];
 
     /**
      * Array containing all warnings found after running the execute() function.
-     * @var array
      */
-    private $warnings = [];
+    private array $warnings = [];
     /**
      * Array containing warnings found while iterating through files
      * @var array
@@ -67,41 +63,29 @@ class TestDependencyCheck implements StaticCheckInterface
 
     /**
      * String representing the output summary found after running the execute() function.
-     * @var string
      */
-    private $output;
+    private ?string $output = null;
 
     /**
      * Array containing all entities after resolving references.
-     * @var array
      */
-    private $allEntities = [];
+    private array $allEntities = [];
 
     /**
      * ScriptUtil instance
-     *
-     * @var ScriptUtil
      */
-    private $scriptUtil;
+    private ?\Magento\FunctionalTestingFramework\Util\Script\ScriptUtil $scriptUtil = null;
 
-    /**
-     * @var TestDependencyUtil
-     */
-    private $testDependencyUtil;
+    private ?\Magento\FunctionalTestingFramework\Util\Script\TestDependencyUtil $testDependencyUtil = null;
 
-    /**
-     * @var array $allowFailureEntities
-     */
-    private $allowFailureEntities = [];
+    private array $allowFailureEntities = [];
 
     /**
      * Checks test dependencies, determined by references in tests versus the dependencies listed in the Magento module
      *
-     * @param InputInterface $input
-     * @return void
      * @throws Exception
      */
-    public function execute(InputInterface $input)
+    public function execute(InputInterface $input): void
     {
         $this->scriptUtil = new ScriptUtil();
         $this->testDependencyUtil = new TestDependencyUtil();
@@ -166,7 +150,6 @@ class TestDependencyCheck implements StaticCheckInterface
 
     /**
      * Return array containing all errors found after running the execute() function.
-     * @return array
      */
     public function getErrors(): array
     {
@@ -175,7 +158,6 @@ class TestDependencyCheck implements StaticCheckInterface
 
     /**
      * Return string of a short human readable result of the check. For example: "No Dependency errors found."
-     * @return string
      */
     public function getOutput(): string
     {
@@ -184,8 +166,6 @@ class TestDependencyCheck implements StaticCheckInterface
 
     /**
      * Finds all reference errors in given set of files
-     * @param Finder $files
-     * @return array
      * @throws XmlException
      */
     private function findErrorsInFileSet(Finder $files): array
@@ -244,9 +224,6 @@ class TestDependencyCheck implements StaticCheckInterface
 
     /**
      * Find violating references
-     *
-     * @param string $moduleName
-     * @return array
      */
     private function findViolatingReferences(string $moduleName): array
     {
@@ -282,11 +259,8 @@ class TestDependencyCheck implements StaticCheckInterface
 
     /**
      * Builds and returns error output for violating references
-     *
-     * @param  array $violatingReferences
-     * @return array
      */
-    private function setErrorOutput(array $violatingReferences, $path): array
+    private function setErrorOutput(array $violatingReferences, \Symfony\Component\Finder\SplFileInfo $path): array
     {
         $testErrors = [];
 

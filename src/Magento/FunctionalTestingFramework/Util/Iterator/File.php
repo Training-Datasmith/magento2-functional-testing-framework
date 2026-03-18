@@ -22,7 +22,6 @@ class File extends AbstractIterator
 
     /**
      * File constructor.
-     * @param array $paths
      */
     public function __construct(array $paths)
     {
@@ -55,8 +54,6 @@ class File extends AbstractIterator
 
     /**
      * Check if current element is valid
-     *
-     * @return boolean
      */
     protected function isValid() : bool
     {

@@ -15,10 +15,7 @@ class UrlFormatter implements FormatterInterface
     /**
      * Return formatted url path from input string.
      *
-     * @param string  $url
-     * @param boolean $withTrailingSeparator
      *
-     * @return string
      * @throws TestFrameworkException
      */
     public static function format(string $url, bool $withTrailingSeparator = true): string
@@ -52,9 +49,7 @@ class UrlFormatter implements FormatterInterface
     /**
      * Try to build missing url scheme and host.
      *
-     * @param string $url
      *
-     * @return string
      */
     private static function buildUrl(string $url): string
     {
@@ -81,15 +76,11 @@ class UrlFormatter implements FormatterInterface
      * Returns url from $parts given, used with parse_url output for convenience.
      * This only exists because of deprecation of http_build_url, which does the exact same thing as the code below.
      *
-     * @param array $parts
      *
-     * @return string
      */
     private static function merge(array $parts): string
     {
-        $get = function ($key) use ($parts) {
-            return $parts[$key] ?? '';
-        };
+        $get = (fn($key) => $parts[$key] ?? '');
 
         $pass = $get('pass');
         $user = $get('user');

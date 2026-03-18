@@ -41,17 +41,13 @@ class BaseGenerateCommand extends Command
 
     /**
      * Enable pause()
-     *
-     * @var boolean
      */
-    private $enablePause = null;
+    private ?bool $enablePause = null;
 
     /**
      * Full path to '_output' dir
-     *
-     * @var string
      */
-    private $testsOutputDir = null;
+    private ?string $testsOutputDir = null;
 
     /**
      *  String contains all 'failed' tests
@@ -65,21 +61,19 @@ class BaseGenerateCommand extends Command
      *
      * @var SymfonyStyle
      */
-    protected $ioStyle = null;
+    protected $ioStyle;
 
     /**
      * Full path to 'failed' file
      *
      * @var string
      */
-    protected $testsFailedFile = null;
+    protected $testsFailedFile;
 
     /**
      * Configures the base command.
-     *
-     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->addOption(
             'remove',
@@ -108,8 +102,6 @@ class BaseGenerateCommand extends Command
     /**
      * Remove GENERATED_DIR if exists when running generate:tests.
      *
-     * @param OutputInterface $output
-     * @param bool $verbose
      * @return void
      * @throws TestFrameworkException
      */
@@ -127,7 +119,6 @@ class BaseGenerateCommand extends Command
 
     /**
      * Returns an array of test configuration to be used as an argument for generation of tests
-     * @param array $tests
      * @return false|string
      * @throws FastFailException
      */
@@ -139,7 +130,7 @@ class BaseGenerateCommand extends Command
         $suiteToTestPair = [];
 
         foreach($tests as $test) {
-            if (strpos($test, ':') !== false) {
+            if (str_contains((string) $test, ':')) {
                 $suiteToTestPair[] = $test;
                 continue;
             }
@@ -156,11 +147,10 @@ class BaseGenerateCommand extends Command
         }
         // configuration for suites
         foreach ($suiteToTestPair as $pair) {
-            list($suite, $test) = explode(":", $pair);
+            [$suite, $test] = explode(":", (string) $pair);
             $testConfiguration['suites'][$suite][] = $test;
         }
-        $testConfigurationJson = json_encode($testConfiguration);
-        return $testConfigurationJson;
+        return json_encode($testConfiguration);
     }
 
     /**
@@ -227,16 +217,12 @@ class BaseGenerateCommand extends Command
         if (empty($result['suites'])) {
             $result['suites'] = null;
         }
-
-        $json = json_encode($result);
-        return $json;
+        return json_encode($result);
     }
 
     /**
      * Set Symfony IO Style
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      * @return void
      */
     protected function setIOStyle(InputInterface $input, OutputInterface $output)
@@ -250,7 +236,6 @@ class BaseGenerateCommand extends Command
     /**
      * Show predefined global notice messages
      *
-     * @param OutputInterface $output
      * @return void
      */
     protected function showMftfNotices(OutputInterface $output)
@@ -282,12 +267,9 @@ class BaseGenerateCommand extends Command
     /**
      * Runs the bin/mftf codecept:run command and returns exit code
      *
-     * @param string          $commandStr
-     * @param OutputInterface $output
-     * @return integer
      * @throws \Exception
      */
-    protected function codeceptRunTest(string $commandStr, OutputInterface $output)
+    protected function codeceptRunTest(string $commandStr, OutputInterface $output): int
     {
         $input = new StringInput($commandStr);
         $command = $this->getApplication()->find(self::CODECEPT_RUN);
@@ -332,7 +314,7 @@ class BaseGenerateCommand extends Command
                     $this->allFailed .= trim($contents) . PHP_EOL;
                 }
             }
-        } catch (TestFrameworkException $e) {
+        } catch (TestFrameworkException) {
         }
     }
 
@@ -362,7 +344,7 @@ class BaseGenerateCommand extends Command
                     unlink($this->testsFailedFile . '.copy');
                 }
             }
-        } catch (TestFrameworkException $e) {
+        } catch (TestFrameworkException) {
         }
     }
     /**
@@ -372,10 +354,9 @@ class BaseGenerateCommand extends Command
      * @param string $xml
      * @param string $fileName
      * @param OutputInterface $output
-     * @return void
      * @throws \Exception
      */
-    public function movingXMLFileFromSourceToDestination($xml, $fileName, $output)
+    public function movingXMLFileFromSourceToDestination($xml, $fileName, $output): void
     {
         if(!empty($xml) && file_exists($this->getTestsOutputDir().'report.xml')) {
             if (!file_exists($this->getTestsOutputDir().'xml')) {

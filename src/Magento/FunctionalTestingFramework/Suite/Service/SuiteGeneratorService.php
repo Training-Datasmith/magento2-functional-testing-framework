@@ -22,10 +22,8 @@ class SuiteGeneratorService
 {
     /**
      * Singleton SuiteGeneratorService Instance.
-     *
-     * @var SuiteGeneratorService
      */
-    private static $INSTANCE;
+    private static ?\Magento\FunctionalTestingFramework\Suite\Service\SuiteGeneratorService $INSTANCE = null;
 
     /**
      * SuiteGeneratorService constructor.
@@ -36,8 +34,6 @@ class SuiteGeneratorService
 
     /**
      * Get CestFileCreatorUtil instance.
-     *
-     * @return SuiteGeneratorService
      */
     public static function getInstance(): SuiteGeneratorService
     {
@@ -52,7 +48,6 @@ class SuiteGeneratorService
      * Function which takes the current config.yml array and clears any previous configuration for suite group object
      * files.
      *
-     * @return void
      * @throws TestFrameworkException
      */
     public function clearPreviousSessionConfigEntries(): void
@@ -64,7 +59,7 @@ class SuiteGeneratorService
             $ymlEntries = $ymlArray[SuiteGenerator::YAML_EXTENSIONS_TAG][SuiteGenerator::YAML_ENABLED_TAG];
 
             foreach ($ymlEntries as $key => $entry) {
-                if (preg_match('/(Group\\\\.*)/', $entry)) {
+                if (preg_match('/(Group\\\\.*)/', (string) $entry)) {
                     unset($newYmlArray[SuiteGenerator::YAML_EXTENSIONS_TAG][SuiteGenerator::YAML_ENABLED_TAG][$key]);
                 }
             }
@@ -85,11 +80,7 @@ class SuiteGeneratorService
      * file in order to register the set of tests as a new group. Also appends group object location if required
      * by suite.
      *
-     * @param string      $suiteName
-     * @param string      $suitePath
-     * @param string|null $groupNamespace
      *
-     * @return void
      * @throws TestFrameworkException
      */
     public function appendEntriesToConfig(string $suiteName, string $suitePath, ?string $groupNamespace): void
@@ -116,10 +107,7 @@ class SuiteGeneratorService
      * relevant to the suite to be generated. The function takes this information and creates a new instance of the
      * test generator which is then called to create all the test files for the suite.
      *
-     * @param string $path
-     * @param array  $tests
      *
-     * @return void
      * @throws TestReferenceException
      */
     public function generateRelevantGroupTests(string $path, array $tests): void
@@ -131,7 +119,6 @@ class SuiteGeneratorService
     /**
      * Function to return contents of codeception.yml file for config changes.
      *
-     * @return array
      * @throws TestFrameworkException
      */
     private static function getYamlFileContents(): array
@@ -151,7 +138,6 @@ class SuiteGeneratorService
     /**
      * Static getter for the Config yml filepath (as path cannot be stored in a const).
      *
-     * @return string
      * @throws TestFrameworkException
      */
     private static function getYamlConfigFilePath(): string

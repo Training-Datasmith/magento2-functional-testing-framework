@@ -28,28 +28,22 @@ class CredentialStore
      *
      * @var BaseStorage[]
      */
-    private $credStorage = [];
+    private array $credStorage = [];
 
     /**
      * Boolean to indicate if credential storage have been initialized
-     *
-     * @var boolean
      */
-    private $initialized;
+    private bool $initialized;
 
     /**
      * Singleton instance
-     *
-     * @var CredentialStore
      */
-    private static $INSTANCE = null;
+    private static ?\Magento\FunctionalTestingFramework\DataGenerator\Handlers\CredentialStore $INSTANCE = null;
 
     /**
      * Exception contexts
-     *
-     * @var ExceptionCollector
      */
-    private $exceptionContexts;
+    private readonly \Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector $exceptionContexts;
 
     /**
      * Static singleton getter for CredentialStore Instance
@@ -141,9 +135,8 @@ class CredentialStore
      *
      * @param string $type
      * @param string $context
-     * @return void
      */
-    public function setExceptionContexts($type, $context)
+    public function setExceptionContexts($type, $context): void
     {
         $typeArray = [self::ARRAY_KEY_FOR_FILE, self::ARRAY_KEY_FOR_VAULT, self::ARRAY_KEY_FOR_AWS_SECRETS_MANAGER];
         if (in_array($type, $typeArray) && !empty($context)) {
@@ -153,10 +146,8 @@ class CredentialStore
 
     /**
      * Return collected exception contexts
-     *
-     * @return string
      */
-    private function getExceptionContexts()
+    private function getExceptionContexts(): string
     {
         // Gather all exceptions collected
         $exceptionMessage = "\n";
@@ -183,10 +174,8 @@ class CredentialStore
 
     /**
      * Reset exception contexts to empty array
-     *
-     * @return void
      */
-    private function resetExceptionContext()
+    private function resetExceptionContext(): void
     {
         $this->exceptionContexts->reset();
     }
@@ -194,10 +183,9 @@ class CredentialStore
     /**
      * Initialize all available credential storage
      *
-     * @return void
      * @throws TestFrameworkException
      */
-    private function initializeCredentialStorage()
+    private function initializeCredentialStorage(): void
     {
         if (!$this->initialized) {
             // Initialize credential storage by defined order of precedence as the following
@@ -218,8 +206,6 @@ class CredentialStore
 
     /**
      * Initialize file storage
-     *
-     * @return void
      */
     private function initializeFileStorage(): void
     {
@@ -238,10 +224,8 @@ class CredentialStore
 
     /**
      * Initialize Vault storage
-     *
-     * @return void
      */
-    private function initializeVaultStorage()
+    private function initializeVaultStorage(): void
     {
         // Initialize vault storage
         $cvAddress = getenv('CREDENTIAL_VAULT_ADDRESS');
@@ -263,10 +247,8 @@ class CredentialStore
 
     /**
      * Initialize AWS Secrets Manager storage
-     *
-     * @return void
      */
-    private function initializeAwsSecretsManagerStorage()
+    private function initializeAwsSecretsManagerStorage(): void
     {
         // Initialize AWS Secrets Manager storage
         $awsRegion = getenv('CREDENTIAL_AWS_SECRETS_MANAGER_REGION');

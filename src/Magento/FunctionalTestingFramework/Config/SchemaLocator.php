@@ -16,33 +16,28 @@ class SchemaLocator implements \Magento\FunctionalTestingFramework\Config\Schema
 {
     /**
      * Path to corresponding XSD file with validation rules for merged config.
-     *
-     * @var string
      */
-    private $schemaPath;
+    private string $schemaPath;
 
     /**
      * Path to corresponding XSD file with validation rules for separate config files.
-     *
-     * @var string
      */
-    private $perFileSchema;
+    private ?string $perFileSchema;
 
     /**
      * Class constructor
      *
-     * @param string      $schemaPath
      * @param string|null $perFileSchema
      * @throws TestFrameworkException
      */
-    public function __construct($schemaPath, $perFileSchema = null)
+    public function __construct(string $schemaPath, $perFileSchema = null)
     {
         if (constant('FW_BP') && file_exists(FilePathFormatter::format(FW_BP) . $schemaPath)) {
             $this->schemaPath = FilePathFormatter::format(FW_BP) . $schemaPath;
             $this->perFileSchema = $perFileSchema === null ? null : FilePathFormatter::format(FW_BP)
                 . $perFileSchema;
         } else {
-            $path = dirname(dirname(dirname(__DIR__)));
+            $path = dirname(__DIR__, 3);
             $path = str_replace('\\', DIRECTORY_SEPARATOR, $path);
             $this->schemaPath = $path . DIRECTORY_SEPARATOR . $schemaPath;
             $this->perFileSchema = $perFileSchema === null ? null : $path . DIRECTORY_SEPARATOR . $perFileSchema;
@@ -61,8 +56,6 @@ class SchemaLocator implements \Magento\FunctionalTestingFramework\Config\Schema
 
     /**
      * Get path to pre file validation schema
-     *
-     * @return null
      */
     public function getPerFileSchema()
     {

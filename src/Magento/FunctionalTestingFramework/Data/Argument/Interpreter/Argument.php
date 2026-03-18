@@ -15,28 +15,21 @@ use Magento\FunctionalTestingFramework\Data\Argument\MissingOptionalValueExcepti
 class Argument implements InterpreterInterface
 {
     /**
-     * Interpreter that returns value of a constant by its name.
-     *
-     * @var Constant
-     */
-    private $constInterpreter;
-
-    /**
      * Argument constructor.
-     * @param Constant $constInterpreter
      */
-    public function __construct(Constant $constInterpreter)
+    public function __construct(
+        /**
+         * Interpreter that returns value of a constant by its name.
+         */
+        private readonly Constant $constInterpreter
+    )
     {
-        $this->constInterpreter = $constInterpreter;
     }
 
     /**
      * Compute and return effective value of an argument.
-     *
-     * @param array $data
-     * @return array
      */
-    public function evaluate(array $data)
+    public function evaluate(array $data): array
     {
         return ['argument' => $this->constInterpreter->evaluate($data)];
     }

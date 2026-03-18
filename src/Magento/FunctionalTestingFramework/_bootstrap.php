@@ -65,7 +65,7 @@ if (file_exists(ENV_FILE_PATH . '.env')) {
 
     try {
         new DateTimeZone(DEFAULT_TIMEZONE);
-    } catch (\Exception $e) {
+    } catch (\Exception) {
         throw new \Exception("Invalid DEFAULT_TIMEZONE in .env: " . DEFAULT_TIMEZONE . PHP_EOL);
     }
 }

@@ -17,11 +17,10 @@ class ConfigSanitizerUtil
 {
     /**
      * Sanitizes the given Webdriver Config's url and selenium env params, can be selective based on second argument.
-     * @param array    $config
      * @param String[] $params
      * @return array
      */
-    public static function sanitizeWebDriverConfig($config, $params = ['url', 'selenium'])
+    public static function sanitizeWebDriverConfig(array $config, $params = ['url', 'selenium'])
     {
         self::validateConfigBasedVars($config);
 
@@ -30,7 +29,7 @@ class ConfigSanitizerUtil
         }
 
         if (in_array('selenium', $params)) {
-            $config = self::sanitizeSeleniumEnvs($config);
+            return self::sanitizeSeleniumEnvs($config);
         }
 
         return $config;
@@ -38,10 +37,8 @@ class ConfigSanitizerUtil
 
     /**
      * Sets Selenium params if they are left as defaults.
-     * @param array $config
-     * @return array
      */
-    private static function sanitizeSeleniumEnvs($config)
+    private static function sanitizeSeleniumEnvs(array $config): array
     {
         if ($config['protocol'] === '%SELENIUM_PROTOCOL%') {
             $config['protocol'] = "http";
@@ -61,17 +58,12 @@ class ConfigSanitizerUtil
     /**
      * Method which validates env vars have been properly read into the config. Method implemented as part of
      * bug MQE-567
-     *
-     * @param array $config
-     * @return void
      */
-    private static function validateConfigBasedVars($config)
+    private static function validateConfigBasedVars(array $config): void
     {
-        $configStrings = array_filter($config, function ($value) {
-            return is_string($value);
-        });
+        $configStrings = array_filter($config, fn($value) => is_string($value));
 
-        foreach ($configStrings as $configKey => $configValue) {
+        foreach ($configStrings as $configValue) {
             $var = trim((String)$configValue, '%');
             if (array_key_exists($var, $_ENV)) {
                 trigger_error(

@@ -20,10 +20,8 @@ class GenerateSuiteCommand extends BaseGenerateCommand
 {
     /**
      * Configures the current command.
-     *
-     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('generate:suite')
             ->setDescription('This command generates a single suite based on declaration in xml')
@@ -39,8 +37,6 @@ class GenerateSuiteCommand extends BaseGenerateCommand
     /**
      * Executes the current command.
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      * @return integer|null|void
      * @throws \Exception
      */
@@ -78,7 +74,7 @@ class GenerateSuiteCommand extends BaseGenerateCommand
                 $generated++;
             } catch (FastFailException $e) {
                 throw $e;
-            } catch (\Exception $e) {
+            } catch (\Exception) {
             }
         }
 

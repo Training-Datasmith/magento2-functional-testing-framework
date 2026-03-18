@@ -21,10 +21,6 @@ class Dom extends \Magento\FunctionalTestingFramework\Config\Reader\Filesystem
 
     /**
      * Dom constructor.
-     * @param \Magento\FunctionalTestingFramework\Config\FileResolverInterface $fileResolver
-     * @param \Magento\FunctionalTestingFramework\ObjectManager\Config\Mapper\Dom $converter
-     * @param \Magento\FunctionalTestingFramework\ObjectManager\Config\SchemaLocator $schemaLocator
-     * @param \Magento\FunctionalTestingFramework\Config\ValidationStateInterface $validationState
      * @param string $fileName
      * @param array $idAttributes
      * @param string $domDocumentClass
@@ -42,7 +38,7 @@ class Dom extends \Magento\FunctionalTestingFramework\Config\Reader\Filesystem
             '/config/(type|virtualType)/arguments/argument' => 'name',
             '/config/(type|virtualType)/arguments/argument(/item)+' => 'name'
         ],
-        $domDocumentClass = 'Magento\FunctionalTestingFramework\Config\Dom',
+        $domDocumentClass = \Magento\FunctionalTestingFramework\Config\Dom::class,
         $defaultScope = 'etc'
     ) {
         parent::__construct(

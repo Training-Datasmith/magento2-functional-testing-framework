@@ -24,10 +24,9 @@ class Module implements FileResolverInterface
 
     /**
      * Module constructor.
-     * @param ModuleResolver|null $moduleResolver
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function __construct(?ModuleResolver $moduleResolver = null)
+    public function __construct()
     {
         $this->moduleResolver = ModuleResolver::getInstance();
     }
@@ -39,21 +38,16 @@ class Module implements FileResolverInterface
      * @param string $scope
      * @return array|\Iterator,\Countable
      */
-    public function get($filename, $scope)
+    public function get($filename, $scope): \Magento\FunctionalTestingFramework\Util\Iterator\File
     {
-        $iterator = new File($this->getPaths($filename, $scope));
-        return $iterator;
+        return new File($this->getPaths($filename, $scope));
     }
 
     /**
      * Function which takes a string representing filename and a scope represnting directory scope to glob for matched
      * patterns against. Returns the file matching the patterns given by the module resolver.
-     *
-     * @param string $filename
-     * @param string $scope
-     * @return array
      */
-    protected function getPaths($filename, $scope)
+    protected function getPaths(string $filename, string $scope): array
     {
         $modulesPath = $this->moduleResolver->getModulesPath();
         $paths = [];

@@ -17,16 +17,11 @@ class Factory extends \Magento\FunctionalTestingFramework\ObjectManager\Factory\
 {
     /**
      * Class reader.
-     *
-     * @var \Magento\FunctionalTestingFramework\System\Code\ClassReader
      */
-    protected $classReader;
+    protected \Magento\FunctionalTestingFramework\System\Code\ClassReader $classReader;
 
     /**
      * Factory constructor.
-     * @param ConfigInterface                                                 $config
-     * @param \Magento\FunctionalTestingFramework\ObjectManagerInterface|null $objectManager
-     * @param DefinitionInterface|null                                        $definitions
      * @param array                                                           $globalArguments
      */
     public function __construct(
@@ -45,14 +40,12 @@ class Factory extends \Magento\FunctionalTestingFramework\ObjectManager\Factory\
      *
      * @param mixed $object
      * @param string $method
-     * @param array $args
-     * @return mixed
      */
-    public function invoke($object, $method, array $args = [])
+    public function invoke($object, $method, array $args = []): mixed
     {
         $args = $this->prepareArguments($object, $method, $args);
 
-        $type = get_class($object);
+        $type = $object::class;
         $class = new \ReflectionClass($type);
         $method = $class->getMethod($method);
 
@@ -77,12 +70,11 @@ class Factory extends \Magento\FunctionalTestingFramework\ObjectManager\Factory\
      *
      * @param object $object
      * @param string $method
-     * @param array  $arguments
      * @return array
      */
     public function prepareArguments($object, $method, array $arguments = [])
     {
-        $type = get_class($object);
+        $type = $object::class;
         $parameters = $this->classReader->getParameters($type, $method);
 
         if ($parameters === null) {
@@ -96,9 +88,6 @@ class Factory extends \Magento\FunctionalTestingFramework\ObjectManager\Factory\
      * Resolve constructor arguments
      *
      * @param string $requestedType
-     * @param array  $parameters
-     * @param array  $arguments
-     * @return array
      * @throws \UnexpectedValueException
      * @throws \BadMethodCallException
      *
@@ -106,14 +95,14 @@ class Factory extends \Magento\FunctionalTestingFramework\ObjectManager\Factory\
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * Revisited to reduce cyclomatic complexity, left unrefactored for readability
      */
-    protected function resolveArguments($requestedType, array $parameters, array $arguments = [])
+    protected function resolveArguments($requestedType, array $parameters, array $arguments = []): array
     {
         $resolvedArguments = [];
         $arguments = count($arguments)
             ? array_replace($this->config->getArguments($requestedType), $arguments)
             : $this->config->getArguments($requestedType);
         foreach ($parameters as $parameter) {
-            list($paramName, $paramType, $paramRequired, $paramDefault) = $parameter;
+            [$paramName, $paramType, $paramRequired, $paramDefault] = $parameter;
             $argument = null;
             if (array_key_exists($paramName, $arguments)) {
                 $argument = $arguments[$paramName];
@@ -163,9 +152,7 @@ class Factory extends \Magento\FunctionalTestingFramework\ObjectManager\Factory\
                 if (is_array($argument)) {
                     if (isset($argument['argument'])) {
                         $argKey = $argument['argument'];
-                        $argument = isset($this->globalArguments[$argKey])
-                            ? $this->globalArguments[$argKey]
-                            : $paramDefault;
+                        $argument = $this->globalArguments[$argKey] ?? $paramDefault;
                     } else {
                         $this->parseArray($argument);
                     }
@@ -194,7 +181,7 @@ class Factory extends \Magento\FunctionalTestingFramework\ObjectManager\Factory\
             }
             if (isset($item['instance'])) {
                 $itemType = $item['instance'];
-                $isShared = isset($item['shared']) ? $item['shared'] : $this->config->isShared($itemType);
+                $isShared = $item['shared'] ?? $this->config->isShared($itemType);
 
                 unset($item['instance']);
                 if (array_key_exists('shared', $item)) {
@@ -207,9 +194,7 @@ class Factory extends \Magento\FunctionalTestingFramework\ObjectManager\Factory\
                     ? $this->objectManager->get($itemType)
                     : $this->objectManager->create($itemType, $_arguments);
             } elseif (isset($item['argument'])) {
-                $array[$key] = isset($this->globalArguments[$item['argument']])
-                    ? $this->globalArguments[$item['argument']]
-                    : null;
+                $array[$key] = $this->globalArguments[$item['argument']] ?? null;
             } else {
                 $this->parseArray($item);
             }
@@ -220,7 +205,6 @@ class Factory extends \Magento\FunctionalTestingFramework\ObjectManager\Factory\
      * Create instance with call time arguments
      *
      * @param string $requestedType
-     * @param array  $arguments
      * @return object
      * @throws \Exception
      */

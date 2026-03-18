@@ -17,15 +17,12 @@ class ArgumentParser
 {
     /**
      * Converter.
-     *
-     * @var FlatConverter
      */
-    private $converter;
+    private ?\Magento\FunctionalTestingFramework\Config\Converter\Dom\Flat $converter = null;
 
     /**
      * Build and return array representation of DI argument node
      *
-     * @param \DOMNode $argumentNode
      * @return array|string
      */
     public function parse(\DOMNode $argumentNode)

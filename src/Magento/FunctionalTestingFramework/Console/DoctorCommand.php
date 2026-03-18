@@ -29,10 +29,8 @@ class DoctorCommand extends Command
 
     /**
      * Console output style
-     *
-     * @var SymfonyStyle
      */
-    private $ioStyle;
+    private ?\Symfony\Component\Console\Style\SymfonyStyle $ioStyle = null;
 
     /**
      * Exception Context
@@ -43,10 +41,8 @@ class DoctorCommand extends Command
 
     /**
      * Configures the current command.
-     *
-     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('doctor')
             ->setDescription(
@@ -57,9 +53,6 @@ class DoctorCommand extends Command
     /**
      * Executes the current command.
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return integer
      * @throws TestFrameworkException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
@@ -145,12 +138,9 @@ class DoctorCommand extends Command
     /**
      * Check exception context after runMagentoWebDriverDoctor
      *
-     * @param string $exceptionType
-     * @param string $message
-     * @return boolean
      * @throws TestFrameworkException
      */
-    private function checkContextOnStep($exceptionType, $message)
+    private function checkContextOnStep(string $exceptionType, string $message): bool
     {
         $this->ioStyle->text($message . ' ...');
         $this->runMagentoWebDriverDoctor();
@@ -158,19 +148,17 @@ class DoctorCommand extends Command
         if (isset($this->context[$exceptionType])) {
             $this->ioStyle->error($this->context[$exceptionType]);
             return false;
-        } else {
-            $this->ioStyle->success('Successful');
-            return true;
         }
+        $this->ioStyle->success('Successful');
+        return true;
     }
 
     /**
      * Run diagnose through MagentoWebDriverDoctor
      *
-     * @return void
      * @throws TestFrameworkException
      */
-    private function runMagentoWebDriverDoctor()
+    private function runMagentoWebDriverDoctor(): void
     {
         if (!empty($this->context)) {
             return;

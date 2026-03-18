@@ -112,10 +112,8 @@ class ComposerPackage extends AbstractComposer
 
     /**
      * Determines if package is a mftf test package
-     *
-     * @return boolean
      */
-    public function isMftfTestPackage()
+    public function isMftfTestPackage(): bool
     {
         return $this->getType() === self::TEST_MODULE_PACKAGE_TYPE;
     }
@@ -138,9 +136,8 @@ class ComposerPackage extends AbstractComposer
      * Check if a package is required in composer json
      *
      * @param string $packageName
-     * @return boolean
      */
-    public function isPackageRequiredInComposerJson($packageName)
+    public function isPackageRequiredInComposerJson($packageName): bool
     {
         return (in_array($packageName, array_keys($this->getRequires()))
             || in_array($packageName, array_keys($this->getDevRequires()))

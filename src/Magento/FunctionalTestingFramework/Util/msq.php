@@ -10,7 +10,6 @@ if (!function_exists('msq')) {
     /**
      * Return unique sequence within test.
      *
-     * @param null $id
      * @return string
      */
     function msq(?string $id = null)
@@ -31,7 +30,6 @@ if (!function_exists('msqs')) {
     /**
      * Return unique sequence within suite.
      *
-     * @param null $id
      * @return string
      */
     function msqs(?string $id = null)

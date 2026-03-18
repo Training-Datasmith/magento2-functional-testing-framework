@@ -18,22 +18,17 @@ class Composite implements InterpreterInterface
      *
      * @var InterpreterInterface[]
      */
-    private $interpreters;
-
-    /**
-     * Data key that holds name of an interpreter to be used for that data
-     *
-     * @var string
-     */
-    private $discriminator;
+    private array $interpreters;
 
     /**
      * Composite constructor.
-     * @param array  $interpreters
      * @param string $discriminator
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $interpreters, $discriminator)
+    public function __construct(array $interpreters, /**
+     * Data key that holds name of an interpreter to be used for that data
+     */
+    private $discriminator)
     {
         foreach ($interpreters as $interpreterName => $interpreterInstance) {
             if (!$interpreterInstance instanceof InterpreterInterface) {
@@ -43,7 +38,6 @@ class Composite implements InterpreterInterface
             }
         }
         $this->interpreters = $interpreters;
-        $this->discriminator = $discriminator;
     }
 
     /**
@@ -68,11 +62,9 @@ class Composite implements InterpreterInterface
      * Register interpreter instance under a given unique name
      *
      * @param string               $name
-     * @param InterpreterInterface $instance
-     * @return void
      * @throws \InvalidArgumentException
      */
-    public function addInterpreter($name, InterpreterInterface $instance)
+    public function addInterpreter($name, InterpreterInterface $instance): void
     {
         if (isset($this->interpreters[$name])) {
             throw new \InvalidArgumentException("Argument interpreter named '{$name}' has already been defined.");

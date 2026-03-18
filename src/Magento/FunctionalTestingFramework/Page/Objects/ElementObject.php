@@ -23,13 +23,6 @@ class ElementObject
     private $name;
 
     /**
-     * Section element type
-     *
-     * @var string
-     */
-    private $type;
-
-    /**
      * Section element locator
      *
      * @var string
@@ -38,60 +31,46 @@ class ElementObject
 
     /**
      * Section element locatorFunction
-     *
-     * @var string
      */
-    private $locatorFunction;
-
-    /**
-     * Section element timeout
-     *
-     * @var string $timeout
-     */
-    private $timeout;
-
-    /**
-     * Section element locator is parameterized
-     *
-     * @var bool $parameterized
-     */
-    private $parameterized;
-
-    /**
-     * Deprecated message.
-     *
-     * @var string
-     */
-    private $deprecated;
+    private string $locatorFunction;
 
     /**
      * ElementObject constructor.
      * @param string  $name
      * @param string  $type
      * @param string  $selector
-     * @param string  $locatorFunction
      * @param string  $timeout
      * @param boolean $parameterized
      * @throws XmlException
+     * @param string $deprecated
      */
-    public function __construct($name, $type, $selector, $locatorFunction, $timeout, $parameterized, $deprecated = null)
+    public function __construct($name, /**
+     * Section element type
+     */
+    private $type, $selector, string $locatorFunction, /**
+     * Section element timeout
+     */
+    private $timeout, /**
+     * Section element locator is parameterized
+     */
+    private $parameterized, /**
+     * Deprecated message.
+     */
+    private $deprecated = null)
     {
         if ($selector !== null && $locatorFunction !== null) {
             throw new XmlException("Element '{$name}' cannot have both a selector and a locatorFunction.");
-        } elseif ($selector === null && $locatorFunction === null) {
+        }
+        if ($selector === null && $locatorFunction === null) {
             throw new XmlException("Element '{$name}' must have either a selector or a locatorFunction.'");
         }
 
         $this->name = $name;
-        $this->type = $type;
         $this->selector = $selector;
         $this->locatorFunction = $locatorFunction;
-        if ($locatorFunction !== null && strpos($locatorFunction, "Locator::") === false) {
+        if (!str_contains($locatorFunction, "Locator::")) {
             $this->locatorFunction = "Locator::" . $locatorFunction;
         }
-        $this->timeout = $timeout;
-        $this->parameterized = $parameterized;
-        $this->deprecated = $deprecated;
     }
 
     /**
@@ -156,10 +135,8 @@ class ElementObject
 
     /**
      * Returns an integer representing an element's timeout
-     *
-     * @return integer|null
      */
-    public function getTimeout()
+    public function getTimeout(): ?int
     {
         if ($this->timeout === ElementObject::DEFAULT_TIMEOUT_SYMBOL) {
             return null;

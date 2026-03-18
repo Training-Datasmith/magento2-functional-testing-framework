@@ -44,7 +44,6 @@ interface CurlInterface
      *
      * @param string      $successRegex
      * @param string      $returnRegex
-     * @param string|null $returnIndex
      * @return string|array
      */
     public function read(?string $successRegex = null, ?string  $returnRegex = null, ?string  $returnIndex = null);

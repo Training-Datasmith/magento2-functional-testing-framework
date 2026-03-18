@@ -24,7 +24,7 @@ class Root extends Mask
      * @return array|\Iterator,\Countable
      * @throws TestFrameworkException
      */
-    public function get($filename, $scope)
+    public function get($filename, $scope): \Magento\FunctionalTestingFramework\Util\Iterator\File
     {
         // First pick up the root level test suite dir
         $paths = glob(

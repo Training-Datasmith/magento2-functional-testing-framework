@@ -14,8 +14,6 @@ class Clock implements ClockInterface
 {
     /**
      * Return DateTimeImmutable class object
-     *
-     * @return DateTimeImmutable
      */
     public function now(): DateTimeImmutable
     {

@@ -21,12 +21,8 @@ class UpdateAssertionSchema implements UpgradeInterface
     /**
      * Upgrades all test xml files, changing as many <assert> actions to be nested as possible
      * WILL NOT CATCH cases where style is a mix of old and new
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return string
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): string
     {
         $scriptUtil = new ScriptUtil();
         $testPaths[] = $input->getArgument('path');
@@ -67,12 +63,10 @@ class UpdateAssertionSchema implements UpgradeInterface
     /**
      * Takes given string and attempts to convert it from single line to multi-line
      *
-     * @param string $assertion
-     * @return string
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
-    private function convertOldAssertionToNew($assertion)
+    private function convertOldAssertionToNew(string $assertion): string
     {
         // <assertSomething => assertSomething
         $assertType = ltrim(explode(' ', $assertion)[0], '<');
@@ -98,9 +92,9 @@ class UpdateAssertionSchema implements UpgradeInterface
         $subElements = ["actual" => [], "expected" => []];
         foreach ($sortedParts as $type => $value) {
             // If attribute="'value'", elseif attribute='"value"', new nested format will break if we leave these in
-            if (strpos($value, '"') === 0) {
+            if (str_starts_with($value, '"')) {
                 $value = rtrim(ltrim($value, '"'), '"');
-            } elseif (strpos($value, "'") === 0) {
+            } elseif (str_starts_with($value, "'")) {
                 $value = rtrim(ltrim($value, "'"), "'");
             }
             // If value is empty string (" " or ' '), trim again to become empty
@@ -161,7 +155,6 @@ class UpdateAssertionSchema implements UpgradeInterface
                 $newString .= "\t\t\t<{$type}Result type=\"$typeValue\">$value</{$type}Result>\n";
             }
         }
-        $newString .= "        </$assertType>";
-        return $newString;
+        return $newString . "        </$assertType>";
     }
 }

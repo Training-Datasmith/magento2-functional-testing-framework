@@ -19,25 +19,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 class UpdateTestSchemaPaths implements UpgradeInterface
 {
     /**
-     * OutputInterface
-     *
-     * @var OutputInterface
-     */
-    private $output;
-
-    /**
      * Total test updated
-     *
-     * @var integer
      */
-    private $testsUpdated = 0;
+    private int $testsUpdated = 0;
 
     /**
      * Entity type to urn map
-     *
-     * @var array
      */
-    private $typeToUrns = [
+    private array $typeToUrns = [
         'ActionGroup' => 'urn:magento:mftf:Test/etc/actionGroupSchema.xsd',
         'Data' => 'urn:magento:mftf:DataGenerator/etc/dataProfileSchema.xsd',
         'Metadata' => 'urn:magento:mftf:DataGenerator/etc/dataOperation.xsd',
@@ -50,15 +39,11 @@ class UpdateTestSchemaPaths implements UpgradeInterface
     /**
      * Upgrades all test xml files, replacing relative schema paths to URN.
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @return string
      * @throws TestFrameworkException
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): string
     {
         $scriptUtil = new ScriptUtil();
-        $this->output = $output;
         $this->testsUpdated = 0;
         $testPaths[] = $input->getArgument('path');
         if (empty($testPaths[0])) {
@@ -79,9 +64,8 @@ class UpdateTestSchemaPaths implements UpgradeInterface
      *
      * @param Finder $xmlFiles
      * @param string $urn
-     * @return void
      */
-    private function processXmlFiles($xmlFiles, $urn)
+    private function processXmlFiles($xmlFiles, $urn): void
     {
         $pattern = '/xsi:noNamespaceSchemaLocation[\s]*=[\s]*"(?<urn>[^\<\>"\']*)"/';
         foreach ($xmlFiles as $file) {

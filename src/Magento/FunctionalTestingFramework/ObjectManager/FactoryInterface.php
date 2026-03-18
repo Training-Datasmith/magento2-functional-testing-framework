@@ -15,7 +15,6 @@ interface FactoryInterface
      * Create instance with call time arguments
      *
      * @param string $requestedType
-     * @param array  $arguments
      * @return object
      * @throws \LogicException
      * @throws \BadMethodCallException

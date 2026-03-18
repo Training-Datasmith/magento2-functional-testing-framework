@@ -15,28 +15,21 @@ use Magento\FunctionalTestingFramework\ObjectManagerInterface;
 class SectionParser implements ParserInterface
 {
     /**
-     * Object manager.
-     *
-     * @var \Magento\FunctionalTestingFramework\ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * Configuration data.
-     *
-     * @var DataInterface
-     */
-    protected $configData;
-
-    /**
      * SectionParser constructor.
-     * @param ObjectManagerInterface $objectManager
-     * @param DataInterface          $configData
      */
-    public function __construct(ObjectManagerInterface $objectManager, DataInterface $configData)
+    public function __construct(
+        /**
+         * Object manager.
+         *
+         * @var \Magento\FunctionalTestingFramework\ObjectManager
+         */
+        protected \Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager,
+        /**
+         * Configuration data.
+         */
+        protected \Magento\FunctionalTestingFramework\Config\DataInterface $configData
+    )
     {
-        $this->objectManager = $objectManager;
-        $this->configData = $configData;
     }
 
     /**

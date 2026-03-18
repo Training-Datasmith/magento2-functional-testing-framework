@@ -9,45 +9,9 @@ namespace Magento\FunctionalTestingFramework\DataGenerator\Objects;
 class OperationElement
 {
     /**
-     * Data parameter name
-     *
-     * @var string
-     */
-    private $key;
-
-    /**
-     * Data parameter metadata value (e.g. string, bool)
-     *
-     * @var string
-     */
-    private $value;
-
-    /**
-     * Data type such as array or entry
-     *
-     * @var string
-     */
-    private $type;
-
-    /**
-     * Nested data Objects defined within the same operation.xml file
-     *
-     * @var array
-     */
-    private $nestedElements = [];
-
-    /**
-     * Nested Metadata which must be included for a dataElement of type dataObject
-     *
-     * @var array|null
-     */
-    private $nestedMetadata = [];
-
-    /**
      * Required attribute, used to determine if values need to be cast before insertion.
-     * @var boolean
      */
-    private $required;
+    private readonly bool $required;
 
     /**
      * OperationElement constructor.
@@ -58,14 +22,24 @@ class OperationElement
      * @param array      $nestedElements
      * @param null|array $nestedMetadata
      */
-    public function __construct($key, $value, $type, $required, $nestedElements = [], $nestedMetadata = null)
+    public function __construct(/**
+     * Data parameter name
+     */
+    private $key, /**
+     * Data parameter metadata value (e.g. string, bool)
+     */
+    private $value, /**
+     * Data type such as array or entry
+     */
+    private $type, $required, /**
+     * Nested data Objects defined within the same operation.xml file
+     */
+    private $nestedElements = [], /**
+     * Nested Metadata which must be included for a dataElement of type dataObject
+     */
+    private $nestedMetadata = null)
     {
-        $this->key = $key;
-        $this->value = $value;
-        $this->type = $type;
-        $this->nestedElements = $nestedElements;
         $this->required = filter_var($required, FILTER_VALIDATE_BOOLEAN);
-        $this->nestedMetadata = $nestedMetadata;
     }
 
     /**

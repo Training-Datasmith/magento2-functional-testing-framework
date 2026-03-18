@@ -11,20 +11,15 @@ use Magento\FunctionalTestingFramework\Config\DataInterface;
 class SuiteDataParser
 {
     /**
-     * Suite data interface for parser.
-     *
-     * @var DataInterface
-     */
-    private $suiteData;
-
-    /**
      * TestDataParser constructor.
-     *
-     * @param DataInterface $suiteData
      */
-    public function __construct(DataInterface $suiteData)
+    public function __construct(
+        /**
+         * Suite data interface for parser.
+         */
+        private readonly DataInterface $suiteData
+    )
     {
-        $this->suiteData = $suiteData;
     }
 
     /**

@@ -15,17 +15,13 @@ class DefaultTestManifest extends BaseTestManifest
 
     /**
      * Path to the test manifest file.
-     *
-     * @var string
      */
-    protected $manifestPath;
+    protected string $manifestPath;
 
     /**
      * A static array to track which test manifests have been cleared to prevent overwriting during generation.
-     *
-     * @var array
      */
-    private static $CLEARED_MANIFESTS = [];
+    private static array $CLEARED_MANIFESTS = [];
 
     /**
      * An array containing all test names for output.
@@ -51,19 +47,16 @@ class DefaultTestManifest extends BaseTestManifest
      * Takes a test name and set of tests, records the names in a file for codeception to consume.
      *
      * @param TestObject $testObject
-     * @return void
      */
-    public function addTest($testObject)
+    public function addTest($testObject): void
     {
         $this->testNames[] = $testObject->getCodeceptionName();
     }
 
     /**
      * Function which outputs a list of all test files to the defined testManifest.txt file.
-     *
-     * @return void
      */
-    public function generate()
+    public function generate(): void
     {
         $fileResource = fopen($this->manifestPath, 'a');
 
@@ -97,11 +90,8 @@ class DefaultTestManifest extends BaseTestManifest
     /**
      * Function which checks the path for an existing test manifest and clears if the file has not already been cleared
      * during current runtime.
-     *
-     * @param string $path
-     * @return void
      */
-    private function cleanManifest($path)
+    private function cleanManifest(string $path): void
     {
         // if we have already cleared the file then simply return
         if (in_array($path, self::$CLEARED_MANIFESTS)) {

@@ -41,9 +41,8 @@ class MftfLogger extends Logger
      * @param string  $message The log message.
      * @param array   $context The log context.
      * @param boolean $verbose
-     * @return void
      */
-    public function deprecation($message, array $context = [], $verbose = false)
+    public function deprecation($message, array $context = [], $verbose = false): void
     {
         $message = "DEPRECATION: " . $message;
         // print during test generation including metadata
@@ -64,9 +63,8 @@ class MftfLogger extends Logger
      * @param string  $message The log message.
      * @param array   $context The log context.
      * @param boolean $verbose
-     * @return void
      */
-    public function criticalFailure($message, array $context = [], $verbose = false)
+    public function criticalFailure($message, array $context = [], $verbose = false): void
     {
         $message = "FAILURE: " . $message;
         // Suppress print during unit testing
@@ -81,11 +79,9 @@ class MftfLogger extends Logger
      * Suppresses logging during execution phase.
      *
      * @param string  $message
-     * @param array   $context
      * @param boolean $verbose
-     * @return void
      */
-    public function notification($message, array $context = [], $verbose = false)
+    public function notification($message, array $context = [], $verbose = false): void
     {
         $message = "NOTICE: " . $message;
         // print during test generation

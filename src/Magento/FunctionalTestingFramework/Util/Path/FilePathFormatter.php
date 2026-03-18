@@ -15,10 +15,7 @@ class FilePathFormatter implements FormatterInterface
     /**
      * Return formatted full file path from input string, or false on error.
      *
-     * @param string  $path
-     * @param boolean $withTrailingSeparator
      *
-     * @return string
      * @throws TestFrameworkException
      */
     public static function format(string $path, bool $withTrailingSeparator = true): string

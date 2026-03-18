@@ -31,10 +31,8 @@ class GenerateDevUrnCommand extends Command
 
     /**
      * Configures the current command.
-     *
-     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('generate:urn-catalog')
             ->setDescription('Generates the catalog of URNs to *.xsd mappings for the IDE to highlight xml.')
@@ -54,9 +52,6 @@ class GenerateDevUrnCommand extends Command
     /**
      * Executes the current command.
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
      * @throws \Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -125,12 +120,10 @@ class GenerateDevUrnCommand extends Command
 
     /**
      * Generates urn => location array for all MFTF schema.
-     *
-     * @return array
      */
-    private function generateResourcesArray()
+    private function generateResourcesArray(): array
     {
-        $resourcesArray = [
+        return [
             'urn:magento:mftf:DataGenerator/etc/dataOperation.xsd' =>
                 $this->getResourcePath('DataGenerator/etc/dataOperation.xsd'),
             'urn:magento:mftf:DataGenerator/etc/dataProfileSchema.xsd' =>
@@ -146,7 +139,6 @@ class GenerateDevUrnCommand extends Command
             'urn:magento:mftf:Suite/etc/suiteSchema.xsd' =>
                 $this->getResourcePath('Suite/etc/suiteSchema.xsd')
         ];
-        return $resourcesArray;
     }
 
     /**
@@ -156,7 +148,7 @@ class GenerateDevUrnCommand extends Command
      * @return string
      * @throws TestFrameworkException
      */
-    private function getResourcePath($relativePath)
+    private function getResourcePath(string $relativePath)
     {
         $urnPath = realpath(FilePathFormatter::format(FW_BP) . self::MFTF_SRC_PATH . $relativePath);
         $projectRoot = $this->getProjectRootPath();
@@ -174,7 +166,7 @@ class GenerateDevUrnCommand extends Command
      *
      * @return string|null
      */
-    private function getProjectRootPath()
+    private function getProjectRootPath(): string|false|null
     {
         $frameworkRoot = realpath(__DIR__);
 
@@ -189,10 +181,9 @@ class GenerateDevUrnCommand extends Command
      * Determines whether MFTF was installed using Composer
      *
      * @param string $frameworkRoot
-     * @return bool
      */
-    private function isInstalledByComposer($frameworkRoot)
+    private function isInstalledByComposer($frameworkRoot): bool
     {
-        return false !== strpos($frameworkRoot, '/vendor/');
+        return str_contains($frameworkRoot, '/vendor/');
     }
 }

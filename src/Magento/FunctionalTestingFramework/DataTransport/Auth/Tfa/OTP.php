@@ -22,12 +22,11 @@ class OTP
      *
      * @var TOTP[]
      */
-    private static $totps = [];
+    private static array $totps = [];
 
     /**
      * Return OTP for custom secret stored in `magento/tfa/OTP_SHARED_SECRET`
      *
-     * @param string|null $path
      * @return string
      * @throws TestFrameworkException
      */
@@ -42,11 +41,10 @@ class OTP
     /**
      * Create TOTP object
      *
-     * @param string $path
      * @return TOTP
      * @throws TestFrameworkException
      */
-    private static function create($path)
+    private static function create(string $path)
     {
         if (!isset(self::$totps[$path])) {
             try {

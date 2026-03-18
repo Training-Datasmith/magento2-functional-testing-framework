@@ -31,19 +31,16 @@ class StaticChecksList implements StaticCheckListInterface
      *
      * @var StaticCheckInterface[]
      */
-    private $checks;
+    private readonly array $checks;
 
     /**
      * Directory path for static checks error files
-     *
-     * @var string
      */
-    private static $errorFilesPath = null;
+    private static ?string $errorFilesPath = null;
 
     /**
      * Constructor
      *
-     * @param array $checks
      * @throws TestFrameworkException
      */
     public function __construct(array $checks = [])
