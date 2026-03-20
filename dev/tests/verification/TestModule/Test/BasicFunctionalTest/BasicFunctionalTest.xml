@@ -94,7 +94,7 @@
         <pressKey selector="#page" userInput="a" stepKey="pressKey1"/>
         <pressKey selector="#page" parameterArray="[['ctrl','a'],'new']" stepKey="pressKey2"/>
         <pressKey selector="#page" parameterArray="[['shift','111'],'1','x']" stepKey="pressKey3"/>
-        <pressKey selector="#page" parameterArray="[['ctrl', 'a'], \Facebook\WebDriver\WebDriverKeys::DELETE]" stepKey="pressKey4"/>
+        <pressKey selector="#page" parameterArray="[['ctrl', 'a'], \Facebook\Web_Driver\Web_Driver_Keys::DELETE]" stepKey="pressKey4"/>
         <reloadPage stepKey="reloadPageKey1"/>
         <resetCookie userInput="cookieInput" stepKey="resetCookieKey1"/>
         <resizeWindow width="0" height="0" stepKey="resizeWindowKey1" />

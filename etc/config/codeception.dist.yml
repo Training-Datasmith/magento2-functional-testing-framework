@@ -14,18 +14,18 @@ settings:
     memory_limit: 1024M
 extensions:
     enabled:
-        - Magento\FunctionalTestingFramework\Codeception\Subscriber\Console
-        - Magento\FunctionalTestingFramework\Extension\TestContextExtension
-        - Qameta\Allure\Codeception\AllureCodeception
+        - Magento\Functional_Testing_Framework\Codeception\Subscriber\Console
+        - Magento\Functional_Testing_Framework\Extension\Test_Context_Extension
+        - Qameta\Allure\Codeception\Allure_Codeception
     config:
-        Qameta\Allure\Codeception\AllureCodeception:
+        Qameta\Allure\Codeception\Allure_Codeception:
             deletePreviousResults: false
             outputDirectory: allure-results
             ignoredAnnotations:
                 - env
                 - zephyrId
                 - useCaseId
-        Magento\FunctionalTestingFramework\Extension\TestContextExtension:
-            driver: \Magento\FunctionalTestingFramework\Module\MagentoWebDriver
+        Magento\Functional_Testing_Framework\Extension\Test_Context_Extension:
+            driver: \Magento\Functional_Testing_Framework\Module\Magento_Web_Driver
 params:
     - .env

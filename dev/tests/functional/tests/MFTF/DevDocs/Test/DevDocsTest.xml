@@ -22,7 +22,7 @@
         <!--   Open MFTF DevDocs Page -->
         <amOnPage stepKey="openMFTFDevDocPage" url="{{MFTFDocPage.url}}" />
         <see stepKey="verifyPageIntroText" selector="{{contentSection.pageIntro}}" userInput="{{MessageData.message}}" />
-        <helper class="\MFTF\DevDocs\Helper\CustomHelper" method="goTo" stepKey="customHelper">
+        <helper class="\MFTF\Dev_Docs\Helper\Custom_Helper" method="goTo" stepKey="customHelper">
             <argument name="test">{{contentSection.pageIntro}}</argument>
             <argument name="module">['Test', 'Bla']</argument>
             <argument name="url">{{MFTFDocPage.url}}</argument>
@@ -31,7 +31,7 @@
             <argument name="int">123</argument>
         </helper>
 
-        <helper class="\MFTF\DevDocs\Helper\CustomHelper" method="goTo" stepKey="customHelperWithArrayParametrized">
+        <helper class="\MFTF\Dev_Docs\Helper\Custom_Helper" method="goTo" stepKey="customHelperWithArrayParametrized">
             <argument name="test">{{contentSection.pageIntro}}</argument>
             <argument name="module">[]</argument>
             <argument name="url">{{DeprecatedMFTFDocPage.url}}</argument>
@@ -42,7 +42,7 @@
             <argument name="int">987</argument>
         </helper>
 
-        <helper class="\MFTF\DevDocs\Helper\CustomHelper" method="getText" stepKey="getText">
+        <helper class="\MFTF\Dev_Docs\Helper\Custom_Helper" method="getText" stepKey="getText">
             <argument name="text">some text</argument>
         </helper>
         <assertEquals stepKey="assertHelperReturnValue" message="Method getText of CustomHelper should return value which may be used as variable in test">

@@ -8,17 +8,17 @@
 # If you need both WebDriver and PHPBrowser tests - create a separate suite.
 
 actor: AcceptanceTester
-namespace: Magento\FunctionalTestingFramework
+namespace: Magento\Functional_Testing_Framework
 modules:
     enabled:
-        - \Magento\FunctionalTestingFramework\Module\MagentoWebDriver
-        - \Magento\FunctionalTestingFramework\Module\MagentoSequence
-        - \Magento\FunctionalTestingFramework\Module\MagentoAssert
-        - \Magento\FunctionalTestingFramework\Module\MagentoActionProxies
+        - \Magento\Functional_Testing_Framework\Module\Magento_Web_Driver
+        - \Magento\Functional_Testing_Framework\Module\Magento_Sequence
+        - \Magento\Functional_Testing_Framework\Module\Magento_Assert
+        - \Magento\Functional_Testing_Framework\Module\Magento_Action_Proxies
         - Asserts
-        - \Magento\FunctionalTestingFramework\Helper\HelperContainer
+        - \Magento\Functional_Testing_Framework\Helper\Helper_Container
     config:
-        \Magento\FunctionalTestingFramework\Module\MagentoWebDriver:
+        \Magento\Functional_Testing_Framework\Module\Magento_Web_Driver:
             url: "%MAGENTO_BASE_URL%"
             backend_url: "%MAGENTO_BACKEND_BASE_URL%"
             backend_name: "%MAGENTO_BACKEND_NAME%"

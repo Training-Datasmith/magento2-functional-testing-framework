@@ -12,78 +12,78 @@
 ]>
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../src/Magento/FunctionalTestingFramework/ObjectManager/etc/config.xsd">
-    <preference for="Magento\FunctionalTestingFramework\ObjectManagerInterface" type="Magento\FunctionalTestingFramework\ObjectManager" />
-    <preference for="Magento\FunctionalTestingFramework\ObjectManager\FactoryInterface" type="Magento\FunctionalTestingFramework\ObjectManager\Factory" />
-    <preference for="Magento\FunctionalTestingFramework\ObjectManager\ConfigInterface" type="Magento\FunctionalTestingFramework\ObjectManager\Config\Config" />
-    <preference for="Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface" type="Magento\FunctionalTestingFramework\Data\Argument\Interpreter\Composite" />
-    <preference for="Magento\FunctionalTestingFramework\Config\ReaderInterface" type="Magento\FunctionalTestingFramework\Config\Reader\Filesystem" />
-    <preference for="Magento\FunctionalTestingFramework\Config\FileResolverInterface" type="Magento\FunctionalTestingFramework\Config\FileResolver\Primary" />
-    <preference for="Magento\FunctionalTestingFramework\Config\ConverterInterface" type="Magento\FunctionalTestingFramework\Config\Converter" />
-    <preference for="Magento\FunctionalTestingFramework\Config\SchemaLocatorInterface" type="Magento\FunctionalTestingFramework\Config\SchemaLocator" />
-    <preference for="Magento\FunctionalTestingFramework\Config\ValidationStateInterface" type="Magento\FunctionalTestingFramework\Config\ValidationState" />
-    <preference for="Magento\FunctionalTestingFramework\Util\ModuleResolver\SequenceSorterInterface" type="Magento\FunctionalTestingFramework\Util\ModuleResolver\SequenceSorter" />
+    <preference for="Magento\Functional_Testing_Framework\Object_Manager_Interface" type="Magento\Functional_Testing_Framework\Object_Manager" />
+    <preference for="Magento\Functional_Testing_Framework\Object_Manager\Factory_Interface" type="Magento\Functional_Testing_Framework\Object_Manager\Factory" />
+    <preference for="Magento\Functional_Testing_Framework\Object_Manager\Config_Interface" type="Magento\Functional_Testing_Framework\Object_Manager\Config\Config" />
+    <preference for="Magento\Functional_Testing_Framework\Data\Argument\Interpreter_Interface" type="Magento\Functional_Testing_Framework\Data\Argument\Interpreter\Composite" />
+    <preference for="Magento\Functional_Testing_Framework\Config\Reader_Interface" type="Magento\Functional_Testing_Framework\Config\Reader\Filesystem" />
+    <preference for="Magento\Functional_Testing_Framework\Config\File_Resolver_Interface" type="Magento\Functional_Testing_Framework\Config\File_Resolver\Primary" />
+    <preference for="Magento\Functional_Testing_Framework\Config\Converter_Interface" type="Magento\Functional_Testing_Framework\Config\Converter" />
+    <preference for="Magento\Functional_Testing_Framework\Config\Schema_Locator_Interface" type="Magento\Functional_Testing_Framework\Config\Schema_Locator" />
+    <preference for="Magento\Functional_Testing_Framework\Config\Validation_State_Interface" type="Magento\Functional_Testing_Framework\Config\Validation_State" />
+    <preference for="Magento\Functional_Testing_Framework\Util\Module_Resolver\Sequence_Sorter_Interface" type="Magento\Functional_Testing_Framework\Util\Module_Resolver\Sequence_Sorter" />
 
-    <type name="Magento\FunctionalTestingFramework\Data\Argument\Interpreter\Composite">
+    <type name="Magento\Functional_Testing_Framework\Data\Argument\Interpreter\Composite">
         <arguments>
             <argument name="interpreters" xsi:type="array">
-                <item name="object" xsi:type="object">Magento\FunctionalTestingFramework\Data\Argument\Interpreter\DataObject</item>
+                <item name="object" xsi:type="object">Magento\Functional_Testing_Framework\Data\Argument\Interpreter\Data_Object</item>
                 <item name="array" xsi:type="object">arrayArgumentInterpreterProxy</item>
-                <item name="boolean" xsi:type="object">Magento\FunctionalTestingFramework\Data\Argument\Interpreter\Boolean</item>
-                <item name="number" xsi:type="object">Magento\FunctionalTestingFramework\Data\Argument\Interpreter\Number</item>
-                <item name="string" xsi:type="object">Magento\FunctionalTestingFramework\Data\Argument\Interpreter\StringUtils</item>
-                <item name="null" xsi:type="object">Magento\FunctionalTestingFramework\Data\Argument\Interpreter\NullType</item>
-                <item name="const" xsi:type="object">Magento\FunctionalTestingFramework\Data\Argument\Interpreter\Constant</item>
+                <item name="boolean" xsi:type="object">Magento\Functional_Testing_Framework\Data\Argument\Interpreter\Boolean</item>
+                <item name="number" xsi:type="object">Magento\Functional_Testing_Framework\Data\Argument\Interpreter\Number</item>
+                <item name="string" xsi:type="object">Magento\Functional_Testing_Framework\Data\Argument\Interpreter\String_Utils</item>
+                <item name="null" xsi:type="object">Magento\Functional_Testing_Framework\Data\Argument\Interpreter\Null_Type</item>
+                <item name="const" xsi:type="object">Magento\Functional_Testing_Framework\Data\Argument\Interpreter\Constant</item>
             </argument>
             <argument name="discriminator" xsi:type="string">xsi:type</argument>
         </arguments>
     </type>
-    <type name="Magento\FunctionalTestingFramework\Data\Argument\Interpreter\ArrayType">
+    <type name="Magento\Functional_Testing_Framework\Data\Argument\Interpreter\Array_Type">
         <arguments>
-            <argument name="itemInterpreter" xsi:type="object">Magento\FunctionalTestingFramework\Data\Argument\Interpreter\Composite</argument>
+            <argument name="itemInterpreter" xsi:type="object">Magento\Functional_Testing_Framework\Data\Argument\Interpreter\Composite</argument>
         </arguments>
     </type>
-    <type name="Magento\FunctionalTestingFramework\Config\ValidationState">
+    <type name="Magento\Functional_Testing_Framework\Config\Validation_State">
         <arguments>
             <argument name="appMode" xsi:type="string">developer</argument>
         </arguments>
     </type>
-    <type name="Magento\FunctionalTestingFramework\Config\Converter">
+    <type name="Magento\Functional_Testing_Framework\Config\Converter">
         <arguments>
             <argument name="argumentParser" xsi:type="object">converterArgumentParser</argument>
-            <argument name="argumentInterpreter" xsi:type="object">Magento\FunctionalTestingFramework\Data\Argument\Interpreter\Composite</argument>
+            <argument name="argumentInterpreter" xsi:type="object">Magento\Functional_Testing_Framework\Data\Argument\Interpreter\Composite</argument>
             <argument name="argumentNodeName" xsi:type="string">data</argument>
         </arguments>
     </type>
-    <type name="Magento\FunctionalTestingFramework\Util\ModuleResolver\SequenceSorter" />
+    <type name="Magento\Functional_Testing_Framework\Util\Module_Resolver\Sequence_Sorter" />
     <!--
     Array item can be of any type just like an argument, including array type itself, which creates circular dependency.
     Proxy is used to resolve the circular dependency, so that array items undergo the same interpretation as arguments.
     -->
-    <virtualType name="converterArgumentParser" type="Magento\FunctionalTestingFramework\ObjectManager\Config\Mapper\ArgumentParser" />
-    <virtualType name="arrayArgumentInterpreterProxy" type="Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface\Proxy">
+    <virtualType name="converterArgumentParser" type="Magento\Functional_Testing_Framework\Object_Manager\Config\Mapper\Argument_Parser" />
+    <virtualType name="arrayArgumentInterpreterProxy" type="Magento\Functional_Testing_Framework\Data\Argument\Interpreter_Interface\Proxy">
         <arguments>
-            <argument name="instanceName" xsi:type="string">Magento\FunctionalTestingFramework\Data\Argument\Interpreter\ArrayType</argument>
+            <argument name="instanceName" xsi:type="string">Magento\Functional_Testing_Framework\Data\Argument\Interpreter\Array_Type</argument>
         </arguments>
     </virtualType>
 
     <!-- Configuration for PageObject -->
 
-    <virtualType name="Magento\FunctionalTestingFramework\Config\SchemaLocator\Page" type="Magento\FunctionalTestingFramework\Config\SchemaLocator">
+    <virtualType name="Magento\Functional_Testing_Framework\Config\Schema_Locator\Page" type="Magento\Functional_Testing_Framework\Config\Schema_Locator">
         <arguments>
             <argument name="schemaPath" xsi:type="string">Magento/FunctionalTestingFramework/Page/etc/mergedPageObject.xsd</argument>
         </arguments>
     </virtualType>
-    <virtualType name="Magento\FunctionalTestingFramework\Config\SchemaLocator\Section" type="Magento\FunctionalTestingFramework\Config\SchemaLocator">
+    <virtualType name="Magento\Functional_Testing_Framework\Config\Schema_Locator\Section" type="Magento\Functional_Testing_Framework\Config\Schema_Locator">
         <arguments>
             <argument name="schemaPath" xsi:type="string">Magento/FunctionalTestingFramework/Page/etc/mergedSectionObject.xsd</argument>
         </arguments>
     </virtualType>
-    <virtualType name="Magento\FunctionalTestingFramework\Config\Reader\Page" type="Magento\FunctionalTestingFramework\Config\Reader\MftfFilesystem">
+    <virtualType name="Magento\Functional_Testing_Framework\Config\Reader\Page" type="Magento\Functional_Testing_Framework\Config\Reader\Mftf_Filesystem">
         <arguments>
-            <argument name="fileResolver" xsi:type="object">Magento\FunctionalTestingFramework\Config\FileResolver\Mask</argument>
-            <argument name="converter" xsi:type="object">Magento\FunctionalTestingFramework\Config\Converter</argument>
-            <argument name="schemaLocator" xsi:type="object">Magento\FunctionalTestingFramework\Config\SchemaLocator\Page</argument>
-            <argument name="domDocumentClass" xsi:type="string">Magento\FunctionalTestingFramework\Page\Config\Dom</argument>
+            <argument name="fileResolver" xsi:type="object">Magento\Functional_Testing_Framework\Config\File_Resolver\Mask</argument>
+            <argument name="converter" xsi:type="object">Magento\Functional_Testing_Framework\Config\Converter</argument>
+            <argument name="schemaLocator" xsi:type="object">Magento\Functional_Testing_Framework\Config\Schema_Locator\Page</argument>
+            <argument name="domDocumentClass" xsi:type="string">Magento\Functional_Testing_Framework\Page\Config\Dom</argument>
             <argument name="idAttributes" xsi:type="array">
                 <item name="/pages/page" xsi:type="string">name</item>
                 <item name="/pages/page/section" xsi:type="string">name</item>
@@ -92,12 +92,12 @@
             <argument name="defaultScope" xsi:type="string">Page</argument>
         </arguments>
     </virtualType>
-    <virtualType name="Magento\FunctionalTestingFramework\Config\Reader\Section" type="Magento\FunctionalTestingFramework\Config\Reader\MftfFilesystem">
+    <virtualType name="Magento\Functional_Testing_Framework\Config\Reader\Section" type="Magento\Functional_Testing_Framework\Config\Reader\Mftf_Filesystem">
         <arguments>
-            <argument name="fileResolver" xsi:type="object">Magento\FunctionalTestingFramework\Config\FileResolver\Mask</argument>
-            <argument name="converter" xsi:type="object">Magento\FunctionalTestingFramework\Config\Converter</argument>
-            <argument name="schemaLocator" xsi:type="object">Magento\FunctionalTestingFramework\Config\SchemaLocator\Section</argument>
-            <argument name="domDocumentClass" xsi:type="string">Magento\FunctionalTestingFramework\Page\Config\SectionDom</argument>
+            <argument name="fileResolver" xsi:type="object">Magento\Functional_Testing_Framework\Config\File_Resolver\Mask</argument>
+            <argument name="converter" xsi:type="object">Magento\Functional_Testing_Framework\Config\Converter</argument>
+            <argument name="schemaLocator" xsi:type="object">Magento\Functional_Testing_Framework\Config\Schema_Locator\Section</argument>
+            <argument name="domDocumentClass" xsi:type="string">Magento\Functional_Testing_Framework\Page\Config\Section_Dom</argument>
             <argument name="idAttributes" xsi:type="array">
                 <item name="/sections/section" xsi:type="string">name</item>
                 <item name="/sections/section/element" xsi:type="string">name</item>
@@ -107,53 +107,53 @@
         </arguments>
     </virtualType>
 
-    <type name="Magento\FunctionalTestingFramework\XmlParser\PageParser">
+    <type name="Magento\Functional_Testing_Framework\Xml_Parser\Page_Parser">
         <arguments>
-            <argument name="configData" xsi:type="object">Magento\FunctionalTestingFramework\Page\Config\Data</argument>
+            <argument name="configData" xsi:type="object">Magento\Functional_Testing_Framework\Page\Config\Data</argument>
         </arguments>
     </type>
 
-    <virtualType name="Magento\FunctionalTestingFramework\Page\Config\Data" type="Magento\FunctionalTestingFramework\Config\Data">
+    <virtualType name="Magento\Functional_Testing_Framework\Page\Config\Data" type="Magento\Functional_Testing_Framework\Config\Data">
         <arguments>
-            <argument name="reader" xsi:type="object">Magento\FunctionalTestingFramework\Config\Reader\Page</argument>
+            <argument name="reader" xsi:type="object">Magento\Functional_Testing_Framework\Config\Reader\Page</argument>
         </arguments>
     </virtualType>
 
-    <type name="Magento\FunctionalTestingFramework\XmlParser\SectionParser">
+    <type name="Magento\Functional_Testing_Framework\Xml_Parser\Section_Parser">
         <arguments>
-            <argument name="configData" xsi:type="object">Magento\FunctionalTestingFramework\Section\Config\Data</argument>
+            <argument name="configData" xsi:type="object">Magento\Functional_Testing_Framework\Section\Config\Data</argument>
         </arguments>
     </type>
 
-    <virtualType name="Magento\FunctionalTestingFramework\Section\Config\Data" type="Magento\FunctionalTestingFramework\Config\Data">
+    <virtualType name="Magento\Functional_Testing_Framework\Section\Config\Data" type="Magento\Functional_Testing_Framework\Config\Data">
         <arguments>
-            <argument name="reader" xsi:type="object">Magento\FunctionalTestingFramework\Config\Reader\Section</argument>
+            <argument name="reader" xsi:type="object">Magento\Functional_Testing_Framework\Config\Reader\Section</argument>
         </arguments>
     </virtualType>
 
     <!-- Configuration for Data.xml -->
 
-    <type name="Magento\FunctionalTestingFramework\DataGenerator\Parsers\DataProfileSchemaParser">
+    <type name="Magento\Functional_Testing_Framework\Data_Generator\Parsers\Data_Profile_Schema_Parser">
         <arguments>
-            <argument name="dataProfiles" xsi:type="object">Magento\FunctionalTestingFramework\DataProfile\Config\Data</argument>
+            <argument name="dataProfiles" xsi:type="object">Magento\Functional_Testing_Framework\Data_Profile\Config\Data</argument>
         </arguments>
     </type>
-    <virtualType name="Magento\FunctionalTestingFramework\DataProfile\Config\Data" type="Magento\FunctionalTestingFramework\Config\Data">
+    <virtualType name="Magento\Functional_Testing_Framework\Data_Profile\Config\Data" type="Magento\Functional_Testing_Framework\Config\Data">
         <arguments>
-            <argument name="reader" xsi:type="object">Magento\FunctionalTestingFramework\Config\Reader\DataProfile</argument>
+            <argument name="reader" xsi:type="object">Magento\Functional_Testing_Framework\Config\Reader\Data_Profile</argument>
         </arguments>
     </virtualType>
-    <virtualType name="Magento\FunctionalTestingFramework\Config\SchemaLocator\DataProfile" type="Magento\FunctionalTestingFramework\Config\SchemaLocator">
+    <virtualType name="Magento\Functional_Testing_Framework\Config\Schema_Locator\Data_Profile" type="Magento\Functional_Testing_Framework\Config\Schema_Locator">
         <arguments>
             <argument name="schemaPath" xsi:type="string">Magento/FunctionalTestingFramework/DataGenerator/etc/dataProfileSchema.xsd</argument>
         </arguments>
     </virtualType>
-    <virtualType name="Magento\FunctionalTestingFramework\Config\Reader\DataProfile" type="Magento\FunctionalTestingFramework\Config\Reader\MftfFilesystem">
+    <virtualType name="Magento\Functional_Testing_Framework\Config\Reader\Data_Profile" type="Magento\Functional_Testing_Framework\Config\Reader\Mftf_Filesystem">
         <arguments>
-            <argument name="fileResolver" xsi:type="object">Magento\FunctionalTestingFramework\Config\FileResolver\Mask</argument>
-            <argument name="converter" xsi:type="object">Magento\FunctionalTestingFramework\Config\Converter</argument>
-            <argument name="domDocumentClass" xsi:type="string">Magento\FunctionalTestingFramework\DataGenerator\Config\Dom</argument>
-            <argument name="schemaLocator" xsi:type="object">Magento\FunctionalTestingFramework\Config\SchemaLocator\DataProfile</argument>
+            <argument name="fileResolver" xsi:type="object">Magento\Functional_Testing_Framework\Config\File_Resolver\Mask</argument>
+            <argument name="converter" xsi:type="object">Magento\Functional_Testing_Framework\Config\Converter</argument>
+            <argument name="domDocumentClass" xsi:type="string">Magento\Functional_Testing_Framework\Data_Generator\Config\Dom</argument>
+            <argument name="schemaLocator" xsi:type="object">Magento\Functional_Testing_Framework\Config\Schema_Locator\Data_Profile</argument>
             <argument name="idAttributes" xsi:type="array">
                 <item name="/entities/entity" xsi:type="string">name</item>
                 <item name="/entities/entity/(data|array)" xsi:type="string">key</item>
@@ -171,27 +171,27 @@
 
     <!-- Configuration for Data Operation Metadata.xml -->
 
-    <type name="Magento\FunctionalTestingFramework\DataGenerator\Parsers\OperationDefinitionParser">
+    <type name="Magento\Functional_Testing_Framework\Data_Generator\Parsers\Operation_Definition_Parser">
         <arguments>
-            <argument name="metadata" xsi:type="object">Magento\FunctionalTestingFramework\DataProfile\Config\Metadata</argument>
+            <argument name="metadata" xsi:type="object">Magento\Functional_Testing_Framework\Data_Profile\Config\Metadata</argument>
         </arguments>
     </type>
-    <virtualType name="Magento\FunctionalTestingFramework\DataProfile\Config\Metadata" type="Magento\FunctionalTestingFramework\Config\Data">
+    <virtualType name="Magento\Functional_Testing_Framework\Data_Profile\Config\Metadata" type="Magento\Functional_Testing_Framework\Config\Data">
         <arguments>
-            <argument name="reader" xsi:type="object">Magento\FunctionalTestingFramework\Config\Reader\Metadata</argument>
+            <argument name="reader" xsi:type="object">Magento\Functional_Testing_Framework\Config\Reader\Metadata</argument>
         </arguments>
     </virtualType>
-    <virtualType name="Magento\FunctionalTestingFramework\Config\SchemaLocator\Metadata" type="Magento\FunctionalTestingFramework\Config\SchemaLocator">
+    <virtualType name="Magento\Functional_Testing_Framework\Config\Schema_Locator\Metadata" type="Magento\Functional_Testing_Framework\Config\Schema_Locator">
         <arguments>
             <argument name="schemaPath" xsi:type="string">Magento/FunctionalTestingFramework/DataGenerator/etc/dataOperation.xsd</argument>
         </arguments>
     </virtualType>
-    <virtualType name="Magento\FunctionalTestingFramework\Config\Reader\Metadata" type="Magento\FunctionalTestingFramework\Config\Reader\MftfFilesystem">
+    <virtualType name="Magento\Functional_Testing_Framework\Config\Reader\Metadata" type="Magento\Functional_Testing_Framework\Config\Reader\Mftf_Filesystem">
         <arguments>
-            <argument name="fileResolver" xsi:type="object">Magento\FunctionalTestingFramework\Config\FileResolver\Mask</argument>
-            <argument name="converter" xsi:type="object">Magento\FunctionalTestingFramework\Config\Converter</argument>
-            <argument name="domDocumentClass" xsi:type="string">Magento\FunctionalTestingFramework\DataGenerator\Config\OperationDom</argument>
-            <argument name="schemaLocator" xsi:type="object">Magento\FunctionalTestingFramework\Config\SchemaLocator\Metadata</argument>
+            <argument name="fileResolver" xsi:type="object">Magento\Functional_Testing_Framework\Config\File_Resolver\Mask</argument>
+            <argument name="converter" xsi:type="object">Magento\Functional_Testing_Framework\Config\Converter</argument>
+            <argument name="domDocumentClass" xsi:type="string">Magento\Functional_Testing_Framework\Data_Generator\Config\Operation_Dom</argument>
+            <argument name="schemaLocator" xsi:type="object">Magento\Functional_Testing_Framework\Config\Schema_Locator\Metadata</argument>
             <argument name="idAttributes" xsi:type="array">
                 <item name="/operations/operation" xsi:type="string">name</item>
                 <item name="/operations/operation/(field|array)" xsi:type="string">key</item>
@@ -206,17 +206,17 @@
 
     <!-- Configuration for TestData -->
 
-    <virtualType name="Magento\FunctionalTestingFramework\Config\SchemaLocator\TestData" type="Magento\FunctionalTestingFramework\Config\SchemaLocator">
+    <virtualType name="Magento\Functional_Testing_Framework\Config\Schema_Locator\Test_Data" type="Magento\Functional_Testing_Framework\Config\Schema_Locator">
         <arguments>
             <argument name="schemaPath" xsi:type="string">Magento/FunctionalTestingFramework/Test/etc/mergedTestSchema.xsd</argument>
         </arguments>
     </virtualType>
-    <virtualType name="Magento\FunctionalTestingFramework\Config\Reader\TestData" type="Magento\FunctionalTestingFramework\Config\Reader\MftfFilesystem">
+    <virtualType name="Magento\Functional_Testing_Framework\Config\Reader\Test_Data" type="Magento\Functional_Testing_Framework\Config\Reader\Mftf_Filesystem">
         <arguments>
-            <argument name="fileResolver" xsi:type="object">Magento\FunctionalTestingFramework\Config\FileResolver\Mask</argument>
-            <argument name="converter" xsi:type="object">Magento\FunctionalTestingFramework\Config\TestDataConverter</argument>
-            <argument name="schemaLocator" xsi:type="object">Magento\FunctionalTestingFramework\Config\SchemaLocator\TestData</argument>
-            <argument name="domDocumentClass" xsi:type="string">Magento\FunctionalTestingFramework\Test\Config\Dom</argument>
+            <argument name="fileResolver" xsi:type="object">Magento\Functional_Testing_Framework\Config\File_Resolver\Mask</argument>
+            <argument name="converter" xsi:type="object">Magento\Functional_Testing_Framework\Config\Test_Data_Converter</argument>
+            <argument name="schemaLocator" xsi:type="object">Magento\Functional_Testing_Framework\Config\Schema_Locator\Test_Data</argument>
+            <argument name="domDocumentClass" xsi:type="string">Magento\Functional_Testing_Framework\Test\Config\Dom</argument>
             <argument name="idAttributes" xsi:type="array">
                 <item name="/tests/test" xsi:type="string">name</item>
                 <item name="/tests/test/actionGroup/argument" xsi:type="string">name</item>
@@ -237,7 +237,7 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="Magento\FunctionalTestingFramework\Test\Config\Dom\ArrayNodeConfig" type="Magento\FunctionalTestingFramework\Config\Dom\ArrayNodeConfig">
+    <virtualType name="Magento\Functional_Testing_Framework\Test\Config\Dom\Array_Node_Config" type="Magento\Functional_Testing_Framework\Config\Dom\Array_Node_Config">
         <arguments>
             <argument name="assocArrayAttributes" xsi:type="array">
                 <item name="/tests/test/(actionGroup|&commonTestActions;)" xsi:type="string">stepKey</item>
@@ -270,37 +270,37 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="Magento\FunctionalTestingFramework\Config\TestDataConverter" type="Magento\FunctionalTestingFramework\Test\Config\Converter\Dom\Flat">
+    <virtualType name="Magento\Functional_Testing_Framework\Config\Test_Data_Converter" type="Magento\Functional_Testing_Framework\Test\Config\Converter\Dom\Flat">
         <arguments>
-            <argument name="arrayNodeConfig" xsi:type="object">Magento\FunctionalTestingFramework\Test\Config\Dom\ArrayNodeConfig</argument>
+            <argument name="arrayNodeConfig" xsi:type="object">Magento\Functional_Testing_Framework\Test\Config\Dom\Array_Node_Config</argument>
         </arguments>
     </virtualType>
 
-    <type name="Magento\FunctionalTestingFramework\Test\Parsers\TestDataParser">
+    <type name="Magento\Functional_Testing_Framework\Test\Parsers\Test_Data_Parser">
         <arguments>
-            <argument name="testData" xsi:type="object">Magento\FunctionalTestingFramework\Test\Config\Data</argument>
+            <argument name="testData" xsi:type="object">Magento\Functional_Testing_Framework\Test\Config\Data</argument>
         </arguments>
     </type>
-    <virtualType name="Magento\FunctionalTestingFramework\Test\Config\Data" type="Magento\FunctionalTestingFramework\Config\Data">
+    <virtualType name="Magento\Functional_Testing_Framework\Test\Config\Data" type="Magento\Functional_Testing_Framework\Config\Data">
         <arguments>
-            <argument name="reader" xsi:type="object">Magento\FunctionalTestingFramework\Config\Reader\TestData</argument>
+            <argument name="reader" xsi:type="object">Magento\Functional_Testing_Framework\Config\Reader\Test_Data</argument>
         </arguments>
     </virtualType>
 
     <!--Config for Action Group -->
 
-    <virtualType name="Magento\FunctionalTestingFramework\Config\SchemaLocator\ActionGroup" type="Magento\FunctionalTestingFramework\Config\SchemaLocator">
+    <virtualType name="Magento\Functional_Testing_Framework\Config\Schema_Locator\Action_Group" type="Magento\Functional_Testing_Framework\Config\Schema_Locator">
         <arguments>
             <argument name="schemaPath" xsi:type="string">Magento/FunctionalTestingFramework/Test/etc/mergedActionGroupSchema.xsd</argument>
         </arguments>
     </virtualType>
 
-    <virtualType name="Magento\FunctionalTestingFramework\Config\Reader\ActionGroupData" type="Magento\FunctionalTestingFramework\Config\Reader\MftfFilesystem">
+    <virtualType name="Magento\Functional_Testing_Framework\Config\Reader\Action_Group_Data" type="Magento\Functional_Testing_Framework\Config\Reader\Mftf_Filesystem">
         <arguments>
-            <argument name="fileResolver" xsi:type="object">Magento\FunctionalTestingFramework\Config\FileResolver\Mask</argument>
-            <argument name="converter" xsi:type="object">Magento\FunctionalTestingFramework\Config\ActionGroupDataConverter</argument>
-            <argument name="schemaLocator" xsi:type="object">Magento\FunctionalTestingFramework\Config\SchemaLocator\ActionGroup</argument>
-            <argument name="domDocumentClass" xsi:type="string">Magento\FunctionalTestingFramework\Test\Config\ActionGroupDom</argument>
+            <argument name="fileResolver" xsi:type="object">Magento\Functional_Testing_Framework\Config\File_Resolver\Mask</argument>
+            <argument name="converter" xsi:type="object">Magento\Functional_Testing_Framework\Config\Action_Group_Data_Converter</argument>
+            <argument name="schemaLocator" xsi:type="object">Magento\Functional_Testing_Framework\Config\Schema_Locator\Action_Group</argument>
+            <argument name="domDocumentClass" xsi:type="string">Magento\Functional_Testing_Framework\Test\Config\Action_Group_Dom</argument>
             <argument name="idAttributes" xsi:type="array">
                 <item name="/actionGroups/actionGroup" xsi:type="string">name</item>
                 <item name="/actionGroups/actionGroup/arguments/argument" xsi:type="string">name</item>
@@ -315,7 +315,7 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="Magento\FunctionalTestingFramework\Test\Config\Dom\ActionGroupArrayNodeConfig" type="Magento\FunctionalTestingFramework\Config\Dom\ArrayNodeConfig">
+    <virtualType name="Magento\Functional_Testing_Framework\Test\Config\Dom\Action_Group_Array_Node_Config" type="Magento\Functional_Testing_Framework\Config\Dom\Array_Node_Config">
         <arguments>
             <argument name="assocArrayAttributes" xsi:type="array">
                 <item name="/actionGroups/actionGroup/(&commonTestActions;)" xsi:type="string">stepKey</item>
@@ -329,46 +329,46 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="Magento\FunctionalTestingFramework\Config\ActionGroupDataConverter" type="Magento\FunctionalTestingFramework\Test\Config\Converter\Dom\Flat">
+    <virtualType name="Magento\Functional_Testing_Framework\Config\Action_Group_Data_Converter" type="Magento\Functional_Testing_Framework\Test\Config\Converter\Dom\Flat">
         <arguments>
-            <argument name="arrayNodeConfig" xsi:type="object">Magento\FunctionalTestingFramework\Test\Config\Dom\ActionGroupArrayNodeConfig</argument>
+            <argument name="arrayNodeConfig" xsi:type="object">Magento\Functional_Testing_Framework\Test\Config\Dom\Action_Group_Array_Node_Config</argument>
         </arguments>
     </virtualType>
 
-    <type name="Magento\FunctionalTestingFramework\Test\Parsers\ActionGroupDataParser">
+    <type name="Magento\Functional_Testing_Framework\Test\Parsers\Action_Group_Data_Parser">
         <arguments>
-            <argument name="actionGroupData" xsi:type="object">Magento\FunctionalTestingFramework\Test\Config\ActionGroupData</argument>
+            <argument name="actionGroupData" xsi:type="object">Magento\Functional_Testing_Framework\Test\Config\Action_Group_Data</argument>
         </arguments>
     </type>
-    <virtualType name="Magento\FunctionalTestingFramework\Test\Config\ActionGroupData" type="Magento\FunctionalTestingFramework\Config\Data">
+    <virtualType name="Magento\Functional_Testing_Framework\Test\Config\Action_Group_Data" type="Magento\Functional_Testing_Framework\Config\Data">
         <arguments>
-            <argument name="reader" xsi:type="object">Magento\FunctionalTestingFramework\Config\Reader\ActionGroupData</argument>
+            <argument name="reader" xsi:type="object">Magento\Functional_Testing_Framework\Config\Reader\Action_Group_Data</argument>
         </arguments>
     </virtualType>
 
     <!--Config for Suite Data -->
 
-    <type name="Magento\FunctionalTestingFramework\Suite\Parsers\SuiteDataParser">
+    <type name="Magento\Functional_Testing_Framework\Suite\Parsers\Suite_Data_Parser">
         <arguments>
-            <argument name="suiteData" xsi:type="object">Magento\FunctionalTestingFramework\Suite\Config\SuiteData</argument>
+            <argument name="suiteData" xsi:type="object">Magento\Functional_Testing_Framework\Suite\Config\Suite_Data</argument>
         </arguments>
     </type>
-    <virtualType name="Magento\FunctionalTestingFramework\Suite\Config\SuiteData" type="Magento\FunctionalTestingFramework\Config\Data">
+    <virtualType name="Magento\Functional_Testing_Framework\Suite\Config\Suite_Data" type="Magento\Functional_Testing_Framework\Config\Data">
         <arguments>
-            <argument name="reader" xsi:type="object">Magento\FunctionalTestingFramework\Config\Reader\SuiteData</argument>
+            <argument name="reader" xsi:type="object">Magento\Functional_Testing_Framework\Config\Reader\Suite_Data</argument>
         </arguments>
     </virtualType>
-    <virtualType name="Magento\FunctionalTestingFramework\Config\SchemaLocator\SuiteData" type="Magento\FunctionalTestingFramework\Config\SchemaLocator">
+    <virtualType name="Magento\Functional_Testing_Framework\Config\Schema_Locator\Suite_Data" type="Magento\Functional_Testing_Framework\Config\Schema_Locator">
         <arguments>
             <argument name="schemaPath" xsi:type="string">Magento/FunctionalTestingFramework/Suite/etc/mergedSuiteSchema.xsd</argument>
         </arguments>
     </virtualType>
-    <virtualType name="Magento\FunctionalTestingFramework\Config\Reader\SuiteData" type="Magento\FunctionalTestingFramework\Config\Reader\MftfFilesystem">
+    <virtualType name="Magento\Functional_Testing_Framework\Config\Reader\Suite_Data" type="Magento\Functional_Testing_Framework\Config\Reader\Mftf_Filesystem">
         <arguments>
-            <argument name="fileResolver" xsi:type="object">Magento\FunctionalTestingFramework\Config\FileResolver\Root</argument>
-            <argument name="converter" xsi:type="object">Magento\FunctionalTestingFramework\Config\SuiteDataConverter</argument>
-            <argument name="schemaLocator" xsi:type="object">Magento\FunctionalTestingFramework\Config\SchemaLocator\SuiteData</argument>
-            <argument name="domDocumentClass" xsi:type="string">Magento\FunctionalTestingFramework\Suite\Config\SuiteDom</argument>
+            <argument name="fileResolver" xsi:type="object">Magento\Functional_Testing_Framework\Config\File_Resolver\Root</argument>
+            <argument name="converter" xsi:type="object">Magento\Functional_Testing_Framework\Config\Suite_Data_Converter</argument>
+            <argument name="schemaLocator" xsi:type="object">Magento\Functional_Testing_Framework\Config\Schema_Locator\Suite_Data</argument>
+            <argument name="domDocumentClass" xsi:type="string">Magento\Functional_Testing_Framework\Suite\Config\Suite_Dom</argument>
             <argument name="idAttributes" xsi:type="array">
                 <item name="/suites/suite" xsi:type="string">name</item>
                 <item name="/suites/suite/(before|after)/remove" xsi:type="string">keyForRemoval</item>
@@ -384,7 +384,7 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="Magento\FunctionalTestingFramework\Suite\Config\Dom\SuiteArrayNodeConfig" type="Magento\FunctionalTestingFramework\Config\Dom\ArrayNodeConfig">
+    <virtualType name="Magento\Functional_Testing_Framework\Suite\Config\Dom\Suite_Array_Node_Config" type="Magento\Functional_Testing_Framework\Config\Dom\Array_Node_Config">
         <arguments>
             <argument name="assocArrayAttributes" xsi:type="array">
                 <item name="/suites/suite" xsi:type="string">name</item>
@@ -399,9 +399,9 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="Magento\FunctionalTestingFramework\Config\SuiteDataConverter" type="Magento\FunctionalTestingFramework\Test\Config\Converter\Dom\Flat">
+    <virtualType name="Magento\Functional_Testing_Framework\Config\Suite_Data_Converter" type="Magento\Functional_Testing_Framework\Test\Config\Converter\Dom\Flat">
         <arguments>
-            <argument name="arrayNodeConfig" xsi:type="object">Magento\FunctionalTestingFramework\Suite\Config\Dom\SuiteArrayNodeConfig</argument>
+            <argument name="arrayNodeConfig" xsi:type="object">Magento\Functional_Testing_Framework\Suite\Config\Dom\Suite_Array_Node_Config</argument>
         </arguments>
     </virtualType>
 </config>

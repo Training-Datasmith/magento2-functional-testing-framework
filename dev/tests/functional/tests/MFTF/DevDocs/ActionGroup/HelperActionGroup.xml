@@ -13,7 +13,7 @@
             <argument name="entityTest" type="entity" />
         </arguments>
         <comment userInput="Action group to demonstrate helper functionality available from action groups." stepKey="comment" />
-        <helper class="\MFTF\DevDocs\Helper\CustomHelper" method="goTo" stepKey="customHelper">
+        <helper class="\MFTF\Dev_Docs\Helper\Custom_Helper" method="goTo" stepKey="customHelper">
             <argument name="test">{{contentSection.parametrizedSelector(entityTest.entityField)}}</argument>
             <argument name="module">['{{entityTest.entityField}}', 'Bla']</argument>
             <argument name="url">{{test}}</argument>

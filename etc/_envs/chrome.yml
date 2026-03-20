@@ -1,10 +1,10 @@
 # `chrome` environment config goes here
 modules:
     enabled:
-        - \Magento\FunctionalTestingFramework\Module\MagentoWebDriver
-        - \Magento\FunctionalTestingFramework\Helper\Acceptance
+        - \Magento\Functional_Testing_Framework\Module\Magento_Web_Driver
+        - \Magento\Functional_Testing_Framework\Helper\Acceptance
     config:
-        \Magento\FunctionalTestingFramework\Module\MagentoWebDriver:
+        \Magento\Functional_Testing_Framework\Module\Magento_Web_Driver:
             browser: 'chrome'
             capabilities:
                 chromeOptions:
