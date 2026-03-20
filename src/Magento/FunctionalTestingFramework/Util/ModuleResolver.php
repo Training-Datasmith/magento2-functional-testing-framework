@@ -1,24 +1,22 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Util;
 
-namespace Magento\FunctionalTestingFramework\Util;
-
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use Magento\FunctionalTestingFramework\DataGenerator\Handlers\CredentialStore;
-use Magento\FunctionalTestingFramework\Exceptions\FastFailException;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
-use Magento\FunctionalTestingFramework\Util\ModuleResolver\AlphabeticSequenceSorter;
-use Magento\FunctionalTestingFramework\Util\ModuleResolver\ModuleResolverService;
-use Magento\FunctionalTestingFramework\Util\ModuleResolver\SequenceSorterInterface;
-use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
-use Magento\FunctionalTestingFramework\Util\Path\UrlFormatter;
-
+use Magento\Functional_Testing_Framework\Config\Mftf_Application_Config;
+use Magento\Functional_Testing_Framework\Data_Generator\Handlers\Credential_Store;
+use Magento\Functional_Testing_Framework\Exceptions\Fast_Fail_Exception;
+use Magento\Functional_Testing_Framework\Exceptions\Test_Framework_Exception;
+use Magento\Functional_Testing_Framework\Util\Logger\Logging_Util;
+use Magento\Functional_Testing_Framework\Util\Module_Resolver\Alphabetic_Sequence_Sorter;
+use Magento\Functional_Testing_Framework\Util\Module_Resolver\Module_Resolver_Service;
+use Magento\Functional_Testing_Framework\Util\Module_Resolver\Sequence_Sorter_Interface;
+use Magento\Functional_Testing_Framework\Util\Path\File_Path_Formatter;
+use Magento\Functional_Testing_Framework\Util\Path\Url_Formatter;
 /**
  * Class ModuleResolver, resolve module path based on enabled modules of target Magento instance.
  *
@@ -26,145 +24,116 @@ use Magento\FunctionalTestingFramework\Util\Path\UrlFormatter;
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
-class ModuleResolver
+class Module_Resolver
 {
     /**
      * Environment field name for module allowlist.
      */
     public const MODULE_ALLOWLIST = 'MODULE_ALLOWLIST';
-
     /**
      * Environment field name for custom module paths.
      */
     public const CUSTOM_MODULE_PATHS = 'CUSTOM_MODULE_PATHS';
-
     /**
      * List of path types present in Magento Component Registrar
      */
     public const PATHS = ['module', 'library', 'theme', 'language'];
-
     /**
      * Magento Registrar Class
      */
-    public const REGISTRAR_CLASS = "\Magento\Framework\Component\ComponentRegistrar";
-
+    public const REGISTRAR_CLASS = "\\Magento\\Framework\\Component\\ComponentRegistrar";
     public const TEST_MFTF_PATTERN = 'Test' . DIRECTORY_SEPARATOR . 'Mftf';
     public const VENDOR = 'vendor';
     public const APP_CODE = 'app' . DIRECTORY_SEPARATOR . 'code';
-    public const DEV_TESTS = 'dev'
-        . DIRECTORY_SEPARATOR
-        . 'tests'
-        . DIRECTORY_SEPARATOR
-        . 'acceptance'
-        . DIRECTORY_SEPARATOR
-        . 'tests'
-        . DIRECTORY_SEPARATOR
-        . 'functional';
-
+    public const DEV_TESTS = 'dev' . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'acceptance' . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'functional';
     /**
      * Enabled modules.
      *
      * @var array|null
      */
-    protected $enabledModules;
-
+    protected $enabled_modules;
     /**
      * Paths for enabled modules.
      *
      * @var array|null
      */
-    protected $enabledModulePaths;
-
+    protected $enabled_module_paths;
     /**
      * Name and path for enabled modules
      *
      * @var array|null
      */
-    protected $enabledModuleNameAndPaths;
-
+    protected $enabled_module_name_and_paths;
     /**
      * Configuration instance.
      *
      * @var \Magento\FunctionalTestingFramework\Config\DataInterface
      */
     protected $configuration;
-
     /**
      * Admin url for integration token.
      *
      * @var string
      */
-    protected $adminTokenUrl = 'rest/V1/integration/admin/token';
-
+    protected $admin_token_url = 'rest/V1/integration/admin/token';
     /**
      * Url for with module list.
      *
      * @var string
      */
-    protected $moduleUrl = 'rest/V1/modules';
-
+    protected $module_url = 'rest/V1/modules';
     /**
      * Url for magento version information.
      *
      * @var string
      */
-    protected $versionUrl = 'magento_version';
-
+    protected $version_url = 'magento_version';
     /**
      * List of known directory that does not map to a Magento module.
      *
      * @var array
      */
-    protected $knownDirectories = ['SampleData' => 1];
-
+    protected $known_directories = ['SampleData' => 1];
     /**
      * ModuleResolver instance.
      */
-    private static ?\Magento\FunctionalTestingFramework\Util\ModuleResolver $instance = null;
-
+    private static ?\Magento\Functional_Testing_Framework\Util\Module_Resolver $instance = null;
     /**
      * SequenceSorter instance.
      *
      * @var ModuleResolver\SequenceSorterInterface
      */
-    protected $sequenceSorter;
-
+    protected $sequence_sorter;
     /**
      * List of module names that will be ignored.
      *
      * @var array
      */
-    protected $moduleBlocklist = [
-        'SampleTests', 'SampleTemplates',
-    ];
-
+    protected $module_blocklist = ['SampleTests', 'SampleTemplates'];
     /**
      * Get ModuleResolver instance.
      *
      * @return ModuleResolver
      */
-    public static function getInstance()
+    public static function get_instance()
     {
         if (!self::$instance) {
-            self::$instance = new ModuleResolver();
+            self::$instance = new Module_Resolver();
         }
         return self::$instance;
     }
-
     /**
      * ModuleResolver constructor.
      */
     private function __construct()
     {
-        $objectManager = \Magento\FunctionalTestingFramework\ObjectManagerFactory::getObjectManager();
-
-        if (MftfApplicationConfig::getConfig()->getPhase() === MftfApplicationConfig::UNIT_TEST_PHASE) {
-            $this->sequenceSorter = $objectManager->get(AlphabeticSequenceSorter::class);
+        $object_manager = \Magento\Functional_Testing_Framework\Object_Manager_Factory::get_object_manager();
+        if (Mftf_Application_Config::get_config()->get_phase() === Mftf_Application_Config::UNIT_TEST_PHASE) {
+            $this->sequence_sorter = $object_manager->get(Alphabetic_Sequence_Sorter::class);
         } else {
-            $this->sequenceSorter = $objectManager->get(SequenceSorterInterface::class);
+            $this->sequence_sorter = $object_manager->get(Sequence_Sorter_Interface::class);
         }
     }
-
     /**
      * Return an array of enabled modules of target Magento instance.
      *
@@ -172,23 +141,17 @@ class ModuleResolver
      * @throws TestFrameworkException
      * @throws FastFailException
      */
-    public function getEnabledModules()
+    public function get_enabled_modules()
     {
-        if (isset($this->enabledModules)) {
-            return $this->enabledModules;
+        if (isset($this->enabled_modules)) {
+            return $this->enabled_modules;
         }
-
-        if (MftfApplicationConfig::getConfig()->getPhase() === MftfApplicationConfig::GENERATION_PHASE) {
-            $this->printMagentoVersionInfo();
+        if (Mftf_Application_Config::get_config()->get_phase() === Mftf_Application_Config::GENERATION_PHASE) {
+            $this->print_magento_version_info();
         }
-
-        $token = ModuleResolverService::getInstance()->getAdminToken();
-
-        $url = UrlFormatter::format(getenv('MAGENTO_BASE_URL')) . $this->moduleUrl;
-
-        $headers = [
-            'Authorization: Bearer ' . $token,
-        ];
+        $token = Module_Resolver_Service::get_instance()->get_admin_token();
+        $url = Url_Formatter::format(getenv('MAGENTO_BASE_URL')) . $this->module_url;
+        $headers = ['Authorization: Bearer ' . $token];
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -196,24 +159,16 @@ class ModuleResolver
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         $response = curl_exec($ch);
-
         if (!$response) {
             $message = 'Could not retrieve Modules from Magento Instance.';
-            $encryptedSecret = CredentialStore::getInstance()->getSecret('magento/MAGENTO_ADMIN_PASSWORD');
-            $secret = CredentialStore::getInstance()->decryptSecretValue($encryptedSecret);
-            $context = [
-                'Admin Module List Url' => $url,
-                'MAGENTO_ADMIN_USERNAME' => getenv('MAGENTO_ADMIN_USERNAME'),
-                'MAGENTO_ADMIN_PASSWORD' => $secret,
-            ];
-            throw new FastFailException($message, $context);
+            $encrypted_secret = Credential_Store::get_instance()->get_secret('magento/MAGENTO_ADMIN_PASSWORD');
+            $secret = Credential_Store::get_instance()->decrypt_secret_value($encrypted_secret);
+            $context = ['Admin Module List Url' => $url, 'MAGENTO_ADMIN_USERNAME' => getenv('MAGENTO_ADMIN_USERNAME'), 'MAGENTO_ADMIN_PASSWORD' => $secret];
+            throw new Fast_Fail_Exception($message, $context);
         }
-
-        $this->enabledModules = json_decode($response);
-
-        return $this->enabledModules;
+        $this->enabled_modules = json_decode($response);
+        return $this->enabled_modules;
     }
-
     /**
      * Return the modules path based on which modules are enabled in the target Magento instance.
      *
@@ -222,151 +177,118 @@ class ModuleResolver
      * @throws TestFrameworkException
      * @throws FastFailException
      */
-    public function getModulesPath($verbosePath = false)
+    public function get_modules_path($verbose_path = false)
     {
-        if (isset($this->enabledModulePaths) && !$verbosePath) {
-            return $this->enabledModulePaths;
+        if (isset($this->enabled_module_paths) && !$verbose_path) {
+            return $this->enabled_module_paths;
         }
-
-        if (isset($this->enabledModuleNameAndPaths) && $verbosePath) {
-            return $this->enabledModuleNameAndPaths;
+        if (isset($this->enabled_module_name_and_paths) && $verbose_path) {
+            return $this->enabled_module_name_and_paths;
         }
-
         // Find test modules paths by searching patterns (Test/Mftf, etc)
-        $allModulePaths = ModuleResolverService::getInstance()->aggregateTestModulePaths();
-
+        $all_module_paths = Module_Resolver_Service::get_instance()->aggregate_test_module_paths();
         // Find test modules paths by searching test composer.json files
-        $composerBasedModulePaths = $this->aggregateTestModulePathsFromComposerJson();
-
+        $composer_based_module_paths = $this->aggregate_test_module_paths_from_composer_json();
         // Find test modules paths by querying composer installed packages
-        $composerBasedModulePaths = array_merge(
-            $composerBasedModulePaths,
-            $this->aggregateTestModulePathsFromComposerInstaller()
-        );
-
+        $composer_based_module_paths = array_merge($composer_based_module_paths, $this->aggregate_test_module_paths_from_composer_installer());
         // Merge test module paths altogether
-        $allModulePaths = $this->mergeModulePaths($allModulePaths, $composerBasedModulePaths);
-
+        $all_module_paths = $this->merge_module_paths($all_module_paths, $composer_based_module_paths);
         // Normalize module names if we get registered module names from Magento system
-        $allModulePaths = $this->normalizeModuleNames($allModulePaths);
-
-        if (MftfApplicationConfig::getConfig()->forceGenerateEnabled()) {
-            $allModulePaths = $this->flipAndSortModulePathsArray($allModulePaths, true);
-            $this->enabledModulePaths = $this->applyCustomModuleMethods($allModulePaths);
-            return $this->enabledModulePaths;
+        $all_module_paths = $this->normalize_module_names($all_module_paths);
+        if (Mftf_Application_Config::get_config()->force_generate_enabled()) {
+            $all_module_paths = $this->flip_and_sort_module_paths_array($all_module_paths, true);
+            $this->enabled_module_paths = $this->apply_custom_module_methods($all_module_paths);
+            return $this->enabled_module_paths;
         }
-
-        $enabledModules = array_merge($this->getEnabledModules(), $this->getModuleAllowlist());
-        $enabledDirectoryPaths = $this->flipAndFilterModulePathsArray($allModulePaths, $enabledModules);
-        $this->enabledModulePaths = $this->applyCustomModuleMethods($enabledDirectoryPaths);
-
-        return $this->enabledModulePaths;
+        $enabled_modules = array_merge($this->get_enabled_modules(), $this->get_module_allowlist());
+        $enabled_directory_paths = $this->flip_and_filter_module_paths_array($all_module_paths, $enabled_modules);
+        $this->enabled_module_paths = $this->apply_custom_module_methods($enabled_directory_paths);
+        return $this->enabled_module_paths;
     }
-
     /**
      * Sort files according module sequence.
      *
      * @return array
      */
-    public function sortFilesByModuleSequence(array $files)
+    public function sort_files_by_module_sequence(array $files)
     {
-        return $this->sequenceSorter->sort($files);
+        return $this->sequence_sorter->sort($files);
     }
-
     /**
      * Return an array of module allowlist that not exist in target Magento instance.
      */
-    protected function getModuleAllowlist(): array
+    protected function get_module_allowlist(): array
     {
-        $moduleAllowlist = getenv(self::MODULE_ALLOWLIST);
-
-        if (empty($moduleAllowlist)) {
+        $module_allowlist = getenv(self::MODULE_ALLOWLIST);
+        if (empty($module_allowlist)) {
             return [];
         }
-        return array_map(trim(...), explode(',', $moduleAllowlist));
+        return array_map(trim(...), explode(',', $module_allowlist));
     }
-
     /**
      * Aggregate all code paths with test module composer json files
      *
      * @throws TestFrameworkException
      */
-    private function aggregateTestModulePathsFromComposerJson(): array
+    private function aggregate_test_module_paths_from_composer_json(): array
     {
         // Define the module paths
-        $magentoBaseCodePath = FilePathFormatter::format(MAGENTO_BP, false);
-
+        $magento_base_code_path = File_Path_Formatter::format(MAGENTO_BP, false);
         // Define the module paths from default TESTS_MODULE_PATH
-        $modulePath = defined('TESTS_MODULE_PATH') ? TESTS_MODULE_PATH : TESTS_BP;
-        $modulePath = FilePathFormatter::format($modulePath, false);
-
-        $searchCodePaths = [
-            $magentoBaseCodePath . DIRECTORY_SEPARATOR . self::DEV_TESTS,
-        ];
-
+        $module_path = defined('TESTS_MODULE_PATH') ? TESTS_MODULE_PATH : TESTS_BP;
+        $module_path = File_Path_Formatter::format($module_path, false);
+        $search_code_paths = [$magento_base_code_path . DIRECTORY_SEPARATOR . self::DEV_TESTS];
         // Add TESTS_MODULE_PATH if it's not included
-        if (array_search($modulePath, $searchCodePaths) === false) {
-            $searchCodePaths[] = $modulePath;
+        if (array_search($module_path, $search_code_paths) === false) {
+            $search_code_paths[] = $module_path;
         }
-
-        return ModuleResolverService::getInstance()->getComposerJsonTestModulePaths($searchCodePaths);
+        return Module_Resolver_Service::get_instance()->get_composer_json_test_module_paths($search_code_paths);
     }
-
     /**
      * Aggregate all code paths with composer installed test modules
      */
-    private function aggregateTestModulePathsFromComposerInstaller(): array
+    private function aggregate_test_module_paths_from_composer_installer(): array
     {
         // Define the module paths
-        $magentoBaseCodePath = MAGENTO_BP;
-        $composerFile = $magentoBaseCodePath . DIRECTORY_SEPARATOR . 'composer.json';
-
-        return ModuleResolverService::getInstance()->getComposerInstalledTestModulePaths($composerFile);
+        $magento_base_code_path = MAGENTO_BP;
+        $composer_file = $magento_base_code_path . DIRECTORY_SEPARATOR . 'composer.json';
+        return Module_Resolver_Service::get_instance()->get_composer_installed_test_module_paths($composer_file);
     }
-
     /**
      * Flip and filter module code paths
      *
      * @param array $objectArray
      * @return array
      */
-    private function flipAndFilterModulePathsArray($objectArray, array $filterArray)
+    private function flip_and_filter_module_paths_array($object_array, array $filter_array)
     {
-        $oneToOneArray = [];
-        $oneToManyArray = [];
+        $one_to_one_array = [];
+        $one_to_many_array = [];
         // Filter array by enabled modules
-        foreach ($objectArray as $path => $modules) {
-            if (!array_diff($modules, $filterArray)
-                || (count($modules) === 1 && isset($this->knownDirectories[$modules[0]]))) {
+        foreach ($object_array as $path => $modules) {
+            if (!array_diff($modules, $filter_array) || count($modules) === 1 && isset($this->known_directories[$modules[0]])) {
                 if (count($modules) === 1) {
-                    $oneToOneArray[$path] = $modules[0];
+                    $one_to_one_array[$path] = $modules[0];
                 } else {
-                    $oneToManyArray[$path] = $modules;
+                    $one_to_many_array[$path] = $modules;
                 }
             }
         }
-
-        $flippedArray = [];
+        $flipped_array = [];
         // Set flipped array for "one path => one module" case first to maintain module sequencing
-        foreach ($filterArray as $moduleName) {
-            $path = array_search($moduleName, $oneToOneArray);
+        foreach ($filter_array as $module_name) {
+            $path = array_search($module_name, $one_to_one_array);
             if ($path !== false) {
-                if (!str_contains((string) $moduleName, '_')) {
-                    $moduleName = $this->findVendorNameFromPath($path) . '_' . $moduleName;
+                if (!str_contains((string) $module_name, '_')) {
+                    $module_name = $this->find_vendor_name_from_path($path) . '_' . $module_name;
                 }
-                $flippedArray = $this->setArrayValueWithLogging($flippedArray, $moduleName, $path);
-                unset($oneToOneArray[$path]);
+                $flipped_array = $this->set_array_value_with_logging($flipped_array, $module_name, $path);
+                unset($one_to_one_array[$path]);
             }
         }
-
         // Set flipped array for everything else
-        return $this->flipAndSortModulePathsArray(
-            array_merge($oneToOneArray, $oneToManyArray),
-            false,
-            $flippedArray
-        );
+        return $this->flip_and_sort_module_paths_array(array_merge($one_to_one_array, $one_to_many_array), false, $flipped_array);
     }
-
     /**
      * Flip module code paths and optionally sort in alphabetical order
      *
@@ -374,79 +296,71 @@ class ModuleResolver
      * @param array   $inFlippedArray
      * @return array
      */
-    private function flipAndSortModulePathsArray($objectArray, bool $sort, $inFlippedArray = [])
+    private function flip_and_sort_module_paths_array($object_array, bool $sort, $in_flipped_array = [])
     {
-        $flippedArray = $inFlippedArray;
-
+        $flipped_array = $in_flipped_array;
         // Set flipped array from object array
-        foreach ($objectArray as $path => $modules) {
+        foreach ($object_array as $path => $modules) {
             if (is_array($modules) && count($modules) > 1) {
                 // The "one path => many module names" case is designed to be strictly used when it's
                 // impossible to write tests in dedicated modules.
                 // For now we will set module name based on path.
                 // TODO: Consider saving all module names if this information is needed in the future.
-                $module = $this->findVendorAndModuleNameFromPath($path);
+                $module = $this->find_vendor_and_module_name_from_path($path);
             } elseif (is_array($modules)) {
                 if (!str_contains((string) $modules[0], '_')) {
-                    $module = $this->findVendorNameFromPath($path) . '_' . $modules[0];
+                    $module = $this->find_vendor_name_from_path($path) . '_' . $modules[0];
                 } else {
                     $module = $modules[0];
                 }
+            } else if (!str_contains((string) $modules, '_')) {
+                $module = $this->find_vendor_name_from_path($path) . '_' . $modules;
             } else {
-                if (!str_contains((string) $modules, '_')) {
-                    $module = $this->findVendorNameFromPath($path) . '_' . $modules;
-                } else {
-                    $module = $modules;
-                }
+                $module = $modules;
             }
-            $flippedArray = $this->setArrayValueWithLogging($flippedArray, $module, $path);
+            $flipped_array = $this->set_array_value_with_logging($flipped_array, $module, $path);
         }
-
         // Sort array in alphabetical order
         if ($sort) {
-            ksort($flippedArray);
+            ksort($flipped_array);
         }
-
-        return $flippedArray;
+        return $flipped_array;
     }
-
     /**
      * Set array value at index only if array value at index is not yet set, skip otherwise and log warning message
      *
      * @param string $index
      *
      */
-    private function setArrayValueWithLogging(array $inArray, $index, string $value): array
+    private function set_array_value_with_logging(array $in_array, $index, string $value): array
     {
-        $outArray = $inArray;
-        if (!isset($inArray[$index])) {
-            $outArray[$index] = $value;
+        $out_array = $in_array;
+        if (!isset($in_array[$index])) {
+            $out_array[$index] = $value;
         } else {
-            $warnMsg = 'Path: ' . $value . ' is ignored by ModuleResolver. ' . PHP_EOL . 'Path: ';
-            $warnMsg .= $inArray[$index] . ' is set for Module: ' . $index . PHP_EOL;
-            LoggingUtil::getInstance()->getLogger(ModuleResolver::class)->warning($warnMsg);
+            $warn_msg = 'Path: ' . $value . ' is ignored by ModuleResolver. ' . PHP_EOL . 'Path: ';
+            $warn_msg .= $in_array[$index] . ' is set for Module: ' . $index . PHP_EOL;
+            Logging_Util::get_instance()->get_logger(Module_Resolver::class)->warning($warn_msg);
         }
-        return $outArray;
+        return $out_array;
     }
-
     /**
      * Merge code paths
      *
      * @param array $oneToOneArray
      * @return array
      */
-    private function mergeModulePaths($oneToOneArray, array $oneToManyArray)
+    private function merge_module_paths($one_to_one_array, array $one_to_many_array)
     {
-        $mergedArray = $oneToOneArray;
-        foreach ($oneToManyArray as $path => $modules) {
+        $merged_array = $one_to_one_array;
+        foreach ($one_to_many_array as $path => $modules) {
             // Do nothing when array_key_exists
-            if (!array_key_exists($path, $oneToOneArray)) {
-                $mergedArray[$path] = $modules;
+            if (!array_key_exists($path, $one_to_one_array)) {
+                $merged_array[$path] = $modules;
             }
         }
-        return $mergedArray;
+        return $merged_array;
     }
-
     /**
      * Normalize module name if registered module list is available
      *
@@ -454,160 +368,126 @@ class ModuleResolver
      *
      * @return array
      */
-    private function normalizeModuleNames($codePaths)
+    private function normalize_module_names($code_paths)
     {
-        $allComponents = ModuleResolverService::getInstance()->getRegisteredModuleList();
-        if (empty($allComponents)) {
-            return $codePaths;
+        $all_components = Module_Resolver_Service::get_instance()->get_registered_module_list();
+        if (empty($all_components)) {
+            return $code_paths;
         }
-
-        $normalizedCodePaths = [];
-        foreach ($codePaths as $path => $moduleNames) {
-            $mainModName = array_search($path, $allComponents);
-            if ($mainModName) {
-                $normalizedCodePaths[$path] = [$mainModName];
+        $normalized_code_paths = [];
+        foreach ($code_paths as $path => $module_names) {
+            $main_mod_name = array_search($path, $all_components);
+            if ($main_mod_name) {
+                $normalized_code_paths[$path] = [$main_mod_name];
             } else {
-                $normalizedCodePaths[$path] = $moduleNames;
+                $normalized_code_paths[$path] = $module_names;
             }
         }
-
-        return $normalizedCodePaths;
+        return $normalized_code_paths;
     }
-
     /**
      * Takes a multidimensional array of module paths and flattens to return a one dimensional array of test paths
      */
-    private function flattenAllModulePaths(array $modulePaths): array
+    private function flatten_all_module_paths(array $module_paths): array
     {
-        $it = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($modulePaths));
-        $resultArray = [];
-
+        $it = new \Recursive_Iterator_Iterator(new \Recursive_Array_Iterator($module_paths));
+        $result_array = [];
         foreach ($it as $value) {
-            $resultArray[] = $value;
+            $result_array[] = $value;
         }
-
-        return $resultArray;
+        return $result_array;
     }
-
     /**
      * Executes a REST call to the supplied Magento Base Url for version information to display during generation
      */
-    private function printMagentoVersionInfo(): void
+    private function print_magento_version_info(): void
     {
-        if (MftfApplicationConfig::getConfig()->forceGenerateEnabled()) {
+        if (Mftf_Application_Config::get_config()->force_generate_enabled()) {
             return;
         }
-        $url = UrlFormatter::format(getenv('MAGENTO_BASE_URL')) . $this->versionUrl;
-        LoggingUtil::getInstance()->getLogger(ModuleResolver::class)->info(
-            'Fetching version information.',
-            ['url' => $url]
-        );
-
+        $url = Url_Formatter::format(getenv('MAGENTO_BASE_URL')) . $this->version_url;
+        Logging_Util::get_instance()->get_logger(Module_Resolver::class)->info('Fetching version information.', ['url' => $url]);
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($ch);
-
         if (!$response) {
             $response = 'No version information available.';
         }
-
-        LoggingUtil::getInstance()->getLogger(ModuleResolver::class)->info(
-            'version information',
-            ['version' => $response]
-        );
+        Logging_Util::get_instance()->get_logger(Module_Resolver::class)->info('version information', ['version' => $response]);
     }
-
     /**
      * A wrapping method for any custom logic which needs to be applied to the module list
      *
      * @param array $modulesPath
      * @return string[]
      */
-    protected function applyCustomModuleMethods($modulesPath)
+    protected function apply_custom_module_methods($modules_path)
     {
-        $modulePathsResult = $this->removeBlocklistModules($modulesPath);
-        $customModulePaths = ModuleResolverService::getInstance()->getCustomModulePaths();
-
+        $module_paths_result = $this->remove_blocklist_modules($modules_path);
+        $custom_module_paths = Module_Resolver_Service::get_instance()->get_custom_module_paths();
         array_map(function (int|string $key, int|string $value): void {
-            LoggingUtil::getInstance()->getLogger(ModuleResolver::class)->info(
-                'including custom module',
-                [$key => $value]
-            );
-        }, array_keys($customModulePaths), $customModulePaths);
-
-        if (!isset($this->enabledModuleNameAndPaths)) {
-            $this->enabledModuleNameAndPaths = array_merge($modulePathsResult, $customModulePaths);
+            Logging_Util::get_instance()->get_logger(Module_Resolver::class)->info('including custom module', [$key => $value]);
+        }, array_keys($custom_module_paths), $custom_module_paths);
+        if (!isset($this->enabled_module_name_and_paths)) {
+            $this->enabled_module_name_and_paths = array_merge($module_paths_result, $custom_module_paths);
         }
-        return $this->flattenAllModulePaths(array_merge($modulePathsResult, $customModulePaths));
+        return $this->flatten_all_module_paths(array_merge($module_paths_result, $custom_module_paths));
     }
-
     /**
      * Remove blocklist modules from input module paths.
      *
      * @param array $modulePaths
      * @return string[]
      */
-    private function removeBlocklistModules($modulePaths)
+    private function remove_blocklist_modules($module_paths)
     {
-        $modulePathsResult = $modulePaths;
-        foreach ($modulePathsResult as $moduleName => $modulePath) {
+        $module_paths_result = $module_paths;
+        foreach ($module_paths_result as $module_name => $module_path) {
             // Remove module if it is in blocklist
-            if (in_array($moduleName, $this->getModuleBlocklist())) {
-                unset($modulePathsResult[$moduleName]);
-                LoggingUtil::getInstance()->getLogger(ModuleResolver::class)->info(
-                    'excluding module',
-                    ['module' => $moduleName]
-                );
+            if (in_array($module_name, $this->get_module_blocklist())) {
+                unset($module_paths_result[$module_name]);
+                Logging_Util::get_instance()->get_logger(Module_Resolver::class)->info('excluding module', ['module' => $module_name]);
             }
         }
-
-        return $modulePathsResult;
+        return $module_paths_result;
     }
-
     /**
      * Getter for moduleBlocklist.
      *
      * @return string[]
      */
-    private function getModuleBlocklist()
+    private function get_module_blocklist()
     {
-        return $this->moduleBlocklist;
+        return $this->module_blocklist;
     }
-
     /**
      * Find vendor and module name from path
      *
      * @param string $path
      */
-    private function findVendorAndModuleNameFromPath($path): string
+    private function find_vendor_and_module_name_from_path($path): string
     {
         $path = str_replace(DIRECTORY_SEPARATOR . self::TEST_MFTF_PATTERN, '', $path);
-        return $this->findVendorNameFromPath($path) . '_' . basename($path);
+        return $this->find_vendor_name_from_path($path) . '_' . basename($path);
     }
-
     /**
      * Find vendor name from path
      *
      * @param string $path
      */
-    private function findVendorNameFromPath($path): string
+    private function find_vendor_name_from_path($path): string
     {
-        $possibleVendorName = 'UnknownVendor';
-        $dirPaths = [
-            self::VENDOR,
-            self::APP_CODE,
-            self::DEV_TESTS,
-        ];
-
-        foreach ($dirPaths as $dirPath) {
-            $regex = '~.+\\/' . $dirPath . "\/(?<" . self::VENDOR . ">[^\/]+)\/.+~";
+        $possible_vendor_name = 'UnknownVendor';
+        $dir_paths = [self::VENDOR, self::APP_CODE, self::DEV_TESTS];
+        foreach ($dir_paths as $dir_path) {
+            $regex = '~.+\/' . $dir_path . "\\/(?<" . self::VENDOR . ">[^\\/]+)\\/.+~";
             $match = [];
             preg_match($regex, $path, $match);
             if (isset($match[self::VENDOR])) {
                 return ucfirst($match[self::VENDOR]);
             }
         }
-        return $possibleVendorName;
+        return $possible_vendor_name;
     }
 }

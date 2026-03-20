@@ -5,202 +5,157 @@
  * Copyright 2019 Adobe
  * All Rights Reserved.
  */
-
-declare(strict_types=1);
-
-namespace Magento\FunctionalTestingFramework\Console;
+declare (strict_types=1);
+namespace Magento\Functional_Testing_Framework\Console;
 
 use Exception;
-use Magento\FunctionalTestingFramework\StaticCheck\StaticCheckInterface;
-use Magento\FunctionalTestingFramework\StaticCheck\StaticChecksList;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
+use Magento\Functional_Testing_Framework\Static_Check\Static_Check_Interface;
+use Magento\Functional_Testing_Framework\Static_Check\Static_Checks_List;
+use Magento\Functional_Testing_Framework\Util\Logger\Logging_Util;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
-
-class StaticChecksCommand extends Command
+use Symfony\Component\Console\Input\Input_Argument;
+use Symfony\Component\Console\Input\Input_Interface;
+use Symfony\Component\Console\Input\Input_Option;
+use Symfony\Component\Console\Output\Output_Interface;
+use Symfony\Component\Console\Style\Symfony_Style;
+class Static_Checks_Command extends Command
 {
     /**
      * Associative array containing static ruleset properties.
      *
      * @var array
      */
-    private $ruleSet;
-
+    private $rule_set;
     /**
      * Pool of all existing static check objects
      *
      * @var StaticCheckInterface[]
      */
-    private $allStaticCheckObjects;
-
+    private $all_static_check_objects;
     /**
      * Static checks to run
      *
      * @var StaticCheckInterface[]
      */
-    private $staticCheckObjects;
-
+    private $static_check_objects;
     /**
      * Console output style
      *
      * @var SymfonyStyle
      */
-    protected $ioStyle;
-
+    protected $io_style;
     /**
      * Configures the current command.
      */
     protected function configure(): void
     {
-        $list = new StaticChecksList();
-        $this->allStaticCheckObjects = $list->getStaticChecks();
-        $staticCheckNames = implode(', ', array_keys($this->allStaticCheckObjects));
-        $description = 'This command will run all static checks on xml test materials. '
-            . 'Available static check scripts are:' . PHP_EOL . $staticCheckNames;
-        $this->setName('static-checks')
-            ->setDescription($description)
-            ->addArgument(
-                'names',
-                InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
-                'name(s) of specific static check script(s) to run'
-            )->addOption(
-                'path',
-                'p',
-                InputOption::VALUE_OPTIONAL,
-                'Path to a MFTF test module to run "deprecatedEntityUsage" static check script. ' . PHP_EOL
-                . 'Option is ignored by other static check scripts.' . PHP_EOL
-            );
+        $list = new Static_Checks_List();
+        $this->all_static_check_objects = $list->get_static_checks();
+        $static_check_names = implode(', ', array_keys($this->all_static_check_objects));
+        $description = 'This command will run all static checks on xml test materials. ' . 'Available static check scripts are:' . PHP_EOL . $static_check_names;
+        $this->set_name('static-checks')->set_description($description)->add_argument('names', Input_Argument::OPTIONAL | Input_Argument::IS_ARRAY, 'name(s) of specific static check script(s) to run')->add_option('path', 'p', Input_Option::VALUE_OPTIONAL, 'Path to a MFTF test module to run "deprecatedEntityUsage" static check script. ' . PHP_EOL . 'Option is ignored by other static check scripts.' . PHP_EOL);
     }
-
     /**
      * Run required static check scripts
      *
      * @throws Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(Input_Interface $input, Output_Interface $output): int
     {
-        $this->ioStyle = new SymfonyStyle($input, $output);
+        $this->io_style = new Symfony_Style($input, $output);
         try {
-            $this->validateInput($input);
+            $this->validate_input($input);
         } catch (InvalidArgumentException $e) {
-            LoggingUtil::getInstance()->getLogger(StaticChecksCommand::class)->error($e->getMessage());
-            $this->ioStyle->error($e->getMessage() . ' Please fix input argument(s) or option(s) and rerun.');
+            Logging_Util::get_instance()->get_logger(Static_Checks_Command::class)->error($e->get_message());
+            $this->io_style->error($e->get_message() . ' Please fix input argument(s) or option(s) and rerun.');
             return 1;
         }
-
-        $cmdFailed = false;
+        $cmd_failed = false;
         $errors = [];
-        foreach ($this->staticCheckObjects as $name => $staticCheck) {
-            LoggingUtil::getInstance()->getLogger($staticCheck::class)->info(
-                'Running static check script for: ' . $name . PHP_EOL
-            );
-
-            $this->ioStyle->text(PHP_EOL . 'Running static check script for: ' . $name . PHP_EOL);
+        foreach ($this->static_check_objects as $name => $static_check) {
+            Logging_Util::get_instance()->get_logger($static_check::class)->info('Running static check script for: ' . $name . PHP_EOL);
+            $this->io_style->text(PHP_EOL . 'Running static check script for: ' . $name . PHP_EOL);
             $start = microtime(true);
             try {
-                $staticCheck->execute($input);
+                $static_check->execute($input);
             } catch (Exception $e) {
-                $cmdFailed = true;
-                LoggingUtil::getInstance()->getLogger($staticCheck::class)->error($e->getMessage() . PHP_EOL);
-                $this->ioStyle->error($e->getMessage());
+                $cmd_failed = true;
+                Logging_Util::get_instance()->get_logger($static_check::class)->error($e->get_message() . PHP_EOL);
+                $this->io_style->error($e->get_message());
             }
             $end = microtime(true);
-            $errors += $staticCheck->getErrors();
-
-            $staticOutput = $staticCheck->getOutput();
-            LoggingUtil::getInstance()->getLogger($staticCheck::class)->info($staticOutput);
-            $this->ioStyle->text($staticOutput ?? '');
-
-            $this->ioStyle->text('Total execution time is ' . ($end - $start) . ' seconds.' . PHP_EOL);
+            $errors += $static_check->get_errors();
+            $static_output = $static_check->get_output();
+            Logging_Util::get_instance()->get_logger($static_check::class)->info($static_output);
+            $this->io_style->text($static_output ?? '');
+            $this->io_style->text('Total execution time is ' . ($end - $start) . ' seconds.' . PHP_EOL);
         }
-        if (!$cmdFailed && empty($errors)) {
+        if (!$cmd_failed && empty($errors)) {
             return 0;
         }
         return 1;
     }
-
     /**
      * Validate input arguments
      *
      * @throws InvalidArgumentException
      */
-    private function validateInput(InputInterface $input): void
+    private function validate_input(Input_Interface $input): void
     {
-        $this->staticCheckObjects = [];
-        $requiredChecksNames = $input->getArgument('names');
+        $this->static_check_objects = [];
+        $required_checks_names = $input->get_argument('names');
         // Build list of static check names to run.
-        if (empty($requiredChecksNames)) {
-            $this->parseRulesetJson();
-            $requiredChecksNames = $this->ruleSet['tests'] ?? null;
+        if (empty($required_checks_names)) {
+            $this->parse_ruleset_json();
+            $required_checks_names = $this->rule_set['tests'] ?? null;
         }
-        if (empty($requiredChecksNames)) {
-            $this->staticCheckObjects = $this->allStaticCheckObjects;
+        if (empty($required_checks_names)) {
+            $this->static_check_objects = $this->all_static_check_objects;
         } else {
-            $this->validateTestNames($requiredChecksNames);
+            $this->validate_test_names($required_checks_names);
         }
-
-        if ($input->getOption('path')) {
-            if ((count($this->staticCheckObjects) !== 1)
-                || !in_array(
-                    array_keys($this->staticCheckObjects)[0],
-                    [
-                        StaticChecksList::DEPRECATED_ENTITY_USAGE_CHECK_NAME,
-                        StaticChecksList::PAUSE_ACTION_USAGE_CHECK_NAME,
-                    ]
-                )
-            ) {
-                throw new InvalidArgumentException(
-                    '--path option is not supported for the command."'
-                );
+        if ($input->get_option('path')) {
+            if (count($this->static_check_objects) !== 1 || !in_array(array_keys($this->static_check_objects)[0], [Static_Checks_List::DEPRECATED_ENTITY_USAGE_CHECK_NAME, Static_Checks_List::PAUSE_ACTION_USAGE_CHECK_NAME])) {
+                throw new InvalidArgumentException('--path option is not supported for the command."');
             }
         }
     }
-
     /**
      * Validates that all passed in static-check names match an existing static check
      * @param string[] $requiredChecksNames
      */
-    private function validateTestNames(array $requiredChecksNames): void
+    private function validate_test_names(array $required_checks_names): void
     {
-        $invalidCheckNames = [];
-        for ($index = 0; $index < count($requiredChecksNames); $index++) {
-            if (in_array($requiredChecksNames[$index], array_keys($this->allStaticCheckObjects))) {
-                $this->staticCheckObjects[$requiredChecksNames[$index]] =
-                    $this->allStaticCheckObjects[$requiredChecksNames[$index]];
+        $invalid_check_names = [];
+        for ($index = 0; $index < count($required_checks_names); $index++) {
+            if (in_array($required_checks_names[$index], array_keys($this->all_static_check_objects))) {
+                $this->static_check_objects[$required_checks_names[$index]] = $this->all_static_check_objects[$required_checks_names[$index]];
             } else {
-                $invalidCheckNames[] = $requiredChecksNames[$index];
+                $invalid_check_names[] = $required_checks_names[$index];
             }
         }
-
-        if (!empty($invalidCheckNames)) {
-            throw new InvalidArgumentException(
-                'Invalid static check script(s): ' . implode(', ', $invalidCheckNames) . '.'
-            );
+        if (!empty($invalid_check_names)) {
+            throw new InvalidArgumentException('Invalid static check script(s): ' . implode(', ', $invalid_check_names) . '.');
         }
     }
-
     /**
      * Parses and sets local ruleSet. If not found, simply returns and lets script continue.
      * @return void;
      */
-    private function parseRulesetJson(): void
+    private function parse_ruleset_json(): void
     {
-        $pathAddition = '/dev/tests/acceptance/';
+        $path_addition = '/dev/tests/acceptance/';
         // MFTF is both NOT attached and no MAGENTO_BP defined in .env
         if (MAGENTO_BP === FW_BP) {
-            $pathAddition = '/dev/';
+            $path_addition = '/dev/';
         }
-        $pathToRuleset = MAGENTO_BP . $pathAddition . 'staticRuleset.json';
-        if (!file_exists($pathToRuleset)) {
-            $this->ioStyle->text("No ruleset under $pathToRuleset" . PHP_EOL);
+        $path_to_ruleset = MAGENTO_BP . $path_addition . 'staticRuleset.json';
+        if (!file_exists($path_to_ruleset)) {
+            $this->io_style->text("No ruleset under {$path_to_ruleset}" . PHP_EOL);
             return;
         }
-        $this->ioStyle->text("Using ruleset under $pathToRuleset" . PHP_EOL);
-        $this->ruleSet = json_decode(file_get_contents($pathToRuleset), true);
+        $this->io_style->text("Using ruleset under {$path_to_ruleset}" . PHP_EOL);
+        $this->rule_set = json_decode(file_get_contents($path_to_ruleset), true);
     }
 }

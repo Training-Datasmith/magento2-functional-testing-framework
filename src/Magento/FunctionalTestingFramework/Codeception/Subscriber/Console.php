@@ -1,25 +1,23 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Codeception\Subscriber;
 
-namespace Magento\FunctionalTestingFramework\Codeception\Subscriber;
-
-use Codeception\Event\StepEvent;
-use Codeception\Event\TestEvent;
+use Codeception\Event\Step_Event;
+use Codeception\Event\Test_Event;
 use Codeception\Lib\Console\Message;
 use Codeception\Step;
 use Codeception\Step\Comment;
-use Codeception\Test\Interfaces\ScenarioDriven;
-use Magento\FunctionalTestingFramework\Test\Objects\ActionGroupObject;
-use Magento\FunctionalTestingFramework\Test\Objects\ActionObject;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
-use Magento\FunctionalTestingFramework\Util\TestGenerator;
-use Symfony\Component\Console\Formatter\OutputFormatter;
-
+use Codeception\Test\Interfaces\Scenario_Driven;
+use Magento\Functional_Testing_Framework\Test\Objects\Action_Group_Object;
+use Magento\Functional_Testing_Framework\Test\Objects\Action_Object;
+use Magento\Functional_Testing_Framework\Util\Logger\Logging_Util;
+use Magento\Functional_Testing_Framework\Util\Test_Generator;
+use Symfony\Component\Console\Formatter\Output_Formatter;
 /**
  * @SuppressWarnings(PHPMD)
  */
@@ -29,22 +27,18 @@ class Console extends \Codeception\Subscriber\Console
      * Regular expresion to find deprecated notices.
      */
     public const DEPRECATED_NOTICE = '/<li>(?<deprecatedMessage>.*?)<\/li>/m';
-
     /**
      * Test files cache.
      */
-    private array $testFiles = [];
-
+    private array $test_files = [];
     /**
      * Action group step key.
      */
-    private ?string $actionGroupStepKey = null;
-
+    private ?string $action_group_step_key = null;
     /**
      * Boolean value to indicate if steps are invisible steps
      */
-    private bool $atInvisibleSteps = false;
-
+    private bool $at_invisible_steps = false;
     /**
      * Console constructor. Parent constructor requires codeception CLI options, and does not have its own configs.
      * Constructor is only different than parent due to the way Codeception instantiates Extensions.
@@ -54,146 +48,116 @@ class Console extends \Codeception\Subscriber\Console
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function __construct($extensionOptions = [], $options = [])
+    public function __construct($extension_options = [], $options = [])
     {
         parent::__construct($options);
     }
-
     /**
      * Triggered event before each test.
      *
      * @throws \Exception
      */
-    public function startTest(TestEvent $e): void
+    public function start_test(Test_Event $e): void
     {
-        $test = $e->getTest();
-        $testReflection = new \ReflectionClass($test);
-
+        $test = $e->get_test();
+        $test_reflection = new \ReflectionClass($test);
         try {
-            $testReflection = new \ReflectionClass($test);
-            $isDeprecated = preg_match_all(self::DEPRECATED_NOTICE, $testReflection->getDocComment(), $match);
-            if ($isDeprecated) {
-                $this->message('DEPRECATION NOTICE(S): ')
-                    ->style('debug')
-                    ->writeln();
-                foreach ($match['deprecatedMessage'] as $deprecatedMessage) {
-                    $this->message(' - ' . $deprecatedMessage)
-                        ->style('debug')
-                        ->writeln();
+            $test_reflection = new \ReflectionClass($test);
+            $is_deprecated = preg_match_all(self::DEPRECATED_NOTICE, $test_reflection->get_doc_comment(), $match);
+            if ($is_deprecated) {
+                $this->message('DEPRECATION NOTICE(S): ')->style('debug')->writeln();
+                foreach ($match['deprecatedMessage'] as $deprecated_message) {
+                    $this->message(' - ' . $deprecated_message)->style('debug')->writeln();
                 }
             }
-        } catch (\ReflectionException $e) {
-            LoggingUtil::getInstance()->getLogger(self::class)->error($e->getMessage(), $e->getTrace());
+        } catch (\Reflection_Exception $e) {
+            Logging_Util::get_instance()->get_logger(self::class)->error($e->get_message(), $e->get_trace());
         }
-
-        parent::startTest($e);
+        parent::start_test($e);
     }
-
     /**
      * Printing stepKey in before step action.
      */
-    public function beforeStep(StepEvent $e): void
+    public function before_step(Step_Event $e): void
     {
-        if ($this->silent or !$this->steps or !$e->getTest() instanceof ScenarioDriven) {
+        if ($this->silent or !$this->steps or !$e->get_test() instanceof Scenario_Driven) {
             return;
         }
-
-        $stepAction = $e->getStep()->getAction();
-
+        $step_action = $e->get_step()->get_action();
         // Set atInvisibleSteps flag and return if step is in INVISIBLE_STEP_ACTIONS
-        if (in_array($stepAction, ActionObject::INVISIBLE_STEP_ACTIONS)) {
-            $this->atInvisibleSteps = true;
+        if (in_array($step_action, Action_Object::INVISIBLE_STEP_ACTIONS)) {
+            $this->at_invisible_steps = true;
             return;
         }
-
         // Set back atInvisibleSteps flag
-        if ($this->atInvisibleSteps && !in_array($stepAction, ActionObject::INVISIBLE_STEP_ACTIONS)) {
-            $this->atInvisibleSteps = false;
+        if ($this->at_invisible_steps && !in_array($step_action, Action_Object::INVISIBLE_STEP_ACTIONS)) {
+            $this->at_invisible_steps = false;
         }
-
-        $metaStep = $e->getStep()->getMetaStep();
-        if ($metaStep and $this->metaStep !== $metaStep) {
-            $this->message(' ' . $metaStep->getPrefix())
-                ->style('bold')
-                ->append($metaStep->__toString())
-                ->writeln();
+        $meta_step = $e->get_step()->get_meta_step();
+        if ($meta_step and $this->meta_step !== $meta_step) {
+            $this->message(' ' . $meta_step->get_prefix())->style('bold')->append($meta_step->__toString())->writeln();
         }
-        $this->metaStep = $metaStep;
-
-        $this->printStepKeys($e->getStep());
+        $this->meta_step = $meta_step;
+        $this->print_step_keys($e->get_step());
     }
-
     /**
      * If step failed we move back from action group to test scope
      */
-    public function afterStep(StepEvent $e): void
+    public function after_step(Step_Event $e): void
     {
         // Do usual after step if step is not INVISIBLE_STEP_ACTIONS
-        if (!$this->atInvisibleSteps) {
-            parent::afterStep($e);
+        if (!$this->at_invisible_steps) {
+            parent::after_step($e);
         }
-
-        if ($e->getStep()->hasFailed()) {
-            $this->actionGroupStepKey = null;
-            $this->atInvisibleSteps = false;
+        if ($e->get_step()->has_failed()) {
+            $this->action_group_step_key = null;
+            $this->at_invisible_steps = false;
         }
     }
-
     /**
      * Print output to cli with stepKey.
      *
      * @SuppressWarnings(PHPMD)
      */
-    private function printStepKeys(Step $step): void
+    private function print_step_keys(Step $step): void
     {
         if ($step instanceof Comment and $step->__toString() === '') {
-            return; // don't print empty comments
+            return;
+            // don't print empty comments
         }
-
-        $stepKey = $this->retrieveStepKey($step);
-
-        $isActionGroup = (str_contains($step->__toString(), ActionGroupObject::ACTION_GROUP_CONTEXT_START));
-        if ($isActionGroup) {
-            preg_match(TestGenerator::ACTION_GROUP_STEP_KEY_REGEX, $step->__toString(), $matches);
+        $step_key = $this->retrieve_step_key($step);
+        $is_action_group = str_contains($step->__toString(), Action_Group_Object::ACTION_GROUP_CONTEXT_START);
+        if ($is_action_group) {
+            preg_match(Test_Generator::ACTION_GROUP_STEP_KEY_REGEX, $step->__toString(), $matches);
             if (!empty($matches['actionGroupStepKey'])) {
-                $this->actionGroupStepKey = ucfirst($matches['actionGroupStepKey']);
+                $this->action_group_step_key = ucfirst($matches['actionGroupStepKey']);
             }
         }
-
-        if (str_contains($step->__toString(), ActionGroupObject::ACTION_GROUP_CONTEXT_END)) {
-            $this->actionGroupStepKey = null;
+        if (str_contains($step->__toString(), Action_Group_Object::ACTION_GROUP_CONTEXT_END)) {
+            $this->action_group_step_key = null;
             return;
         }
-
         $msg = $this->message();
-        if ($this->metaStep || ($this->actionGroupStepKey !== null && !$isActionGroup)) {
+        if ($this->meta_step || $this->action_group_step_key !== null && !$is_action_group) {
             $msg->append('  ');
         }
-        if ($stepKey !== null) {
-            $msg->append(OutputFormatter::escape('[' . $stepKey . '] '));
+        if ($step_key !== null) {
+            $msg->append(Output_Formatter::escape('[' . $step_key . '] '));
             $msg->style('bold');
         }
-
-        if (!$this->metaStep) {
+        if (!$this->meta_step) {
             $msg->style('bold');
         }
-
-        $stepString = str_replace(
-            [ActionGroupObject::ACTION_GROUP_CONTEXT_START, ActionGroupObject::ACTION_GROUP_CONTEXT_END],
-            '',
-            $step->toString(1000)
-        );
-
-        $msg->append(OutputFormatter::escape($stepString));
-        if ($isActionGroup) {
+        $step_string = str_replace([Action_Group_Object::ACTION_GROUP_CONTEXT_START, Action_Group_Object::ACTION_GROUP_CONTEXT_END], '', $step->to_string(1000));
+        $msg->append(Output_Formatter::escape($step_string));
+        if ($is_action_group) {
             $msg->style('comment');
         }
-        if ($this->metaStep || ($this->actionGroupStepKey !== null && !$isActionGroup)) {
+        if ($this->meta_step || $this->action_group_step_key !== null && !$is_action_group) {
             $msg->style('info');
         }
         $msg->writeln();
     }
-
     /**
      * Message instance.
      *
@@ -201,34 +165,29 @@ class Console extends \Codeception\Subscriber\Console
      */
     private function message(string $string = '')
     {
-        return $this->messageFactory->message($string);
+        return $this->message_factory->message($string);
     }
-
     /**
      * Reading stepKey from file.
      *
      * @return string|null
      */
-    private function retrieveStepKey(Step $step): string|array|null
+    private function retrieve_step_key(Step $step): string|array|null
     {
-        $stepKey = null;
-        $stepLine = $step->getLineNumber();
-        $filePath = $step->getFilePath();
-        $stepLine = $stepLine - 1;
-
-        if (!array_key_exists($filePath, $this->testFiles)) {
-            $this->testFiles[$filePath] = explode(PHP_EOL, file_get_contents($filePath));
+        $step_key = null;
+        $step_line = $step->get_line_number();
+        $file_path = $step->get_file_path();
+        $step_line = $step_line - 1;
+        if (!array_key_exists($file_path, $this->test_files)) {
+            $this->test_files[$file_path] = explode(PHP_EOL, file_get_contents($file_path));
         }
-
-        preg_match(TestGenerator::ACTION_STEP_KEY_REGEX, (string) $this->testFiles[$filePath][$stepLine], $matches);
+        preg_match(Test_Generator::ACTION_STEP_KEY_REGEX, (string) $this->test_files[$file_path][$step_line], $matches);
         if (!empty($matches['stepKey'])) {
-            $stepKey = $matches['stepKey'];
+            $step_key = $matches['stepKey'];
         }
-
-        if ($this->actionGroupStepKey !== null) {
-            $stepKey = str_replace($this->actionGroupStepKey, '', $stepKey);
+        if ($this->action_group_step_key !== null) {
+            $step_key = str_replace($this->action_group_step_key, '', $step_key);
         }
-
-        return $stepKey === '[]' ? null : $stepKey;
+        return $step_key === '[]' ? null : $step_key;
     }
 }

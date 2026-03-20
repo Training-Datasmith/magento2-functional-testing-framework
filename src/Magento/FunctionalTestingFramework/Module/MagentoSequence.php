@@ -1,28 +1,25 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
 // @codingStandardsIgnoreFile
+namespace Magento\Functional_Testing_Framework\Module;
 
-namespace Magento\FunctionalTestingFramework\Module;
-
-use Codeception\Exception\ModuleException;
-use Magento\FunctionalTestingFramework\Codeception\Module\Sequence;
-
+use Codeception\Exception\Module_Exception;
+use Magento\Functional_Testing_Framework\Codeception\Module\Sequence;
 /**
  * MagentoSequence module.
  *
  */
-class MagentoSequence extends Sequence
+class Magento_Sequence extends Sequence
 {
     protected array $config = ['prefix' => ''];
 }
 if (!function_exists('msq') && !function_exists('msqs')) {
     require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Util' . DIRECTORY_SEPARATOR . 'msq.php';
 } else {
-    throw new ModuleException(\Magento\FunctionalTestingFramework\Module\MagentoSequence::class, "function 'msq' and 'msqs' already defined");
+    throw new Module_Exception(\Magento\Functional_Testing_Framework\Module\Magento_Sequence::class, "function 'msq' and 'msqs' already defined");
 }

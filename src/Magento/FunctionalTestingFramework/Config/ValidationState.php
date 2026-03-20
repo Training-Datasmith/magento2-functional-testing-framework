@@ -1,12 +1,11 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\Config;
+namespace Magento\Functional_Testing_Framework\Config;
 
 /**
  * Class ValidationState
@@ -14,7 +13,7 @@ namespace Magento\FunctionalTestingFramework\Config;
  *
  * @internal
  */
-class ValidationState implements ValidationStateInterface
+class Validation_State implements Validation_State_Interface
 {
     /**
      * ValidationState constructor.
@@ -24,15 +23,16 @@ class ValidationState implements ValidationStateInterface
         /**
          * Application mode value.
          */
-        protected $appMode
-    ) {
+        protected $app_mode
+    )
+    {
     }
-
     /**
      * Retrieve current validation state
      */
-    public function isValidationRequired(): bool
+    public function is_validation_required(): bool
     {
-        return $this->appMode === 'developer'; // @todo
+        return $this->app_mode === 'developer';
+        // @todo
     }
 }

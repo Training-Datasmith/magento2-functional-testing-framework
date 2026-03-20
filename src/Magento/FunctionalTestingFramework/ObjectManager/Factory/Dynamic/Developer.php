@@ -1,30 +1,27 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\ObjectManager\Factory\Dynamic;
+namespace Magento\Functional_Testing_Framework\Object_Manager\Factory\Dynamic;
 
 /**
  * Class Developer
  */
-class Developer implements \Magento\FunctionalTestingFramework\ObjectManager\FactoryInterface
+class Developer implements \Magento\Functional_Testing_Framework\Object_Manager\Factory_Interface
 {
     /**
      * Definition list
      */
-    protected \Magento\FunctionalTestingFramework\ObjectManager\DefinitionInterface $definitions;
-
+    protected \Magento\Functional_Testing_Framework\Object_Manager\Definition_Interface $definitions;
     /**
      * Object creation stack
      *
      * @var array
      */
-    protected $creationStack = [];
-
+    protected $creation_stack = [];
     /**
      * Developer constructor.
      * @param array                                                                      $globalArguments
@@ -33,28 +30,27 @@ class Developer implements \Magento\FunctionalTestingFramework\ObjectManager\Fac
         /**
          * Object manager config
          */
-        protected \Magento\FunctionalTestingFramework\ObjectManager\ConfigInterface $config,
+        protected \Magento\Functional_Testing_Framework\Object_Manager\Config_Interface $config,
         /**
          * Object manager
          */
-        protected ?\Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager = null,
-        ?\Magento\FunctionalTestingFramework\ObjectManager\DefinitionInterface $definitions = null,
+        protected ?\Magento\Functional_Testing_Framework\Object_Manager_Interface $object_manager = null,
+        ?\Magento\Functional_Testing_Framework\Object_Manager\Definition_Interface $definitions = null,
         /**
          * Global arguments.
          */
-        protected $globalArguments = []
-    ) {
-        $this->definitions = $definitions ?: new \Magento\FunctionalTestingFramework\ObjectManager\Definition\Runtime();
+        protected $global_arguments = []
+    )
+    {
+        $this->definitions = $definitions ?: new \Magento\Functional_Testing_Framework\Object_Manager\Definition\Runtime();
     }
-
     /**
      * Set object manager
      */
-    public function setObjectManager(\Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager): void
+    public function set_object_manager(\Magento\Functional_Testing_Framework\Object_Manager_Interface $object_manager): void
     {
-        $this->objectManager = $objectManager;
+        $this->object_manager = $object_manager;
     }
-
     /**
      * Resolve constructor arguments
      *
@@ -65,76 +61,64 @@ class Developer implements \Magento\FunctionalTestingFramework\ObjectManager\Fac
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * Revisited to reduce cyclomatic complexity, left unrefactored for readability
      */
-    protected function resolveArguments(string $requestedType, array $parameters, array $arguments = []): array
+    protected function resolve_arguments(string $requested_type, array $parameters, array $arguments = []): array
     {
-        $resolvedArguments = [];
-        $arguments = count($arguments)
-            ? array_replace($this->config->getArguments($requestedType), $arguments)
-            : $this->config->getArguments($requestedType);
+        $resolved_arguments = [];
+        $arguments = count($arguments) ? array_replace($this->config->get_arguments($requested_type), $arguments) : $this->config->get_arguments($requested_type);
         foreach ($parameters as $parameter) {
-            [$paramName, $paramType, $paramRequired, $paramDefault] = $parameter;
+            [$param_name, $param_type, $param_required, $param_default] = $parameter;
             $argument = null;
-            if (!empty($arguments) && (isset($arguments[$paramName]) || array_key_exists($paramName, $arguments))) {
-                $argument = $arguments[$paramName];
-            } elseif ($paramRequired) {
-                if ($paramType) {
-                    $argument = ['instance' => $paramType];
+            if (!empty($arguments) && (isset($arguments[$param_name]) || array_key_exists($param_name, $arguments))) {
+                $argument = $arguments[$param_name];
+            } elseif ($param_required) {
+                if ($param_type) {
+                    $argument = ['instance' => $param_type];
                 } else {
-                    $this->creationStack = [];
-                    throw new \BadMethodCallException(
-                        'Missing required argument $' . $paramName . ' of ' . $requestedType . '.'
-                    );
+                    $this->creation_stack = [];
+                    throw new \BadMethodCallException('Missing required argument $' . $param_name . ' of ' . $requested_type . '.');
                 }
             } else {
-                $argument = $paramDefault;
+                $argument = $param_default;
             }
-            if ($paramType && $argument !== $paramDefault && !is_object($argument)) {
+            if ($param_type && $argument !== $param_default && !is_object($argument)) {
                 if (!isset($argument['instance']) || !is_array($argument)) {
-                    throw new \UnexpectedValueException(
-                        'Invalid parameter configuration provided for $' . $paramName . ' argument of ' . $requestedType
-                    );
+                    throw new \UnexpectedValueException('Invalid parameter configuration provided for $' . $param_name . ' argument of ' . $requested_type);
                 }
-                $argumentType = $argument['instance'];
-                $isShared = ($argument['shared'] ?? $this->config->isShared($argumentType));
-                $argument = $isShared
-                    ? $this->objectManager->get($argumentType)
-                    : $this->objectManager->create($argumentType);
+                $argument_type = $argument['instance'];
+                $is_shared = $argument['shared'] ?? $this->config->is_shared($argument_type);
+                $argument = $is_shared ? $this->object_manager->get($argument_type) : $this->object_manager->create($argument_type);
             } elseif (is_array($argument)) {
                 if (isset($argument['argument'])) {
-                    $argument = $this->globalArguments[$argument['argument']] ?? $paramDefault;
+                    $argument = $this->global_arguments[$argument['argument']] ?? $param_default;
                 } elseif (!empty($argument)) {
-                    $this->parseArray($argument);
+                    $this->parse_array($argument);
                 }
             }
-            $resolvedArguments[] = $argument;
+            $resolved_arguments[] = $argument;
         }
-        return $resolvedArguments;
+        return $resolved_arguments;
     }
-
     /**
      * Parse array argument
      *
      * @return void
      */
-    protected function parseArray(array &$array)
+    protected function parse_array(array &$array)
     {
         foreach ($array as $key => $item) {
             if (is_array($item)) {
                 if (isset($item['instance'])) {
-                    $itemType = $item['instance'];
-                    $isShared = $item['shared'] ?? $this->config->isShared($itemType);
-                    $array[$key] = $isShared
-                        ? $this->objectManager->get($itemType)
-                        : $this->objectManager->create($itemType);
+                    $item_type = $item['instance'];
+                    $is_shared = $item['shared'] ?? $this->config->is_shared($item_type);
+                    $array[$key] = $is_shared ? $this->object_manager->get($item_type) : $this->object_manager->create($item_type);
                 } elseif (isset($item['argument'])) {
-                    $array[$key] = $this->globalArguments[$item['argument']] ?? null;
+                    $array[$key] = $this->global_arguments[$item['argument']] ?? null;
                 } else {
-                    $this->parseArray($array[$key]);
+                    $this->parse_array($array[$key]);
                 }
             }
         }
     }
-
     /**
      * Create instance with call time arguments
      *
@@ -143,40 +127,36 @@ class Developer implements \Magento\FunctionalTestingFramework\ObjectManager\Fac
      * @throws \Exception
      * @SuppressWarnings(PHPCPD)
      */
-    public function create($requestedType, array $arguments = [])
+    public function create($requested_type, array $arguments = [])
     {
-        $type = $this->config->getInstanceType($requestedType);
-        $parameters = $this->definitions->getParameters($type);
-
+        $type = $this->config->get_instance_type($requested_type);
+        $parameters = $this->definitions->get_parameters($type);
         if ($parameters === null) {
             return new $type();
         }
-        if (isset($this->creationStack[$requestedType])) {
-            $lastFound = end($this->creationStack);
-            $this->creationStack = [];
-            throw new \LogicException("Circular dependency: {$requestedType} depends on {$lastFound} and vice versa.");
+        if (isset($this->creation_stack[$requested_type])) {
+            $last_found = end($this->creation_stack);
+            $this->creation_stack = [];
+            throw new \LogicException("Circular dependency: {$requested_type} depends on {$last_found} and vice versa.");
         }
-        $this->creationStack[$requestedType] = $requestedType;
+        $this->creation_stack[$requested_type] = $requested_type;
         try {
-            $args = $this->resolveArguments($requestedType, $parameters, $arguments);
-            unset($this->creationStack[$requestedType]);
+            $args = $this->resolve_arguments($requested_type, $parameters, $arguments);
+            unset($this->creation_stack[$requested_type]);
         } catch (\Exception $e) {
-            unset($this->creationStack[$requestedType]);
+            unset($this->creation_stack[$requested_type]);
             throw $e;
         }
-
         $reflection = new \ReflectionClass($type);
-
-        return $reflection->newInstanceArgs($args);
+        return $reflection->new_instance_args($args);
     }
-
     /**
      * Set global arguments
      *
      * @param array $arguments
      */
-    public function setArguments($arguments): void
+    public function set_arguments($arguments): void
     {
-        $this->globalArguments = $arguments;
+        $this->global_arguments = $arguments;
     }
 }

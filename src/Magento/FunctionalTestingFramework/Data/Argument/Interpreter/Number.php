@@ -1,19 +1,17 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Data\Argument\Interpreter;
 
-namespace Magento\FunctionalTestingFramework\Data\Argument\Interpreter;
-
-use Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface;
-
+use Magento\Functional_Testing_Framework\Data\Argument\Interpreter_Interface;
 /**
  * Interpreter of numeric data, such as integer, float, or numeric string
  */
-class Number implements InterpreterInterface
+class Number implements Interpreter_Interface
 {
     /**
      * {@inheritdoc}

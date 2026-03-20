@@ -1,42 +1,36 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Data_Generator\Objects;
 
-namespace Magento\FunctionalTestingFramework\DataGenerator\Objects;
-
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
-
+use Magento\Functional_Testing_Framework\Util\Logger\Logging_Util;
 /**
  * Class OperationDefinitionObject
  * @SuppressWarnings(PHPMD)
  */
-class OperationDefinitionObject
+class Operation_Definition_Object
 {
     public const HTTP_CONTENT_TYPE_HEADER = 'Content-Type';
-
     /**
      * Api request url.
      *
      * @var string
      */
-    private $apiUrl;
-
+    private $api_url;
     /**
      * Resource specific URI for the request
      */
-    private readonly string $apiUri;
-
+    private readonly string $api_uri;
     /**
      * Content type of body
      *
      * @var string
      */
-    private $contentType;
-
+    private $content_type;
     /**
      * OperationDefinitionObject constructor.
      * @param string      $name
@@ -68,12 +62,12 @@ class OperationDefinitionObject
         /**
          * Data type for which the data defintiion is used
          */
-        private $dataType,
+        private $data_type,
         /**
          * Api method such as ('POST', 'PUT', 'GET', DELETE', etc.)
          */
-        private $apiMethod,
-        $apiUri,
+        private $api_method,
+        $api_uri,
         /**
          * Authorization path for retrieving a token
          */
@@ -89,206 +83,184 @@ class OperationDefinitionObject
         /**
          * The metadata describing the data fields and values themselves
          */
-        private $operationMetadata,
-        $contentType,
+        private $operation_metadata,
+        $content_type,
         /**
          * Determines if operation should remove backend_name from URL.
          */
-        private $removeBackend,
+        private $remove_backend,
         /**
          * Regex to check for request success.
          */
-        private $successRegex = null,
+        private $success_regex = null,
         /**
          * Regex to grab return value from response.
          */
-        private $returnRegex = null,
+        private $return_regex = null,
         /**
          * Index of element to be returned from "returnRegex" matches.
          */
-        private $returnIndex = null,
+        private $return_index = null,
         /**
          * Deprecated message.
          */
         private $deprecated = null
-    ) {
-        $this->apiUri = trim($apiUri ?? '', '/');
-        $this->apiUrl = null;
-
-        if (!empty($contentType)) {
-            $this->contentType = $contentType;
+    )
+    {
+        $this->api_uri = trim($api_uri ?? '', '/');
+        $this->api_url = null;
+        if (!empty($content_type)) {
+            $this->content_type = $content_type;
         } else {
-            $this->contentType = 'application/x-www-form-urlencoded';
+            $this->content_type = 'application/x-www-form-urlencoded';
         }
-
         // add content type as a header
-        $this->headers[] = self::HTTP_CONTENT_TYPE_HEADER . ': ' . $this->contentType;
+        $this->headers[] = self::HTTP_CONTENT_TYPE_HEADER . ': ' . $this->content_type;
     }
-
     /**
      * Getter for the deprecated attr of the section
      *
      * @return string
      */
-    public function getDeprecated()
+    public function get_deprecated()
     {
         return $this->deprecated;
     }
-
     /**
      * Getter for data's data type
      *
      * @return string
      */
-    public function getDataType()
+    public function get_data_type()
     {
-        return $this->dataType;
+        return $this->data_type;
     }
-
     /**
      * Getter for data operation
      *
      * @return string
      */
-    public function getOperation()
+    public function get_operation()
     {
         return $this->operation;
     }
-
     /**
      * Getter for api method
      *
      * @return string
      */
-    public function getApiMethod()
+    public function get_api_method()
     {
-        return $this->apiMethod;
+        return $this->api_method;
     }
-
     /**
      * Getter for api url for a store.
      *
      * @return string
      */
-    public function getApiUrl()
+    public function get_api_url()
     {
-        if (!$this->apiUrl) {
-            $this->apiUrl = $this->apiUri;
-
+        if (!$this->api_url) {
+            $this->api_url = $this->api_uri;
             if (array_key_exists('query', $this->params)) {
-                $this->addQueryParams();
+                $this->add_query_params();
             }
         }
-
-        return $this->apiUrl;
+        return $this->api_url;
     }
-
     /**
      * Getter for auth path
      *
      * @return string
      */
-    public function getAuth()
+    public function get_auth()
     {
         return $this->auth;
     }
-
     /**
      * Getter for request headers
      *
      * @return array
      */
-    public function getHeaders()
+    public function get_headers()
     {
         return $this->headers;
     }
-
     /**
      * Getter for removeBackend
      *
      * @return boolean
      */
-    public function removeUrlBackend()
+    public function remove_url_backend()
     {
-        return $this->removeBackend;
+        return $this->remove_backend;
     }
-
     /**
      * Getter for Content-type
      *
      * @return string
      */
-    public function getContentType()
+    public function get_content_type()
     {
-        return $this->contentType;
+        return $this->content_type;
     }
-
     /**
      * Getter for data metadata
      *
      * @return array
      */
-    public function getOperationMetadata()
+    public function get_operation_metadata()
     {
-        return $this->operationMetadata;
+        return $this->operation_metadata;
     }
-
     /**
      * Getter for success regex.
      *
      * @return string
      */
-    public function getSuccessRegex()
+    public function get_success_regex()
     {
-        return $this->successRegex;
+        return $this->success_regex;
     }
-
     /**
      * Getter for return regex.
      *
      * @return string
      */
-    public function getReturnRegex()
+    public function get_return_regex()
     {
-        return $this->returnRegex;
+        return $this->return_regex;
     }
-
     /**
      * Getter for return regex matches index.
      *
      * @return string|null
      */
-    public function getReturnIndex()
+    public function get_return_index()
     {
-        return $this->returnIndex;
+        return $this->return_index;
     }
-
     /**
      * Function to append or add query parameters
      */
-    public function addQueryParams(): void
+    public function add_query_params(): void
     {
-        foreach ($this->params['query'] as $paramName => $paramValue) {
-            if (!str_contains($this->apiUrl, '?')) {
-                $this->apiUrl = $this->apiUrl . '?';
+        foreach ($this->params['query'] as $param_name => $param_value) {
+            if (!str_contains($this->api_url, '?')) {
+                $this->api_url = $this->api_url . '?';
             } else {
-                $this->apiUrl = $this->apiUrl . '&';
+                $this->api_url = $this->api_url . '&';
             }
-            $this->apiUrl = $this->apiUrl . $paramName . '=' . $paramValue;
+            $this->api_url = $this->api_url . $param_name . '=' . $param_value;
         }
     }
-
     /**
      * Function to log a referenced deprecated operation at runtime.
      */
-    public function logDeprecated(): void
+    public function log_deprecated(): void
     {
         if ($this->deprecated !== null) {
-            LoggingUtil::getInstance()->getLogger(self::class)->deprecation(
-                $message = "The operation {$this->name} is deprecated.",
-                ['operationType' => $this->operation, 'deprecatedMessage' => $this->deprecated],
-                true
-            );
+            Logging_Util::get_instance()->get_logger(self::class)->deprecation($message = "The operation {$this->name} is deprecated.", ['operationType' => $this->operation, 'deprecatedMessage' => $this->deprecated], true);
         }
     }
 }

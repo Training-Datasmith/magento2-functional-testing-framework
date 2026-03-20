@@ -1,13 +1,11 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-use Magento\FunctionalTestingFramework\Module\MagentoSequence;
-
+use Magento\Functional_Testing_Framework\Module\Magento_Sequence;
 if (!function_exists('msq')) {
     /**
      * Return unique sequence within test.
@@ -16,18 +14,17 @@ if (!function_exists('msq')) {
      */
     function msq(?string $id = null)
     {
-        if ($id and isset(MagentoSequence::$hash[$id])) {
-            return MagentoSequence::$hash[$id];
+        if ($id and isset(Magento_Sequence::$hash[$id])) {
+            return Magento_Sequence::$hash[$id];
         }
-        $prefix = MagentoSequence::$prefix;
+        $prefix = Magento_Sequence::$prefix;
         $sequence = $prefix . uniqid();
         if ($id) {
-            MagentoSequence::$hash[$id] = $sequence;
+            Magento_Sequence::$hash[$id] = $sequence;
         }
         return $sequence;
     }
 }
-
 if (!function_exists('msqs')) {
     /**
      * Return unique sequence within suite.
@@ -36,13 +33,13 @@ if (!function_exists('msqs')) {
      */
     function msqs(?string $id = null)
     {
-        if ($id and isset(MagentoSequence::$suiteHash[$id])) {
-            return MagentoSequence::$suiteHash[$id];
+        if ($id and isset(Magento_Sequence::$suite_hash[$id])) {
+            return Magento_Sequence::$suite_hash[$id];
         }
-        $prefix = MagentoSequence::$prefix;
+        $prefix = Magento_Sequence::$prefix;
         $sequence = $prefix . uniqid();
         if ($id) {
-            MagentoSequence::$suiteHash[$id] = $sequence;
+            Magento_Sequence::$suite_hash[$id] = $sequence;
         }
         return $sequence;
     }

@@ -1,17 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\ObjectManager;
+namespace Magento\Functional_Testing_Framework\Object_Manager;
 
 /**
  * Interface ConfigInterface
  */
-interface ConfigInterface
+interface Config_Interface
 {
     /**
      * Retrieve list of arguments per type
@@ -19,24 +18,21 @@ interface ConfigInterface
      * @param string $type
      * @return array
      */
-    public function getArguments($type);
-
+    public function get_arguments($type);
     /**
      * Check whether type is shared
      *
      * @param string $type
      * @return boolean
      */
-    public function isShared($type);
-
+    public function is_shared($type);
     /**
      * Retrieve instance type
      *
      * @param string $instanceName
      * @return string
      */
-    public function getInstanceType($instanceName);
-
+    public function get_instance_type($instance_name);
     /**
      * Retrieve preference for type
      *
@@ -44,8 +40,7 @@ interface ConfigInterface
      * @return string
      * @throws \LogicException
      */
-    public function getPreference($type);
-
+    public function get_preference($type);
     /**
      * Extend configuration
      *

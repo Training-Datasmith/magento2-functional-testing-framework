@@ -4,24 +4,20 @@
  * Copyright 2020 Adobe
  * All Rights Reserved.
  */
+declare (strict_types=1);
+namespace Magento\Functional_Testing_Framework\Filter;
 
-declare(strict_types=1);
-
-namespace Magento\FunctionalTestingFramework\Filter;
-
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-
+use Magento\Functional_Testing_Framework\Exceptions\Test_Framework_Exception;
 /**
  * Class FilterList has a list of filters.
  */
-class FilterList
+class Filter_List
 {
     /**
      * List of filters
      * @var \Magento\FunctionalTestingFramework\Filter\FilterInterface[]
      */
     private array $filters = [];
-
     /**
      * Constructor for Filter list.
      *
@@ -29,22 +25,20 @@ class FilterList
      */
     public function __construct(array $filters = [])
     {
-        foreach ($filters as $filterType => $filterValue) {
-            $className = "Magento\FunctionalTestingFramework\Filter\Test\\" . ucfirst((string) $filterType);
-            if (!class_exists($className)) {
-                throw new TestFrameworkException("Filter type '" . $filterType . "' do not exist.");
+        foreach ($filters as $filter_type => $filter_value) {
+            $class_name = "Magento\\FunctionalTestingFramework\\Filter\\Test\\" . ucfirst((string) $filter_type);
+            if (!class_exists($class_name)) {
+                throw new Test_Framework_Exception("Filter type '" . $filter_type . "' do not exist.");
             }
-            $this->filters[$filterType] = new $className($filterValue);
+            $this->filters[$filter_type] = new $class_name($filter_value);
         }
     }
-
-    public function getFilters(): array
+    public function get_filters(): array
     {
         return $this->filters;
     }
-
-    public function getFilter(string $filterType): FilterInterface
+    public function get_filter(string $filter_type): Filter_Interface
     {
-        return $this->filters[$filterType];
+        return $this->filters[$filter_type];
     }
 }

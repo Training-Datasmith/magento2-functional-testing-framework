@@ -1,16 +1,14 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Suite\Parsers;
 
-namespace Magento\FunctionalTestingFramework\Suite\Parsers;
-
-use Magento\FunctionalTestingFramework\Config\DataInterface;
-
-class SuiteDataParser
+use Magento\Functional_Testing_Framework\Config\Data_Interface;
+class Suite_Data_Parser
 {
     /**
      * TestDataParser constructor.
@@ -19,17 +17,17 @@ class SuiteDataParser
         /**
          * Suite data interface for parser.
          */
-        private readonly DataInterface $suiteData
-    ) {
+        private readonly Data_Interface $suite_data
+    )
+    {
     }
-
     /**
      * Returns an array of data based on *Test.xml files
      *
      * @return array
      */
-    public function readSuiteData()
+    public function read_suite_data()
     {
-        return $this->suiteData->get();
+        return $this->suite_data->get();
     }
 }

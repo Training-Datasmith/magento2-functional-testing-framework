@@ -1,19 +1,17 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Data_Generator\Parsers;
 
-namespace Magento\FunctionalTestingFramework\DataGenerator\Parsers;
-
-use Magento\FunctionalTestingFramework\Config\DataInterface;
-
+use Magento\Functional_Testing_Framework\Config\Data_Interface;
 /**
  * Class OperationDefinitionParser
  */
-class OperationDefinitionParser
+class Operation_Definition_Parser
 {
     /**
      * MetadataParser constructor.
@@ -22,16 +20,16 @@ class OperationDefinitionParser
         /**
          * Meta Data.
          */
-        private readonly DataInterface $metadata
-    ) {
+        private readonly Data_Interface $metadata
+    )
+    {
     }
-
     /**
      * Returns an array containing all data read from operations.xml files.
      *
      * @return array
      */
-    public function readOperationMetadata()
+    public function read_operation_metadata()
     {
         return $this->metadata->get();
     }

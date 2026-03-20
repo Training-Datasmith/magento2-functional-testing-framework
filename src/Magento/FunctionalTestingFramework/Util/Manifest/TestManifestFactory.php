@@ -1,18 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Util\Manifest;
 
-namespace Magento\FunctionalTestingFramework\Util\Manifest;
-
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
-use Magento\FunctionalTestingFramework\Util\TestGenerator;
-
-class TestManifestFactory
+use Magento\Functional_Testing_Framework\Exceptions\Test_Framework_Exception;
+use Magento\Functional_Testing_Framework\Util\Path\File_Path_Formatter;
+use Magento\Functional_Testing_Framework\Util\Test_Generator;
+class Test_Manifest_Factory
 {
     /**
      * TestManifestFactory constructor.
@@ -21,7 +19,6 @@ class TestManifestFactory
     {
         // private constructor
     }
-
     /**
      * Static function which takes path and config to return the appropriate manifest output type.
      *
@@ -30,18 +27,14 @@ class TestManifestFactory
      * @return BaseTestManifest
      * @throws TestFrameworkException
      */
-    public static function makeManifest($runConfig, $suiteConfiguration, string $testPath = TestGenerator::DEFAULT_DIR): \Magento\FunctionalTestingFramework\Util\Manifest\SingleRunTestManifest|\Magento\FunctionalTestingFramework\Util\Manifest\ParallelByTimeTestManifest|\Magento\FunctionalTestingFramework\Util\Manifest\ParallelByGroupTestManifest|\Magento\FunctionalTestingFramework\Util\Manifest\DefaultTestManifest
+    public static function make_manifest($run_config, $suite_configuration, string $test_path = Test_Generator::DEFAULT_DIR): \Magento\Functional_Testing_Framework\Util\Manifest\Single_Run_Test_Manifest|\Magento\Functional_Testing_Framework\Util\Manifest\Parallel_By_Time_Test_Manifest|\Magento\Functional_Testing_Framework\Util\Manifest\Parallel_By_Group_Test_Manifest|\Magento\Functional_Testing_Framework\Util\Manifest\Default_Test_Manifest
     {
-        $testDirFullPath = FilePathFormatter::format(TESTS_MODULE_PATH)
-        . TestGenerator::GENERATED_DIR
-        . DIRECTORY_SEPARATOR
-        . $testPath;
-
-        return match ($runConfig) {
-            'singleRun' => new SingleRunTestManifest($suiteConfiguration, $testDirFullPath),
-            'parallelByTime' => new ParallelByTimeTestManifest($suiteConfiguration, $testDirFullPath),
-            'parallelByGroup' => new ParallelByGroupTestManifest($suiteConfiguration, $testDirFullPath),
-            default => new DefaultTestManifest($suiteConfiguration, $testDirFullPath),
+        $test_dir_full_path = File_Path_Formatter::format(TESTS_MODULE_PATH) . Test_Generator::GENERATED_DIR . DIRECTORY_SEPARATOR . $test_path;
+        return match ($run_config) {
+            'singleRun' => new Single_Run_Test_Manifest($suite_configuration, $test_dir_full_path),
+            'parallelByTime' => new Parallel_By_Time_Test_Manifest($suite_configuration, $test_dir_full_path),
+            'parallelByGroup' => new Parallel_By_Group_Test_Manifest($suite_configuration, $test_dir_full_path),
+            default => new Default_Test_Manifest($suite_configuration, $test_dir_full_path),
         };
     }
 }

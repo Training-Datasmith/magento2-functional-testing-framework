@@ -1,19 +1,18 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\System\Code;
+namespace Magento\Functional_Testing_Framework\System\Code;
 
 /**
  * Class ClassReader
  *
  * @internal
  */
-class ClassReader
+class Class_Reader
 {
     /**
      * Read class method signature
@@ -24,35 +23,25 @@ class ClassReader
      * @throws \ReflectionException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    public function getParameters($className, $method)
+    public function get_parameters($class_name, $method)
     {
-        $class = new \ReflectionClass($className);
+        $class = new \ReflectionClass($class_name);
         $result = null;
-        $method = $class->getMethod($method);
+        $method = $class->get_method($method);
         if ($method) {
             $result = [];
             /** @var $parameter \ReflectionParameter */
-            foreach ($method->getParameters() as $parameter) {
+            foreach ($method->get_parameters() as $parameter) {
                 try {
-                    $paramType = $parameter->getType();
-                    $name = ($paramType && method_exists($paramType, 'isBuiltin') && !$paramType->isBuiltin())
-                        ? new \ReflectionClass($paramType->getName())
-                        : null;
-                    $result[$parameter->getName()] = [
-                        $parameter->getName(),
-                        $name !== null ? $name->getName() : null,
-                        !$parameter->isOptional(),
-                        $parameter->isOptional() ?
-                            $parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : null :
-                            null,
-                    ];
-                } catch (\ReflectionException $e) {
-                    $message = $e->getMessage();
-                    throw new \ReflectionException($message, 0, $e);
+                    $param_type = $parameter->get_type();
+                    $name = $param_type && method_exists($param_type, 'isBuiltin') && !$param_type->is_builtin() ? new \ReflectionClass($param_type->get_name()) : null;
+                    $result[$parameter->get_name()] = [$parameter->get_name(), $name !== null ? $name->get_name() : null, !$parameter->is_optional(), $parameter->is_optional() ? $parameter->is_default_value_available() ? $parameter->get_default_value() : null : null];
+                } catch (\Reflection_Exception $e) {
+                    $message = $e->get_message();
+                    throw new \Reflection_Exception($message, 0, $e);
                 }
             }
         }
-
         return $result;
     }
 }

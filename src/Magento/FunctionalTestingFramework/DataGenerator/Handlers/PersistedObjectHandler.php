@@ -1,48 +1,41 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Data_Generator\Handlers;
 
-namespace Magento\FunctionalTestingFramework\DataGenerator\Handlers;
-
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use Magento\FunctionalTestingFramework\DataGenerator\Persist\DataPersistenceHandler;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
-
-class PersistedObjectHandler
+use Magento\Functional_Testing_Framework\Config\Mftf_Application_Config;
+use Magento\Functional_Testing_Framework\Data_Generator\Persist\Data_Persistence_Handler;
+use Magento\Functional_Testing_Framework\Exceptions\Test_Framework_Exception;
+use Magento\Functional_Testing_Framework\Exceptions\Test_Reference_Exception;
+use Magento\Functional_Testing_Framework\Util\Logger\Logging_Util;
+class Persisted_Object_Handler
 {
     public const HOOK_SCOPE = 'hook';
     public const TEST_SCOPE = 'test';
     public const SUITE_SCOPE = 'suite';
-
     /**
      * The singleton instance of this class
      */
-    private static ?\Magento\FunctionalTestingFramework\DataGenerator\Handlers\PersistedObjectHandler $INSTANCE = null;
-
+    private static ?\Magento\Functional_Testing_Framework\Data_Generator\Handlers\Persisted_Object_Handler $INSTANCE = null;
     /**
      * Store of all hook created objects
      * @var DataPersistenceHandler[] array
      */
-    private array $hookObjects = [];
-
+    private array $hook_objects = [];
     /**
      * Store of all test created objects
      * @var DataPersistenceHandler[] array
      */
-    private array $testObjects = [];
-
+    private array $test_objects = [];
     /**
      * Store of all suite created objects
      * @var DataPersistenceHandler[] array
      */
-    private array $suiteObjects = [];
-
+    private array $suite_objects = [];
     /**
      * Constructor
      */
@@ -50,20 +43,18 @@ class PersistedObjectHandler
     {
         // Empty Constructor
     }
-
     /**
      * Return the singleton instance of this class. Initialize it if needed.
      *
      * @return PersistedObjectHandler
      */
-    public static function getInstance()
+    public static function get_instance()
     {
         if (!self::$INSTANCE) {
-            self::$INSTANCE = new PersistedObjectHandler();
+            self::$INSTANCE = new Persisted_Object_Handler();
         }
         return self::$INSTANCE;
     }
-
     /**
      * Creates and stores the entity.
      * @param string $key                 StepKey of the createData action.
@@ -73,47 +64,27 @@ class PersistedObjectHandler
      * @param array  $overrideFields      Array of FieldName => Value of override fields.
      * @param string $storeCode
      */
-    public function createEntity(
-        string $key,
-        $scope,
-        string $entity,
-        $dependentObjectKeys = [],
-        $overrideFields = [],
-        ?string $storeCode = ''
-    ): void {
-        $retrievedDependentObjects = [];
-        foreach ($dependentObjectKeys as $objectKey) {
-            $retrievedDependentObjects[] = $this->retrieveEntity($objectKey, $scope);
+    public function create_entity(string $key, $scope, string $entity, $dependent_object_keys = [], $override_fields = [], ?string $store_code = ''): void
+    {
+        $retrieved_dependent_objects = [];
+        foreach ($dependent_object_keys as $object_key) {
+            $retrieved_dependent_objects[] = $this->retrieve_entity($object_key, $scope);
         }
-
-        $retrievedEntity = DataObjectHandler::getInstance()->getObject($entity);
-
-        if ($retrievedEntity === null) {
-            throw new TestReferenceException(
-                'Entity "' . $entity . '" does not exist.' .
-                "\nException occurred executing action at StepKey \"" . $key . '"'
-            );
+        $retrieved_entity = Data_Object_Handler::get_instance()->get_object($entity);
+        if ($retrieved_entity === null) {
+            throw new Test_Reference_Exception('Entity "' . $entity . '" does not exist.' . "\nException occurred executing action at StepKey \"" . $key . '"');
         }
-
-        $overrideFields = $this->resolveOverrideFields($overrideFields);
-
-        $persistedObject = new DataPersistenceHandler(
-            $retrievedEntity,
-            $retrievedDependentObjects,
-            $overrideFields
-        );
-
-        $persistedObject->createEntity($storeCode);
-
+        $override_fields = $this->resolve_override_fields($override_fields);
+        $persisted_object = new Data_Persistence_Handler($retrieved_entity, $retrieved_dependent_objects, $override_fields);
+        $persisted_object->create_entity($store_code);
         if ($scope === self::TEST_SCOPE) {
-            $this->testObjects[$key] = $persistedObject;
+            $this->test_objects[$key] = $persisted_object;
         } elseif ($scope === self::HOOK_SCOPE) {
-            $this->hookObjects[$key] = $persistedObject;
+            $this->hook_objects[$key] = $persisted_object;
         } else {
-            $this->suiteObjects[$key] = $persistedObject;
+            $this->suite_objects[$key] = $persisted_object;
         }
     }
-
     /**
      * Retrieves and updates a previously created entity.
      * @param string $key                 StepKey of the createData action.
@@ -121,28 +92,25 @@ class PersistedObjectHandler
      * @param string $updateEntity        Name of the static XML data to update the entity with.
      * @param array  $dependentObjectKeys StepKeys of other createData actions that are required.
      */
-    public function updateEntity($key, $scope, $updateEntity, $dependentObjectKeys = []): void
+    public function update_entity($key, $scope, $update_entity, $dependent_object_keys = []): void
     {
-        $retrievedDependentObjects = [];
-        foreach ($dependentObjectKeys as $objectKey) {
-            $retrievedDependentObjects[] = $this->retrieveEntity($objectKey, $scope);
+        $retrieved_dependent_objects = [];
+        foreach ($dependent_object_keys as $object_key) {
+            $retrieved_dependent_objects[] = $this->retrieve_entity($object_key, $scope);
         }
-
-        $originalEntity = $this->retrieveEntity($key, $scope);
-        $originalEntity->updateEntity($updateEntity, $retrievedDependentObjects);
+        $original_entity = $this->retrieve_entity($key, $scope);
+        $original_entity->update_entity($update_entity, $retrieved_dependent_objects);
     }
-
     /**
      * Retrieves and deletes a previously created entity.
      * @param string $key   StepKey of the createData action.
      * @param string $scope
      */
-    public function deleteEntity($key, $scope): void
+    public function delete_entity($key, $scope): void
     {
-        $originalEntity = $this->retrieveEntity($key, $scope);
-        $originalEntity->deleteEntity();
+        $original_entity = $this->retrieve_entity($key, $scope);
+        $original_entity->delete_entity();
     }
-
     /**
      * Performs GET on given entity and stores entity for use.
      * @param string  $key                 StepKey of getData action.
@@ -152,29 +120,23 @@ class PersistedObjectHandler
      * @param string  $storeCode
      * @param integer $index
      */
-    public function getEntity($key, $scope, $entity, $dependentObjectKeys = [], ?string $storeCode = '', ?string $index = null): void
+    public function get_entity($key, $scope, $entity, $dependent_object_keys = [], ?string $store_code = '', ?string $index = null): void
     {
-        $retrievedDependentObjects = [];
-        foreach ($dependentObjectKeys as $objectKey) {
-            $retrievedDependentObjects[] = $this->retrieveEntity($objectKey, $scope);
+        $retrieved_dependent_objects = [];
+        foreach ($dependent_object_keys as $object_key) {
+            $retrieved_dependent_objects[] = $this->retrieve_entity($object_key, $scope);
         }
-
-        $retrievedEntity = DataObjectHandler::getInstance()->getObject($entity);
-        $persistedObject = new DataPersistenceHandler(
-            $retrievedEntity,
-            $retrievedDependentObjects
-        );
-        $persistedObject->getEntity($index, $storeCode);
-
+        $retrieved_entity = Data_Object_Handler::get_instance()->get_object($entity);
+        $persisted_object = new Data_Persistence_Handler($retrieved_entity, $retrieved_dependent_objects);
+        $persisted_object->get_entity($index, $store_code);
         if ($scope === self::TEST_SCOPE) {
-            $this->testObjects[$key] = $persistedObject;
+            $this->test_objects[$key] = $persisted_object;
         } elseif ($scope === self::HOOK_SCOPE) {
-            $this->hookObjects[$key] = $persistedObject;
+            $this->hook_objects[$key] = $persisted_object;
         } else {
-            $this->suiteObjects[$key] = $persistedObject;
+            $this->suite_objects[$key] = $persisted_object;
         }
     }
-
     /**
      * Retrieves a field from an entity, according to key and scope given.
      * @param string $stepKey
@@ -182,22 +144,20 @@ class PersistedObjectHandler
      * @param string $scope
      * @return string
      */
-    public function retrieveEntityField($stepKey, $field, $scope)
+    public function retrieve_entity_field($step_key, $field, $scope)
     {
-        $fieldValue = $this->retrieveEntity($stepKey, $scope)->getCreatedDataByName($field);
-        if ($fieldValue === null) {
-            $warnMsg = "Undefined field {$field} in entity object with a stepKey of {$stepKey}\n";
-            $warnMsg .= 'Please fix the invalid reference. This will result in fatal error in next major release.';
+        $field_value = $this->retrieve_entity($step_key, $scope)->get_created_data_by_name($field);
+        if ($field_value === null) {
+            $warn_msg = "Undefined field {$field} in entity object with a stepKey of {$step_key}\n";
+            $warn_msg .= 'Please fix the invalid reference. This will result in fatal error in next major release.';
             //TODO: change this to throw an exception in next major release
-            LoggingUtil::getInstance()->getLogger(PersistedObjectHandler::class)->warning($warnMsg);
-            if (MftfApplicationConfig::getConfig()->verboseEnabled()
-                && MftfApplicationConfig::getConfig()->getPhase() !== MftfApplicationConfig::UNIT_TEST_PHASE) {
-                print("\n$warnMsg\n");
+            Logging_Util::get_instance()->get_logger(Persisted_Object_Handler::class)->warning($warn_msg);
+            if (Mftf_Application_Config::get_config()->verbose_enabled() && Mftf_Application_Config::get_config()->get_phase() !== Mftf_Application_Config::UNIT_TEST_PHASE) {
+                print "\n{$warn_msg}\n";
             }
         }
-        return $fieldValue;
+        return $field_value;
     }
-
     /**
      * Attempts to retrieve Entity from given scope, falling back to outer scopes if not found.
      * @param string $stepKey
@@ -205,68 +165,61 @@ class PersistedObjectHandler
      * @return DataPersistenceHandler
      * @throws TestReferenceException
      */
-    private function retrieveEntity($stepKey, $scope)
+    private function retrieve_entity($step_key, $scope)
     {
         // Assume TEST_SCOPE is default
-        $entityArrays = [$this->testObjects, $this->hookObjects, $this->suiteObjects];
-
+        $entity_arrays = [$this->test_objects, $this->hook_objects, $this->suite_objects];
         if ($scope === self::HOOK_SCOPE) {
-            $entityArrays[0] = $this->hookObjects;
-            $entityArrays[1] = $this->testObjects;
+            $entity_arrays[0] = $this->hook_objects;
+            $entity_arrays[1] = $this->test_objects;
         }
-
-        foreach ($entityArrays as $entityArray) {
-            if (array_key_exists($stepKey, $entityArray)) {
-                return $entityArray[$stepKey];
+        foreach ($entity_arrays as $entity_array) {
+            if (array_key_exists($step_key, $entity_array)) {
+                return $entity_array[$step_key];
             }
         }
-
-        throw new TestReferenceException("Entity with a CreateDataKey of {$stepKey} could not be found");
+        throw new Test_Reference_Exception("Entity with a CreateDataKey of {$step_key} could not be found");
     }
-
     /**
      * Clears store of all test persisted Objects
      */
-    public function clearTestObjects(): void
+    public function clear_test_objects(): void
     {
-        $this->testObjects = [];
+        $this->test_objects = [];
     }
-
     /**
      * Clears store of all hook persisted Objects
      */
-    public function clearHookObjects(): void
+    public function clear_hook_objects(): void
     {
-        $this->hookObjects = [];
+        $this->hook_objects = [];
     }
-
     /**
      * Clears store of all suite persisted Objects
      */
-    public function clearSuiteObjects(): void
+    public function clear_suite_objects(): void
     {
-        $this->suiteObjects = [];
+        $this->suite_objects = [];
     }
-
     /**
      * Resolve secret values in $overrideFields
      */
-    private function resolveOverrideFields(array $overrideFields): array
+    private function resolve_override_fields(array $override_fields): array
     {
-        foreach ($overrideFields as $index => $field) {
+        foreach ($override_fields as $index => $field) {
             if (is_array($field)) {
-                $overrideFields[$index] = $this->resolveOverrideFields($field);
+                $override_fields[$index] = $this->resolve_override_fields($field);
             } elseif (is_string($field)) {
                 try {
-                    $decrptedField = CredentialStore::getInstance()->decryptAllSecretsInString($field);
-                    if ($decrptedField !== false) {
-                        $overrideFields[$index] = $decrptedField;
+                    $decrpted_field = Credential_Store::get_instance()->decrypt_all_secrets_in_string($field);
+                    if ($decrpted_field !== false) {
+                        $override_fields[$index] = $decrpted_field;
                     }
-                } catch (TestFrameworkException) {
+                } catch (Test_Framework_Exception) {
                     //catch exception if Credentials are not defined
                 }
             }
         }
-        return $overrideFields;
+        return $override_fields;
     }
 }

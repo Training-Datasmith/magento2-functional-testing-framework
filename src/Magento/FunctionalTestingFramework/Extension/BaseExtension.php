@@ -1,40 +1,33 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\Extension;
+namespace Magento\Functional_Testing_Framework\Extension;
 
 use Codeception\Events;
-use Codeception\Exception\ModuleRequireException;
+use Codeception\Exception\Module_Require_Exception;
 use Codeception\Extension;
-use Codeception\Module\WebDriver;
-
+use Codeception\Module\Web_Driver;
 /**
  * Class BaseExtension
  */
-class BaseExtension extends Extension
+class Base_Extension extends Extension
 {
     /**
      * Codeception Events Mapping to methods
      *
      * @var array
      */
-    public static $events = [
-        Events::TEST_BEFORE => 'beforeTest',
-        Events::STEP_BEFORE => 'beforeStep',
-    ];
-
+    public static $events = [Events::TEST_BEFORE => 'beforeTest', Events::STEP_BEFORE => 'beforeStep'];
     /**
      * The current URI of the active page
      *
      * @var string
      */
     private $uri;
-
     /**
      * Codeception event listener function - initialize uri before test
      *
@@ -42,11 +35,10 @@ class BaseExtension extends Extension
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function beforeTest(\Codeception\Event\TestEvent $e): void
+    public function before_test(\Codeception\Event\Test_Event $e): void
     {
         $this->uri = null;
     }
-
     /**
      * Codeception event listener function - check for page uri change before step
      *
@@ -54,47 +46,43 @@ class BaseExtension extends Extension
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function beforeStep(\Codeception\Event\StepEvent $e): void
+    public function before_step(\Codeception\Event\Step_Event $e): void
     {
-        $this->pageChanged();
+        $this->page_changed();
     }
-
     /**
      * WebDriver instance for execution
      *
      * @return WebDriver
      * @throws ModuleRequireException
      */
-    public function getDriver()
+    public function get_driver()
     {
-        return $this->getModule($this->config['driver']);
+        return $this->get_module($this->config['driver']);
     }
-
     /**
      * Gets the active page URI from the start of the most recent step
      *
      * @return string
      */
-    public function getUri()
+    public function get_uri()
     {
         return $this->uri;
     }
-
     /**
      * Check if page uri has changed
      *
      * @return boolean
      */
-    protected function pageChanged()
+    protected function page_changed()
     {
         try {
-            if ($this->getDriver() === null) {
+            if ($this->get_driver() === null) {
                 return false;
             }
-            $currentUri = $this->getDriver()->_getCurrentUri();
-
-            if ($this->uri !== $currentUri) {
-                $this->uri = $currentUri;
+            $current_uri = $this->get_driver()->_get_current_uri();
+            if ($this->uri !== $current_uri) {
+                $this->uri = $current_uri;
                 return true;
             }
         } catch (\Exception) {

@@ -1,19 +1,18 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\Helper\Code;
+namespace Magento\Functional_Testing_Framework\Helper\Code;
 
 /**
  * Class ClassReader
  *
  * @internal
  */
-class ClassReader
+class Class_Reader
 {
     /**
      * Read class method signature
@@ -23,31 +22,23 @@ class ClassReader
      * @return array|null
      * @throws \ReflectionException
      */
-    public function getParameters($className, $method)
+    public function get_parameters($class_name, $method)
     {
-        $class = new \ReflectionClass($className);
+        $class = new \ReflectionClass($class_name);
         $result = null;
-        $method = $class->getMethod($method);
+        $method = $class->get_method($method);
         if ($method) {
             $result = [];
             /** @var $parameter \ReflectionParameter */
-            foreach ($method->getParameters() as $parameter) {
+            foreach ($method->get_parameters() as $parameter) {
                 try {
-                    $result[$parameter->getName()] = [
-                        'type' => $parameter->getType() === null ? null : $parameter->getType()->getName(),
-                        'variableName' => $parameter->getName(),
-                        'isOptional' => $parameter->isOptional(),
-                        'optionalValue' => $parameter->isOptional() ?
-                            $parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : null :
-                            null,
-                    ];
-                } catch (\ReflectionException $e) {
-                    $message = $e->getMessage();
-                    throw new \ReflectionException($message, 0, $e);
+                    $result[$parameter->get_name()] = ['type' => $parameter->get_type() === null ? null : $parameter->get_type()->get_name(), 'variableName' => $parameter->get_name(), 'isOptional' => $parameter->is_optional(), 'optionalValue' => $parameter->is_optional() ? $parameter->is_default_value_available() ? $parameter->get_default_value() : null : null];
+                } catch (\Reflection_Exception $e) {
+                    $message = $e->get_message();
+                    throw new \Reflection_Exception($message, 0, $e);
                 }
             }
         }
-
         return $result;
     }
 }

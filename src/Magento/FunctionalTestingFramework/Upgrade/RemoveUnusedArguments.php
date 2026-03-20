@@ -1,63 +1,60 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Upgrade;
 
-namespace Magento\FunctionalTestingFramework\Upgrade;
-
-use DOMElement;
-use Magento\FunctionalTestingFramework\StaticCheck\ActionGroupStandardsCheck;
-use Magento\FunctionalTestingFramework\Util\Script\ScriptUtil;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Dom_Element;
+use Magento\Functional_Testing_Framework\Static_Check\Action_Group_Standards_Check;
+use Magento\Functional_Testing_Framework\Util\Script\Script_Util;
+use Symfony\Component\Console\Input\Input_Interface;
+use Symfony\Component\Console\Output\Output_Interface;
 use Symfony\Component\Filesystem\Filesystem;
-
 /**
  * Class RenameMetadataFiles
  * @package Magento\FunctionalTestingFramework\Upgrade
  */
-class RemoveUnusedArguments implements UpgradeInterface
+class Remove_Unused_Arguments implements Upgrade_Interface
 {
-    public const ARGUMENTS_BLOCK_REGEX_PATTERN = "/\s*<arguments.*\/arguments>/s";
-
+    public const ARGUMENTS_BLOCK_REGEX_PATTERN = "/\\s*<arguments.*\\/arguments>/s";
     /**
      * Updates all actionGroup xml files
      */
-    public function execute(InputInterface $input, OutputInterface $output): string
+    public function execute(Input_Interface $input, Output_Interface $output): string
     {
-        $scriptUtil = new ScriptUtil();
-        $testPaths[] = $input->getArgument('path');
-        if (empty($testPaths[0])) {
-            $testPaths = $scriptUtil->getAllModulePaths();
+        $script_util = new Script_Util();
+        $test_paths[] = $input->get_argument('path');
+        if (empty($test_paths[0])) {
+            $test_paths = $script_util->get_all_module_paths();
         }
-        $xmlFiles = $scriptUtil->getModuleXmlFilesByScope($testPaths, 'ActionGroup');
-        $actionGroupsUpdated = 0;
-        $fileSystem = new Filesystem();
-        foreach ($xmlFiles as $file) {
-            $contents = $file->getContents();
-            $argumentsCheck = new ActionGroupStandardsCheck();
+        $xml_files = $script_util->get_module_xml_files_by_scope($test_paths, 'ActionGroup');
+        $action_groups_updated = 0;
+        $file_system = new Filesystem();
+        foreach ($xml_files as $file) {
+            $contents = $file->get_contents();
+            $arguments_check = new Action_Group_Standards_Check();
             /** @var DOMElement $actionGroup */
-            $actionGroup = $argumentsCheck->getActionGroupDomElement($contents);
-            $allArguments = $argumentsCheck->extractActionGroupArguments($actionGroup);
-            $unusedArguments = $argumentsCheck->findUnusedArguments($allArguments, $contents);
-            if (empty($unusedArguments)) {
+            $action_group = $arguments_check->get_action_group_dom_element($contents);
+            $all_arguments = $arguments_check->extract_action_group_arguments($action_group);
+            $unused_arguments = $arguments_check->find_unused_arguments($all_arguments, $contents);
+            if (empty($unused_arguments)) {
                 continue;
             }
             //Remove <arguments> block if all arguments are unused
-            if (empty(array_diff($allArguments, $unusedArguments))) {
+            if (empty(array_diff($all_arguments, $unused_arguments))) {
                 $contents = preg_replace(self::ARGUMENTS_BLOCK_REGEX_PATTERN, '', $contents);
             } else {
-                foreach ($unusedArguments as $argument) {
-                    $argumentRegexPattern = "/\s*<argument.*name\s*=\s*\"".$argument."\".*\/>/";
-                    $contents = preg_replace($argumentRegexPattern, '', $contents);
+                foreach ($unused_arguments as $argument) {
+                    $argument_regex_pattern = "/\\s*<argument.*name\\s*=\\s*\"" . $argument . "\".*\\/>/";
+                    $contents = preg_replace($argument_regex_pattern, '', $contents);
                 }
             }
-            $fileSystem->dumpFile($file->getRealPath(), $contents);
-            $actionGroupsUpdated++;
+            $file_system->dump_file($file->get_real_path(), $contents);
+            $action_groups_updated++;
         }
-        return "Removed unused action group arguments from {$actionGroupsUpdated} file(s).";
+        return "Removed unused action group arguments from {$action_groups_updated} file(s).";
     }
 }

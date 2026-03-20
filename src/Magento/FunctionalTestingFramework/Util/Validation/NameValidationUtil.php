@@ -1,21 +1,18 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Util\Validation;
 
-namespace Magento\FunctionalTestingFramework\Util\Validation;
-
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Exceptions\XmlException;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
-
-class NameValidationUtil
+use Magento\Functional_Testing_Framework\Exceptions\Test_Framework_Exception;
+use Magento\Functional_Testing_Framework\Exceptions\Xml_Exception;
+use Magento\Functional_Testing_Framework\Util\Logger\Logging_Util;
+class Name_Validation_Util
 {
     public const PHP_CLASS_REGEX_PATTERN = '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/';
-
     public const DATA_ENTITY_NAME = 'data entity name';
     public const DATA_ENTITY_KEY = 'data entity key';
     public const METADATA_OPERATION_NAME = 'metadata operation name';
@@ -24,12 +21,10 @@ class NameValidationUtil
     public const SECTION_ELEMENT_NAME = 'section element name';
     public const ACTION_GROUP_NAME = 'action group name';
     public const TEST_NAME = 'test name';
-
     /**
      * The number of violations this instance has detected.
      */
     private int $count;
-
     /**
      * NameValidationUtil constructor.
      *
@@ -38,7 +33,6 @@ class NameValidationUtil
     {
         $this->count = 0;
     }
-
     /**
      * Function which runs a validation against the blocklisted char defined in this class. Validation occurs to insure
      * allure report does not error/future devOps builds do not error against illegal char.
@@ -47,36 +41,30 @@ class NameValidationUtil
      * @param string $type
      * @throws XmlException
      */
-    public static function validateName($name, $type): void
+    public static function validate_name($name, $type): void
     {
-        $startingPos = 0;
-        $illegalCharArray = [];
-        $nameToEvaluate = $name;
-
-        while ($startingPos < strlen($nameToEvaluate)) {
-            $startingPos++;
-            $partialName = substr($nameToEvaluate, 0, $startingPos);
-            $valid = boolval(preg_match(self::PHP_CLASS_REGEX_PATTERN, $partialName));
-
+        $starting_pos = 0;
+        $illegal_char_array = [];
+        $name_to_evaluate = $name;
+        while ($starting_pos < strlen($name_to_evaluate)) {
+            $starting_pos++;
+            $partial_name = substr($name_to_evaluate, 0, $starting_pos);
+            $valid = boolval(preg_match(self::PHP_CLASS_REGEX_PATTERN, $partial_name));
             if (!$valid) {
-                $illegalChar = str_split($partialName)[$startingPos - 1];
-                $illegalCharArray[] = $illegalChar;
-                $nameToEvaluate = str_replace($illegalChar, '', $nameToEvaluate);
-                $startingPos--;
+                $illegal_char = str_split($partial_name)[$starting_pos - 1];
+                $illegal_char_array[] = $illegal_char;
+                $name_to_evaluate = str_replace($illegal_char, '', $name_to_evaluate);
+                $starting_pos--;
             }
         }
-
-        if (!empty($illegalCharArray)) {
-            $errorMessage = "{$type} name \"{$name}\" contains illegal characters, please fix and re-run.";
-
-            foreach ($illegalCharArray as $diffChar) {
-                $errorMessage .= "\nTest names cannot contain '{$diffChar}'";
+        if (!empty($illegal_char_array)) {
+            $error_message = "{$type} name \"{$name}\" contains illegal characters, please fix and re-run.";
+            foreach ($illegal_char_array as $diff_char) {
+                $error_message .= "\nTest names cannot contain '{$diff_char}'";
             }
-
-            throw new XmlException($errorMessage);
+            throw new Xml_Exception($error_message);
         }
     }
-
     /**
      * Validates that the string is PascalCase.
      *
@@ -85,25 +73,17 @@ class NameValidationUtil
      * @param string $filename
      * @throws TestFrameworkException
      */
-    public function validatePascalCase($str, $type, $filename = null): void
+    public function validate_pascal_case($str, $type, $filename = null): void
     {
         if (!is_string($str) || !ctype_upper($str[0])) {
             $message = "The {$type} {$str} should be PascalCase with an uppercase first letter.";
-
             if ($filename !== null) {
                 $message .= " See file {$filename}.";
             }
-
-            LoggingUtil::getInstance()->getLogger(self::class)->notification(
-                $message,
-                [],
-                false
-            );
-
+            Logging_Util::get_instance()->get_logger(self::class)->notification($message, [], false);
             $this->count++;
         }
     }
-
     /**
      * Validates that the string is camelCase.
      *
@@ -112,25 +92,17 @@ class NameValidationUtil
      * @param string $filename
      * @throws TestFrameworkException
      */
-    public function validateCamelCase($str, $type, $filename = null): void
+    public function validate_camel_case($str, $type, $filename = null): void
     {
         if (!is_string($str) || !ctype_lower($str[0])) {
             $message = "The {$type} {$str} should be camelCase with a lowercase first letter.";
-
             if ($filename !== null) {
                 $message .= " See file {$filename}.";
             }
-
-            LoggingUtil::getInstance()->getLogger(self::class)->notification(
-                $message,
-                [],
-                false
-            );
-
+            Logging_Util::get_instance()->get_logger(self::class)->notification($message, [], false);
             $this->count++;
         }
     }
-
     /**
      * Validates that the string is of the pattern {Admin or Storefront}{Description}{Type}.
      *
@@ -139,29 +111,20 @@ class NameValidationUtil
      * @param string $filename
      * @throws TestFrameworkException
      */
-    public function validateAffixes($str, $type, $filename = null): void
+    public function validate_affixes($str, $type, $filename = null): void
     {
-        $isPrefixAdmin = str_starts_with($str, 'Admin');
-        $isPrefixStorefront = str_starts_with($str, 'Storefront');
-        $isSuffixType = str_ends_with($str, $type);
-
-        if ((!$isPrefixAdmin && !$isPrefixStorefront) || !$isSuffixType) {
+        $is_prefix_admin = str_starts_with($str, 'Admin');
+        $is_prefix_storefront = str_starts_with($str, 'Storefront');
+        $is_suffix_type = str_ends_with($str, $type);
+        if (!$is_prefix_admin && !$is_prefix_storefront || !$is_suffix_type) {
             $message = "The {$type} name {$str} should follow the pattern {Admin or Storefront}{Description}{$type}.";
-
             if ($filename !== null) {
                 $message .= " See file {$filename}.";
             }
-
-            LoggingUtil::getInstance()->getLogger(self::class)->notification(
-                $message,
-                [],
-                false
-            );
-
+            Logging_Util::get_instance()->get_logger(self::class)->notification($message, [], false);
             $this->count++;
         }
     }
-
     /**
      * Outputs the number of validations detected by this instance.
      *
@@ -171,11 +134,7 @@ class NameValidationUtil
     public function summarize($type): void
     {
         if ($this->count > 0) {
-            LoggingUtil::getInstance()->getLogger(self::class)->notification(
-                "{$this->count} {$type} violations detected. See mftf.log for details.",
-                [],
-                true
-            );
+            Logging_Util::get_instance()->get_logger(self::class)->notification("{$this->count} {$type} violations detected. See mftf.log for details.", [], true);
         }
     }
 }

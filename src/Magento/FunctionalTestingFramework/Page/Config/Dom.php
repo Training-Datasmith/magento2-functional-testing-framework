@@ -1,42 +1,36 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Page\Config;
 
-namespace Magento\FunctionalTestingFramework\Page\Config;
-
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
-use Magento\FunctionalTestingFramework\Util\ModulePathExtractor;
-use Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUtil;
-use Magento\FunctionalTestingFramework\Util\Validation\SingleNodePerFileValidationUtil;
-
+use Magento\Functional_Testing_Framework\Config\Mftf_Application_Config;
+use Magento\Functional_Testing_Framework\Exceptions\Collector\Exception_Collector;
+use Magento\Functional_Testing_Framework\Util\Module_Path_Extractor;
+use Magento\Functional_Testing_Framework\Util\Validation\Duplicate_Node_Validation_Util;
+use Magento\Functional_Testing_Framework\Util\Validation\Single_Node_Per_File_Validation_Util;
 /**
  * MFTF page.xml configuration XML DOM utility
  * @package Magento\FunctionalTestingFramework\Page\Config
  */
-class Dom extends \Magento\FunctionalTestingFramework\Config\MftfDom
+class Dom extends \Magento\Functional_Testing_Framework\Config\Mftf_Dom
 {
     public const PAGE_META_FILENAME_ATTRIBUTE = 'filename';
     public const PAGE_META_NAME_ATTRIBUTE = 'name';
-
     /**
      * Module Path extractor
      */
-    private readonly \Magento\FunctionalTestingFramework\Util\ModulePathExtractor $modulePathExtractor;
-
+    private readonly \Magento\Functional_Testing_Framework\Util\Module_Path_Extractor $module_path_extractor;
     /**
      * NodeValidationUtil
      */
-    private readonly \Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUtil $validationUtil;
-
+    private readonly \Magento\Functional_Testing_Framework\Util\Validation\Duplicate_Node_Validation_Util $validation_util;
     /** SingleNodePerFileValidationUtil
      */
-    private readonly \Magento\FunctionalTestingFramework\Util\Validation\SingleNodePerFileValidationUtil $singleNodePerFileValidationUtil;
-
+    private readonly \Magento\Functional_Testing_Framework\Util\Validation\Single_Node_Per_File_Validation_Util $single_node_per_file_validation_util;
     /**
      * Page Dom constructor.
      * @param string             $xml
@@ -46,29 +40,13 @@ class Dom extends \Magento\FunctionalTestingFramework\Config\MftfDom
      * @param string             $schemaFile
      * @param string             $errorFormat
      */
-    public function __construct(
-        $xml,
-        $filename,
-        $exceptionCollector,
-        array $idAttributes = [],
-        $typeAttributeName = null,
-        $schemaFile = null,
-        $errorFormat = self::ERROR_FORMAT_DEFAULT
-    ) {
-        $this->modulePathExtractor = new ModulePathExtractor();
-        $this->validationUtil = new DuplicateNodeValidationUtil('name', $exceptionCollector);
-        $this->singleNodePerFileValidationUtil = new SingleNodePerFileValidationUtil($exceptionCollector);
-        parent::__construct(
-            $xml,
-            $filename,
-            $exceptionCollector,
-            $idAttributes,
-            $typeAttributeName,
-            $schemaFile,
-            $errorFormat
-        );
+    public function __construct($xml, $filename, $exception_collector, array $id_attributes = [], $type_attribute_name = null, $schema_file = null, $error_format = self::ERROR_FORMAT_DEFAULT)
+    {
+        $this->module_path_extractor = new Module_Path_Extractor();
+        $this->validation_util = new Duplicate_Node_Validation_Util('name', $exception_collector);
+        $this->single_node_per_file_validation_util = new Single_Node_Per_File_Validation_Util($exception_collector);
+        parent::__construct($xml, $filename, $exception_collector, $id_attributes, $type_attribute_name, $schema_file, $error_format);
     }
-
     /**
      * Takes a dom element from xml and appends the filename based on location
      *
@@ -76,48 +54,29 @@ class Dom extends \Magento\FunctionalTestingFramework\Config\MftfDom
      * @param string|null $filename
      * @return \DOMDocument
      */
-    public function initDom($xml, $filename = null)
+    public function init_dom($xml, $filename = null)
     {
-        $dom = parent::initDom($xml, $filename);
-
-        if ($dom->getElementsByTagName('pages')->length > 0) {
+        $dom = parent::init_dom($xml, $filename);
+        if ($dom->get_elements_by_tag_name('pages')->length > 0) {
             /** @var \DOMElement $pagesNode */
-            $pagesNode = $dom->getElementsByTagName('pages')[0];
-            $this->validationUtil->validateChildUniqueness(
-                $pagesNode,
-                $filename,
-                $pagesNode->getAttribute(self::PAGE_META_NAME_ATTRIBUTE)
-            );
-
+            $pages_node = $dom->get_elements_by_tag_name('pages')[0];
+            $this->validation_util->validate_child_uniqueness($pages_node, $filename, $pages_node->get_attribute(self::PAGE_META_NAME_ATTRIBUTE));
             // Validate single page node per file
-            $this->singleNodePerFileValidationUtil->validateSingleNodeForTag(
-                $dom,
-                'page',
-                $filename
-            );
-
-            if ($dom->getElementsByTagName('page')->length > 0) {
+            $this->single_node_per_file_validation_util->validate_single_node_for_tag($dom, 'page', $filename);
+            if ($dom->get_elements_by_tag_name('page')->length > 0) {
                 /** @var \DOMElement $pageNode */
-                $pageNode = $dom->getElementsByTagName('page')[0];
-                $currentModule =
-                    $this->modulePathExtractor->getExtensionPath($filename)
-                    . '_'
-                    . $this->modulePathExtractor->extractModuleName($filename);
-                $pageModule = $pageNode->getAttribute('module');
-                $pageName = $pageNode->getAttribute('name');
-                if ($pageModule !== $currentModule) {
-                    if (MftfApplicationConfig::getConfig()->verboseEnabled()) {
-                        print(
-                            'Page Module does not match path Module. ' .
-                            "(Page, Module): ($pageName, $pageModule) - Path Module: $currentModule" .
-                            PHP_EOL
-                        );
+                $page_node = $dom->get_elements_by_tag_name('page')[0];
+                $current_module = $this->module_path_extractor->get_extension_path($filename) . '_' . $this->module_path_extractor->extract_module_name($filename);
+                $page_module = $page_node->get_attribute('module');
+                $page_name = $page_node->get_attribute('name');
+                if ($page_module !== $current_module) {
+                    if (Mftf_Application_Config::get_config()->verbose_enabled()) {
+                        print 'Page Module does not match path Module. ' . "(Page, Module): ({$page_name}, {$page_module}) - Path Module: {$current_module}" . PHP_EOL;
                     }
                 }
-                $pageNode->setAttribute(self::PAGE_META_FILENAME_ATTRIBUTE, $filename);
+                $page_node->set_attribute(self::PAGE_META_FILENAME_ATTRIBUTE, $filename);
             }
         }
-
         return $dom;
     }
 }

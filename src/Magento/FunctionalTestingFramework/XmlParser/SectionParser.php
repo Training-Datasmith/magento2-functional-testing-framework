@@ -1,17 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\XmlParser;
+namespace Magento\Functional_Testing_Framework\Xml_Parser;
 
 /**
  * Generic Xml Parser.
  */
-class SectionParser implements ParserInterface
+class Section_Parser implements Parser_Interface
 {
     /**
      * SectionParser constructor.
@@ -22,22 +21,22 @@ class SectionParser implements ParserInterface
          *
          * @var \Magento\FunctionalTestingFramework\ObjectManager
          */
-        protected \Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager,
+        protected \Magento\Functional_Testing_Framework\Object_Manager_Interface $object_manager,
         /**
          * Configuration data.
          */
-        protected \Magento\FunctionalTestingFramework\Config\DataInterface $configData
-    ) {
+        protected \Magento\Functional_Testing_Framework\Config\Data_Interface $config_data
+    )
+    {
     }
-
     /**
      * Get parsed xml data.
      *
      * @param string $type
      * @return array
      */
-    public function getData($type)
+    public function get_data($type)
     {
-        return $this->configData->get($type);
+        return $this->config_data->get($type);
     }
 }

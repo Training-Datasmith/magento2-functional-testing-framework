@@ -1,17 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework;
+namespace Magento\Functional_Testing_Framework;
 
 /**
  * Interface ObjectManagerInterface
  */
-interface ObjectManagerInterface
+interface Object_Manager_Interface
 {
     /**
      * Create new object instance
@@ -20,7 +19,6 @@ interface ObjectManagerInterface
      * @return object
      */
     public function create($type, array $arguments = []);
-
     /**
      * Retrieve cached object instance
      *
@@ -28,7 +26,6 @@ interface ObjectManagerInterface
      * @return object
      */
     public function get($type);
-
     /**
      * Configure object manager
      *

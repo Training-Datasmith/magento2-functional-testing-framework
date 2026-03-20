@@ -1,84 +1,74 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Suite;
 
-namespace Magento\FunctionalTestingFramework\Suite;
-
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
-use Magento\FunctionalTestingFramework\Exceptions\FastFailException;
-use Magento\FunctionalTestingFramework\Exceptions\TestReferenceException;
-use Magento\FunctionalTestingFramework\Exceptions\XmlException;
-use Magento\FunctionalTestingFramework\Suite\Generators\GroupClassGenerator;
-use Magento\FunctionalTestingFramework\Suite\Handlers\SuiteObjectHandler;
-use Magento\FunctionalTestingFramework\Suite\Objects\SuiteObject;
-use Magento\FunctionalTestingFramework\Suite\Service\SuiteGeneratorService;
-use Magento\FunctionalTestingFramework\Test\Handlers\TestObjectHandler;
-use Magento\FunctionalTestingFramework\Util\Filesystem\DirSetupUtil;
-use Magento\FunctionalTestingFramework\Util\GenerationErrorHandler;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
-use Magento\FunctionalTestingFramework\Util\Manifest\BaseTestManifest;
-use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
-use Magento\FunctionalTestingFramework\Util\TestGenerator;
-
+use Magento\Functional_Testing_Framework\Config\Mftf_Application_Config;
+use Magento\Functional_Testing_Framework\Exceptions\Collector\Exception_Collector;
+use Magento\Functional_Testing_Framework\Exceptions\Fast_Fail_Exception;
+use Magento\Functional_Testing_Framework\Exceptions\Test_Reference_Exception;
+use Magento\Functional_Testing_Framework\Exceptions\Xml_Exception;
+use Magento\Functional_Testing_Framework\Suite\Generators\Group_Class_Generator;
+use Magento\Functional_Testing_Framework\Suite\Handlers\Suite_Object_Handler;
+use Magento\Functional_Testing_Framework\Suite\Objects\Suite_Object;
+use Magento\Functional_Testing_Framework\Suite\Service\Suite_Generator_Service;
+use Magento\Functional_Testing_Framework\Test\Handlers\Test_Object_Handler;
+use Magento\Functional_Testing_Framework\Util\Filesystem\Dir_Setup_Util;
+use Magento\Functional_Testing_Framework\Util\Generation_Error_Handler;
+use Magento\Functional_Testing_Framework\Util\Logger\Logging_Util;
+use Magento\Functional_Testing_Framework\Util\Manifest\Base_Test_Manifest;
+use Magento\Functional_Testing_Framework\Util\Path\File_Path_Formatter;
+use Magento\Functional_Testing_Framework\Util\Test_Generator;
 /**
  * Class SuiteGenerator
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SuiteGenerator
+class Suite_Generator
 {
     public const YAML_CODECEPTION_DIST_FILENAME = 'codeception.dist.yml';
     public const YAML_CODECEPTION_CONFIG_FILENAME = 'codeception.yml';
     public const YAML_GROUPS_TAG = 'groups';
     public const YAML_EXTENSIONS_TAG = 'extensions';
     public const YAML_ENABLED_TAG = 'enabled';
-    public const YAML_COPYRIGHT_TEXT =
-        "# Copyright © Magento, Inc. All rights reserved.\n# See COPYING.txt for license details.\n";
-
+    public const YAML_COPYRIGHT_TEXT = "# Copyright © Magento, Inc. All rights reserved.\n# See COPYING.txt for license details.\n";
     /**
      * Singelton Variable Instance.
      */
-    private static ?\Magento\FunctionalTestingFramework\Suite\SuiteGenerator $instance = null;
-
+    private static ?\Magento\Functional_Testing_Framework\Suite\Suite_Generator $instance = null;
     /**
      * Group Class Generator initialized in constructor.
      */
-    private readonly \Magento\FunctionalTestingFramework\Suite\Generators\GroupClassGenerator $groupClassGenerator;
-
+    private readonly \Magento\Functional_Testing_Framework\Suite\Generators\Group_Class_Generator $group_class_generator;
     /**
      * Avoids instantiation of LoggingUtil by new.
      */
     private function __construct()
     {
-        $this->groupClassGenerator = new GroupClassGenerator();
+        $this->group_class_generator = new Group_Class_Generator();
     }
-
     /**
      * Avoids instantiation of SuiteGenerator by clone.
      */
     private function __clone()
     {
     }
-
     /**
      * Singleton method which is used to retrieve the instance of the suite generator.
      */
-    public static function getInstance(): SuiteGenerator
+    public static function get_instance(): Suite_Generator
     {
         if (!self::$instance) {
             // clear any previous configurations before any generation occurs.
-            self::clearPreviousGroupPreconditions();
-            self::clearPreviousSessionConfigEntries();
-            self::$instance = new SuiteGenerator();
+            self::clear_previous_group_preconditions();
+            self::clear_previous_session_config_entries();
+            self::$instance = new Suite_Generator();
         }
-
         return self::$instance;
     }
-
     /**
      * Function which takes all suite configurations and generates to appropriate directory, updating yml configuration
      * as needed. Returns an array of all tests generated keyed by test name.
@@ -86,38 +76,30 @@ class SuiteGenerator
      * @param BaseTestManifest $testManifest
      * @throws FastFailException
      */
-    public function generateAllSuites($testManifest): void
+    public function generate_all_suites($test_manifest): void
     {
-        $suites = $testManifest->getSuiteConfig();
-
-        foreach ($suites as $suiteName => $suiteContent) {
+        $suites = $test_manifest->get_suite_config();
+        foreach ($suites as $suite_name => $suite_content) {
             try {
-                if (empty($suiteContent)) {
-                    LoggingUtil::getInstance()->getLogger(self::class)->notification(
-                        "Suite '" . $suiteName . "' contains no tests and won't be generated.",
-                        [],
-                        true
-                    );
+                if (empty($suite_content)) {
+                    Logging_Util::get_instance()->get_logger(self::class)->notification("Suite '" . $suite_name . "' contains no tests and won't be generated.", [], true);
                     continue;
                 }
-                $firstElement = array_values($suiteContent)[0];
-
+                $first_element = array_values($suite_content)[0];
                 // if the first element is a string we know that we simply have an array of tests
-                if (is_string($firstElement)) {
-                    $this->generateSuiteFromTest($suiteName, $suiteContent);
+                if (is_string($first_element)) {
+                    $this->generate_suite_from_test($suite_name, $suite_content);
                 }
-
                 // if our first element is an array we know that we have split the suites
-                if (is_array($firstElement)) {
-                    $this->generateSplitSuiteFromTest($suiteName, $suiteContent);
+                if (is_array($first_element)) {
+                    $this->generate_split_suite_from_test($suite_name, $suite_content);
                 }
-            } catch (FastFailException $e) {
+            } catch (Fast_Fail_Exception $e) {
                 throw $e;
             } catch (\Exception) {
             }
         }
     }
-
     /**
      * Function which takes a suite name and generates corresponding dir, test files, group class, and updates
      * yml configuration for group run.
@@ -125,73 +107,65 @@ class SuiteGenerator
      * @param string $suiteName
      * @throws \Exception
      */
-    public function generateSuite($suiteName): void
+    public function generate_suite($suite_name): void
     {
         /**@var SuiteObject $suite **/
-        $this->generateSuiteFromTest($suiteName, []);
+        $this->generate_suite_from_test($suite_name, []);
     }
-
     /**
      * Function which generate Testgroupmembership file.
      *
      * @param object $testManifest
      * @throws \Exception
      */
-    public function generateTestgroupmembership($testManifest): void
+    public function generate_testgroupmembership($test_manifest): void
     {
-        $suites = $this->getSuitesDetails($testManifest);
-
+        $suites = $this->get_suites_details($test_manifest);
         // Path to groups folder
-        $baseDir = FilePathFormatter::format(TESTS_MODULE_PATH);
-        $path = $baseDir .'_generated/groups';
-
-        $allGroupsContent = $this->readAllGroupFiles($path);
-
+        $base_dir = File_Path_Formatter::format(TESTS_MODULE_PATH);
+        $path = $base_dir . '_generated/groups';
+        $all_groups_content = $this->read_all_group_files($path);
         // Output file path
-        $memberShipFilePath = $baseDir.'_generated/testgroupmembership.txt';
-        $testCaseNumber = 0;
-
-        foreach ($allGroupsContent as $groupId => $groupInfo) {
-            foreach ($groupInfo as $testName) {
+        $member_ship_file_path = $base_dir . '_generated/testgroupmembership.txt';
+        $test_case_number = 0;
+        foreach ($all_groups_content as $group_id => $group_info) {
+            foreach ($group_info as $test_name) {
                 // If file has -g then it is test suite
-                if (str_contains((string) $testName, '-g')) {
-                    $suitename = explode(' ', (string) $testName);
+                if (str_contains((string) $test_name, '-g')) {
+                    $suitename = explode(' ', (string) $test_name);
                     $suitename[1] = trim($suitename[1]);
-
                     if (!empty($suites[$suitename[1]])) {
                         foreach ($suites[$suitename[1]] as $key => $test) {
-                            $suiteTest = sprintf('%s:%s:%s:%s', $groupId, $key, $suitename[1], $test);
-                            file_put_contents($memberShipFilePath, $suiteTest . PHP_EOL, FILE_APPEND);
+                            $suite_test = sprintf('%s:%s:%s:%s', $group_id, $key, $suitename[1], $test);
+                            file_put_contents($member_ship_file_path, $suite_test . PHP_EOL, FILE_APPEND);
                         }
                     }
                 } else {
-                    $defaultSuiteTest = sprintf('%s:%s:%s', $groupId, $testCaseNumber, $testName);
-                    file_put_contents($memberShipFilePath, $defaultSuiteTest, FILE_APPEND);
+                    $default_suite_test = sprintf('%s:%s:%s', $group_id, $test_case_number, $test_name);
+                    file_put_contents($member_ship_file_path, $default_suite_test, FILE_APPEND);
                 }
-                $testCaseNumber++;
+                $test_case_number++;
             }
-            $testCaseNumber = 0;
+            $test_case_number = 0;
         }
     }
-
     /**
      * Function to format suites details
      *
      * @param object $testManifest
      * @return array $suites
      */
-    private function getSuitesDetails($testManifest): array
+    private function get_suites_details($test_manifest): array
     {
         // Get suits and subsuites data array
-        $suites = $testManifest->getSuiteConfig();
-
+        $suites = $test_manifest->get_suite_config();
         // Add subsuites array[2nd dimension] to main array[1st dimension] to access it directly later
         if (!empty($suites)) {
-            foreach ($suites as $subSuites) {
-                if (!empty($subSuites)) {
-                    foreach ($subSuites as $subSuiteName => $suiteTestNames) {
-                        if (!is_numeric($subSuiteName)) {
-                            $suites[$subSuiteName] = $suiteTestNames;
+            foreach ($suites as $sub_suites) {
+                if (!empty($sub_suites)) {
+                    foreach ($sub_suites as $sub_suite_name => $suite_test_names) {
+                        if (!is_numeric($sub_suite_name)) {
+                            $suites[$sub_suite_name] = $suite_test_names;
                         } else {
                             continue;
                         }
@@ -201,35 +175,32 @@ class SuiteGenerator
         }
         return $suites;
     }
-
     /**
      * Function to read all group* text files inside /groups folder
      *
      * @param object $path
      * @return array $allGroupsContent
      */
-    private function readAllGroupFiles(string $path): array
+    private function read_all_group_files(string $path): array
     {
         // Read all group files
         if (is_dir($path)) {
-            $groupFiles = glob("$path/group*.txt");
-            if ($groupFiles === false) {
-                throw new RuntimeException("glob(): error with '$path'");
+            $group_files = glob("{$path}/group*.txt");
+            if ($group_files === false) {
+                throw new RuntimeException("glob(): error with '{$path}'");
             }
-            sort($groupFiles, SORT_NATURAL);
+            sort($group_files, SORT_NATURAL);
         }
-
         // Read each file in the reverse order and form an array with groupId as key
-        $groupNumber = 0;
-        $allGroupsContent = [];
-        while (!empty($groupFiles)) {
-            $group = array_pop($groupFiles);
-            $allGroupsContent[$groupNumber] = file($group);
-            $groupNumber++;
+        $group_number = 0;
+        $all_groups_content = [];
+        while (!empty($group_files)) {
+            $group = array_pop($group_files);
+            $all_groups_content[$group_number] = file($group);
+            $group_number++;
         }
-        return $allGroupsContent;
+        return $all_groups_content;
     }
-
     /**
      * Function which takes a suite name and a set of test names. The function then generates all relevant supporting
      * files and classes for the suite. The function takes an optional argument for suites which are split by a parallel
@@ -241,80 +212,62 @@ class SuiteGenerator
      *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    private function generateSuiteFromTest(string $suiteName, $tests = [], $originalSuiteName = null): void
+    private function generate_suite_from_test(string $suite_name, $tests = [], $original_suite_name = null): void
     {
-        $relativePath = TestGenerator::GENERATED_DIR . DIRECTORY_SEPARATOR . $suiteName;
-        $fullPath = FilePathFormatter::format(TESTS_MODULE_PATH) . $relativePath . DIRECTORY_SEPARATOR;
-
-        DirSetupUtil::createGroupDir($fullPath);
-        $exceptionCollector = new ExceptionCollector();
+        $relative_path = Test_Generator::GENERATED_DIR . DIRECTORY_SEPARATOR . $suite_name;
+        $full_path = File_Path_Formatter::format(TESTS_MODULE_PATH) . $relative_path . DIRECTORY_SEPARATOR;
+        Dir_Setup_Util::create_group_dir($full_path);
+        $exception_collector = new Exception_Collector();
         try {
-            $relevantTests = [];
+            $relevant_tests = [];
             if (!empty($tests)) {
-                $this->validateTestsReferencedInSuite($suiteName, $tests, $originalSuiteName);
-                foreach ($tests as $testName) {
+                $this->validate_tests_referenced_in_suite($suite_name, $tests, $original_suite_name);
+                foreach ($tests as $test_name) {
                     try {
-                        $relevantTests[$testName] = TestObjectHandler::getInstance()->getObject($testName);
-                    } catch (FastFailException $e) {
+                        $relevant_tests[$test_name] = Test_Object_Handler::get_instance()->get_object($test_name);
+                    } catch (Fast_Fail_Exception $e) {
                         throw $e;
                     } catch (\Exception) {
-                        $exceptionCollector->addError(
-                            self::class,
-                            "Unable to find relevant test \"{$testName}\" for suite \"{$suiteName}\""
-                        );
+                        $exception_collector->add_error(self::class, "Unable to find relevant test \"{$test_name}\" for suite \"{$suite_name}\"");
                     }
                 }
             } else {
-                $relevantTests = SuiteObjectHandler::getInstance()->getObject($suiteName)->getTests();
+                $relevant_tests = Suite_Object_Handler::get_instance()->get_object($suite_name)->get_tests();
             }
-
-            if (empty($relevantTests)) {
-                $exceptionCollector->reset();
+            if (empty($relevant_tests)) {
+                $exception_collector->reset();
                 // There are suites that include no test on purpose for certain Magento edition.
                 // To keep backward compatibility, we will return with no error.
                 // This might inevitably hide some suite errors that are resulted by real broken tests.
-                if (file_exists($fullPath)) {
-                    DirSetupUtil::rmdirRecursive($fullPath);
+                if (file_exists($full_path)) {
+                    Dir_Setup_Util::rmdir_recursive($full_path);
                 }
                 return;
             }
-
             try {
-                $this->generateRelevantGroupTests($suiteName, $relevantTests);
-            } catch (FastFailException $e) {
+                $this->generate_relevant_group_tests($suite_name, $relevant_tests);
+            } catch (Fast_Fail_Exception $e) {
                 throw $e;
             } catch (\Exception $e) {
-                $exceptionCollector->addError(
-                    self::class,
-                    "Failed to generate tests for suite \"{$suiteName}\""
-                );
+                $exception_collector->add_error(self::class, "Failed to generate tests for suite \"{$suite_name}\"");
             }
-
-            $groupNamespace = $this->generateGroupFile($suiteName, $relevantTests, $originalSuiteName);
-
-            $this->appendEntriesToConfig($suiteName, $fullPath, $groupNamespace);
-
-            if (MftfApplicationConfig::getConfig()->verboseEnabled()
-                && MftfApplicationConfig::getConfig()->getPhase() === MftfApplicationConfig::GENERATION_PHASE) {
-                print("suite {$suiteName} generated\n");
+            $group_namespace = $this->generate_group_file($suite_name, $relevant_tests, $original_suite_name);
+            $this->append_entries_to_config($suite_name, $full_path, $group_namespace);
+            if (Mftf_Application_Config::get_config()->verbose_enabled() && Mftf_Application_Config::get_config()->get_phase() === Mftf_Application_Config::GENERATION_PHASE) {
+                print "suite {$suite_name} generated\n";
             }
-            LoggingUtil::getInstance()->getLogger(self::class)->info(
-                'suite generated',
-                ['suite' => $suiteName, 'relative_path' => $relativePath]
-            );
-        } catch (FastFailException $e) {
+            Logging_Util::get_instance()->get_logger(self::class)->info('suite generated', ['suite' => $suite_name, 'relative_path' => $relative_path]);
+        } catch (Fast_Fail_Exception $e) {
             throw $e;
         } catch (\Exception $e) {
-            if (file_exists($fullPath)) {
-                DirSetupUtil::rmdirRecursive($fullPath);
+            if (file_exists($full_path)) {
+                Dir_Setup_Util::rmdir_recursive($full_path);
             }
-            $exceptionCollector->addError(self::class, $e->getMessage());
-            GenerationErrorHandler::getInstance()->addError('suite', $suiteName, self::class . ': ' . $e->getMessage());
+            $exception_collector->add_error(self::class, $e->get_message());
+            Generation_Error_Handler::get_instance()->add_error('suite', $suite_name, self::class . ': ' . $e->get_message());
         }
-
-        $this->throwCollectedExceptions($exceptionCollector);
+        $this->throw_collected_exceptions($exception_collector);
     }
-
     /**
      * Function which validates tests passed in as custom configuration against the configuration defined by the user to
      * prevent possible invalid test configurations from executing.
@@ -324,21 +277,18 @@ class SuiteGenerator
      * @throws TestReferenceException
      * @throws XmlException
      */
-    private function validateTestsReferencedInSuite(string $suiteName, $testsReferenced, $originalSuiteName): void
+    private function validate_tests_referenced_in_suite(string $suite_name, $tests_referenced, $original_suite_name): void
     {
-        $suiteRef = $originalSuiteName ?? $suiteName;
-        $possibleTestRef = SuiteObjectHandler::getInstance()->getObject($suiteRef)->getTests();
-        $errorMsg = 'Cannot reference tests which are not declared as part of suite';
-
-        $invalidTestRef = array_diff($testsReferenced, array_keys($possibleTestRef));
-
-        if (!empty($invalidTestRef)) {
-            $testList = implode('", "', $invalidTestRef);
-            $fullError = $errorMsg . " (Suite: \"{$suiteRef}\" Tests: \"{$testList}\")";
-            throw new TestReferenceException($fullError, ['suite' => $suiteRef, 'test' => $invalidTestRef]);
+        $suite_ref = $original_suite_name ?? $suite_name;
+        $possible_test_ref = Suite_Object_Handler::get_instance()->get_object($suite_ref)->get_tests();
+        $error_msg = 'Cannot reference tests which are not declared as part of suite';
+        $invalid_test_ref = array_diff($tests_referenced, array_keys($possible_test_ref));
+        if (!empty($invalid_test_ref)) {
+            $test_list = implode('", "', $invalid_test_ref);
+            $full_error = $error_msg . " (Suite: \"{$suite_ref}\" Tests: \"{$test_list}\")";
+            throw new Test_Reference_Exception($full_error, ['suite' => $suite_ref, 'test' => $invalid_test_ref]);
         }
     }
-
     /**
      * Function for generating split groups of tests (following a parallel execution). Takes a paralle suite config
      * and generates applicable suites.
@@ -347,12 +297,12 @@ class SuiteGenerator
      * @param array  $suiteContent
      * @throws \Exception
      */
-    private function generateSplitSuiteFromTest($suiteName, $suiteContent): void
+    private function generate_split_suite_from_test($suite_name, $suite_content): void
     {
-        foreach ($suiteContent as $suiteSplitName => $tests) {
+        foreach ($suite_content as $suite_split_name => $tests) {
             try {
-                $this->generateSuiteFromTest($suiteSplitName, $tests, $suiteName);
-            } catch (FastFailException $e) {
+                $this->generate_suite_from_test($suite_split_name, $tests, $suite_name);
+            } catch (Fast_Fail_Exception $e) {
                 throw $e;
             } catch (\Exception) {
                 // There are suites that include tests that reference tests from other Magento editions
@@ -362,7 +312,6 @@ class SuiteGenerator
             }
         }
     }
-
     /**
      * Function which takes a suite name, array of tests, and an original suite name. The function takes these args
      * and generates a group file which captures suite level preconditions.
@@ -374,36 +323,28 @@ class SuiteGenerator
      * @throws XmlException
      * @throws TestReferenceException
      */
-    private function generateGroupFile($suiteName, $tests, $originalSuiteName)
+    private function generate_group_file($suite_name, $tests, $original_suite_name)
     {
         // if there's an original suite name we know that this test came from a split group.
-        if ($originalSuiteName) {
+        if ($original_suite_name) {
             // create the new suite object
             /** @var SuiteObject $originalSuite */
-            $originalSuite = SuiteObjectHandler::getInstance()->getObject($originalSuiteName);
-            $suiteObject = new SuiteObject(
-                $suiteName,
-                $tests,
-                [],
-                $originalSuite->getHooks()
-            );
+            $original_suite = Suite_Object_Handler::get_instance()->get_object($original_suite_name);
+            $suite_object = new Suite_Object($suite_name, $tests, [], $original_suite->get_hooks());
         } else {
-            $suiteObject = SuiteObjectHandler::getInstance()->getObject($suiteName);
+            $suite_object = Suite_Object_Handler::get_instance()->get_object($suite_name);
             // we have to handle the case when there is a custom configuration for an existing suite.
-            if (count($suiteObject->getTests()) !== count($tests)) {
-                return $this->generateGroupFile($suiteName, $tests, $suiteName);
+            if (count($suite_object->get_tests()) !== count($tests)) {
+                return $this->generate_group_file($suite_name, $tests, $suite_name);
             }
         }
-
-        if (!$suiteObject->requiresGroupFile()) {
+        if (!$suite_object->requires_group_file()) {
             // if we do not require a group file we don't need a namespace
             return null;
         }
-
         // if the suite requires a group file, generate it and set the namespace
-        return $this->groupClassGenerator->generateGroupClass($suiteObject);
+        return $this->group_class_generator->generate_group_class($suite_object);
     }
-
     /**
      * Function which accepts a suite name and suite path and appends a new group entry to the codeception.yml.dist
      * file in order to register the set of tests as a new group. Also appends group object location if required
@@ -411,20 +352,18 @@ class SuiteGenerator
      *
      * @param string $groupNamespace
      */
-    private function appendEntriesToConfig(string $suiteName, string $suitePath, ?string $groupNamespace): void
+    private function append_entries_to_config(string $suite_name, string $suite_path, ?string $group_namespace): void
     {
-        SuiteGeneratorService::getInstance()->appendEntriesToConfig($suiteName, $suitePath, $groupNamespace);
+        Suite_Generator_Service::get_instance()->append_entries_to_config($suite_name, $suite_path, $group_namespace);
     }
-
     /**
      * Function which takes the current config.yml array and clears any previous configuration for suite group object
      * files.
      */
-    private static function clearPreviousSessionConfigEntries(): void
+    private static function clear_previous_session_config_entries(): void
     {
-        SuiteGeneratorService::getInstance()->clearPreviousSessionConfigEntries();
+        Suite_Generator_Service::get_instance()->clear_previous_session_config_entries();
     }
-
     /**
      * Function which takes a string which is the desired output directory (under _generated) and an array of tests
      * relevant to the suite to be generated. The function takes this information and creates a new instance of the
@@ -433,38 +372,36 @@ class SuiteGenerator
      *
      * @throws TestReferenceException
      */
-    private function generateRelevantGroupTests(string $path, array $tests): void
+    private function generate_relevant_group_tests(string $path, array $tests): void
     {
-        SuiteGeneratorService::getInstance()->generateRelevantGroupTests($path, $tests);
+        Suite_Generator_Service::get_instance()->generate_relevant_group_tests($path, $tests);
     }
-
     /**
      * Function which on first execution deletes all generate php in the MFTF Group directory
      */
-    private static function clearPreviousGroupPreconditions(): void
+    private static function clear_previous_group_preconditions(): void
     {
-        $groupFilePath = GroupClassGenerator::getGroupDirPath();
-        array_map(unlink(...), glob("$groupFilePath*.php"));
+        $group_file_path = Group_Class_Generator::get_group_dir_path();
+        array_map(unlink(...), glob("{$group_file_path}*.php"));
     }
-
     /**
      * Log error and throw collected exceptions
      *
      * @throws \Exception
      */
-    private function throwCollectedExceptions(\Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector $exceptionCollector): void
+    private function throw_collected_exceptions(\Magento\Functional_Testing_Framework\Exceptions\Collector\Exception_Collector $exception_collector): void
     {
-        if (!empty($exceptionCollector->getErrors())) {
-            foreach ($exceptionCollector->getErrors() as $errorMessage) {
-                if (is_array($errorMessage)) {
-                    foreach (array_unique($errorMessage) as $message) {
-                        LoggingUtil::getInstance()->getLogger(self::class)->error(trim((string) $message));
+        if (!empty($exception_collector->get_errors())) {
+            foreach ($exception_collector->get_errors() as $error_message) {
+                if (is_array($error_message)) {
+                    foreach (array_unique($error_message) as $message) {
+                        Logging_Util::get_instance()->get_logger(self::class)->error(trim((string) $message));
                     }
                 } else {
-                    LoggingUtil::getInstance()->getLogger(self::class)->error(trim((string) $errorMessage));
+                    Logging_Util::get_instance()->get_logger(self::class)->error(trim((string) $error_message));
                 }
             }
-            $exceptionCollector->throwException();
+            $exception_collector->throw_exception();
         }
     }
 }

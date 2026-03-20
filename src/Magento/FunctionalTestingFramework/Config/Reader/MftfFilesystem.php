@@ -1,18 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Config\Reader;
 
-namespace Magento\FunctionalTestingFramework\Config\Reader;
-
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
-use Magento\FunctionalTestingFramework\Util\Iterator\File;
-
-class MftfFilesystem extends \Magento\FunctionalTestingFramework\Config\Reader\Filesystem
+use Magento\Functional_Testing_Framework\Config\Mftf_Application_Config;
+use Magento\Functional_Testing_Framework\Exceptions\Collector\Exception_Collector;
+use Magento\Functional_Testing_Framework\Util\Iterator\File;
+class Mftf_Filesystem extends \Magento\Functional_Testing_Framework\Config\Reader\Filesystem
 {
     /**
      * Method to redirect file name passing into Dom class
@@ -21,48 +19,41 @@ class MftfFilesystem extends \Magento\FunctionalTestingFramework\Config\Reader\F
      * @return array
      * @throws \Exception
      */
-    public function readFiles($fileList)
+    public function read_files($file_list)
     {
-        $exceptionCollector = new ExceptionCollector();
+        $exception_collector = new Exception_Collector();
         /** @var \Magento\FunctionalTestingFramework\Test\Config\Dom $configMerger */
-        $configMerger = null;
-        $debugLevel = MftfApplicationConfig::getConfig()->getDebugLevel();
-        foreach ($fileList as $key => $content) {
+        $config_merger = null;
+        $debug_level = Mftf_Application_Config::get_config()->get_debug_level();
+        foreach ($file_list as $key => $content) {
             //check if file is empty and continue to next if it is
-            if (!parent::verifyFileEmpty($content, $fileList->getFilename())) {
+            if (!parent::verify_file_empty($content, $file_list->get_filename())) {
                 continue;
             }
             try {
-                if (!$configMerger) {
-                    $configMerger = $this->createConfigMerger(
-                        $this->domDocumentClass,
-                        $content,
-                        $fileList->getFilename(),
-                        $exceptionCollector
-                    );
+                if (!$config_merger) {
+                    $config_merger = $this->create_config_merger($this->dom_document_class, $content, $file_list->get_filename(), $exception_collector);
                 } else {
-                    $configMerger->merge($content, $fileList->getFilename(), $exceptionCollector);
+                    $config_merger->merge($content, $file_list->get_filename(), $exception_collector);
                 }
                 // run per file validation with generate:tests -d
-                if (strcasecmp($debugLevel, MftfApplicationConfig::LEVEL_DEVELOPER) === 0) {
-                    $this->validateSchema($configMerger, $fileList->getFilename());
+                if (strcasecmp($debug_level, Mftf_Application_Config::LEVEL_DEVELOPER) === 0) {
+                    $this->validate_schema($config_merger, $file_list->get_filename());
                 }
-            } catch (\Magento\FunctionalTestingFramework\Config\Dom\ValidationException $e) {
-                throw new \Exception('Invalid XML in file ' . $key . ":\n" . $e->getMessage());
+            } catch (\Magento\Functional_Testing_Framework\Config\Dom\Validation_Exception $e) {
+                throw new \Exception('Invalid XML in file ' . $key . ":\n" . $e->get_message());
             }
         }
-        $exceptionCollector->throwException();
-
+        $exception_collector->throw_exception();
         //run validation on merged file with generate:tests
-        if (strcasecmp($debugLevel, MftfApplicationConfig::LEVEL_DEFAULT) === 0) {
-            $this->validateSchema($configMerger);
+        if (strcasecmp($debug_level, Mftf_Application_Config::LEVEL_DEFAULT) === 0) {
+            $this->validate_schema($config_merger);
         }
-        if ($configMerger) {
-            return $this->converter->convert($configMerger->getDom());
+        if ($config_merger) {
+            return $this->converter->convert($config_merger->get_dom());
         }
         return [];
     }
-
     /**
      * Return newly created instance of a config merger
      *
@@ -73,20 +64,11 @@ class MftfFilesystem extends \Magento\FunctionalTestingFramework\Config\Reader\F
      * @return \Magento\FunctionalTestingFramework\Config\Dom
      * @throws \UnexpectedValueException
      */
-    protected function createConfigMerger($mergerClass, $initialContents, $filename = null, $exceptionCollector = null)
+    protected function create_config_merger($merger_class, $initial_contents, $filename = null, $exception_collector = null)
     {
-        $result = new $mergerClass(
-            $initialContents,
-            $filename,
-            $exceptionCollector,
-            $this->idAttributes,
-            null,
-            $this->perFileSchema
-        );
-        if (!$result instanceof \Magento\FunctionalTestingFramework\Config\Dom) {
-            throw new \UnexpectedValueException(
-                "Instance of the DOM config merger is expected, got {$mergerClass} instead."
-            );
+        $result = new $merger_class($initial_contents, $filename, $exception_collector, $this->id_attributes, null, $this->per_file_schema);
+        if (!$result instanceof \Magento\Functional_Testing_Framework\Config\Dom) {
+            throw new \UnexpectedValueException("Instance of the DOM config merger is expected, got {$merger_class} instead.");
         }
         return $result;
     }

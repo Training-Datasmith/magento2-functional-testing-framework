@@ -1,57 +1,51 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Exceptions\Collector;
 
-namespace Magento\FunctionalTestingFramework\Exceptions\Collector;
-
-class ExceptionCollector
+class Exception_Collector
 {
     /**
      * Private array containing all errors to be thrown as part of the exception.
      */
     private array $errors = [];
-
     /**
      * Function to add a filename and message for the filename
      *
      * @param string $filename
      * @param string $message
      */
-    public function addError($filename, $message): void
+    public function add_error($filename, $message): void
     {
         $error[$filename] = $message;
         $this->errors = array_merge_recursive($this->errors, $error);
     }
-
     /**
      * Function which throws an exception when there are errors present.
      *
      * @throws \Exception
      */
-    public function throwException(): void
+    public function throw_exception(): void
     {
         if (empty($this->errors)) {
             return;
         }
-
-        $errorMsg = implode("\n\n", $this->formatErrors($this->errors));
-        throw new \Exception("\n" . $errorMsg);
+        $error_msg = implode("\n\n", $this->format_errors($this->errors));
+        throw new \Exception("\n" . $error_msg);
     }
-
     /**
      * Return all errors
      *
      * @return array
      */
-    public function getErrors()
+    public function get_errors()
     {
         return $this->errors ?? [];
     }
-
     /**
      * Reset error to empty array
      */
@@ -59,25 +53,22 @@ class ExceptionCollector
     {
         $this->errors = [];
     }
-
     /**
      * If there are multiple exceptions for a single file, the function flattens the array so they can be printed
      * as separate messages.
      *
      * @param array $errors
      */
-    private function formatErrors($errors): array
+    private function format_errors($errors): array
     {
-        $flattenedErrors = [];
-        foreach ($errors as $errorMsg) {
-            if (is_array($errorMsg)) {
-                $flattenedErrors = array_merge($flattenedErrors, $this->formatErrors($errorMsg));
+        $flattened_errors = [];
+        foreach ($errors as $error_msg) {
+            if (is_array($error_msg)) {
+                $flattened_errors = array_merge($flattened_errors, $this->format_errors($error_msg));
                 continue;
             }
-
-            $flattenedErrors[] = $errorMsg;
+            $flattened_errors[] = $error_msg;
         }
-
-        return $flattenedErrors;
+        return $flattened_errors;
     }
 }

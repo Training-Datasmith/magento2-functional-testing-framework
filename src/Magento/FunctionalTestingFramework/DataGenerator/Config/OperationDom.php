@@ -1,31 +1,27 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Data_Generator\Config;
 
-namespace Magento\FunctionalTestingFramework\DataGenerator\Config;
-
-use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
-use Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUtil;
-
+use Magento\Functional_Testing_Framework\Exceptions\Collector\Exception_Collector;
+use Magento\Functional_Testing_Framework\Util\Validation\Duplicate_Node_Validation_Util;
 /**
  * MFTF metadata.xml configuration XML DOM utility
  * @package Magento\FunctionalTestingFramework\DataGenerator\Config
  */
-class OperationDom extends \Magento\FunctionalTestingFramework\Config\MftfDom
+class Operation_Dom extends \Magento\Functional_Testing_Framework\Config\Mftf_Dom
 {
     public const METADATA_FILE_NAME_ENDING = 'meta';
     public const METADATA_META_FILENAME_ATTRIBUTE = 'filename';
     public const METADATA_META_NAME_ATTRIBUTE = 'name';
-
     /**
      * NodeValidationUtil
      */
-    private readonly \Magento\FunctionalTestingFramework\Util\Validation\DuplicateNodeValidationUtil $validationUtil;
-
+    private readonly \Magento\Functional_Testing_Framework\Util\Validation\Duplicate_Node_Validation_Util $validation_util;
     /**
      * Metadata Dom constructor.
      * @param string             $xml
@@ -35,27 +31,11 @@ class OperationDom extends \Magento\FunctionalTestingFramework\Config\MftfDom
      * @param string             $schemaFile
      * @param string             $errorFormat
      */
-    public function __construct(
-        $xml,
-        $filename,
-        $exceptionCollector,
-        array $idAttributes = [],
-        $typeAttributeName = null,
-        $schemaFile = null,
-        $errorFormat = self::ERROR_FORMAT_DEFAULT
-    ) {
-        $this->validationUtil = new DuplicateNodeValidationUtil('key', $exceptionCollector);
-        parent::__construct(
-            $xml,
-            $filename,
-            $exceptionCollector,
-            $idAttributes,
-            $typeAttributeName,
-            $schemaFile,
-            $errorFormat
-        );
+    public function __construct($xml, $filename, $exception_collector, array $id_attributes = [], $type_attribute_name = null, $schema_file = null, $error_format = self::ERROR_FORMAT_DEFAULT)
+    {
+        $this->validation_util = new Duplicate_Node_Validation_Util('key', $exception_collector);
+        parent::__construct($xml, $filename, $exception_collector, $id_attributes, $type_attribute_name, $schema_file, $error_format);
     }
-
     /**
      * Takes a dom element from xml and appends the filename based on location
      *
@@ -63,50 +43,34 @@ class OperationDom extends \Magento\FunctionalTestingFramework\Config\MftfDom
      * @param string|null $filename
      * @return \DOMDocument
      */
-    public function initDom($xml, $filename = null)
+    public function init_dom($xml, $filename = null)
     {
-        $dom = parent::initDom($xml, $filename);
-
+        $dom = parent::init_dom($xml, $filename);
         if (strpos((string) $filename, self::METADATA_FILE_NAME_ENDING)) {
-            $operationNodes = $dom->getElementsByTagName('operation');
-            foreach ($operationNodes as $operationNode) {
+            $operation_nodes = $dom->get_elements_by_tag_name('operation');
+            foreach ($operation_nodes as $operation_node) {
                 /** @var \DOMElement $operationNode */
-                $operationNode->setAttribute(self::METADATA_META_FILENAME_ATTRIBUTE, $filename);
-                $this->validateOperationElements(
-                    $operationNode,
-                    $filename,
-                    $operationNode->getAttribute(self::METADATA_META_NAME_ATTRIBUTE)
-                );
+                $operation_node->set_attribute(self::METADATA_META_FILENAME_ATTRIBUTE, $filename);
+                $this->validate_operation_elements($operation_node, $filename, $operation_node->get_attribute(self::METADATA_META_NAME_ATTRIBUTE));
             }
         }
-
         return $dom;
     }
-
     /**
      * Recurse through child elements and validate uniqueKeys
      * @param string      $filename
      * @param string      $topParent
      */
-    public function validateOperationElements(\DOMElement $parentNode, $filename, $topParent): void
+    public function validate_operation_elements(\Dom_Element $parent_node, $filename, $top_parent): void
     {
-        $this->validationUtil->validateChildUniqueness(
-            $parentNode,
-            $filename,
-            $topParent
-        );
-        $childNodes = $parentNode->childNodes;
-
-        for ($i = 0; $i < $childNodes->length; $i++) {
-            $currentNode = $childNodes->item($i);
-            if (!is_a($currentNode, \DOMElement::class)) {
+        $this->validation_util->validate_child_uniqueness($parent_node, $filename, $top_parent);
+        $child_nodes = $parent_node->child_nodes;
+        for ($i = 0; $i < $child_nodes->length; $i++) {
+            $current_node = $child_nodes->item($i);
+            if (!is_a($current_node, \Dom_Element::class)) {
                 continue;
             }
-            $this->validateOperationElements(
-                $currentNode,
-                $filename,
-                $topParent
-            );
+            $this->validate_operation_elements($current_node, $filename, $top_parent);
         }
     }
 }

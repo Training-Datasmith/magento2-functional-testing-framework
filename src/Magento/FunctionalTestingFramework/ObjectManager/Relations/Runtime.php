@@ -1,38 +1,34 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\ObjectManager\Relations;
+namespace Magento\Functional_Testing_Framework\Object_Manager\Relations;
 
 /**
  * Class Runtime
  */
-class Runtime implements \Magento\FunctionalTestingFramework\ObjectManager\RelationsInterface
+class Runtime implements \Magento\Functional_Testing_Framework\Object_Manager\Relations_Interface
 {
     /**
      * Class reader.
      */
-    protected \Magento\FunctionalTestingFramework\Code\Reader\ClassReader $classReader;
-
+    protected \Magento\Functional_Testing_Framework\Code\Reader\Class_Reader $class_reader;
     /**
      * Default behavior
      *
      * @var array
      */
     protected $default = [];
-
     /**
      * Runtime constructor.
      */
-    public function __construct(?\Magento\FunctionalTestingFramework\Code\Reader\ClassReader $classReader = null)
+    public function __construct(?\Magento\Functional_Testing_Framework\Code\Reader\Class_Reader $class_reader = null)
     {
-        $this->classReader = $classReader ?: new \Magento\FunctionalTestingFramework\Code\Reader\ClassReader();
+        $this->class_reader = $class_reader ?: new \Magento\Functional_Testing_Framework\Code\Reader\Class_Reader();
     }
-
     /**
      * Check whether requested type is available for read
      *
@@ -42,18 +38,17 @@ class Runtime implements \Magento\FunctionalTestingFramework\ObjectManager\Relat
     {
         return class_exists($type) || interface_exists($type);
     }
-
     /**
      * Retrieve list of parents
      *
      * @param string $type
      * @return array
      */
-    public function getParents($type)
+    public function get_parents($type)
     {
         if (!class_exists($type)) {
             return $this->default;
         }
-        return $this->classReader->getParents($type) ?: $this->default;
+        return $this->class_reader->get_parents($type) ?: $this->default;
     }
 }

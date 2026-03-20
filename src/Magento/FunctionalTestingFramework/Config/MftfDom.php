@@ -1,22 +1,20 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Config;
 
-namespace Magento\FunctionalTestingFramework\Config;
-
-use Magento\FunctionalTestingFramework\Config\Dom\NodeMergingConfig;
-use Magento\FunctionalTestingFramework\Config\Dom\NodePathMatcher;
-use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
-
+use Magento\Functional_Testing_Framework\Config\Dom\Node_Merging_Config;
+use Magento\Functional_Testing_Framework\Config\Dom\Node_Path_Matcher;
+use Magento\Functional_Testing_Framework\Exceptions\Collector\Exception_Collector;
 /**
  * Class MftfDom
  * @package Magento\FunctionalTestingFramework\Config
  */
-class MftfDom extends \Magento\FunctionalTestingFramework\Config\Dom
+class Mftf_Dom extends \Magento\Functional_Testing_Framework\Config\Dom
 {
     /**
      * MftfDom constructor.
@@ -27,23 +25,15 @@ class MftfDom extends \Magento\FunctionalTestingFramework\Config\Dom
      * @param string             $schemaFile
      * @param string             $errorFormat
      */
-    public function __construct(
-        $xml,
-        $filename,
-        $exceptionCollector,
-        array $idAttributes = [],
-        $typeAttributeName = null,
-        $schemaFile = null,
-        $errorFormat = self::ERROR_FORMAT_DEFAULT
-    ) {
-        $this->schemaFile = $schemaFile;
-        $this->nodeMergingConfig = new NodeMergingConfig(new NodePathMatcher(), $idAttributes);
-        $this->typeAttributeName = $typeAttributeName;
-        $this->errorFormat = $errorFormat;
-        $this->dom = $this->initDom($xml, $filename);
-        $this->rootNamespace = $this->dom->lookupNamespaceUri($this->dom->namespaceURI);
+    public function __construct($xml, $filename, $exception_collector, array $id_attributes = [], $type_attribute_name = null, $schema_file = null, $error_format = self::ERROR_FORMAT_DEFAULT)
+    {
+        $this->schema_file = $schema_file;
+        $this->node_merging_config = new Node_Merging_Config(new Node_Path_Matcher(), $id_attributes);
+        $this->type_attribute_name = $type_attribute_name;
+        $this->error_format = $error_format;
+        $this->dom = $this->init_dom($xml, $filename);
+        $this->root_namespace = $this->dom->lookup_namespace_uri($this->dom->namespace_uri);
     }
-
     /**
      * Redirects any merges into the init method for appending xml filename
      *
@@ -51,18 +41,17 @@ class MftfDom extends \Magento\FunctionalTestingFramework\Config\Dom
      * @param string|null        $filename
      * @param ExceptionCollector $exceptionCollector
      */
-    public function merge($xml, $filename = null, $exceptionCollector = null): void
+    public function merge($xml, $filename = null, $exception_collector = null): void
     {
-        $dom = $this->initDom($xml, $filename);
-        $this->mergeNode($dom->documentElement, '');
+        $dom = $this->init_dom($xml, $filename);
+        $this->merge_node($dom->document_element, '');
     }
-
     /**
      * Checks if the filename given ends with the correct suffix.
      * @param string $filename
      * @param string $suffix
      */
-    public function checkFilenameSuffix($filename, $suffix): bool
+    public function check_filename_suffix($filename, $suffix): bool
     {
         if (str_ends_with($filename, $suffix)) {
             return true;

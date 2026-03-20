@@ -1,16 +1,14 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Data\Argument\Interpreter;
 
-namespace Magento\FunctionalTestingFramework\Data\Argument\Interpreter;
-
-use Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface;
-
-class DataObject implements InterpreterInterface
+use Magento\Functional_Testing_Framework\Data\Argument\Interpreter_Interface;
+class Data_Object implements Interpreter_Interface
 {
     /**
      * DataObject constructor.
@@ -19,10 +17,10 @@ class DataObject implements InterpreterInterface
         /**
          * Utility methods for the boolean data type.
          */
-        protected \Magento\FunctionalTestingFramework\Stdlib\BooleanUtils $booleanUtils
-    ) {
+        protected \Magento\Functional_Testing_Framework\Stdlib\Boolean_Utils $boolean_utils
+    )
+    {
     }
-
     /**
      * Compute and return effective value of an argument
      *
@@ -33,7 +31,7 @@ class DataObject implements InterpreterInterface
     {
         $result = ['instance' => $data['value']];
         if (isset($data['shared'])) {
-            $result['shared'] = $this->booleanUtils->toBoolean($data['shared']);
+            $result['shared'] = $this->boolean_utils->to_boolean($data['shared']);
         }
         return $result;
     }

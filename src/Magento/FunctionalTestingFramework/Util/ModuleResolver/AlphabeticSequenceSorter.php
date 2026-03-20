@@ -1,17 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\Util\ModuleResolver;
+namespace Magento\Functional_Testing_Framework\Util\Module_Resolver;
 
 /**
  * Alphabetic sequence sorter.
  */
-class AlphabeticSequenceSorter implements SequenceSorterInterface
+class Alphabetic_Sequence_Sorter implements Sequence_Sorter_Interface
 {
     /**
      * Sort files alphabetically.

@@ -1,17 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\Config;
+namespace Magento\Functional_Testing_Framework\Config;
 
 /**
  * Class Data
  */
-class Data implements \Magento\FunctionalTestingFramework\Config\DataInterface
+class Data implements \Magento\Functional_Testing_Framework\Config\Data_Interface
 {
     /**
      * Config data
@@ -19,18 +18,18 @@ class Data implements \Magento\FunctionalTestingFramework\Config\DataInterface
      * @var array
      */
     protected $data = [];
-
     /**
      * Constructor
      */
-    public function __construct(/**
-     * Configuration reader model
-     */
-        protected \Magento\FunctionalTestingFramework\Config\ReaderInterface $reader
-    ) {
+    public function __construct(
+        /**
+         * Configuration reader model
+         */
+        protected \Magento\Functional_Testing_Framework\Config\Reader_Interface $reader
+    )
+    {
         $this->load();
     }
-
     /**
      * Merge config data to the object
      */
@@ -38,7 +37,6 @@ class Data implements \Magento\FunctionalTestingFramework\Config\DataInterface
     {
         $this->data = array_replace_recursive($this->data, $config);
     }
-
     // @codingStandardsIgnoreStart
     /**
      * Get config value by key
@@ -70,21 +68,18 @@ class Data implements \Magento\FunctionalTestingFramework\Config\DataInterface
      *
      * @param string $fileName
      */
-    public function setFileName($fileName): static
+    public function set_file_name($file_name): static
     {
-        if ($fileName !== null) {
-            $this->reader->setFileName($fileName);
+        if ($file_name !== null) {
+            $this->reader->set_file_name($file_name);
         }
         return $this;
     }
-
     /**
      * Load config data
      */
     public function load(?string $scope = null): void
     {
-        $this->merge(
-            $this->reader->read($scope)
-        );
+        $this->merge($this->reader->read($scope));
     }
 }

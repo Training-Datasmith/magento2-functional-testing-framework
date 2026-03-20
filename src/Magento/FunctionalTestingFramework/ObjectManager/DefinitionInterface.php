@@ -1,17 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\ObjectManager;
+namespace Magento\Functional_Testing_Framework\Object_Manager;
 
 /**
  * Interface DefinitionInterface
  */
-interface DefinitionInterface
+interface Definition_Interface
 {
     /**
      * Get list of method parameters
@@ -29,12 +28,11 @@ interface DefinitionInterface
      * @param string $className
      * @return array|null
      */
-    public function getParameters($className);
-
+    public function get_parameters($class_name);
     /**
      * Retrieve list of all classes covered with definitions
      *
      * @return array
      */
-    public function getClasses();
+    public function get_classes();
 }

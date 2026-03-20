@@ -1,49 +1,42 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2021 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Util\Manifest;
 
-namespace Magento\FunctionalTestingFramework\Util\Manifest;
-
-use Magento\FunctionalTestingFramework\Test\Objects\TestObject;
-use Magento\FunctionalTestingFramework\Util\Filesystem\DirSetupUtil;
-use Magento\FunctionalTestingFramework\Util\Sorter\ParallelGroupSorter;
-
-abstract class BaseParallelTestManifest extends BaseTestManifest
+use Magento\Functional_Testing_Framework\Test\Objects\Test_Object;
+use Magento\Functional_Testing_Framework\Util\Filesystem\Dir_Setup_Util;
+use Magento\Functional_Testing_Framework\Util\Sorter\Parallel_Group_Sorter;
+abstract class Base_Parallel_Test_Manifest extends Base_Test_Manifest
 {
     /**
      * An associate array of test name to size of test.
      *
      * @var string[]
      */
-    protected $testNameToSize = [];
-
+    protected $test_name_to_size = [];
     /**
      * Class variable to store resulting group config.
      *
      * @var array
      */
-    protected $testGroups;
-
+    protected $test_groups;
     /**
      * An instance of the group sorter which will take suites and tests organizing them to be run together.
      */
-    protected \Magento\FunctionalTestingFramework\Util\Sorter\ParallelGroupSorter $parallelGroupSorter;
-
+    protected \Magento\Functional_Testing_Framework\Util\Sorter\Parallel_Group_Sorter $parallel_group_sorter;
     /**
      * Path to the directory that will contain all test group files
      */
-    protected string $dirPath;
-
+    protected string $dir_path;
     /**
      * An array of test name count in a single group
      * @var array
      */
-    protected $testCountsToGroup = [];
-
+    protected $test_counts_to_group = [];
     /**
      * BaseParallelTestManifest constructor.
      *
@@ -51,56 +44,49 @@ abstract class BaseParallelTestManifest extends BaseTestManifest
      * @param string $runConfig
      * @param string $testPath
      */
-    public function __construct($suiteConfiguration, $runConfig, $testPath)
+    public function __construct($suite_configuration, $run_config, $test_path)
     {
-        $this->dirPath = dirname($testPath) . DIRECTORY_SEPARATOR . 'groups';
-        $this->parallelGroupSorter = new ParallelGroupSorter();
-        parent::__construct($testPath, $runConfig, $suiteConfiguration);
+        $this->dir_path = dirname($test_path) . DIRECTORY_SEPARATOR . 'groups';
+        $this->parallel_group_sorter = new Parallel_Group_Sorter();
+        parent::__construct($test_path, $run_config, $suite_configuration);
     }
-
     /**
      * Takes a test name and set of tests, records the names in a file for codeception to consume.
      *
      * @param TestObject $testObject
      */
-    public function addTest($testObject): void
+    public function add_test($test_object): void
     {
-        $this->testNameToSize[$testObject->getCodeceptionName()] = $testObject->getEstimatedDuration();
+        $this->test_name_to_size[$test_object->get_codeception_name()] = $test_object->get_estimated_duration();
     }
-
     /**
      * Function which generates test groups based on arg passed.
      *
      * @param integer $number
      * @return void
      */
-    abstract public function createTestGroups($number);
-
+    abstract public function create_test_groups($number);
     /**
      * Function which generates the actual manifest once the relevant tests have been added to the array.
      */
     public function generate(): void
     {
-        DirSetupUtil::createGroupDir($this->dirPath);
-        $suites = $this->getFlattenedSuiteConfiguration($this->suiteConfiguration ?? []);
-
-        foreach ($this->testGroups as $groupNumber => $groupContents) {
-            $this->generateGroupFile($groupContents, $groupNumber, $suites);
+        Dir_Setup_Util::create_group_dir($this->dir_path);
+        $suites = $this->get_flattened_suite_configuration($this->suite_configuration ?? []);
+        foreach ($this->test_groups as $group_number => $group_contents) {
+            $this->generate_group_file($group_contents, $group_number, $suites);
         }
-
-        $this->generateGroupSummaryFile($this->testCountsToGroup);
+        $this->generate_group_summary_file($this->test_counts_to_group);
     }
-
     /**
      * Function which simply returns the private sorter used by the manifest.
      *
      * @return ParallelGroupSorter
      */
-    public function getSorter()
+    public function get_sorter()
     {
-        return $this->parallelGroupSorter;
+        return $this->parallel_group_sorter;
     }
-
     /**
      * Function which takes an array containing entries representing the test execution as well as the associated group
      * for the entry in order to generate a txt file used by devops for parllel execution in Jenkins. The results
@@ -110,39 +96,35 @@ abstract class BaseParallelTestManifest extends BaseTestManifest
      * @param integer $nodeNumber
      * @return void
      */
-    protected function generateGroupFile($testGroup, $nodeNumber, array $suites)
+    protected function generate_group_file($test_group, $node_number, array $suites)
     {
-        foreach ($testGroup as $entryName => $testValue) {
-            $fileResource = fopen($this->dirPath . DIRECTORY_SEPARATOR . "group{$nodeNumber}.txt", 'a');
-
-            $this->testCountsToGroup["group{$nodeNumber}"] ??= 0;
-
-            if (!empty($suites[$entryName])) {
-                $line = "-g {$entryName}";
-                $this->testCountsToGroup["group{$nodeNumber}"] += count($suites[$entryName]);
+        foreach ($test_group as $entry_name => $test_value) {
+            $file_resource = fopen($this->dir_path . DIRECTORY_SEPARATOR . "group{$node_number}.txt", 'a');
+            $this->test_counts_to_group["group{$node_number}"] ??= 0;
+            if (!empty($suites[$entry_name])) {
+                $line = "-g {$entry_name}";
+                $this->test_counts_to_group["group{$node_number}"] += count($suites[$entry_name]);
             } else {
-                $line = $this->relativeDirPath . DIRECTORY_SEPARATOR . $entryName . '.php';
-                $this->testCountsToGroup["group{$nodeNumber}"]++;
+                $line = $this->relative_dir_path . DIRECTORY_SEPARATOR . $entry_name . '.php';
+                $this->test_counts_to_group["group{$node_number}"]++;
             }
-            fwrite($fileResource, $line . PHP_EOL);
-            fclose($fileResource);
+            fwrite($file_resource, $line . PHP_EOL);
+            fclose($file_resource);
         }
     }
-
     /**
      * @return void
      */
-    protected function generateGroupSummaryFile(array $groups)
+    protected function generate_group_summary_file(array $groups)
     {
-        $fileResource = fopen($this->dirPath . DIRECTORY_SEPARATOR . 'mftf_group_summary.txt', 'w');
+        $file_resource = fopen($this->dir_path . DIRECTORY_SEPARATOR . 'mftf_group_summary.txt', 'w');
         $contents = 'Total Number of Groups: ' . count($groups) . PHP_EOL;
         foreach ($groups as $key => $value) {
-            $contents .= $key . ' - '. $value . ' tests' .PHP_EOL;
+            $contents .= $key . ' - ' . $value . ' tests' . PHP_EOL;
         }
-        fwrite($fileResource, $contents);
-        fclose($fileResource);
+        fwrite($file_resource, $contents);
+        fclose($file_resource);
     }
-
     /**
      * Function which recusrively parses a given potentially multidimensional array of suites containing their split
      * groups. The result is a flattened array of suite names to relevant tests for generation of the manifest.
@@ -150,19 +132,17 @@ abstract class BaseParallelTestManifest extends BaseTestManifest
      * @param array $multiDimensionalSuites
      * @return array
      */
-    protected function getFlattenedSuiteConfiguration($multiDimensionalSuites)
+    protected function get_flattened_suite_configuration($multi_dimensional_suites)
     {
         $suites = [];
-        foreach ($multiDimensionalSuites as $suiteName => $suiteContent) {
-            $value = array_values($suiteContent)[0];
+        foreach ($multi_dimensional_suites as $suite_name => $suite_content) {
+            $value = array_values($suite_content)[0];
             if (is_array($value)) {
-                $suites = array_merge($suites, $this->getFlattenedSuiteConfiguration($suiteContent));
+                $suites = array_merge($suites, $this->get_flattened_suite_configuration($suite_content));
                 continue;
             }
-
-            $suites[$suiteName] = $suiteContent;
+            $suites[$suite_name] = $suite_content;
         }
-
         return $suites;
     }
 }

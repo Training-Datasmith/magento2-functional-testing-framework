@@ -1,83 +1,68 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Upgrade;
 
-namespace Magento\FunctionalTestingFramework\Upgrade;
-
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Util\Script\ScriptUtil;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Magento\Functional_Testing_Framework\Exceptions\Test_Framework_Exception;
+use Magento\Functional_Testing_Framework\Util\Script\Script_Util;
+use Symfony\Component\Console\Input\Input_Interface;
+use Symfony\Component\Console\Output\Output_Interface;
 use Symfony\Component\Finder\Finder;
-
 /**
  * Class UpdateTestSchemaPaths
  * @package Magento\FunctionalTestingFramework\Upgrade
  */
-class UpdateTestSchemaPaths implements UpgradeInterface
+class Update_Test_Schema_Paths implements Upgrade_Interface
 {
     /**
      * Total test updated
      */
-    private int $testsUpdated = 0;
-
+    private int $tests_updated = 0;
     /**
      * Entity type to urn map
      */
-    private array $typeToUrns = [
-        'ActionGroup' => 'urn:magento:mftf:Test/etc/actionGroupSchema.xsd',
-        'Data' => 'urn:magento:mftf:DataGenerator/etc/dataProfileSchema.xsd',
-        'Metadata' => 'urn:magento:mftf:DataGenerator/etc/dataOperation.xsd',
-        'Page' => 'urn:magento:mftf:Page/etc/PageObject.xsd',
-        'Section' => 'urn:magento:mftf:Page/etc/SectionObject.xsd',
-        'Suite' => 'urn:magento:mftf:Suite/etc/suiteSchema.xsd',
-        'Test' => 'urn:magento:mftf:Test/etc/testSchema.xsd',
-    ];
-
+    private array $type_to_urns = ['ActionGroup' => 'urn:magento:mftf:Test/etc/actionGroupSchema.xsd', 'Data' => 'urn:magento:mftf:DataGenerator/etc/dataProfileSchema.xsd', 'Metadata' => 'urn:magento:mftf:DataGenerator/etc/dataOperation.xsd', 'Page' => 'urn:magento:mftf:Page/etc/PageObject.xsd', 'Section' => 'urn:magento:mftf:Page/etc/SectionObject.xsd', 'Suite' => 'urn:magento:mftf:Suite/etc/suiteSchema.xsd', 'Test' => 'urn:magento:mftf:Test/etc/testSchema.xsd'];
     /**
      * Upgrades all test xml files, replacing relative schema paths to URN.
      *
      * @throws TestFrameworkException
      */
-    public function execute(InputInterface $input, OutputInterface $output): string
+    public function execute(Input_Interface $input, Output_Interface $output): string
     {
-        $scriptUtil = new ScriptUtil();
-        $this->testsUpdated = 0;
-        $testPaths[] = $input->getArgument('path');
-        if (empty($testPaths[0])) {
-            $testPaths = $scriptUtil->getAllModulePaths();
+        $script_util = new Script_Util();
+        $this->tests_updated = 0;
+        $test_paths[] = $input->get_argument('path');
+        if (empty($test_paths[0])) {
+            $test_paths = $script_util->get_all_module_paths();
         }
-
         // Process module xml files
-        foreach ($this->typeToUrns as $type => $urn) {
-            $xmlFiles = $scriptUtil->getModuleXmlFilesByScope($testPaths, $type);
-            $this->processXmlFiles($xmlFiles, $urn);
+        foreach ($this->type_to_urns as $type => $urn) {
+            $xml_files = $script_util->get_module_xml_files_by_scope($test_paths, $type);
+            $this->process_xml_files($xml_files, $urn);
         }
-
-        return ("Schema Path updated to use MFTF URNs in {$this->testsUpdated} file(s).");
+        return "Schema Path updated to use MFTF URNs in {$this->tests_updated} file(s).";
     }
-
     /**
      * Convert xml schema location from non urn based to urn based
      *
      * @param Finder $xmlFiles
      * @param string $urn
      */
-    private function processXmlFiles($xmlFiles, $urn): void
+    private function process_xml_files($xml_files, $urn): void
     {
         $pattern = '/xsi:noNamespaceSchemaLocation[\s]*=[\s]*"(?<urn>[^\<\>"\']*)"/';
-        foreach ($xmlFiles as $file) {
-            $filePath = $file->getRealPath();
-            $contents = $file->getContents();
+        foreach ($xml_files as $file) {
+            $file_path = $file->get_real_path();
+            $contents = $file->get_contents();
             preg_match($pattern, $contents, $matches);
             if (isset($matches['urn'])) {
                 if (trim($matches['urn']) !== $urn) {
-                    file_put_contents($filePath, str_replace($matches['urn'], $urn, $contents));
-                    $this->testsUpdated++;
+                    file_put_contents($file_path, str_replace($matches['urn'], $urn, $contents));
+                    $this->tests_updated++;
                 }
             }
         }

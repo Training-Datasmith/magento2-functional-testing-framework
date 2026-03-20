@@ -1,17 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface;
+namespace Magento\Functional_Testing_Framework\Data\Argument\Interpreter_Interface;
 
 /**
  * Proxy class for \Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface
  */
-class Proxy implements \Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface
+class Proxy implements \Magento\Functional_Testing_Framework\Data\Argument\Interpreter_Interface
 {
     /**
      * Proxied instance
@@ -19,7 +18,6 @@ class Proxy implements \Magento\FunctionalTestingFramework\Data\Argument\Interpr
      * @var \Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface
      */
     protected $subject;
-
     /**
      * Proxy constructor
      *
@@ -30,18 +28,18 @@ class Proxy implements \Magento\FunctionalTestingFramework\Data\Argument\Interpr
         /**
          * Object Manager instance
          */
-        protected \Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager,
+        protected \Magento\Functional_Testing_Framework\Object_Manager_Interface $object_manager,
         /**
          * Proxied instance name
          */
-        protected $instanceName = \Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface::class,
+        protected $instance_name = \Magento\Functional_Testing_Framework\Data\Argument\Interpreter_Interface::class,
         /**
          * Instance shareability flag
          */
-        protected $isShared = true
-    ) {
+        protected $is_shared = true
+    )
+    {
     }
-
     /**
      * Definition of field which should be serialized.
      *
@@ -51,45 +49,39 @@ class Proxy implements \Magento\FunctionalTestingFramework\Data\Argument\Interpr
     {
         return ['subject', 'isShared'];
     }
-
     /**
      * Retrieve ObjectManager from global scope
      * @return void
      */
     public function __wakeup()
     {
-        $this->objectManager = \Magento\FunctionalTestingFramework\ObjectManager::getInstance();
+        $this->object_manager = \Magento\Functional_Testing_Framework\Object_Manager::get_instance();
     }
-
     /**
      * Clone proxied instance
      */
     public function __clone()
     {
-        $this->subject = clone $this->getSubject();
+        $this->subject = clone $this->get_subject();
     }
-
     /**
      * Get proxied instance
      *
      * @return \Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface
      */
-    protected function getSubject()
+    protected function get_subject()
     {
         if (!$this->subject) {
-            $this->subject = true === $this->isShared
-                ? $this->objectManager->get($this->instanceName)
-                : $this->objectManager->create($this->instanceName);
+            $this->subject = true === $this->is_shared ? $this->object_manager->get($this->instance_name) : $this->object_manager->create($this->instance_name);
         }
         return $this->subject;
     }
-
     /**
      * {@inheritdoc}
      * @return mixed
      */
     public function evaluate(array $data)
     {
-        return $this->getSubject()->evaluate($data);
+        return $this->get_subject()->evaluate($data);
     }
 }

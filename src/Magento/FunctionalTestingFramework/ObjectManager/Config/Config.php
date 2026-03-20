@@ -1,119 +1,105 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Object_Manager\Config;
 
-namespace Magento\FunctionalTestingFramework\ObjectManager\Config;
-
-use Magento\FunctionalTestingFramework\ObjectManager\Definition\Runtime as DefinitionRuntime;
-use Magento\FunctionalTestingFramework\ObjectManager\DefinitionInterface;
-use Magento\FunctionalTestingFramework\ObjectManager\Relations\Runtime as RelationsRuntime;
-use Magento\FunctionalTestingFramework\ObjectManager\RelationsInterface;
-
+use Magento\Functional_Testing_Framework\Object_Manager\Definition\Runtime as DefinitionRuntime;
+use Magento\Functional_Testing_Framework\Object_Manager\Definition_Interface;
+use Magento\Functional_Testing_Framework\Object_Manager\Relations\Runtime as RelationsRuntime;
+use Magento\Functional_Testing_Framework\Object_Manager\Relations_Interface;
 /**
  * Class Config
  */
-class Config implements \Magento\FunctionalTestingFramework\ObjectManager\ConfigInterface
+class Config implements \Magento\Functional_Testing_Framework\Object_Manager\Config_Interface
 {
     /**
      * Class definitions
      */
-    protected \Magento\FunctionalTestingFramework\ObjectManager\DefinitionInterface $definitions;
-
+    protected \Magento\Functional_Testing_Framework\Object_Manager\Definition_Interface $definitions;
     /**
      * Current cache key
      *
      * @var string
      */
-    protected $currentCacheKey;
-
+    protected $current_cache_key;
     /**
      * Interface preferences
      *
      * @var array
      */
     protected $preferences = [];
-
     /**
      * Virtual types
      *
      * @var array
      */
-    protected $virtualTypes = [];
-
+    protected $virtual_types = [];
     /**
      * Instance arguments
      *
      * @var array
      */
     protected $arguments = [];
-
     /**
      * Type shareability
      *
      * @var array
      */
-    protected $nonShared = [];
-
+    protected $non_shared = [];
     /**
      * List of relations
      */
-    protected \Magento\FunctionalTestingFramework\ObjectManager\RelationsInterface $relations;
-
+    protected \Magento\Functional_Testing_Framework\Object_Manager\Relations_Interface $relations;
     /**
      * List of merged arguments
      *
      * @var array
      */
-    protected $mergedArguments;
-
+    protected $merged_arguments;
     /**
      * Config constructor.
      */
-    public function __construct(?RelationsInterface $relations = null, ?DefinitionInterface $definitions = null)
+    public function __construct(?Relations_Interface $relations = null, ?Definition_Interface $definitions = null)
     {
-        $this->relations = $relations ?: new RelationsRuntime();
-        $this->definitions = $definitions ?: new DefinitionRuntime();
+        $this->relations = $relations ?: new Relations_Runtime();
+        $this->definitions = $definitions ?: new Definition_Runtime();
     }
-
     /**
      * Retrieve list of arguments per type
      *
      * @param string $type
      * @return array
      */
-    public function getArguments($type)
+    public function get_arguments($type)
     {
-        return $this->mergedArguments[$type] ?? $this->collectConfiguration($type);
+        return $this->merged_arguments[$type] ?? $this->collect_configuration($type);
     }
-
     /**
      * Check whether type is shared
      *
      * @param string $type
      */
-    public function isShared($type): bool
+    public function is_shared($type): bool
     {
-        return !isset($this->nonShared[$type]);
+        return !isset($this->non_shared[$type]);
     }
-
     /**
      * Retrieve instance type
      *
      * @param string $instanceName
      * @return string
      */
-    public function getInstanceType($instanceName)
+    public function get_instance_type($instance_name)
     {
-        while (isset($this->virtualTypes[$instanceName])) {
-            $instanceName = $this->virtualTypes[$instanceName];
+        while (isset($this->virtual_types[$instance_name])) {
+            $instance_name = $this->virtual_types[$instance_name];
         }
-        return $instanceName;
+        return $instance_name;
     }
-
     /**
      * Retrieve preference for type
      *
@@ -121,26 +107,19 @@ class Config implements \Magento\FunctionalTestingFramework\ObjectManager\Config
      * @return string
      * @throws \LogicException
      */
-    public function getPreference($type)
+    public function get_preference($type)
     {
         $type = ltrim($type, '\\');
-        $preferencePath = [];
+        $preference_path = [];
         while (isset($this->preferences[$type])) {
-            if (isset($preferencePath[$this->preferences[$type]])) {
-                throw new \LogicException(
-                    'Circular type preference: ' .
-                    $type .
-                    ' relates to ' .
-                    $this->preferences[$type] .
-                    ' and viceversa.'
-                );
+            if (isset($preference_path[$this->preferences[$type]])) {
+                throw new \LogicException('Circular type preference: ' . $type . ' relates to ' . $this->preferences[$type] . ' and viceversa.');
             }
             $type = $this->preferences[$type];
-            $preferencePath[$type] = 1;
+            $preference_path[$type] = 1;
         }
         return $type;
     }
-
     /**
      * Collect parent types configuration for requested type
      *
@@ -149,28 +128,25 @@ class Config implements \Magento\FunctionalTestingFramework\ObjectManager\Config
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * Revisited to reduce cyclomatic complexity, left unrefactored for readability
      */
-    protected function collectConfiguration($type)
+    protected function collect_configuration($type)
     {
-        if (!isset($this->mergedArguments[$type])) {
-            if (isset($this->virtualTypes[$type])) {
-                $arguments = $this->collectConfiguration($this->virtualTypes[$type]);
-            } else {
-                if ($this->relations->has($type)) {
-                    $relations = $this->relations->getParents($type);
-                    $arguments = [];
-                    foreach ($relations as $relation) {
-                        if ($relation) {
-                            $relationArguments = $this->collectConfiguration($relation);
-                            if ($relationArguments) {
-                                $arguments = array_replace($arguments, $relationArguments);
-                            }
+        if (!isset($this->merged_arguments[$type])) {
+            if (isset($this->virtual_types[$type])) {
+                $arguments = $this->collect_configuration($this->virtual_types[$type]);
+            } else if ($this->relations->has($type)) {
+                $relations = $this->relations->get_parents($type);
+                $arguments = [];
+                foreach ($relations as $relation) {
+                    if ($relation) {
+                        $relation_arguments = $this->collect_configuration($relation);
+                        if ($relation_arguments) {
+                            $arguments = array_replace($arguments, $relation_arguments);
                         }
                     }
-                } else {
-                    $arguments = [];
                 }
+            } else {
+                $arguments = [];
             }
-
             if (isset($this->arguments[$type])) {
                 if ($arguments && count($arguments)) {
                     $arguments = array_replace_recursive($arguments, $this->arguments[$type]);
@@ -178,47 +154,44 @@ class Config implements \Magento\FunctionalTestingFramework\ObjectManager\Config
                     $arguments = $this->arguments[$type];
                 }
             }
-            $this->mergedArguments[$type] = $arguments;
+            $this->merged_arguments[$type] = $arguments;
             return $arguments;
         }
-        return $this->mergedArguments[$type];
+        return $this->merged_arguments[$type];
     }
-
     /**
      * Merge configuration
      *
      * @return void
      */
-    protected function mergeConfiguration(array $configuration)
+    protected function merge_configuration(array $configuration)
     {
-        foreach ($configuration as $key => $curConfig) {
+        foreach ($configuration as $key => $cur_config) {
             switch ($key) {
                 case 'preferences':
-                    foreach ($curConfig as $for => $to) {
+                    foreach ($cur_config as $for => $to) {
                         $this->preferences[ltrim((string) $for, '\\')] = ltrim((string) $to, '\\');
                     }
                     break;
-
                 default:
-                    $this->setConfiguration($key, $curConfig);
+                    $this->set_configuration($key, $cur_config);
             }
         }
     }
-
     /**
      * Set configuration
      *
      * @param string $key
      */
-    private function setConfiguration(int|string $key, array $config): void
+    private function set_configuration(int|string $key, array $config): void
     {
         $key = ltrim((string) $key, '\\');
         if (isset($config['type'])) {
-            $this->virtualTypes[$key] = ltrim($config['type'], '\\');
+            $this->virtual_types[$key] = ltrim($config['type'], '\\');
         }
         if (isset($config['arguments'])) {
-            if (!empty($this->mergedArguments)) {
-                $this->mergedArguments = [];
+            if (!empty($this->merged_arguments)) {
+                $this->merged_arguments = [];
             }
             if (isset($this->arguments[$key])) {
                 $this->arguments[$key] = array_replace($this->arguments[$key], $config['arguments']);
@@ -228,18 +201,17 @@ class Config implements \Magento\FunctionalTestingFramework\ObjectManager\Config
         }
         if (isset($config['shared'])) {
             if (!$config['shared']) {
-                $this->nonShared[$key] = 1;
+                $this->non_shared[$key] = 1;
             } else {
-                unset($this->nonShared[$key]);
+                unset($this->non_shared[$key]);
             }
         }
     }
-
     /**
      * Extend configuration
      */
     public function extend(array $configuration): void
     {
-        $this->mergeConfiguration($configuration);
+        $this->merge_configuration($configuration);
     }
 }

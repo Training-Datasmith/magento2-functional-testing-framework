@@ -1,34 +1,30 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Util;
 
-namespace Magento\FunctionalTestingFramework\Util;
-
-use Magento\FunctionalTestingFramework\Composer\ComposerInstall;
-use Magento\FunctionalTestingFramework\Composer\ComposerPackage;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-
+use Magento\Functional_Testing_Framework\Composer\Composer_Install;
+use Magento\Functional_Testing_Framework\Composer\Composer_Package;
+use Magento\Functional_Testing_Framework\Exceptions\Test_Framework_Exception;
 /**
  * Composer Based Module Resolver
  */
-class ComposerModuleResolver
+class Composer_Module_Resolver
 {
     /**
      * Code path array from composer json search
      */
-    private ?array $searchedTestModules = null;
-
+    private ?array $searched_test_modules = null;
     /**
      * Code path array from composer installed test packages
      *
      * @var array
      */
-    private $installedTestModules;
-
+    private $installed_test_modules;
     /**
      * Get code paths for installed test modules
      *
@@ -36,27 +32,23 @@ class ComposerModuleResolver
      * @return array
      * @throws TestFrameworkException
      */
-    public function getComposerInstalledTestModules($rootComposerFile)
+    public function get_composer_installed_test_modules($root_composer_file)
     {
-        if (null !== $this->installedTestModules) {
-            return $this->installedTestModules;
+        if (null !== $this->installed_test_modules) {
+            return $this->installed_test_modules;
         }
-
-        if (!file_exists($rootComposerFile) || basename($rootComposerFile, '.json') !== 'composer') {
-            throw new TestFrameworkException("Invalid root composer json file: {$rootComposerFile}");
+        if (!file_exists($root_composer_file) || basename($root_composer_file, '.json') !== 'composer') {
+            throw new Test_Framework_Exception("Invalid root composer json file: {$root_composer_file}");
         }
-
-        $this->installedTestModules = [];
-        $composer = new ComposerInstall($rootComposerFile);
-
-        foreach ($composer->getInstalledTestPackages() as $packageData) {
-            $suggestedModuleNames = $packageData[ComposerInstall::PACKAGE_SUGGESTED_MAGENTO_MODULES];
-            $path = $packageData[ComposerInstall::PACKAGE_INSTALLEDPATH];
-            $this->installedTestModules[$path] = $suggestedModuleNames;
+        $this->installed_test_modules = [];
+        $composer = new Composer_Install($root_composer_file);
+        foreach ($composer->get_installed_test_packages() as $package_data) {
+            $suggested_module_names = $package_data[Composer_Install::PACKAGE_SUGGESTED_MAGENTO_MODULES];
+            $path = $package_data[Composer_Install::PACKAGE_INSTALLEDPATH];
+            $this->installed_test_modules[$path] = $suggested_module_names;
         }
-        return $this->installedTestModules;
+        return $this->installed_test_modules;
     }
-
     /**
      * Get code paths by searching test module composer json file from input directories
      *
@@ -64,79 +56,65 @@ class ComposerModuleResolver
      * @return array
      * @throws TestFrameworkException
      */
-    public function getTestModulesFromPaths($directories)
+    public function get_test_modules_from_paths($directories)
     {
-        if (null !== $this->searchedTestModules) {
-            return $this->searchedTestModules;
+        if (null !== $this->searched_test_modules) {
+            return $this->searched_test_modules;
         }
-
-        $this->searchedTestModules = [];
+        $this->searched_test_modules = [];
         foreach ($directories as $directory) {
-            $this->searchedTestModules = array_merge_recursive(
-                $this->searchedTestModules,
-                $this->getTestModules($directory)
-            );
+            $this->searched_test_modules = array_merge_recursive($this->searched_test_modules, $this->get_test_modules($directory));
         }
-        return $this->searchedTestModules;
+        return $this->searched_test_modules;
     }
-
     /**
      * Get code paths by searching test module composer json file from input directory
      *
      * @param string $directory
      * @throws TestFrameworkException
      */
-    private function getTestModules($directory): array
+    private function get_test_modules($directory): array
     {
-        $normalizedDir = realpath($directory);
-        if (!is_dir($normalizedDir)) {
-            throw new TestFrameworkException("Invalid directory: {$directory}");
+        $normalized_dir = realpath($directory);
+        if (!is_dir($normalized_dir)) {
+            throw new Test_Framework_Exception("Invalid directory: {$directory}");
         }
-
         // Find all composer json files under directory
         $modules = [];
-        $fileList = $this->findComposerJsonFilesAtDepth($normalizedDir, 2);
-        foreach ($fileList as $file) {
+        $file_list = $this->find_composer_json_files_at_depth($normalized_dir, 2);
+        foreach ($file_list as $file) {
             // Parse composer json for test module name and path information
-            $composerInfo = new ComposerPackage($file);
-            if ($composerInfo->isMftfTestPackage()) {
-                $modulePath = str_replace(
-                    DIRECTORY_SEPARATOR . 'composer.json',
-                    '',
-                    $file
-                );
-                $suggestedMagentoModuleNames = $composerInfo->getSuggestedMagentoModules();
-                if (array_key_exists($modulePath, $modules)) {
-                    $modules[$modulePath] = array_merge($modules[$modulePath], $suggestedMagentoModuleNames);
+            $composer_info = new Composer_Package($file);
+            if ($composer_info->is_mftf_test_package()) {
+                $module_path = str_replace(DIRECTORY_SEPARATOR . 'composer.json', '', $file);
+                $suggested_magento_module_names = $composer_info->get_suggested_magento_modules();
+                if (array_key_exists($module_path, $modules)) {
+                    $modules[$module_path] = array_merge($modules[$module_path], $suggested_magento_module_names);
                 } else {
-                    $modules[$modulePath] = $suggestedMagentoModuleNames;
+                    $modules[$module_path] = $suggested_magento_module_names;
                 }
             }
         }
         return $modules;
     }
-
     /**
      * Find absolute paths of all composer json files in a given directory
      */
-    private function findAllComposerJsonFiles(string $directory): array
+    private function find_all_composer_json_files(string $directory): array
     {
         $directory = realpath($directory);
-        $jsonPattern = DIRECTORY_SEPARATOR . 'composer.json';
-        $subDirectoryPattern = DIRECTORY_SEPARATOR . '*';
-
-        $jsonFileList = [];
-        foreach (glob($directory . $subDirectoryPattern, GLOB_ONLYDIR) as $dir) {
-            $jsonFileList = array_merge_recursive($jsonFileList, self::findAllComposerJsonFiles($dir));
+        $json_pattern = DIRECTORY_SEPARATOR . 'composer.json';
+        $sub_directory_pattern = DIRECTORY_SEPARATOR . '*';
+        $json_file_list = [];
+        foreach (glob($directory . $sub_directory_pattern, GLOB_ONLYDIR) as $dir) {
+            $json_file_list = array_merge_recursive($json_file_list, self::find_all_composer_json_files($dir));
         }
-
-        $curJsonFiles = glob($directory . $jsonPattern);
-        if ($curJsonFiles !== false && !empty($curJsonFiles)) {
-            return array_merge_recursive($jsonFileList, $curJsonFiles);
+        $cur_json_files = glob($directory . $json_pattern);
+        if ($cur_json_files !== false && !empty($cur_json_files)) {
+            return array_merge_recursive($json_file_list, $cur_json_files);
         }
-        return $jsonFileList;
+        return $json_file_list;
     }
-
     /**
      * Find absolute paths of all composer json files in a given directory at certain depths
      *
@@ -144,26 +122,22 @@ class ComposerModuleResolver
      * @param integer $depth
      * @return array
      */
-    private function findComposerJsonFilesAtDepth($directory, int|float $depth)
+    private function find_composer_json_files_at_depth($directory, int|float $depth)
     {
         $directory = realpath($directory);
-        $jsonPattern = DIRECTORY_SEPARATOR . 'composer.json';
-        $subDirectoryPattern = DIRECTORY_SEPARATOR . '*';
-
-        $jsonFileList = [];
+        $json_pattern = DIRECTORY_SEPARATOR . 'composer.json';
+        $sub_directory_pattern = DIRECTORY_SEPARATOR . '*';
+        $json_file_list = [];
         if ($depth > 0) {
-            foreach (glob($directory . $subDirectoryPattern, GLOB_ONLYDIR) as $dir) {
-                $jsonFileList = array_merge_recursive(
-                    $jsonFileList,
-                    self::findComposerJsonFilesAtDepth($dir, $depth - 1)
-                );
+            foreach (glob($directory . $sub_directory_pattern, GLOB_ONLYDIR) as $dir) {
+                $json_file_list = array_merge_recursive($json_file_list, self::find_composer_json_files_at_depth($dir, $depth - 1));
             }
         } elseif ($depth === 0) {
-            $jsonFileList = glob($directory . $jsonPattern);
-            if ($jsonFileList === false) {
-                $jsonFileList = [];
+            $json_file_list = glob($directory . $json_pattern);
+            if ($json_file_list === false) {
+                $json_file_list = [];
             }
         }
-        return $jsonFileList;
+        return $json_file_list;
     }
 }

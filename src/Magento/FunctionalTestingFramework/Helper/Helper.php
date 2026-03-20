@@ -1,12 +1,11 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\Helper;
+namespace Magento\Functional_Testing_Framework\Helper;
 
 /**
  * Class Helper to abstract Codeception module class and make possible to add own functionality if needed.

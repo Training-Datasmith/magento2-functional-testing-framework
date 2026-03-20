@@ -1,28 +1,24 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2020 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Suite\Config;
 
-namespace Magento\FunctionalTestingFramework\Suite\Config;
-
-use Magento\FunctionalTestingFramework\Exceptions\Collector\ExceptionCollector;
-use Magento\FunctionalTestingFramework\Util\Validation\SingleNodePerFileValidationUtil;
-
+use Magento\Functional_Testing_Framework\Exceptions\Collector\Exception_Collector;
+use Magento\Functional_Testing_Framework\Util\Validation\Single_Node_Per_File_Validation_Util;
 /**
  * MFTF suite.xml configuration XML DOM utility
  * @package Magento\FunctionalTestingFramework\Suite\Config
  */
-class SuiteDom extends \Magento\FunctionalTestingFramework\Config\MftfDom
+class Suite_Dom extends \Magento\Functional_Testing_Framework\Config\Mftf_Dom
 {
     public const SUITE_META_FILENAME_ATTRIBUTE = 'filename';
-
     /** SingleNodePerFileValidationUtil
      */
-    private readonly \Magento\FunctionalTestingFramework\Util\Validation\SingleNodePerFileValidationUtil $singleNodePerFileValidationUtil;
-
+    private readonly \Magento\Functional_Testing_Framework\Util\Validation\Single_Node_Per_File_Validation_Util $single_node_per_file_validation_util;
     /**
      * Entity Dom constructor.
      * @param string             $xml
@@ -32,27 +28,11 @@ class SuiteDom extends \Magento\FunctionalTestingFramework\Config\MftfDom
      * @param string             $schemaFile
      * @param string             $errorFormat
      */
-    public function __construct(
-        $xml,
-        $filename,
-        $exceptionCollector,
-        array $idAttributes = [],
-        $typeAttributeName = null,
-        $schemaFile = null,
-        $errorFormat = self::ERROR_FORMAT_DEFAULT
-    ) {
-        $this->singleNodePerFileValidationUtil = new SingleNodePerFileValidationUtil($exceptionCollector);
-        parent::__construct(
-            $xml,
-            $filename,
-            $exceptionCollector,
-            $idAttributes,
-            $typeAttributeName,
-            $schemaFile,
-            $errorFormat
-        );
+    public function __construct($xml, $filename, $exception_collector, array $id_attributes = [], $type_attribute_name = null, $schema_file = null, $error_format = self::ERROR_FORMAT_DEFAULT)
+    {
+        $this->single_node_per_file_validation_util = new Single_Node_Per_File_Validation_Util($exception_collector);
+        parent::__construct($xml, $filename, $exception_collector, $id_attributes, $type_attribute_name, $schema_file, $error_format);
     }
-
     /**
      * Takes a dom element from xml and appends the filename based on location
      *
@@ -60,24 +40,18 @@ class SuiteDom extends \Magento\FunctionalTestingFramework\Config\MftfDom
      * @param string|null $filename
      * @return \DOMDocument
      */
-    public function initDom($xml, $filename = null)
+    public function init_dom($xml, $filename = null)
     {
-        $dom = parent::initDom($xml, $filename);
-
-        if ($dom->getElementsByTagName('suites')->length > 0) {
+        $dom = parent::init_dom($xml, $filename);
+        if ($dom->get_elements_by_tag_name('suites')->length > 0) {
             // Validate single suite node per file
-            $this->singleNodePerFileValidationUtil->validateSingleNodeForTag(
-                $dom,
-                'suite',
-                $filename
-            );
-            if ($dom->getElementsByTagName('suite')->length > 0) {
+            $this->single_node_per_file_validation_util->validate_single_node_for_tag($dom, 'suite', $filename);
+            if ($dom->get_elements_by_tag_name('suite')->length > 0) {
                 /** @var \DOMElement $suiteNode */
-                $suiteNode = $dom->getElementsByTagName('suite')[0];
-                $suiteNode->setAttribute(self::SUITE_META_FILENAME_ATTRIBUTE, $filename);
+                $suite_node = $dom->get_elements_by_tag_name('suite')[0];
+                $suite_node->set_attribute(self::SUITE_META_FILENAME_ATTRIBUTE, $filename);
             }
         }
-
         return $dom;
     }
 }

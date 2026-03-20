@@ -4,196 +4,146 @@
  * Copyright 2019 Adobe
  * All Rights Reserved.
  */
-
-declare(strict_types=1);
-
-namespace Magento\FunctionalTestingFramework\Console;
+declare (strict_types=1);
+namespace Magento\Functional_Testing_Framework\Console;
 
 use Codeception\Configuration;
-use Codeception\SuiteManager;
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use Magento\FunctionalTestingFramework\DataTransport\Auth\WebApiAuth;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Module\MagentoWebDriver;
-use Magento\FunctionalTestingFramework\Module\MagentoWebDriverDoctor;
+use Codeception\Suite_Manager;
+use Magento\Functional_Testing_Framework\Config\Mftf_Application_Config;
+use Magento\Functional_Testing_Framework\Data_Transport\Auth\Web_Api_Auth;
+use Magento\Functional_Testing_Framework\Exceptions\Test_Framework_Exception;
+use Magento\Functional_Testing_Framework\Module\Magento_Web_Driver;
+use Magento\Functional_Testing_Framework\Module\Magento_Web_Driver_Doctor;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-
-class DoctorCommand extends Command
+use Symfony\Component\Console\Input\Input_Interface;
+use Symfony\Component\Console\Output\Output_Interface;
+use Symfony\Component\Console\Style\Symfony_Style;
+use Symfony\Component\Event_Dispatcher\Event_Dispatcher;
+class Doctor_Command extends Command
 {
     public const CODECEPTION_AUTOLOAD_FILE = PROJECT_ROOT . '/vendor/codeception/codeception/autoload.php';
     public const MFTF_CODECEPTION_CONFIG_FILE = ENV_FILE_PATH . 'codeception.yml';
     public const SUITE = 'functional';
-
     /**
      * Console output style
      */
-    private ?\Symfony\Component\Console\Style\SymfonyStyle $ioStyle = null;
-
+    private ?\Symfony\Component\Console\Style\Symfony_Style $io_style = null;
     /**
      * Exception Context
      *
      * @var array
      */
     private $context = [];
-
     /**
      * Configures the current command.
      */
     protected function configure(): void
     {
-        $this->setName('doctor')
-            ->setDescription(
-                'This command checks environment readiness for generating and running MFTF tests.'
-            );
+        $this->set_name('doctor')->set_description('This command checks environment readiness for generating and running MFTF tests.');
     }
-
     /**
      * Executes the current command.
      *
      * @throws TestFrameworkException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(Input_Interface $input, Output_Interface $output): int
     {
         // For output style
-        $this->ioStyle = new SymfonyStyle($input, $output);
-
-        $cmdStatus = true;
-
+        $this->io_style = new Symfony_Style($input, $output);
+        $cmd_status = true;
         // Config application
-        $verbose = $output->isVerbose();
-        MftfApplicationConfig::create(
-            false,
-            MftfApplicationConfig::GENERATION_PHASE,
-            $verbose,
-            MftfApplicationConfig::LEVEL_DEVELOPER,
-            false
-        );
-
+        $verbose = $output->is_verbose();
+        Mftf_Application_Config::create(false, Mftf_Application_Config::GENERATION_PHASE, $verbose, Mftf_Application_Config::LEVEL_DEVELOPER, false);
         // Check authentication to Magento Admin
-        $status = $this->checkAuthenticationToMagentoAdmin();
-        $cmdStatus = $cmdStatus && !$status ? false : $cmdStatus;
-
+        $status = $this->check_authentication_to_magento_admin();
+        $cmd_status = $cmd_status && !$status ? false : $cmd_status;
         // Check connection to Selenium
-        $status = $this->checkContextOnStep(
-            MagentoWebDriverDoctor::EXCEPTION_CONTEXT_SELENIUM,
-            'Connecting to Selenium Server'
-        );
-        $cmdStatus = $cmdStatus && !$status ? false : $cmdStatus;
-
+        $status = $this->check_context_on_step(Magento_Web_Driver_Doctor::EXCEPTION_CONTEXT_SELENIUM, 'Connecting to Selenium Server');
+        $cmd_status = $cmd_status && !$status ? false : $cmd_status;
         // Check opening Magento Admin in web browser
-        $status = $this->checkContextOnStep(
-            MagentoWebDriverDoctor::EXCEPTION_CONTEXT_ADMIN,
-            'Loading Admin page'
-        );
-        $cmdStatus = $cmdStatus && !$status ? false : $cmdStatus;
-
+        $status = $this->check_context_on_step(Magento_Web_Driver_Doctor::EXCEPTION_CONTEXT_ADMIN, 'Loading Admin page');
+        $cmd_status = $cmd_status && !$status ? false : $cmd_status;
         // Check opening Magento Storefront in web browser
-        $status = $this->checkContextOnStep(
-            MagentoWebDriverDoctor::EXCEPTION_CONTEXT_STOREFRONT,
-            'Loading Storefront page'
-        );
-        $cmdStatus = $cmdStatus && !$status ? false : $cmdStatus;
-
+        $status = $this->check_context_on_step(Magento_Web_Driver_Doctor::EXCEPTION_CONTEXT_STOREFRONT, 'Loading Storefront page');
+        $cmd_status = $cmd_status && !$status ? false : $cmd_status;
         // Check access to Magento CLI
-        $status = $this->checkContextOnStep(
-            MagentoWebDriverDoctor::EXCEPTION_CONTEXT_CLI,
-            'Running Magento CLI'
-        );
-        $cmdStatus = $cmdStatus && !$status ? false : $cmdStatus;
-
-        return $cmdStatus ? 0 : 1;
+        $status = $this->check_context_on_step(Magento_Web_Driver_Doctor::EXCEPTION_CONTEXT_CLI, 'Running Magento CLI');
+        $cmd_status = $cmd_status && !$status ? false : $cmd_status;
+        return $cmd_status ? 0 : 1;
     }
-
     /**
      * Check admin account authentication
      *
      * @return boolean
      */
-    private function checkAuthenticationToMagentoAdmin()
+    private function check_authentication_to_magento_admin()
     {
         $result = false;
         try {
-            $this->ioStyle->text('Requesting API token for admin user through cURL ...');
-            WebApiAuth::getAdminToken();
-            $this->ioStyle->success('Successful');
+            $this->io_style->text('Requesting API token for admin user through cURL ...');
+            Web_Api_Auth::get_admin_token();
+            $this->io_style->success('Successful');
             $result = true;
-        } catch (TestFrameworkException $e) {
+        } catch (Test_Framework_Exception $e) {
             if (getenv('MAGENTO_BACKEND_BASE_URL')) {
-                $urlVar = 'MAGENTO_BACKEND_BASE_URL';
+                $url_var = 'MAGENTO_BACKEND_BASE_URL';
             } else {
-                $urlVar = 'MAGENTO_BASE_URL';
+                $url_var = 'MAGENTO_BASE_URL';
             }
-            $this->ioStyle->error(
-                $e->getMessage() . "\nPlease verify if " . $urlVar . ', '
-                . 'MAGENTO_ADMIN_USERNAME and MAGENTO_ADMIN_PASSWORD in .env are valid.'
-            );
+            $this->io_style->error($e->get_message() . "\nPlease verify if " . $url_var . ', ' . 'MAGENTO_ADMIN_USERNAME and MAGENTO_ADMIN_PASSWORD in .env are valid.');
         }
         return $result;
     }
-
     /**
      * Check exception context after runMagentoWebDriverDoctor
      *
      * @throws TestFrameworkException
      */
-    private function checkContextOnStep(string $exceptionType, string $message): bool
+    private function check_context_on_step(string $exception_type, string $message): bool
     {
-        $this->ioStyle->text($message . ' ...');
-        $this->runMagentoWebDriverDoctor();
-
-        if (isset($this->context[$exceptionType])) {
-            $this->ioStyle->error($this->context[$exceptionType]);
+        $this->io_style->text($message . ' ...');
+        $this->run_magento_web_driver_doctor();
+        if (isset($this->context[$exception_type])) {
+            $this->io_style->error($this->context[$exception_type]);
             return false;
         }
-        $this->ioStyle->success('Successful');
+        $this->io_style->success('Successful');
         return true;
     }
-
     /**
      * Run diagnose through MagentoWebDriverDoctor
      *
      * @throws TestFrameworkException
      */
-    private function runMagentoWebDriverDoctor(): void
+    private function run_magento_web_driver_doctor(): void
     {
         if (!empty($this->context)) {
             return;
         }
-
-        $magentoWebDriver = '\\' . MagentoWebDriver::class;
-        $magentoWebDriverDoctor = '\\' . MagentoWebDriverDoctor::class;
-
+        $magento_web_driver = '\\' . Magento_Web_Driver::class;
+        $magento_web_driver_doctor = '\\' . Magento_Web_Driver_Doctor::class;
         require_once realpath(self::CODECEPTION_AUTOLOAD_FILE);
-
         $config = Configuration::config(realpath(self::MFTF_CODECEPTION_CONFIG_FILE));
-        $settings = Configuration::suiteSettings(self::SUITE, $config);
-
+        $settings = Configuration::suite_settings(self::SUITE, $config);
         // Enable MagentoWebDriverDoctor
-        $settings['modules']['enabled'][] = $magentoWebDriverDoctor;
-        $settings['modules']['config'][$magentoWebDriverDoctor] =
-            $settings['modules']['config'][$magentoWebDriver];
-
+        $settings['modules']['enabled'][] = $magento_web_driver_doctor;
+        $settings['modules']['config'][$magento_web_driver_doctor] = $settings['modules']['config'][$magento_web_driver];
         // Disable MagentoWebDriver to avoid conflicts
         foreach ($settings['modules']['enabled'] as $index => $module) {
-            if ($module === $magentoWebDriver) {
+            if ($module === $magento_web_driver) {
                 unset($settings['modules']['enabled'][$index]);
                 break;
             }
         }
-        unset($settings['modules']['config'][$magentoWebDriver]);
-
-        $dispatcher = new EventDispatcher();
-        $suiteManager = new SuiteManager($dispatcher, self::SUITE, $settings, []);
+        unset($settings['modules']['config'][$magento_web_driver]);
+        $dispatcher = new Event_Dispatcher();
+        $suite_manager = new Suite_Manager($dispatcher, self::SUITE, $settings, []);
         try {
-            $suiteManager->initialize();
+            $suite_manager->initialize();
             $this->context = ['Successful'];
-        } catch (TestFrameworkException $e) {
-            $this->context = $e->getContext();
+        } catch (Test_Framework_Exception $e) {
+            $this->context = $e->get_context();
         }
     }
 }

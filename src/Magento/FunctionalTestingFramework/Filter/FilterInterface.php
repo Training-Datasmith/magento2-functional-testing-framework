@@ -4,19 +4,16 @@
  * Copyright 2020 Adobe
  * All Rights Reserved.
  */
-
-declare(strict_types=1);
-
-namespace Magento\FunctionalTestingFramework\Filter;
+declare (strict_types=1);
+namespace Magento\Functional_Testing_Framework\Filter;
 
 /**
  * Interface for future test filters
  * @api
  */
-interface FilterInterface
+interface Filter_Interface
 {
-    public function __construct(array $filterValues = []);
-
+    public function __construct(array $filter_values = []);
     /**
      * @return void
      */

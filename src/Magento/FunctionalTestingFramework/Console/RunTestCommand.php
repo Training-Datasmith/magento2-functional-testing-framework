@@ -4,260 +4,190 @@
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
+declare (strict_types=1);
+namespace Magento\Functional_Testing_Framework\Console;
 
-declare(strict_types=1);
-
-namespace Magento\FunctionalTestingFramework\Console;
-
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Util\GenerationErrorHandler;
-use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
-use Magento\FunctionalTestingFramework\Util\TestGenerator;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use Magento\Functional_Testing_Framework\Config\Mftf_Application_Config;
+use Magento\Functional_Testing_Framework\Exceptions\Test_Framework_Exception;
+use Magento\Functional_Testing_Framework\Util\Generation_Error_Handler;
+use Magento\Functional_Testing_Framework\Util\Path\File_Path_Formatter;
+use Magento\Functional_Testing_Framework\Util\Test_Generator;
+use Symfony\Component\Console\Input\Array_Input;
+use Symfony\Component\Console\Input\Input_Argument;
+use Symfony\Component\Console\Input\Input_Interface;
+use Symfony\Component\Console\Input\Input_Option;
+use Symfony\Component\Console\Output\Output_Interface;
 use Symfony\Component\Process\Process;
-
 /**
  * @SuppressWarnings(PHPMD)
  */
-class RunTestCommand extends BaseGenerateCommand
+class Run_Test_Command extends Base_Generate_Command
 {
     /**
      * The return code. Determined by all tests that run.
      */
-    private int $returnCode = 0;
-
+    private int $return_code = 0;
     /**
      * Configures the current command.
      */
     protected function configure(): void
     {
-        $this->setName('run:test')
-            ->setDescription('generation and execution of test(s) defined in xml')
-            ->addOption(
-                'xml',
-                'xml',
-                InputOption::VALUE_NONE,
-                'creates xml report for executed test'
-            )->addArgument(
-                'name',
-                InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
-                'name of tests to generate and execute'
-            )->addOption(
-                'skip-generate',
-                'k',
-                InputOption::VALUE_NONE,
-                'skip generation and execute existing test'
-            )->addOption(
-                'tests',
-                't',
-                InputOption::VALUE_REQUIRED,
-                'A parameter accepting a JSON string or JSON file path used to determine the test configuration'
-            );
+        $this->set_name('run:test')->set_description('generation and execution of test(s) defined in xml')->add_option('xml', 'xml', Input_Option::VALUE_NONE, 'creates xml report for executed test')->add_argument('name', Input_Argument::OPTIONAL | Input_Argument::IS_ARRAY, 'name of tests to generate and execute')->add_option('skip-generate', 'k', Input_Option::VALUE_NONE, 'skip generation and execute existing test')->add_option('tests', 't', Input_Option::VALUE_REQUIRED, 'A parameter accepting a JSON string or JSON file path used to determine the test configuration');
         parent::configure();
     }
-
     /**
      * Executes the current command.
      *
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(Input_Interface $input, Output_Interface $output): int
     {
-        $tests = $input->getArgument('name');
-        $json = $input->getOption('tests'); // for backward compatibility
-        $skipGeneration = $input->getOption('skip-generate');
-        $force = $input->getOption('force');
-        $remove = $input->getOption('remove');
-        $debug = $input->getOption('debug') ?? MftfApplicationConfig::LEVEL_DEVELOPER; // for backward compatibility
-        $allowSkipped = $input->getOption('allow-skipped');
-        $verbose = $output->isVerbose();
-
-        if ($skipGeneration and $remove) {
+        $tests = $input->get_argument('name');
+        $json = $input->get_option('tests');
+        // for backward compatibility
+        $skip_generation = $input->get_option('skip-generate');
+        $force = $input->get_option('force');
+        $remove = $input->get_option('remove');
+        $debug = $input->get_option('debug') ?? Mftf_Application_Config::LEVEL_DEVELOPER;
+        // for backward compatibility
+        $allow_skipped = $input->get_option('allow-skipped');
+        $verbose = $output->is_verbose();
+        if ($skip_generation and $remove) {
             // "skip-generate" and "remove" options cannot be used at the same time
-            throw new TestFrameworkException(
-                '"skip-generate" and "remove" options can not be used at the same time.'
-            );
+            throw new Test_Framework_Exception('"skip-generate" and "remove" options can not be used at the same time.');
         }
-
         // Set application configuration so we can references the user options in our framework
-        MftfApplicationConfig::create(
-            $force,
-            MftfApplicationConfig::EXECUTION_PHASE,
-            $verbose,
-            $debug,
-            $allowSkipped
-        );
-
+        Mftf_Application_Config::create($force, Mftf_Application_Config::EXECUTION_PHASE, $verbose, $debug, $allow_skipped);
         if ($json !== null) {
             if (is_file($json)) {
-                $testConfiguration = file_get_contents($json);
+                $test_configuration = file_get_contents($json);
             } else {
-                $testConfiguration = $json;
+                $test_configuration = $json;
             }
         }
-
         if (!empty($tests)) {
-            $testConfiguration = $this->getTestAndSuiteConfiguration($tests);
+            $test_configuration = $this->get_test_and_suite_configuration($tests);
         }
-
-        if ($testConfiguration !== null && !json_decode((string) $testConfiguration)) {
+        if ($test_configuration !== null && !json_decode((string) $test_configuration)) {
             // stop execution if we have failed to properly parse any json passed in by the user
-            throw new TestFrameworkException('JSON could not be parsed: ' . json_last_error_msg());
+            throw new Test_Framework_Exception('JSON could not be parsed: ' . json_last_error_msg());
         }
-
-        $generationErrorCode = 0;
-
-        if (!$skipGeneration) {
-            $command = $this->getApplication()->find('generate:tests');
-            $args = [
-                '--tests' => $testConfiguration,
-                '--force' => $force,
-                '--remove' => $remove,
-                '--debug' => $debug,
-                '--allow-skipped' => $allowSkipped,
-                '-v' => $verbose,
-                '',
-            ];
-            $command->run(new ArrayInput($args), $output);
-
-            if (!empty(GenerationErrorHandler::getInstance()->getAllErrors())) {
-                $generationErrorCode = 1;
+        $generation_error_code = 0;
+        if (!$skip_generation) {
+            $command = $this->get_application()->find('generate:tests');
+            $args = ['--tests' => $test_configuration, '--force' => $force, '--remove' => $remove, '--debug' => $debug, '--allow-skipped' => $allow_skipped, '-v' => $verbose, ''];
+            $command->run(new Array_Input($args), $output);
+            if (!empty(Generation_Error_Handler::get_instance()->get_all_errors())) {
+                $generation_error_code = 1;
             }
         }
-
-        $testConfigArray = json_decode((string) $testConfiguration, true);
-
-        if (isset($testConfigArray['tests'])) {
-            $this->runTests($testConfigArray['tests'], $output, $input);
+        $test_config_array = json_decode((string) $test_configuration, true);
+        if (isset($test_config_array['tests'])) {
+            $this->run_tests($test_config_array['tests'], $output, $input);
         }
-
-        if (isset($testConfigArray['suites'])) {
-            $this->runTestsInSuite($testConfigArray['suites'], $output, $input);
+        if (isset($test_config_array['suites'])) {
+            $this->run_tests_in_suite($test_config_array['suites'], $output, $input);
         }
-
         // Add all failed tests in 'failed' file
-        $this->applyAllFailed();
-
-        return max($this->returnCode, $generationErrorCode);
+        $this->apply_all_failed();
+        return max($this->return_code, $generation_error_code);
     }
-
     /**
      * Run tests not referenced in suites
      *
      * @throws TestFrameworkException
      * @throws \Exception
      */
-    private function runTests(array $tests, OutputInterface $output, InputInterface $input): void
+    private function run_tests(array $tests, Output_Interface $output, Input_Interface $input): void
     {
-        $xml = ($input->getOption('xml')) ? '--xml' : '';
-        $noAnsi = ($input->getOption('no-ansi')) ? '--no-ansi' : '';
-        if ($this->pauseEnabled()) {
-            $codeceptionCommand = self::CODECEPT_RUN_FUNCTIONAL;
+        $xml = $input->get_option('xml') ? '--xml' : '';
+        $no_ansi = $input->get_option('no-ansi') ? '--no-ansi' : '';
+        if ($this->pause_enabled()) {
+            $codeception_command = self::CODECEPT_RUN_FUNCTIONAL;
         } else {
-            $codeceptionCommand = realpath(PROJECT_ROOT . '/vendor/bin/codecept') . ' run functional ';
+            $codeception_command = realpath(PROJECT_ROOT . '/vendor/bin/codecept') . ' run functional ';
         }
-
-        $testsDirectory = FilePathFormatter::format(TESTS_MODULE_PATH) .
-            TestGenerator::GENERATED_DIR .
-            DIRECTORY_SEPARATOR .
-            TestGenerator::DEFAULT_DIR .
-            DIRECTORY_SEPARATOR ;
-
+        $tests_directory = File_Path_Formatter::format(TESTS_MODULE_PATH) . Test_Generator::GENERATED_DIR . DIRECTORY_SEPARATOR . Test_Generator::DEFAULT_DIR . DIRECTORY_SEPARATOR;
         for ($i = 0; $i < count($tests); $i++) {
-            $testName = $tests[$i] . 'Cest.php';
-            if (!realpath($testsDirectory . $testName)) {
-                throw new TestFrameworkException(
-                    $testName . ' is not available under ' . $testsDirectory
-                );
+            $test_name = $tests[$i] . 'Cest.php';
+            if (!realpath($tests_directory . $test_name)) {
+                throw new Test_Framework_Exception($test_name . ' is not available under ' . $tests_directory);
             }
-
-            if ($this->pauseEnabled()) {
-                $fullCommand = $codeceptionCommand . $testsDirectory . $testName . ' --verbose --steps --debug '.$xml;
+            if ($this->pause_enabled()) {
+                $full_command = $codeception_command . $tests_directory . $test_name . ' --verbose --steps --debug ' . $xml;
                 if ($i !== count($tests) - 1) {
-                    $fullCommand .= self::CODECEPT_RUN_OPTION_NO_EXIT;
+                    $full_command .= self::CODECEPT_RUN_OPTION_NO_EXIT;
                 }
-                $this->returnCode = max($this->returnCode, $this->codeceptRunTest($fullCommand, $output));
+                $this->return_code = max($this->return_code, $this->codecept_run_test($full_command, $output));
             } else {
-                $fullCommand = $codeceptionCommand . $testsDirectory . $testName . ' --verbose --steps '.$xml;
-                $this->returnCode = max($this->returnCode, $this->executeTestCommand($fullCommand, $output, $noAnsi));
+                $full_command = $codeception_command . $tests_directory . $test_name . ' --verbose --steps ' . $xml;
+                $this->return_code = max($this->return_code, $this->execute_test_command($full_command, $output, $no_ansi));
             }
             if (!empty($xml)) {
-                $this->movingXMLFileFromSourceToDestination($xml, $testName, $output);
+                $this->moving_xml_file_from_source_to_destination($xml, $test_name, $output);
             }
             // Save failed tests
-            $this->appendRunFailed();
+            $this->append_run_failed();
         }
     }
-
     /**
      * Run tests referenced in suites within suites' context.
      *
      * @throws \Exception
      */
-    private function runTestsInSuite(array $suitesConfig, OutputInterface $output, InputInterface $input): void
+    private function run_tests_in_suite(array $suites_config, Output_Interface $output, Input_Interface $input): void
     {
-        $xml = ($input->getOption('xml')) ? '--xml' : '';
-        $noAnsi = ($input->getOption('no-ansi')) ? '--no-ansi' : '';
-        if ($this->pauseEnabled()) {
-            $codeceptionCommand = self::CODECEPT_RUN_FUNCTIONAL . '--verbose --steps --debug '.$xml;
+        $xml = $input->get_option('xml') ? '--xml' : '';
+        $no_ansi = $input->get_option('no-ansi') ? '--no-ansi' : '';
+        if ($this->pause_enabled()) {
+            $codeception_command = self::CODECEPT_RUN_FUNCTIONAL . '--verbose --steps --debug ' . $xml;
         } else {
-            $codeceptionCommand = realpath(PROJECT_ROOT . '/vendor/bin/codecept')
-                . ' run functional --verbose --steps '.$xml;
+            $codeception_command = realpath(PROJECT_ROOT . '/vendor/bin/codecept') . ' run functional --verbose --steps ' . $xml;
         }
-
-        $count = count($suitesConfig);
+        $count = count($suites_config);
         $index = 0;
         //for tests in suites, run them as a group to run before and after block
-        foreach (array_keys($suitesConfig) as $suite) {
-            $fullCommand = $codeceptionCommand . " -g {$suite}";
-
+        foreach (array_keys($suites_config) as $suite) {
+            $full_command = $codeception_command . " -g {$suite}";
             $index += 1;
-            if ($this->pauseEnabled()) {
+            if ($this->pause_enabled()) {
                 if ($index !== $count) {
-                    $fullCommand .= self::CODECEPT_RUN_OPTION_NO_EXIT;
+                    $full_command .= self::CODECEPT_RUN_OPTION_NO_EXIT;
                 }
-                $this->returnCode = max($this->returnCode, $this->codeceptRunTest($fullCommand, $output));
+                $this->return_code = max($this->return_code, $this->codecept_run_test($full_command, $output));
             } else {
-                $this->returnCode = max($this->returnCode, $this->executeTestCommand($fullCommand, $output, $noAnsi));
+                $this->return_code = max($this->return_code, $this->execute_test_command($full_command, $output, $no_ansi));
             }
             if (!empty($xml)) {
-                $this->movingXMLFileFromSourceToDestination($xml, $suite, $output);
+                $this->moving_xml_file_from_source_to_destination($xml, $suite, $output);
             }
             // Save failed tests
-            $this->appendRunFailed();
+            $this->append_run_failed();
         }
     }
-
     /**
      * Runs the codeception test command and returns exit code
      *
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    private function executeTestCommand(string $command, OutputInterface $output, string $noAnsi): int
+    private function execute_test_command(string $command, Output_Interface $output, string $no_ansi): int
     {
-        $process = Process::fromShellCommandline($command);
-        $process->setWorkingDirectory(TESTS_BP);
-        $process->setIdleTimeout(600);
-        $process->setTimeout(0);
-
-        return $process->run(function ($type, $buffer) use ($output, $noAnsi): void {
-            $buffer = $this->disableAnsiColorCodes($buffer, $noAnsi);
+        $process = Process::from_shell_commandline($command);
+        $process->set_working_directory(TESTS_BP);
+        $process->set_idle_timeout(600);
+        $process->set_timeout(0);
+        return $process->run(function ($type, $buffer) use ($output, $no_ansi): void {
+            $buffer = $this->disable_ansi_color_codes($buffer, $no_ansi);
             $output->write($buffer);
         });
     }
-
-    private function disableAnsiColorCodes(string $buffer, string $noAnsi): string
+    private function disable_ansi_color_codes(string $buffer, string $no_ansi): string
     {
-        if (empty($noAnsi)) {
+        if (empty($no_ansi)) {
             return $buffer;
         }
-        $pattern = "/\x1B\[([0-9]{1,2}(;[0-9]{1,2})*)?[m|K]/";
+        $pattern = "/\x1b\\[([0-9]{1,2}(;[0-9]{1,2})*)?[m|K]/";
         // Use preg_replace to remove ANSI escape codes from the  string
         return preg_replace($pattern, '', $buffer);
     }

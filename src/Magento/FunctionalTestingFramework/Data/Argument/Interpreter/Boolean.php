@@ -1,20 +1,18 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Data\Argument\Interpreter;
 
-namespace Magento\FunctionalTestingFramework\Data\Argument\Interpreter;
-
-use Magento\FunctionalTestingFramework\Data\Argument\InterpreterInterface;
-use Magento\FunctionalTestingFramework\Stdlib\BooleanUtils;
-
+use Magento\Functional_Testing_Framework\Data\Argument\Interpreter_Interface;
+use Magento\Functional_Testing_Framework\Stdlib\Boolean_Utils;
 /**
  * Interpreter of boolean data type, such as boolean itself or boolean string
  */
-class Boolean implements InterpreterInterface
+class Boolean implements Interpreter_Interface
 {
     /**
      * Boolean constructor.
@@ -23,10 +21,10 @@ class Boolean implements InterpreterInterface
         /**
          * Utility methods for the boolean data type
          */
-        private readonly BooleanUtils $booleanUtils
-    ) {
+        private readonly Boolean_Utils $boolean_utils
+    )
+    {
     }
-
     /**
      * {@inheritdoc}
      * @return boolean
@@ -38,6 +36,6 @@ class Boolean implements InterpreterInterface
             throw new \InvalidArgumentException('Boolean value is missing.');
         }
         $value = $data['value'];
-        return $this->booleanUtils->toBoolean($value);
+        return $this->boolean_utils->to_boolean($value);
     }
 }

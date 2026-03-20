@@ -4,14 +4,11 @@
  * Copyright 2019 Adobe
  * All Rights Reserved.
  */
+declare (strict_types=1);
+namespace Magento\Functional_Testing_Framework\Util\Path;
 
-declare(strict_types=1);
-
-namespace Magento\FunctionalTestingFramework\Util\Path;
-
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-
-class FilePathFormatter implements FormatterInterface
+use Magento\Functional_Testing_Framework\Exceptions\Test_Framework_Exception;
+class File_Path_Formatter implements Formatter_Interface
 {
     /**
      * Return formatted full file path from input string, or false on error.
@@ -19,14 +16,12 @@ class FilePathFormatter implements FormatterInterface
      *
      * @throws TestFrameworkException
      */
-    public static function format(string $path, bool $withTrailingSeparator = true): string
+    public static function format(string $path, bool $with_trailing_separator = true): string
     {
-        $validPath = realpath($path);
-
-        if ($validPath) {
-            return $withTrailingSeparator ? $validPath . DIRECTORY_SEPARATOR : $validPath;
+        $valid_path = realpath($path);
+        if ($valid_path) {
+            return $with_trailing_separator ? $valid_path . DIRECTORY_SEPARATOR : $valid_path;
         }
-
-        throw new TestFrameworkException("Invalid or non-existing file: $path\n");
+        throw new Test_Framework_Exception("Invalid or non-existing file: {$path}\n");
     }
 }

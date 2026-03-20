@@ -1,17 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\ObjectManager;
+namespace Magento\Functional_Testing_Framework\Object_Manager;
 
 /**
  * Interface FactoryInterface
  */
-interface FactoryInterface
+interface Factory_Interface
 {
     /**
      * Create instance with call time arguments
@@ -21,5 +20,5 @@ interface FactoryInterface
      * @throws \LogicException
      * @throws \BadMethodCallException
      */
-    public function create($requestedType, array $arguments = []);
+    public function create($requested_type, array $arguments = []);
 }

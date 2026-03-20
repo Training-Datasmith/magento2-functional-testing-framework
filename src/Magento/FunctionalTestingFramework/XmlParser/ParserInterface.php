@@ -1,17 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\XmlParser;
+namespace Magento\Functional_Testing_Framework\Xml_Parser;
 
 /**
  * Interface for retrieving parser data.
  */
-interface ParserInterface
+interface Parser_Interface
 {
     /**
      * Get parsed xml data.
@@ -19,5 +18,5 @@ interface ParserInterface
      * @param string $type
      * @return array
      */
-    public function getData($type);
+    public function get_data($type);
 }

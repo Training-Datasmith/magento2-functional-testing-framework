@@ -1,125 +1,114 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\Composer;
+namespace Magento\Functional_Testing_Framework\Composer;
 
 /**
  * Class ComposerPackage contains composer json information in a MFTF test package
  */
-class ComposerPackage extends AbstractComposer
+class Composer_Package extends Abstract_Composer
 {
     /**
      * @var \Composer\Package\CompletePackage
      */
-    private $rootPackage;
-
+    private $root_package;
     /**
      * Retrieve package name from composer json
      *
      * @return string
      */
-    public function getName()
+    public function get_name()
     {
         /** @var \Composer\Package\CompletePackage $package */
-        $package = $this->getRootPackage();
-        return $package->getPrettyName();
+        $package = $this->get_root_package();
+        return $package->get_pretty_name();
     }
-
     /**
      * Retrieve package type from composer json
      *
      * @return string
      */
-    public function getType()
+    public function get_type()
     {
         /** @var \Composer\Package\CompletePackage $package */
-        $package = $this->getRootPackage();
-        return $package->getType();
+        $package = $this->get_root_package();
+        return $package->get_type();
     }
-
     /**
      * Retrieve package version from composer json
      *
      * @return string
      */
-    public function getVersion()
+    public function get_version()
     {
         /** @var \Composer\Package\CompletePackage $package */
-        $package = $this->getRootPackage();
-        return $package->getPrettyVersion();
+        $package = $this->get_root_package();
+        return $package->get_pretty_version();
     }
-
     /**
      * Retrieve package description from composer json
      *
      * @return string
      */
-    public function getDescription()
+    public function get_description()
     {
         /** @var \Composer\Package\CompletePackage $package */
-        $package = $this->getRootPackage();
-        return $package->getDescription();
+        $package = $this->get_root_package();
+        return $package->get_description();
     }
-
     /**
      * Retrieve package require from composer json
      *
      * @return array
      */
-    public function getRequires()
+    public function get_requires()
     {
         /** @var \Composer\Package\CompletePackage $package */
-        $package = $this->getRootPackage();
-        return $package->getRequires();
+        $package = $this->get_root_package();
+        return $package->get_requires();
     }
-
     /**
      * Retrieve package dev require from composer json
      *
      * @return array
      */
-    public function getDevRequires()
+    public function get_dev_requires()
     {
         /** @var \Composer\Package\CompletePackage $package */
-        $package = $this->getRootPackage();
-        return $package->getDevRequires();
+        $package = $this->get_root_package();
+        return $package->get_dev_requires();
     }
-
     /**
      * Retrieve package suggest from composer json
      *
      * @return array
      */
-    public function getSuggests()
+    public function get_suggests()
     {
         /** @var \Composer\Package\CompletePackage $package */
-        $package = $this->getRootPackage();
-        return $package->getSuggests();
+        $package = $this->get_root_package();
+        return $package->get_suggests();
     }
-
     /**
      * Retrieve magento module names in package's suggest
      *
      * @return array
      */
-    public function getSuggestedMagentoModules()
+    public function get_suggested_magento_modules()
     {
-        return $this->parseSuggestsForMagentoModuleNames($this->getSuggests());
+        return $this->parse_suggests_for_magento_module_names($this->get_suggests());
     }
-
     /**
      * Determines if package is a mftf test package
      */
-    public function isMftfTestPackage(): bool
+    public function is_mftf_test_package(): bool
     {
-        return $this->getType() === self::TEST_MODULE_PACKAGE_TYPE;
+        return $this->get_type() === self::TEST_MODULE_PACKAGE_TYPE;
     }
-
     /**
      * Retrieve packages require for given package name and version
      *
@@ -127,35 +116,31 @@ class ComposerPackage extends AbstractComposer
      * @param string $version
      * @return array
      */
-    public function getRequiresForPackage($name, $version)
+    public function get_requires_for_package($name, $version)
     {
         /** @var \Composer\Package\CompletePackage $package */
-        $package = $this->getComposer()->getRepositoryManager()->findPackage($name, $version);
-        return $package->getRequires();
+        $package = $this->get_composer()->get_repository_manager()->find_package($name, $version);
+        return $package->get_requires();
     }
-
     /**
      * Check if a package is required in composer json
      *
      * @param string $packageName
      */
-    public function isPackageRequiredInComposerJson($packageName): bool
+    public function is_package_required_in_composer_json($package_name): bool
     {
-        return (in_array($packageName, array_keys($this->getRequires()))
-            || in_array($packageName, array_keys($this->getDevRequires()))
-        );
+        return in_array($package_name, array_keys($this->get_requires())) || in_array($package_name, array_keys($this->get_dev_requires()));
     }
-
     /**
      * Get root package
      *
      * @return \Composer\Package\RootPackageInterface
      */
-    public function getRootPackage()
+    public function get_root_package()
     {
-        if (!$this->rootPackage) {
-            $this->rootPackage = $this->getComposer()->getPackage();
+        if (!$this->root_package) {
+            $this->root_package = $this->get_composer()->get_package();
         }
-        return $this->rootPackage;
+        return $this->root_package;
     }
 }

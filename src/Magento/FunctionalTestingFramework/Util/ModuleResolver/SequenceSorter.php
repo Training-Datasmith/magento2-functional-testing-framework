@@ -1,17 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\Util\ModuleResolver;
+namespace Magento\Functional_Testing_Framework\Util\Module_Resolver;
 
 /**
  * Module sequence sorter.
  */
-class SequenceSorter implements SequenceSorterInterface
+class Sequence_Sorter implements Sequence_Sorter_Interface
 {
     /**
      * Sort files according to specified sequence.

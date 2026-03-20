@@ -1,17 +1,15 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Data_Generator\Util;
 
-namespace Magento\FunctionalTestingFramework\DataGenerator\Util;
-
-use Magento\FunctionalTestingFramework\DataGenerator\Handlers\OperationDefinitionObjectHandler;
-use Magento\FunctionalTestingFramework\DataGenerator\Objects\OperationElement;
-
-class OperationElementExtractor
+use Magento\Functional_Testing_Framework\Data_Generator\Handlers\Operation_Definition_Object_Handler;
+use Magento\Functional_Testing_Framework\Data_Generator\Objects\Operation_Element;
+class Operation_Element_Extractor
 {
     public const OPERATION_OBJECT_KEY = 'key';
     public const OPERATION_OBJECT_DATA_TYPE = 'dataType';
@@ -19,7 +17,6 @@ class OperationElementExtractor
     public const OPERATION_OBJECT_ENTRY = 'field';
     public const OPERATION_OBJECT_OBJ_NAME = 'object';
     public const OPERATION_OBJECT_ARRAY_VALUE = 'value';
-
     /**
      * OperationElementExtractor constructor.
      */
@@ -27,118 +24,79 @@ class OperationElementExtractor
     {
         // public constructor
     }
-
     /**
      * Takes an array representative of a dataObject and converts the array into a OperationElement
      *
      * @throws \Exception
      */
-    public function extractOperationElement(array $operationElementArray): \Magento\FunctionalTestingFramework\DataGenerator\Objects\OperationElement
+    public function extract_operation_element(array $operation_element_array): \Magento\Functional_Testing_Framework\Data_Generator\Objects\Operation_Element
     {
         // extract key
-        $operationDefKey = $operationElementArray[OperationElementExtractor::OPERATION_OBJECT_KEY];
-
+        $operation_def_key = $operation_element_array[Operation_Element_Extractor::OPERATION_OBJECT_KEY];
         // extract dataType
-        $dataType = $operationElementArray[OperationElementExtractor::OPERATION_OBJECT_DATA_TYPE];
-
-        $operationElements = [];
-        $nestedOperationElements = [];
-
+        $data_type = $operation_element_array[Operation_Element_Extractor::OPERATION_OBJECT_DATA_TYPE];
+        $operation_elements = [];
+        $nested_operation_elements = [];
         // extract nested entries
-        if (array_key_exists(OperationElementExtractor::OPERATION_OBJECT_ENTRY, $operationElementArray)) {
-            $this->extractOperationField(
-                $operationElements,
-                $operationElementArray[OperationElementExtractor::OPERATION_OBJECT_ENTRY]
-            );
+        if (array_key_exists(Operation_Element_Extractor::OPERATION_OBJECT_ENTRY, $operation_element_array)) {
+            $this->extract_operation_field($operation_elements, $operation_element_array[Operation_Element_Extractor::OPERATION_OBJECT_ENTRY]);
         }
-
         // extract nested arrays
-        if (array_key_exists(OperationElementExtractor::OPERATION_OBJECT_ARRAY, $operationElementArray)) {
-            $this->extractOperationArray(
-                $operationElements,
-                $operationElementArray[OperationElementExtractor::OPERATION_OBJECT_ARRAY]
-            );
+        if (array_key_exists(Operation_Element_Extractor::OPERATION_OBJECT_ARRAY, $operation_element_array)) {
+            $this->extract_operation_array($operation_elements, $operation_element_array[Operation_Element_Extractor::OPERATION_OBJECT_ARRAY]);
         }
-
         // extract nested
-        if (array_key_exists(OperationElementExtractor::OPERATION_OBJECT_OBJ_NAME, $operationElementArray)) {
-            foreach ($operationElementArray[OperationElementExtractor::OPERATION_OBJECT_OBJ_NAME] as $operationObject) {
-                $nestedOperationElement = $this->extractOperationElement($operationObject);
-                $operationElements[] = $nestedOperationElement;
+        if (array_key_exists(Operation_Element_Extractor::OPERATION_OBJECT_OBJ_NAME, $operation_element_array)) {
+            foreach ($operation_element_array[Operation_Element_Extractor::OPERATION_OBJECT_OBJ_NAME] as $operation_object) {
+                $nested_operation_element = $this->extract_operation_element($operation_object);
+                $operation_elements[] = $nested_operation_element;
             }
         }
-
         // a dataObject specified in xml must contain corresponding metadata for the object
-        if (empty($operationElements)) {
+        if (empty($operation_elements)) {
             throw new \Exception('must specify dataObject metadata if declaration is used');
         }
-
-        return new OperationElement(
-            $operationDefKey,
-            $dataType,
-            OperationElementExtractor::OPERATION_OBJECT_OBJ_NAME,
-            $operationElementArray[OperationDefinitionObjectHandler::ENTITY_OPERATION_REQUIRED] ?? null,
-            $nestedOperationElements,
-            $operationElements
-        );
+        return new Operation_Element($operation_def_key, $data_type, Operation_Element_Extractor::OPERATION_OBJECT_OBJ_NAME, $operation_element_array[Operation_Definition_Object_Handler::ENTITY_OPERATION_REQUIRED] ?? null, $nested_operation_elements, $operation_elements);
     }
-
     /**
      * Creates and Adds relevant DataElements from data entries defined within dataObject array
      *
      * @param array $operationFieldArray
      */
-    private function extractOperationField(array &$operationElements, $operationFieldArray): void
+    private function extract_operation_field(array &$operation_elements, $operation_field_array): void
     {
-        foreach ($operationFieldArray as $operationFieldType) {
-            $operationElements[] = new OperationElement(
-                $operationFieldType[OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_KEY],
-                $operationFieldType[OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY_VALUE],
-                OperationDefinitionObjectHandler::ENTITY_OPERATION_ENTRY,
-                $operationFieldType[OperationDefinitionObjectHandler::ENTITY_OPERATION_REQUIRED] ?? null
-            );
+        foreach ($operation_field_array as $operation_field_type) {
+            $operation_elements[] = new Operation_Element($operation_field_type[Operation_Definition_Object_Handler::ENTITY_OPERATION_ENTRY_KEY], $operation_field_type[Operation_Definition_Object_Handler::ENTITY_OPERATION_ENTRY_VALUE], Operation_Definition_Object_Handler::ENTITY_OPERATION_ENTRY, $operation_field_type[Operation_Definition_Object_Handler::ENTITY_OPERATION_REQUIRED] ?? null);
         }
     }
-
     /**
      * Creates and Adds relevant DataElements from data arrays defined within dataObject array
      *
      * @param array $operationArrayArray
      */
-    private function extractOperationArray(array &$operationArrayData, $operationArrayArray): void
+    private function extract_operation_array(array &$operation_array_data, $operation_array_array): void
     {
-        foreach ($operationArrayArray as $operationFieldType) {
-            $operationElementValue = [];
-            $entityValueKey = OperationDefinitionObjectHandler::ENTITY_OPERATION_ARRAY_VALUE;
-            if (isset($operationFieldType[$entityValueKey])) {
-                foreach ($operationFieldType[$entityValueKey] as $operationFieldValue) {
-                    $operationElementValue[] =
-                        $operationFieldValue[OperationElementExtractor::OPERATION_OBJECT_ARRAY_VALUE] ?? null;
+        foreach ($operation_array_array as $operation_field_type) {
+            $operation_element_value = [];
+            $entity_value_key = Operation_Definition_Object_Handler::ENTITY_OPERATION_ARRAY_VALUE;
+            if (isset($operation_field_type[$entity_value_key])) {
+                foreach ($operation_field_type[$entity_value_key] as $operation_field_value) {
+                    $operation_element_value[] = $operation_field_value[Operation_Element_Extractor::OPERATION_OBJECT_ARRAY_VALUE] ?? null;
                 }
             }
-
-            if (count($operationElementValue) === 1) {
-                $operationElementValue = array_pop($operationElementValue);
+            if (count($operation_element_value) === 1) {
+                $operation_element_value = array_pop($operation_element_value);
             }
-
-            $nestedOperationElements = [];
-            if (array_key_exists(OperationElementExtractor::OPERATION_OBJECT_OBJ_NAME, $operationFieldType)) {
+            $nested_operation_elements = [];
+            if (array_key_exists(Operation_Element_Extractor::OPERATION_OBJECT_OBJ_NAME, $operation_field_type)) {
                 //add the key to reference this object later
-                $operationObjectKeyedArray = $operationFieldType
-                    [OperationElementExtractor::OPERATION_OBJECT_OBJ_NAME][0];
-                $operationObjectKeyedArray[OperationElementExtractor::OPERATION_OBJECT_KEY] =
-                    $operationFieldType[OperationDefinitionObjectHandler::ENTITY_OPERATION_ARRAY_KEY];
-                $operationElement = $this->extractOperationElement($operationObjectKeyedArray);
-                $operationElementValue = $operationElement->getValue();
-                $nestedOperationElements[$operationElement->getValue()] = $operationElement;
+                $operation_object_keyed_array = $operation_field_type[Operation_Element_Extractor::OPERATION_OBJECT_OBJ_NAME][0];
+                $operation_object_keyed_array[Operation_Element_Extractor::OPERATION_OBJECT_KEY] = $operation_field_type[Operation_Definition_Object_Handler::ENTITY_OPERATION_ARRAY_KEY];
+                $operation_element = $this->extract_operation_element($operation_object_keyed_array);
+                $operation_element_value = $operation_element->get_value();
+                $nested_operation_elements[$operation_element->get_value()] = $operation_element;
             }
-            $operationArrayData[] = new OperationElement(
-                $operationFieldType[OperationDefinitionObjectHandler::ENTITY_OPERATION_ARRAY_KEY],
-                $operationElementValue,
-                OperationDefinitionObjectHandler::ENTITY_OPERATION_ARRAY,
-                $operationFieldType[OperationDefinitionObjectHandler::ENTITY_OPERATION_REQUIRED] ?? null,
-                $nestedOperationElements
-            );
+            $operation_array_data[] = new Operation_Element($operation_field_type[Operation_Definition_Object_Handler::ENTITY_OPERATION_ARRAY_KEY], $operation_element_value, Operation_Definition_Object_Handler::ENTITY_OPERATION_ARRAY, $operation_field_type[Operation_Definition_Object_Handler::ENTITY_OPERATION_REQUIRED] ?? null, $nested_operation_elements);
         }
     }
 }

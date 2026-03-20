@@ -1,17 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\Config;
+namespace Magento\Functional_Testing_Framework\Config;
 
 /**
  * Interface DataInterface
  */
-interface DataInterface
+interface Data_Interface
 {
     /**
      * Merge config data to the object
@@ -19,7 +18,6 @@ interface DataInterface
      * @return void
      */
     public function merge(array $config);
-
     // @codingStandardsIgnoreStart
     /**
      * Get config value by key
@@ -36,12 +34,11 @@ interface DataInterface
      * @return void
      */
     public function load(?string $scope = null);
-
     /**
      * Set name of the config file
      *
      * @param string $fileName
      * @return self
      */
-    public function setFileName($fileName);
+    public function set_file_name($file_name);
 }

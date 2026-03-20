@@ -4,94 +4,72 @@
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
+declare (strict_types=1);
+namespace Magento\Functional_Testing_Framework\Console;
 
-declare(strict_types=1);
-
-namespace Magento\FunctionalTestingFramework\Console;
-
-use Magento\FunctionalTestingFramework\Config\MftfApplicationConfig;
-use Magento\FunctionalTestingFramework\Exceptions\FastFailException;
-use Magento\FunctionalTestingFramework\Suite\SuiteGenerator;
-use Magento\FunctionalTestingFramework\Util\GenerationErrorHandler;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class GenerateSuiteCommand extends BaseGenerateCommand
+use Magento\Functional_Testing_Framework\Config\Mftf_Application_Config;
+use Magento\Functional_Testing_Framework\Exceptions\Fast_Fail_Exception;
+use Magento\Functional_Testing_Framework\Suite\Suite_Generator;
+use Magento\Functional_Testing_Framework\Util\Generation_Error_Handler;
+use Symfony\Component\Console\Input\Input_Argument;
+use Symfony\Component\Console\Input\Input_Interface;
+use Symfony\Component\Console\Output\Output_Interface;
+class Generate_Suite_Command extends Base_Generate_Command
 {
     /**
      * Configures the current command.
      */
     protected function configure(): void
     {
-        $this->setName('generate:suite')
-            ->setDescription('This command generates a single suite based on declaration in xml')
-            ->addArgument(
-                'suites',
-                InputArgument::IS_ARRAY | InputArgument::REQUIRED,
-                'argument which indicates suite names for generation (separated by space)'
-            );
-
+        $this->set_name('generate:suite')->set_description('This command generates a single suite based on declaration in xml')->add_argument('suites', Input_Argument::IS_ARRAY | Input_Argument::REQUIRED, 'argument which indicates suite names for generation (separated by space)');
         parent::configure();
     }
-
     /**
      * Executes the current command.
      *
      * @return integer|null|void
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(Input_Interface $input, Output_Interface $output): int
     {
-        $force = $input->getOption('force');
-        $debug = $input->getOption('debug') ?? MftfApplicationConfig::LEVEL_DEVELOPER; // for backward compatibility
-        $remove = $input->getOption('remove');
-        $verbose = $output->isVerbose();
-        $allowSkipped = $input->getOption('allow-skipped');
-
+        $force = $input->get_option('force');
+        $debug = $input->get_option('debug') ?? Mftf_Application_Config::LEVEL_DEVELOPER;
+        // for backward compatibility
+        $remove = $input->get_option('remove');
+        $verbose = $output->is_verbose();
+        $allow_skipped = $input->get_option('allow-skipped');
         // Set application configuration so we can references the user options in our framework
-        MftfApplicationConfig::create(
-            $force,
-            MftfApplicationConfig::GENERATION_PHASE,
-            $verbose,
-            $debug,
-            $allowSkipped
-        );
-
+        Mftf_Application_Config::create($force, Mftf_Application_Config::GENERATION_PHASE, $verbose, $debug, $allow_skipped);
         // Remove previous GENERATED_DIR if --remove option is used
         if ($remove) {
-            $this->removeGeneratedDirectory($output, $output->isVerbose());
+            $this->remove_generated_directory($output, $output->is_verbose());
         }
-
-        $suites = $input->getArgument('suites');
-
+        $suites = $input->get_argument('suites');
         $generated = 0;
         foreach ($suites as $suite) {
             try {
-                SuiteGenerator::getInstance()->generateSuite($suite);
-                if ($output->isVerbose()) {
-                    $output->writeLn("suite $suite generated");
+                Suite_Generator::get_instance()->generate_suite($suite);
+                if ($output->is_verbose()) {
+                    $output->write_ln("suite {$suite} generated");
                 }
                 $generated++;
-            } catch (FastFailException $e) {
+            } catch (Fast_Fail_Exception $e) {
                 throw $e;
             } catch (\Exception) {
             }
         }
-
-        if (empty(GenerationErrorHandler::getInstance()->getAllErrors())) {
+        if (empty(Generation_Error_Handler::get_instance()->get_all_errors())) {
             if ($generated > 0) {
                 $output->writeln('Suites Generated' . PHP_EOL);
                 return 0;
             }
         } else {
-            GenerationErrorHandler::getInstance()->printErrorSummary();
+            Generation_Error_Handler::get_instance()->print_error_summary();
             if ($generated > 0) {
                 $output->writeln('Suites Generated (with errors)' . PHP_EOL);
                 return 1;
             }
         }
-
         $output->writeln('No Suite Generated' . PHP_EOL);
         return 1;
     }

@@ -1,17 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\Config;
+namespace Magento\Functional_Testing_Framework\Config;
 
 /**
  * Config reader interface.
  */
-interface ReaderInterface
+interface Reader_Interface
 {
     /**
      * Read configuration scope

@@ -4,14 +4,12 @@
  * Copyright 2025 Adobe
  * All Rights Reserved.
  */
-declare(strict_types=1);
-
-namespace Magento\FunctionalTestingFramework\DataTransport\Auth\Tfa;
+declare (strict_types=1);
+namespace Magento\Functional_Testing_Framework\Data_Transport\Auth\Tfa;
 
 use DateTimeImmutable;
-use Psr\Clock\ClockInterface;
-
-class Clock implements ClockInterface
+use Psr\Clock\Clock_Interface;
+class Clock implements Clock_Interface
 {
     /**
      * Return DateTimeImmutable class object

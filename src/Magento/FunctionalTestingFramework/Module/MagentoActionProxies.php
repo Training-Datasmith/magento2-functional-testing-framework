@@ -1,18 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\Module;
+namespace Magento\Functional_Testing_Framework\Module;
 
 use Codeception\Module as CodeceptionModule;
-use Magento\FunctionalTestingFramework\DataGenerator\Handlers\CredentialStore;
-use Magento\FunctionalTestingFramework\DataGenerator\Handlers\PersistedObjectHandler;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-
+use Magento\Functional_Testing_Framework\Data_Generator\Handlers\Credential_Store;
+use Magento\Functional_Testing_Framework\Data_Generator\Handlers\Persisted_Object_Handler;
+use Magento\Functional_Testing_Framework\Exceptions\Test_Framework_Exception;
 /**
  * Class MagentoActionProxies
  *
@@ -20,7 +18,7 @@ use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
  *
  * @package Magento\FunctionalTestingFramework\Module
  */
-class MagentoActionProxies extends CodeceptionModule
+class Magento_Action_Proxies extends Codeception_Module
 {
     /**
      * Create an entity
@@ -32,24 +30,10 @@ class MagentoActionProxies extends CodeceptionModule
      * @param array  $overrideFields      Array of FieldName => Value of override fields.
      * @param string $storeCode
      */
-    public function createEntity(
-        $key,
-        $scope,
-        $entity,
-        $dependentObjectKeys = [],
-        $overrideFields = [],
-        $storeCode = ''
-    ): void {
-        PersistedObjectHandler::getInstance()->createEntity(
-            $key,
-            $scope,
-            $entity,
-            $dependentObjectKeys,
-            $overrideFields,
-            $storeCode
-        );
+    public function create_entity($key, $scope, $entity, $dependent_object_keys = [], $override_fields = [], $store_code = ''): void
+    {
+        Persisted_Object_Handler::get_instance()->create_entity($key, $scope, $entity, $dependent_object_keys, $override_fields, $store_code);
     }
-
     /**
      * Retrieves and updates a previously created entity
      *
@@ -58,16 +42,10 @@ class MagentoActionProxies extends CodeceptionModule
      * @param string $updateEntity        Name of the static XML data to update the entity with.
      * @param array  $dependentObjectKeys StepKeys of other createData actions that are required.
      */
-    public function updateEntity($key, $scope, $updateEntity, $dependentObjectKeys = []): void
+    public function update_entity($key, $scope, $update_entity, $dependent_object_keys = []): void
     {
-        PersistedObjectHandler::getInstance()->updateEntity(
-            $key,
-            $scope,
-            $updateEntity,
-            $dependentObjectKeys
-        );
+        Persisted_Object_Handler::get_instance()->update_entity($key, $scope, $update_entity, $dependent_object_keys);
     }
-
     /**
      * Performs GET on given entity and stores entity for use
      *
@@ -78,29 +56,20 @@ class MagentoActionProxies extends CodeceptionModule
      * @param string  $storeCode
      * @param integer $index
      */
-    public function getEntity($key, $scope, $entity, $dependentObjectKeys = [], $storeCode = '', $index = null): void
+    public function get_entity($key, $scope, $entity, $dependent_object_keys = [], $store_code = '', $index = null): void
     {
-        PersistedObjectHandler::getInstance()->getEntity(
-            $key,
-            $scope,
-            $entity,
-            $dependentObjectKeys,
-            $storeCode,
-            $index
-        );
+        Persisted_Object_Handler::get_instance()->get_entity($key, $scope, $entity, $dependent_object_keys, $store_code, $index);
     }
-
     /**
      * Retrieves and deletes a previously created entity
      *
      * @param string $key   StepKey of the createData action.
      * @param string $scope
      */
-    public function deleteEntity($key, $scope): void
+    public function delete_entity($key, $scope): void
     {
-        PersistedObjectHandler::getInstance()->deleteEntity($key, $scope);
+        Persisted_Object_Handler::get_instance()->delete_entity($key, $scope);
     }
-
     /**
      * Retrieves a field from an entity, according to key and scope given
      *
@@ -109,11 +78,10 @@ class MagentoActionProxies extends CodeceptionModule
      * @param string $scope
      * @return string
      */
-    public function retrieveEntityField($stepKey, $field, $scope)
+    public function retrieve_entity_field($step_key, $field, $scope)
     {
-        return PersistedObjectHandler::getInstance()->retrieveEntityField($stepKey, $field, $scope);
+        return Persisted_Object_Handler::get_instance()->retrieve_entity_field($step_key, $field, $scope);
     }
-
     /**
      * Get encrypted value by key
      *
@@ -121,11 +89,10 @@ class MagentoActionProxies extends CodeceptionModule
      * @return string|null
      * @throws TestFrameworkException
      */
-    public function getSecret($key)
+    public function get_secret($key)
     {
-        return CredentialStore::getInstance()->getSecret($key);
+        return Credential_Store::get_instance()->get_secret($key);
     }
-
     /**
      * Returns a value to origin of the action
      *

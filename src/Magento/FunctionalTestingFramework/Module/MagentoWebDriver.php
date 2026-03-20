@@ -1,36 +1,34 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Module;
 
-namespace Magento\FunctionalTestingFramework\Module;
-
-use Codeception\Exception\ModuleConfigException;
-use Codeception\Exception\ModuleException;
+use Codeception\Exception\Module_Config_Exception;
+use Codeception\Exception\Module_Exception;
 use Codeception\Lib\Actor\Shared\Pause;
-use Codeception\Lib\ModuleContainer;
-use Codeception\Module\WebDriver;
+use Codeception\Lib\Module_Container;
+use Codeception\Module\Web_Driver;
 use Codeception\Test\Descriptor;
-use Codeception\TestInterface;
+use Codeception\Test_Interface;
 use Codeception\Util\Uri;
-use Facebook\WebDriver\Interactions\WebDriverActions;
-use Magento\FunctionalTestingFramework\Allure\AllureHelper;
-use Magento\FunctionalTestingFramework\DataGenerator\Handlers\CredentialStore;
-use Magento\FunctionalTestingFramework\DataTransport\Auth\Tfa\OTP;
-use Magento\FunctionalTestingFramework\DataTransport\Auth\WebApiAuth;
-use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlInterface;
-use Magento\FunctionalTestingFramework\DataTransport\Protocol\CurlTransport;
-use Magento\FunctionalTestingFramework\DataTransport\WebApiExecutor;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Module\Util\ModuleUtils;
-use Magento\FunctionalTestingFramework\Util\ConfigSanitizerUtil;
-use Magento\FunctionalTestingFramework\Util\Path\UrlFormatter;
+use Facebook\Web_Driver\Interactions\Web_Driver_Actions;
+use Magento\Functional_Testing_Framework\Allure\Allure_Helper;
+use Magento\Functional_Testing_Framework\Data_Generator\Handlers\Credential_Store;
+use Magento\Functional_Testing_Framework\Data_Transport\Auth\Tfa\OTP;
+use Magento\Functional_Testing_Framework\Data_Transport\Auth\Web_Api_Auth;
+use Magento\Functional_Testing_Framework\Data_Transport\Protocol\Curl_Interface;
+use Magento\Functional_Testing_Framework\Data_Transport\Protocol\Curl_Transport;
+use Magento\Functional_Testing_Framework\Data_Transport\Web_Api_Executor;
+use Magento\Functional_Testing_Framework\Exceptions\Test_Framework_Exception;
+use Magento\Functional_Testing_Framework\Module\Util\Module_Utils;
+use Magento\Functional_Testing_Framework\Util\Config_Sanitizer_Util;
+use Magento\Functional_Testing_Framework\Util\Path\Url_Formatter;
 use Qameta\Allure\Allure;
-use Qameta\Allure\Io\DataSourceFactory;
-
+use Qameta\Allure\Io\Data_Source_Factory;
 /**
  * MagentoWebDriver module provides common Magento web actions through Selenium WebDriver.
  *
@@ -53,125 +51,95 @@ use Qameta\Allure\Io\DataSourceFactory;
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
-class MagentoWebDriver extends WebDriver
+class Magento_Web_Driver extends Web_Driver
 {
     use Pause {
         pause as codeceptPause;
     }
-
     public const MAGENTO_CRON_INTERVAL = 60;
     public const MAGENTO_CRON_COMMAND = 'cron:run';
-
     /**
      * List of known magento loading masks by selector
      *
      * @var array
      */
-    protected $loadingMasksLocators = [
-        '//div[contains(@class, "loading-mask")]',
-        '//div[contains(@class, "admin_data-grid-loading-mask")]',
-        '//div[contains(@class, "admin__data-grid-loading-mask")]',
-        '//div[contains(@class, "admin__form-loading-mask")]',
-        '//div[@data-role="spinner"]',
-        '//div[contains(@class,"file-uploader-spinner")]',
-        '//div[contains(@class,"image-uploader-spinner")]',
-        '//div[contains(@class,"uploader")]//div[@class="file-row"]',
-    ];
-
+    protected $loading_masks_locators = ['//div[contains(@class, "loading-mask")]', '//div[contains(@class, "admin_data-grid-loading-mask")]', '//div[contains(@class, "admin__data-grid-loading-mask")]', '//div[contains(@class, "admin__form-loading-mask")]', '//div[@data-role="spinner"]', '//div[contains(@class,"file-uploader-spinner")]', '//div[contains(@class,"image-uploader-spinner")]', '//div[contains(@class,"uploader")]//div[@class="file-row"]'];
     /**
      * Set all Locale variables to NULL.
      *
      * @var array $localeAll
      */
-    protected static $localeAll = [
-        LC_COLLATE => null,
-        LC_CTYPE => null,
-        LC_MONETARY => null,
-        LC_NUMERIC => null,
-        LC_TIME => null,
-        LC_MESSAGES => null,
-    ];
-
+    protected static $locale_all = [LC_COLLATE => null, LC_CTYPE => null, LC_MONETARY => null, LC_NUMERIC => null, LC_TIME => null, LC_MESSAGES => null];
     /**
      * Current Test Interface
      *
      * @var TestInterface
      */
     private $current_test;
-
     /**
      * Png image filepath for current test
      */
-    private ?string $pngReport = null;
-
+    private ?string $png_report = null;
     /**
      * Html filepath for current test
      */
-    private ?string $htmlReport = null;
-
+    private ?string $html_report = null;
     /**
      * Array to store Javascript errors
      *
      * @var string[]
      */
-    private $jsErrors = [];
-
+    private $js_errors = [];
     /**
      * Contains last execution times for Cron
      *
      * @var int[]
      */
-    private array $cronExecution = [];
-
+    private array $cron_execution = [];
     /**
      * Sanitizes config, then initializes using parent.
      */
     public function _initialize(): void
     {
-        $this->config = ConfigSanitizerUtil::sanitizeWebDriverConfig($this->config);
-
+        $this->config = Config_Sanitizer_Util::sanitize_web_driver_config($this->config);
         parent::_initialize();
-        $this->cleanJsError();
+        $this->clean_js_error();
     }
-
     /**
      * Calls parent reset, then re-sanitizes config
      */
-    public function _resetConfig(): void
+    public function _reset_config(): void
     {
-        parent::_resetConfig();
-        $this->config = ConfigSanitizerUtil::sanitizeWebDriverConfig($this->config);
-        $this->cleanJsError();
+        parent::_reset_config();
+        $this->config = Config_Sanitizer_Util::sanitize_web_driver_config($this->config);
+        $this->clean_js_error();
     }
-
     /**
      * Remap parent::_after, called in TestContextExtension
      */
-    public function _runAfter(TestInterface $test): void
+    public function _run_after(Test_Interface $test): void
     {
-        parent::_after($test); // TODO: Change the autogenerated stub
+        parent::_after($test);
+        // TODO: Change the autogenerated stub
     }
-
     /**
      * Override parent::_after to do nothing.
      *
      * @SuppressWarnings(PHPMD)
      */
-    public function _after(TestInterface $test): void
+    public function _after(Test_Interface $test): void
     {
         // DO NOT RESET SESSIONS
     }
-
     /**
      * Return ModuleContainer
      *
      * @return ModuleContainer
      */
-    public function getModuleContainer()
+    public function get_module_container()
     {
-        return $this->moduleContainer;
+        return $this->module_container;
     }
-
     /**
      * Returns URL of a host.
      *
@@ -179,147 +147,131 @@ class MagentoWebDriver extends WebDriver
      * @throws ModuleConfigException
      * @api
      */
-    public function _getUrl()
+    public function _get_url()
     {
         if (!isset($this->config['url'])) {
-            throw new ModuleConfigException(
-                self::class,
-                "Module connection failure. The URL for client can't bre retrieved"
-            );
+            throw new Module_Config_Exception(self::class, "Module connection failure. The URL for client can't bre retrieved");
         }
-
         return $this->config['url'];
     }
-
     /**
      * Uri of currently opened page.
      *
      * @throws ModuleException
      * @api
      */
-    public function _getCurrentUri(): string
+    public function _get_current_uri(): string
     {
-        $url = $this->webDriver->getCurrentURL();
+        $url = $this->web_driver->get_current_url();
         if ($url === 'about:blank') {
-            throw new ModuleException($this, 'Current url is blank, no page was opened');
+            throw new Module_Exception($this, 'Current url is blank, no page was opened');
         }
-
-        return Uri::retrieveUri((string)$url);
+        return Uri::retrieve_uri((string) $url);
     }
-
     /**
      * Assert that the current webdriver url does not equal the expected string.
      *
      * @param string $url
      */
-    public function dontSeeCurrentUrlEquals($url): void
+    public function dont_see_current_url_equals($url): void
     {
-        $actualUrl = $this->webDriver->getCurrentURL();
-        $comparison = "Expected: $url\nActual: $actualUrl";
-        AllureHelper::addAttachmentToCurrentStep($comparison, 'Comparison');
-        $this->assertNotEquals($url, $actualUrl);
+        $actual_url = $this->web_driver->get_current_url();
+        $comparison = "Expected: {$url}\nActual: {$actual_url}";
+        Allure_Helper::add_attachment_to_current_step($comparison, 'Comparison');
+        $this->assert_not_equals($url, $actual_url);
     }
-
     /**
      * Assert that the current webdriver url does not match the expected regex.
      *
      * @param string $regex
      */
-    public function dontSeeCurrentUrlMatches($regex): void
+    public function dont_see_current_url_matches($regex): void
     {
-        $actualUrl = $this->webDriver->getCurrentURL();
-        $comparison = "Expected: $regex\nActual: $actualUrl";
-        AllureHelper::addAttachmentToCurrentStep($comparison, 'Comparison');
-        $this->assertNotRegExp($regex, $actualUrl);
+        $actual_url = $this->web_driver->get_current_url();
+        $comparison = "Expected: {$regex}\nActual: {$actual_url}";
+        Allure_Helper::add_attachment_to_current_step($comparison, 'Comparison');
+        $this->assert_not_reg_exp($regex, $actual_url);
     }
-
     /**
      * Assert that the current webdriver url does not contain the expected string.
      *
      * @param string $needle
      */
-    public function dontSeeInCurrentUrl($needle): void
+    public function dont_see_in_current_url($needle): void
     {
-        $actualUrl = $this->webDriver->getCurrentURL();
-        $comparison = "Expected: $needle\nActual: $actualUrl";
-        AllureHelper::addAttachmentToCurrentStep($comparison, 'Comparison');
-        $this->assertStringNotContainsString($needle, $actualUrl);
+        $actual_url = $this->web_driver->get_current_url();
+        $comparison = "Expected: {$needle}\nActual: {$actual_url}";
+        Allure_Helper::add_attachment_to_current_step($comparison, 'Comparison');
+        $this->assert_string_not_contains_string($needle, $actual_url);
     }
-
     /**
      * Return the current webdriver url or return the first matching capture group.
      *
      * @param string|null $regex
      */
-    public function grabFromCurrentUrl($regex = null): string
+    public function grab_from_current_url($regex = null): string
     {
-        $fullUrl = $this->webDriver->getCurrentURL();
+        $full_url = $this->web_driver->get_current_url();
         if (!$regex) {
-            return $fullUrl;
+            return $full_url;
         }
         $matches = [];
-        $res = preg_match($regex, (string) $fullUrl, $matches);
+        $res = preg_match($regex, (string) $full_url, $matches);
         if (!$res) {
-            $this->fail("Couldn't match $regex in " . $fullUrl);
+            $this->fail("Couldn't match {$regex} in " . $full_url);
         }
         if (!isset($matches[1])) {
             $this->fail("Nothing to grab. A regex parameter with a capture group is required. Ex: '/(foo)(bar)/'");
         }
-
         return $matches[1];
     }
-
     /**
      * Assert that the current webdriver url equals the expected string.
      *
      * @param string $url
      */
-    public function seeCurrentUrlEquals($url): void
+    public function see_current_url_equals($url): void
     {
-        $actualUrl = $this->webDriver->getCurrentURL();
-        $comparison = "Expected: $url\nActual: $actualUrl";
-        AllureHelper::addAttachmentToCurrentStep($comparison, 'Comparison');
-        $this->assertEquals($url, $actualUrl);
+        $actual_url = $this->web_driver->get_current_url();
+        $comparison = "Expected: {$url}\nActual: {$actual_url}";
+        Allure_Helper::add_attachment_to_current_step($comparison, 'Comparison');
+        $this->assert_equals($url, $actual_url);
     }
-
     /**
      * Assert that the current webdriver url matches the expected regex.
      *
      * @param string $regex
      */
-    public function seeCurrentUrlMatches($regex): void
+    public function see_current_url_matches($regex): void
     {
-        $actualUrl = $this->webDriver->getCurrentURL();
-        $comparison = "Expected: $regex\nActual: $actualUrl";
-        AllureHelper::addAttachmentToCurrentStep($comparison, 'Comparison');
-        $this->assertRegExp($regex, $actualUrl);
+        $actual_url = $this->web_driver->get_current_url();
+        $comparison = "Expected: {$regex}\nActual: {$actual_url}";
+        Allure_Helper::add_attachment_to_current_step($comparison, 'Comparison');
+        $this->assert_reg_exp($regex, $actual_url);
     }
-
     /**
      * Assert that the current webdriver url contains the expected string.
      *
      * @param string $needle
      */
-    public function seeInCurrentUrl($needle): void
+    public function see_in_current_url($needle): void
     {
-        $actualUrl = $this->webDriver->getCurrentURL();
-        $comparison = "Expected: $needle\nActual: $actualUrl";
-        AllureHelper::addAttachmentToCurrentStep($comparison, 'Comparison');
-        $this->assertStringContainsString(urldecode($needle), urldecode((string) $actualUrl));
+        $actual_url = $this->web_driver->get_current_url();
+        $comparison = "Expected: {$needle}\nActual: {$actual_url}";
+        Allure_Helper::add_attachment_to_current_step($comparison, 'Comparison');
+        $this->assert_string_contains_string(urldecode($needle), urldecode((string) $actual_url));
     }
-
     /**
      * Close admin notification popup windows.
      */
-    public function closeAdminNotification(): void
+    public function close_admin_notification(): void
     {
         // Cheating here for the minute. Still working on the best method to deal with this issue.
         try {
-            $this->executeJS("jQuery('.modal-popup').remove(); jQuery('.modals-overlay').remove();");
+            $this->execute_js("jQuery('.modal-popup').remove(); jQuery('.modals-overlay').remove();");
         } catch (\Exception) {
         }
     }
-
     /**
      * Search for and Select multiple options from a Magento Multi-Select drop down menu.
      * e.g. The drop down menu you use to assign Products to Categories.
@@ -328,26 +280,21 @@ class MagentoWebDriver extends WebDriver
      * @param boolean $requireAction
      * @throws \Exception
      */
-    public function searchAndMultiSelectOption($select, array $options, $requireAction = false): void
+    public function search_and_multi_select_option($select, array $options, $require_action = false): void
     {
-        $selectDropdown = $select . ' .action-select.admin__action-multiselect';
-        $selectSearchText = $select
-            . ' .admin__action-multiselect-search-wrap>input[data-role="advanced-select-text"]';
-        $selectSearchResult = $select . ' .admin__action-multiselect-label>span';
-
-        $this->waitForPageLoad();
-        $this->waitForElementVisible($selectDropdown);
-        $this->click($selectDropdown);
-
-        $this->selectMultipleOptions($selectSearchText, $selectSearchResult, $options);
-
-        if ($requireAction) {
-            $selectAction = $select . ' button[class=action-default]';
-            $this->waitForPageLoad();
-            $this->click($selectAction);
+        $select_dropdown = $select . ' .action-select.admin__action-multiselect';
+        $select_search_text = $select . ' .admin__action-multiselect-search-wrap>input[data-role="advanced-select-text"]';
+        $select_search_result = $select . ' .admin__action-multiselect-label>span';
+        $this->wait_for_page_load();
+        $this->wait_for_element_visible($select_dropdown);
+        $this->click($select_dropdown);
+        $this->select_multiple_options($select_search_text, $select_search_result, $options);
+        if ($require_action) {
+            $select_action = $select . ' button[class=action-default]';
+            $this->wait_for_page_load();
+            $this->click($select_action);
         }
     }
-
     /**
      * Select multiple options from a drop down using a filter and text field to narrow results.
      *
@@ -356,73 +303,66 @@ class MagentoWebDriver extends WebDriver
      * @param string[] $options
      * @throws \Exception
      */
-    public function selectMultipleOptions($selectSearchTextField, $selectSearchResult, array $options): void
+    public function select_multiple_options($select_search_text_field, $select_search_result, array $options): void
     {
         foreach ($options as $option) {
-            $this->waitForPageLoad();
-            $this->fillField($selectSearchTextField, '');
-            $this->waitForPageLoad();
-            $this->fillField($selectSearchTextField, $option);
-            $this->waitForPageLoad();
-            $this->click($selectSearchResult);
+            $this->wait_for_page_load();
+            $this->fill_field($select_search_text_field, '');
+            $this->wait_for_page_load();
+            $this->fill_field($select_search_text_field, $option);
+            $this->wait_for_page_load();
+            $this->click($select_search_result);
         }
     }
-
     /**
      * Wait for all Ajax calls to finish.
      *
      * @param integer $timeout
      */
-    public function waitForAjaxLoad($timeout = null): void
+    public function wait_for_ajax_load($timeout = null): void
     {
-        $timeout ??= $this->_getConfig()['pageload_timeout'];
-
+        $timeout ??= $this->_get_config()['pageload_timeout'];
         try {
-            $this->waitForJS('return !!window.jQuery && window.jQuery.active == 0;', $timeout);
+            $this->wait_for_js('return !!window.jQuery && window.jQuery.active == 0;', $timeout);
         } catch (\Exception) {
             $this->debug("js never executed, performing {$timeout} second wait.");
             $this->wait($timeout);
         }
         $this->wait(1);
     }
-
     /**
      * Wait for all JavaScript to finish executing.
      *
      * @param integer $timeout
      * @throws \Exception
      */
-    public function waitForPageLoad($timeout = null): void
+    public function wait_for_page_load($timeout = null): void
     {
-        $timeout ??= $this->_getConfig()['pageload_timeout'];
-
-        $this->waitForJS('return document.readyState == "complete"', $timeout);
-        $this->waitForAjaxLoad($timeout);
-        $this->waitForLoadingMaskToDisappear($timeout);
+        $timeout ??= $this->_get_config()['pageload_timeout'];
+        $this->wait_for_js('return document.readyState == "complete"', $timeout);
+        $this->wait_for_ajax_load($timeout);
+        $this->wait_for_loading_mask_to_disappear($timeout);
     }
-
     /**
      * Wait for all visible loading masks to disappear. Gets all elements by mask selector, then loops over them.
      *
      * @param integer $timeout
      * @throws \Exception
      */
-    public function waitForLoadingMaskToDisappear($timeout = null): void
+    public function wait_for_loading_mask_to_disappear($timeout = null): void
     {
-        $timeout ??= $this->_getConfig()['pageload_timeout'];
-
-        foreach ($this->loadingMasksLocators as $maskLocator) {
+        $timeout ??= $this->_get_config()['pageload_timeout'];
+        foreach ($this->loading_masks_locators as $mask_locator) {
             // Get count of elements found for looping.
             // Elements are NOT useful for interaction, as they cannot be fed to codeception actions.
-            $loadingMaskElements = $this->_findElements($maskLocator);
-            for ($i = 1; $i <= count($loadingMaskElements); $i++) {
+            $loading_mask_elements = $this->_find_elements($mask_locator);
+            for ($i = 1; $i <= count($loading_mask_elements); $i++) {
                 // Formatting and looping on i as we can't interact elements returned above
                 // eg.  (//div[@data-role="spinner"])[1]
-                $this->waitForElementNotVisible("({$maskLocator})[{$i}]", $timeout);
+                $this->wait_for_element_not_visible("({$mask_locator})[{$i}]", $timeout);
             }
         }
     }
-
     /**
      * Format input to specified currency in locale specified
      * @link https://php.net/manual/en/numberformatter.formatcurrency.php
@@ -432,67 +372,60 @@ class MagentoWebDriver extends WebDriver
      * @return string
      * @throws TestFrameworkException
      */
-    public function formatCurrency(float $value, $locale, $currency)
+    public function format_currency(float $value, $locale, $currency)
     {
-        $formatter = \NumberFormatter::create($locale, \NumberFormatter::CURRENCY);
+        $formatter = \Number_Formatter::create($locale, \Number_Formatter::CURRENCY);
         if ($formatter && !empty($formatter)) {
-            $result = $formatter->formatCurrency($value, $currency);
+            $result = $formatter->format_currency($value, $currency);
             if ($result) {
                 return $result;
             }
         }
-
-        throw new TestFrameworkException('Invalid attributes used in formatCurrency.');
+        throw new Test_Framework_Exception('Invalid attributes used in formatCurrency.');
     }
-
     /**
      * Parse float number with thousands_sep.
      *
      * @param string $floatString
      * @return float
      */
-    public function parseFloat($floatString)
+    public function parse_float($float_string)
     {
-        $floatString = str_replace(',', '', $floatString);
-
-        return floatval($floatString);
+        $float_string = str_replace(',', '', $float_string);
+        return floatval($float_string);
     }
-
     /**
      * @param string  $locale
      */
-    public function mSetLocale(int $category, $locale): void
+    public function m_set_locale(int $category, $locale): void
     {
-        if (self::$localeAll[$category] === $locale) {
+        if (self::$locale_all[$category] === $locale) {
             return;
         }
-        foreach (self::$localeAll as $c => $l) {
-            self::$localeAll[$c] = setlocale($c, 0);
+        foreach (self::$locale_all as $c => $l) {
+            self::$locale_all[$c] = setlocale($c, 0);
         }
         setlocale($category, $locale);
     }
-
     /**
      * Reset Locale setting.
      */
-    public function mResetLocale(): void
+    public function m_reset_locale(): void
     {
-        foreach (self::$localeAll as $c => $l) {
+        foreach (self::$locale_all as $c => $l) {
             if ($l !== null) {
                 setlocale($c, $l);
-                self::$localeAll[$c] = null;
+                self::$locale_all[$c] = null;
             }
         }
     }
-
     /**
      * Scroll to the Top of the Page.
      */
-    public function scrollToTopOfPage(): void
+    public function scroll_to_top_of_page(): void
     {
-        $this->executeJS('window.scrollTo(0,0);');
+        $this->execute_js('window.scrollTo(0,0);');
     }
-
     /**
      * Takes given $command and executes it against bin/magento or custom exposed entrypoint. Returns command output.
      *
@@ -503,39 +436,19 @@ class MagentoWebDriver extends WebDriver
      *
      * @throws TestFrameworkException
      */
-    public function magentoCLI($command, $timeout = null, $arguments = null)
+    public function magento_cli($command, $timeout = null, $arguments = null)
     {
         // Remove index.php if it's present in url
-        $baseUrl = rtrim(
-            str_replace('index.php', '', rtrim((string) $this->config['url'], '/')),
-            '/'
-        );
-
-        $apiURL = UrlFormatter::format(
-            $baseUrl . '/' . ltrim(getenv('MAGENTO_CLI_COMMAND_PATH'), '/'),
-            false
-        );
-
-        $executor = new CurlTransport();
-        $executor->write(
-            $apiURL,
-            [
-                'token' => WebApiAuth::getAdminToken(),
-                getenv('MAGENTO_CLI_COMMAND_PARAMETER') => urlencode($command),
-                'arguments' => $arguments,
-                'timeout'   => $timeout,
-            ],
-            CurlInterface::POST,
-            []
-        );
+        $base_url = rtrim(str_replace('index.php', '', rtrim((string) $this->config['url'], '/')), '/');
+        $api_url = Url_Formatter::format($base_url . '/' . ltrim(getenv('MAGENTO_CLI_COMMAND_PATH'), '/'), false);
+        $executor = new Curl_Transport();
+        $executor->write($api_url, ['token' => Web_Api_Auth::get_admin_token(), getenv('MAGENTO_CLI_COMMAND_PARAMETER') => urlencode($command), 'arguments' => $arguments, 'timeout' => $timeout], Curl_Interface::POST, []);
         $response = $executor->read();
         $executor->close();
-
-        $util = new ModuleUtils();
-        $response = trim($util->utf8SafeControlCharacterTrim($response));
+        $util = new Module_Utils();
+        $response = trim($util->utf8safe_control_character_trim($response));
         return $response != '' ? $response : 'CLI did not return output.';
     }
-
     /**
      * Executes Magento Cron keeping the interval (> 60 seconds between each run)
      *
@@ -544,61 +457,51 @@ class MagentoWebDriver extends WebDriver
      * @param string|null  $arguments
      * @return string
      */
-    public function magentoCron($cronGroups = null, $timeout = null, $arguments = null)
+    public function magento_cron($cron_groups = null, $timeout = null, $arguments = null)
     {
-        $cronGroups = explode(' ', (string) $cronGroups);
-        return $this->executeCronjobs($cronGroups, $timeout, $arguments);
+        $cron_groups = explode(' ', (string) $cron_groups);
+        return $this->execute_cronjobs($cron_groups, $timeout, $arguments);
     }
-
     /**
      * Updates last execution time for Cron
      */
-    private function notifyCronFinished(array $cronGroups = []): void
+    private function notify_cron_finished(array $cron_groups = []): void
     {
-        if (empty($cronGroups)) {
-            $this->cronExecution['*'] = time();
+        if (empty($cron_groups)) {
+            $this->cron_execution['*'] = time();
         }
-
-        foreach ($cronGroups as $group) {
-            $this->cronExecution[$group] = time();
+        foreach ($cron_groups as $group) {
+            $this->cron_execution[$group] = time();
         }
     }
-
     /**
      * Returns last Cron execution time for specific cron or all crons
      */
-    private function getLastCronExecution(array $cronGroups = []): int
+    private function get_last_cron_execution(array $cron_groups = []): int
     {
-        if (empty($this->cronExecution)) {
+        if (empty($this->cron_execution)) {
             return 0;
         }
-
-        if (empty($cronGroups)) {
-            return max($this->cronExecution);
+        if (empty($cron_groups)) {
+            return max($this->cron_execution);
         }
-
-        $cronGroups = array_merge($cronGroups, ['*']);
-
-        return array_reduce($cronGroups, function (int $lastExecution, $group): int {
-            if (isset($this->cronExecution[$group]) && $this->cronExecution[$group] > $lastExecution) {
-                $lastExecution = $this->cronExecution[$group];
+        $cron_groups = array_merge($cron_groups, ['*']);
+        return array_reduce($cron_groups, function (int $last_execution, $group): int {
+            if (isset($this->cron_execution[$group]) && $this->cron_execution[$group] > $last_execution) {
+                $last_execution = $this->cron_execution[$group];
             }
-
-            return (int)$lastExecution;
+            return (int) $last_execution;
         }, 0);
     }
-
     /**
      * Returns time to wait for next run
      */
-    private function getCronWait(array $cronGroups = [], int $cronInterval = self::MAGENTO_CRON_INTERVAL): int
+    private function get_cron_wait(array $cron_groups = [], int $cron_interval = self::MAGENTO_CRON_INTERVAL): int
     {
-        $nextRun = $this->getLastCronExecution($cronGroups) + $cronInterval;
-        $toNextRun = $nextRun - time();
-
-        return max(0, $toNextRun);
+        $next_run = $this->get_last_cron_execution($cron_groups) + $cron_interval;
+        $to_next_run = $next_run - time();
+        return max(0, $to_next_run);
     }
-
     /**
      * Runs DELETE request to delete a Magento entity against the url given.
      *
@@ -606,16 +509,14 @@ class MagentoWebDriver extends WebDriver
      * @return string
      * @throws TestFrameworkException
      */
-    public function deleteEntityByUrl($url)
+    public function delete_entity_by_url($url)
     {
-        $executor = new WebApiExecutor();
-        $executor->write($url, [], CurlInterface::DELETE, []);
+        $executor = new Web_Api_Executor();
+        $executor->write($url, [], Curl_Interface::DELETE, []);
         $response = $executor->read();
         $executor->close();
-
         return $response;
     }
-
     /**
      * Conditional click for an area that should be visible
      *
@@ -624,35 +525,31 @@ class MagentoWebDriver extends WebDriver
      * @param boolean $visible
      * @throws \Exception
      */
-    public function conditionalClick($selector, $dependentSelector, $visible): void
+    public function conditional_click($selector, $dependent_selector, $visible): void
     {
-        $el = $this->_findElements($dependentSelector);
+        $el = $this->_find_elements($dependent_selector);
         if (sizeof($el) > 1) {
-            throw new \Exception('more than one element matches selector ' . $dependentSelector);
+            throw new \Exception('more than one element matches selector ' . $dependent_selector);
         }
-
-        $clickCondition = null;
+        $click_condition = null;
         if ($visible) {
-            $clickCondition = !empty($el) && $el[0]->isDisplayed();
+            $click_condition = !empty($el) && $el[0]->is_displayed();
         } else {
-            $clickCondition = empty($el) || !$el[0]->isDisplayed();
+            $click_condition = empty($el) || !$el[0]->is_displayed();
         }
-
-        if ($clickCondition) {
+        if ($click_condition) {
             $this->click($selector);
         }
     }
-
     /**
      * Clear the given Text Field or Textarea
      *
      * @param string $selector
      */
-    public function clearField($selector): void
+    public function clear_field($selector): void
     {
-        $this->fillField($selector, '');
+        $this->fill_field($selector, '');
     }
-
     /**
      * Assert that an element contains a given value for the specific attribute.
      *
@@ -660,31 +557,27 @@ class MagentoWebDriver extends WebDriver
      * @param string $attribute
      * @param string $value
      */
-    public function assertElementContainsAttribute($selector, $attribute, $value): void
+    public function assert_element_contains_attribute($selector, $attribute, $value): void
     {
-        $attributes = $this->grabAttributeFrom($selector, $attribute);
-
+        $attributes = $this->grab_attribute_from($selector, $attribute);
         if (isset($value) && empty($value)) {
             // If an "attribute" is blank, "", or null we need to be able to assert that it's present.
             // When an "attribute" is blank or null it returns "true" so we assert that "true" is present.
-            $this->assertEquals($attributes, 'true');
+            $this->assert_equals($attributes, 'true');
         } else {
-            $this->assertStringContainsString($value, $attributes);
+            $this->assert_string_contains_string($value, $attributes);
         }
     }
-
     /**
      * Sets current test to the given test, and resets test failure artifacts to null
      */
-    public function _before(TestInterface $test): void
+    public function _before(Test_Interface $test): void
     {
         $this->current_test = $test;
-        $this->htmlReport = null;
-        $this->pngReport = null;
-
+        $this->html_report = null;
+        $this->png_report = null;
         parent::_before($test);
     }
-
     /**
      * Override for codeception's default dragAndDrop to include offset options.
      *
@@ -693,35 +586,34 @@ class MagentoWebDriver extends WebDriver
      * @param integer $xOffset
      * @param integer $yOffset
      */
-    public function dragAndDrop($source, $target, $xOffset = null, $yOffset = null): void
+    public function drag_and_drop($source, $target, $x_offset = null, $y_offset = null): void
     {
-        $snodes = $this->matchFirstOrFail($this->baseElement, $source);
-        $tnodes = $this->matchFirstOrFail($this->baseElement, $target);
-        $action = new WebDriverActions($this->webDriver);
-        if ($xOffset !== null || $yOffset !== null) {
-            $targetX = intval($tnodes->getLocation()->getX() + $xOffset);
-            $targetY = intval($tnodes->getLocation()->getY() + $yOffset);
-            $travelX = intval($targetX - $snodes->getLocation()->getX());
-            $travelY = intval($targetY - $snodes->getLocation()->getY());
-            $action->moveToElement($snodes);
-            $action->clickAndHold($snodes);
+        $snodes = $this->match_first_or_fail($this->base_element, $source);
+        $tnodes = $this->match_first_or_fail($this->base_element, $target);
+        $action = new Web_Driver_Actions($this->web_driver);
+        if ($x_offset !== null || $y_offset !== null) {
+            $target_x = intval($tnodes->get_location()->get_x() + $x_offset);
+            $target_y = intval($tnodes->get_location()->get_y() + $y_offset);
+            $travel_x = intval($target_x - $snodes->get_location()->get_x());
+            $travel_y = intval($target_y - $snodes->get_location()->get_y());
+            $action->move_to_element($snodes);
+            $action->click_and_hold($snodes);
             // Fix Start
-            $action->moveByOffset(-1, -1);
-            $action->moveByOffset(1, 1);
+            $action->move_by_offset(-1, -1);
+            $action->move_by_offset(1, 1);
             // Fix End
-            $action->moveByOffset($travelX, $travelY);
+            $action->move_by_offset($travel_x, $travel_y);
             $action->release()->perform();
         } else {
-            $action->clickAndHold($snodes);
+            $action->click_and_hold($snodes);
             // Fix Start
-            $action->moveByOffset(-1, -1);
-            $action->moveByOffset(1, 1);
+            $action->move_by_offset(-1, -1);
+            $action->move_by_offset(1, 1);
             // Fix End
-            $action->moveToElement($tnodes);
+            $action->move_to_element($tnodes);
             $action->release($tnodes)->perform();
         }
     }
-
     /**
      * Simple rapid click as per given count number.
      *
@@ -729,43 +621,40 @@ class MagentoWebDriver extends WebDriver
      * @param string $count
      * @throws \Exception
      */
-    public function rapidClick($selector, $count): void
+    public function rapid_click($selector, $count): void
     {
         for ($i = 0; $i < $count; $i++) {
             $this->click($selector);
         }
     }
-
     /**
      * Grabs a cookie attributes value.
      * You can set additional cookie params like `domain`, `path` in array passed as last argument.
      * If the cookie is set by an ajax request (XMLHttpRequest),
      * there might be some delay caused by the browser, so try `$I->wait(0.1)`.
      */
-    public function grabCookieAttributes(string $cookie, array $params = []): array
+    public function grab_cookie_attributes(string $cookie, array $params = []): array
     {
         $params['name'] = $cookie;
-        $cookieArrays = $this->filterCookies($this->webDriver->manage()->getCookies(), $params);
-        $cookieAttributes = [];
-        if (is_array($cookieArrays)) { // Microsoft Edge returns null if there are no cookies...
-            foreach ($cookieArrays as $cookieArray) {
-                if ($cookieArray->getName() === $cookie) {
-                    $cookieAttributes['name'] = $cookieArray->getValue();
-                    $cookieAttributes['path'] = $cookieArray->getPath();
-                    $cookieAttributes['domain'] = $cookieArray->getDomain();
-                    $cookieAttributes['secure'] = $cookieArray->isSecure();
-                    $cookieAttributes['httpOnly'] = $cookieArray->isHttpOnly();
-                    $cookieAttributes['sameSite'] = $cookieArray->getSameSite();
-                    $cookieAttributes['expiry']  = date('d/m/Y', $cookieArray->getExpiry());
-
-                    return $cookieAttributes;
+        $cookie_arrays = $this->filter_cookies($this->web_driver->manage()->get_cookies(), $params);
+        $cookie_attributes = [];
+        if (is_array($cookie_arrays)) {
+            // Microsoft Edge returns null if there are no cookies...
+            foreach ($cookie_arrays as $cookie_array) {
+                if ($cookie_array->get_name() === $cookie) {
+                    $cookie_attributes['name'] = $cookie_array->get_value();
+                    $cookie_attributes['path'] = $cookie_array->get_path();
+                    $cookie_attributes['domain'] = $cookie_array->get_domain();
+                    $cookie_attributes['secure'] = $cookie_array->is_secure();
+                    $cookie_attributes['httpOnly'] = $cookie_array->is_http_only();
+                    $cookie_attributes['sameSite'] = $cookie_array->get_same_site();
+                    $cookie_attributes['expiry'] = date('d/m/Y', $cookie_array->get_expiry());
+                    return $cookie_attributes;
                 }
             }
         }
-
-        return $cookieAttributes;
+        return $cookie_attributes;
     }
-
     /**
      * Function used to fill sensitive credentials with user data, data is decrypted immediately prior to fill to avoid
      * exposure in console or log.
@@ -774,18 +663,16 @@ class MagentoWebDriver extends WebDriver
      * @param string $value
      * @throws TestFrameworkException
      */
-    public function fillSecretField($field, $value): void
+    public function fill_secret_field($field, $value): void
     {
         // to protect any secrets from being printed to console the values are executed only at the webdriver level as a
         // decrypted value
-
-        $decryptedValue = CredentialStore::getInstance()->decryptSecretValue($value);
-        if ($decryptedValue === false) {
-            throw new TestFrameworkException("\nFailed to decrypt value {$value} for field {$field}\n");
+        $decrypted_value = Credential_Store::get_instance()->decrypt_secret_value($value);
+        if ($decrypted_value === false) {
+            throw new Test_Framework_Exception("\nFailed to decrypt value {$value} for field {$field}\n");
         }
-        $this->fillField($field, $decryptedValue);
+        $this->fill_field($field, $decrypted_value);
     }
-
     /**
      * Function used to create data that contains sensitive credentials in a <createData> <field> override.
      * The data is decrypted immediately prior to data creation to avoid exposure in console or log.
@@ -796,144 +683,118 @@ class MagentoWebDriver extends WebDriver
      * @throws TestFrameworkException
      * @return string
      */
-    public function magentoCLISecret($command, $timeout = null, $arguments = null)
+    public function magento_cli_secret($command, $timeout = null, $arguments = null)
     {
         // to protect any secrets from being printed to console the values are executed only at the webdriver level as a
         // decrypted value
-
-        $decryptedCommand = CredentialStore::getInstance()->decryptAllSecretsInString($command);
-        if ($decryptedCommand === false) {
-            throw new TestFrameworkException("\nFailed to decrypt magentoCLI command {$command}\n");
+        $decrypted_command = Credential_Store::get_instance()->decrypt_all_secrets_in_string($command);
+        if ($decrypted_command === false) {
+            throw new Test_Framework_Exception("\nFailed to decrypt magentoCLI command {$command}\n");
         }
-        return $this->magentoCLI($decryptedCommand, $timeout, $arguments);
+        return $this->magento_cli($decrypted_command, $timeout, $arguments);
     }
-
     /**
      * Function used to verify sensitive credentials in the data, data is decrypted immediately prior to see to avoid
      * exposure in console or log.
      *
      * @throws TestFrameworkException
      */
-    public function seeInSecretField(string $field, string $value): void
+    public function see_in_secret_field(string $field, string $value): void
     {
         // to protect any secrets from being printed to console the values are executed only at the webdriver level as a
         // decrypted value
-
-        $decryptedValue = CredentialStore::getInstance()->decryptSecretValue($value);
-        if ($decryptedValue === false) {
-            throw new TestFrameworkException("\nFailed to decrypt value {$value} for field {$field}\n");
+        $decrypted_value = Credential_Store::get_instance()->decrypt_secret_value($value);
+        if ($decrypted_value === false) {
+            throw new Test_Framework_Exception("\nFailed to decrypt value {$value} for field {$field}\n");
         }
-        $this->seeInField($field, $decryptedValue);
+        $this->see_in_field($field, $decrypted_value);
     }
-
     /**
      * Override for _failed method in Codeception method. Adds png and html attachments to allure report
      * following parent execution of test failure processing.
      *
      * @param \Exception    $fail
      */
-    public function _failed(TestInterface $test, $fail): void
+    public function _failed(Test_Interface $test, $fail): void
     {
-        $this->debugWebDriverLogs($test);
-
-        if ($this->pngReport === null && $this->htmlReport === null) {
-            $this->saveScreenshot();
+        $this->debug_web_driver_logs($test);
+        if ($this->png_report === null && $this->html_report === null) {
+            $this->save_screenshot();
             if (getenv('ENABLE_PAUSE') === 'true') {
                 $this->pause(true);
             }
         }
-
         if ($this->current_test === null) {
-            throw new \RuntimeException("Suite condition failure: \n"
-                . " Something went wrong with selenium server/chrome driver : \n .  
-                    {$fail->getMessage()}\n{$fail->getTraceAsString()}");
+            throw new \RuntimeException("Suite condition failure: \n" . " Something went wrong with selenium server/chrome driver : \n .  \n                    {$fail->get_message()}\n{$fail->get_trace_as_string()}");
         }
-        AllureHelper::doAddAttachment(
-            DataSourceFactory::fromFile($this->pngReport),
-            $test->getMetadata()->getName() . '.png',
-            'image/png'
-        );
-        AllureHelper::doAddAttachment(
-            DataSourceFactory::fromFile($this->htmlReport),
-            $test->getMetadata()->getName() . '.html',
-            'text/html'
-        );
-        $this->debug("Failure due to : {$fail->getMessage()}");
-        $this->debug("Screenshot saved to {$this->pngReport}");
-        $this->debug("Html saved to {$this->htmlReport}");
+        Allure_Helper::do_add_attachment(Data_Source_Factory::from_file($this->png_report), $test->get_metadata()->get_name() . '.png', 'image/png');
+        Allure_Helper::do_add_attachment(Data_Source_Factory::from_file($this->html_report), $test->get_metadata()->get_name() . '.html', 'text/html');
+        $this->debug("Failure due to : {$fail->get_message()}");
+        $this->debug("Screenshot saved to {$this->png_report}");
+        $this->debug("Html saved to {$this->html_report}");
     }
-
     /**
      * Function which saves a screenshot of the current stat of the browser
      */
-    public function saveScreenshot(): void
+    public function save_screenshot(): void
     {
-        $testDescription = 'unknown.' . uniqid();
+        $test_description = 'unknown.' . uniqid();
         if ($this->current_test !== null) {
-            $testDescription = Descriptor::getTestSignature($this->current_test);
+            $test_description = Descriptor::get_test_signature($this->current_test);
         }
-
-        $filename = preg_replace('~\W~', '.', $testDescription);
-        $outputDir = codecept_output_dir();
-        $this->_saveScreenshot($this->pngReport = $outputDir . mb_strcut($filename, 0, 245, 'utf-8') . '.fail.png');
-        $this->_savePageSource($this->htmlReport = $outputDir . mb_strcut($filename, 0, 244, 'utf-8') . '.fail.html');
+        $filename = preg_replace('~\W~', '.', $test_description);
+        $output_dir = codecept_output_dir();
+        $this->_save_screenshot($this->png_report = $output_dir . mb_strcut($filename, 0, 245, 'utf-8') . '.fail.png');
+        $this->_save_page_source($this->html_report = $output_dir . mb_strcut($filename, 0, 244, 'utf-8') . '.fail.html');
     }
-
     /**
      * Go to a page and wait for ajax requests to finish
      *
      * @param string $page
      * @throws \Exception
      */
-    public function amOnPage($page): void
+    public function am_on_page($page): void
     {
-        (str_starts_with($page, 'http')) ? parent::amOnUrl($page) : parent::amOnPage($page);
-        $this->waitForPageLoad();
+        str_starts_with($page, 'http') ? parent::am_on_url($page) : parent::am_on_page($page);
+        $this->wait_for_page_load();
     }
-
     /**
      * Clean Javascript errors in internal array
      */
-    public function cleanJsError(): void
+    public function clean_js_error(): void
     {
-        $this->jsErrors = [];
+        $this->js_errors = [];
     }
-
     /**
      * Save Javascript error message to internal array
      *
      * @param string $errMsg
      */
-    public function setJsError($errMsg): void
+    public function set_js_error($err_msg): void
     {
-        $this->jsErrors[] = $errMsg;
+        $this->js_errors[] = $err_msg;
     }
-
     /**
      * Get all Javascript errors
      */
-    private function getJsErrors(): string
+    private function get_js_errors(): string
     {
         $errors = '';
-
-        if (!empty($this->jsErrors)) {
+        if (!empty($this->js_errors)) {
             $errors = 'Errors in JavaScript:';
-            foreach ($this->jsErrors as $jsError) {
-                $errors .= "\n" . $jsError;
+            foreach ($this->js_errors as $js_error) {
+                $errors .= "\n" . $js_error;
             }
         }
-
         return $errors;
     }
-
     /**
      * Verify that there is no JavaScript error in browser logs
      */
-    public function dontSeeJsError(): void
+    public function dont_see_js_error(): void
     {
-        $this->assertEmpty($this->jsErrors, $this->getJsErrors());
+        $this->assert_empty($this->js_errors, $this->get_js_errors());
     }
-
     /**
      * Takes a screenshot of the current window and saves it to `tests/_output/debug`.
      *
@@ -942,21 +803,20 @@ class MagentoWebDriver extends WebDriver
      *
      * @param string $name
      */
-    public function makeScreenshot($name = null): void
+    public function make_screenshot($name = null): void
     {
         if (empty($name)) {
             $name = uniqid(date('Y-m-d_H-i-s_'));
         }
-        $debugDir = codecept_log_dir() . 'debug';
-        if (!is_dir($debugDir)) {
-            mkdir($debugDir, 0777);
+        $debug_dir = codecept_log_dir() . 'debug';
+        if (!is_dir($debug_dir)) {
+            mkdir($debug_dir, 0777);
         }
-        $screenName = $debugDir . DIRECTORY_SEPARATOR . $name . '.png';
-        $this->_saveScreenshot($screenName);
-        $this->debug("Screenshot saved to $screenName");
-        AllureHelper::addAttachmentToCurrentStep($screenName, 'Screenshot');
+        $screen_name = $debug_dir . DIRECTORY_SEPARATOR . $name . '.png';
+        $this->_save_screenshot($screen_name);
+        $this->debug("Screenshot saved to {$screen_name}");
+        Allure_Helper::add_attachment_to_current_step($screen_name, 'Screenshot');
     }
-
     /**
      * Return OTP based on a shared secret
      *
@@ -964,141 +824,115 @@ class MagentoWebDriver extends WebDriver
      * @return string
      * @throws TestFrameworkException
      */
-    public function getOTP($secretsPath = null)
+    public function get_otp($secrets_path = null)
     {
-        return OTP::getOTP($secretsPath);
+        return OTP::get_otp($secrets_path);
     }
-
     /**
      * Waits proper amount of time to perform Cron execution
      *
      * @param integer $timeout
      * @throws TestFrameworkException
      */
-    private function executeCronjobs(array $cronGroups, $timeout, string $arguments): string
+    private function execute_cronjobs(array $cron_groups, $timeout, string $arguments): string
     {
-        $cronGroups = array_filter($cronGroups);
-
-        if (isset($cronGroups[0]) && !isset($cronGroups[1])) {
+        $cron_groups = array_filter($cron_groups);
+        if (isset($cron_groups[0]) && !isset($cron_groups[1])) {
             $arguments .= ' --bootstrap=standaloneProcessStarted=1';
         }
-
-        $waitFor = $this->getCronWait($cronGroups);
-
-        if ($waitFor) {
-            $this->wait($waitFor);
+        $wait_for = $this->get_cron_wait($cron_groups);
+        if ($wait_for) {
+            $this->wait($wait_for);
         }
-
-        $command = array_reduce($cronGroups, fn (string $command, string $cronGroup): string => $command . (' --group=' . $cronGroup), self::MAGENTO_CRON_COMMAND);
-        $timeStart = microtime(true);
-        $cronResult = $this->magentoCLI($command, $timeout, $arguments);
-        $timeEnd = microtime(true);
-
-        $this->notifyCronFinished($cronGroups);
-
-        return sprintf('%s (wait: %ss, execution: %ss)', $cronResult, $waitFor, round($timeEnd - $timeStart, 2));
+        $command = array_reduce($cron_groups, fn(string $command, string $cron_group): string => $command . (' --group=' . $cron_group), self::MAGENTO_CRON_COMMAND);
+        $time_start = microtime(true);
+        $cron_result = $this->magento_cli($command, $timeout, $arguments);
+        $time_end = microtime(true);
+        $this->notify_cron_finished($cron_groups);
+        return sprintf('%s (wait: %ss, execution: %ss)', $cron_result, $wait_for, round($time_end - $time_start, 2));
     }
-
     /**
      * Switch to another frame on the page by name, ID, CSS or XPath.
      *
      * @param string|null $locator
      * @throws \Exception
      */
-    public function switchToIFrame($locator = null): void
+    public function switch_to_i_frame($locator = null): void
     {
         try {
-            parent::switchToIFrame($locator);
+            parent::switch_to_i_frame($locator);
         } catch (\Exception $e) {
-            $els = $this->_findElements("#$locator");
+            $els = $this->_find_elements("#{$locator}");
             if (!count($els)) {
-                $this->debug('Failed to find locator by ID: ' . $e->getMessage());
-                throw new \Exception("IFrame with $locator was not found.");
+                $this->debug('Failed to find locator by ID: ' . $e->get_message());
+                throw new \Exception("IFrame with {$locator} was not found.");
             }
-            $this->webDriver->switchTo()->frame($els[0]);
+            $this->web_driver->switch_to()->frame($els[0]);
         }
     }
-
     /**
      * Invoke Codeption pause()
      *
      * @param boolean $pauseOnFail
      */
-    public function pause($pauseOnFail = false): void
+    public function pause($pause_on_fail = false): void
     {
-        if (\Composer\InstalledVersions::isInstalled('hoa/console') === false) {
+        if (\Composer\Installed_Versions::is_installed('hoa/console') === false) {
             $message = '<pause /> action is unavailable.' . PHP_EOL;
             $message .= 'Please install `hoa/console` via "composer require hoa/console"' . PHP_EOL;
-            print($message);
+            print $message;
             return;
         }
-        if (!\Codeception\Util\Debug::isEnabled()) {
+        if (!\Codeception\Util\Debug::is_enabled()) {
             return;
         }
-
-        if ($pauseOnFail) {
-            print(PHP_EOL . 'Failure encountered. Pausing execution...' . PHP_EOL . PHP_EOL);
+        if ($pause_on_fail) {
+            print PHP_EOL . 'Failure encountered. Pausing execution...' . PHP_EOL . PHP_EOL;
         }
-
-        $this->codeceptPause();
+        $this->codecept_pause();
     }
-
     /**
      * @param string $selector
      * @param string $expected
      */
-    public function seeNumberOfElements($selector, $expected): void
+    public function see_number_of_elements($selector, $expected): void
     {
-        $counted = count($this->matchVisible($selector));
+        $counted = count($this->match_visible($selector));
         if (is_array($expected)) {
             [$floor, $ceil] = $expected;
-            $this->assertTrue(
-                $floor <= $counted && $ceil >= $counted,
-                'Number of elements counted differs from expected range'
-            );
+            $this->assert_true($floor <= $counted && $ceil >= $counted, 'Number of elements counted differs from expected range');
         } else {
-            $this->assertSame(
-                (int)$expected,
-                $counted,
-                'Number of elements counted differs from expected number'
-            );
+            $this->assert_same((int) $expected, $counted, 'Number of elements counted differs from expected number');
         }
     }
-
     /**
      * @param string $text
      * @param string $selector
      */
     public function see($text, $selector = null): void
     {
-        $text = (isset($text))
-            ? (string)$text
-            : '';
+        $text = isset($text) ? (string) $text : '';
         if (!$selector) {
-            $this->assertPageContains($text);
+            $this->assert_page_contains($text);
             return;
         }
-
-        $this->enableImplicitWait();
-        $nodes = $this->matchVisible($selector);
-        $this->disableImplicitWait();
-        $this->assertNodesContain($text, $nodes, $selector);
+        $this->enable_implicit_wait();
+        $nodes = $this->match_visible($selector);
+        $this->disable_implicit_wait();
+        $this->assert_nodes_contain($text, $nodes, $selector);
     }
-
     /**
      * @param string $text
      * @param string $selector
      */
-    public function dontSee($text, $selector = null): void
+    public function dont_see($text, $selector = null): void
     {
-        $text = (isset($text))
-            ? (string)$text
-            : '';
+        $text = isset($text) ? (string) $text : '';
         if (!$selector) {
-            $this->assertPageNotContains($text);
+            $this->assert_page_not_contains($text);
         } else {
-            $nodes = $this->matchVisible($selector);
-            $this->assertNodesNotContain($text, $nodes, $selector);
+            $nodes = $this->match_visible($selector);
+            $this->assert_nodes_not_contain($text, $nodes, $selector);
         }
     }
 }

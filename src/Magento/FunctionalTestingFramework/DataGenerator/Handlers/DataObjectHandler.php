@@ -1,24 +1,22 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Data_Generator\Handlers;
 
-namespace Magento\FunctionalTestingFramework\DataGenerator\Handlers;
-
-use Magento\FunctionalTestingFramework\DataGenerator\Objects\EntityDataObject;
-use Magento\FunctionalTestingFramework\DataGenerator\Parsers\DataProfileSchemaParser;
-use Magento\FunctionalTestingFramework\DataGenerator\Util\DataExtensionUtil;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Exceptions\XmlException;
-use Magento\FunctionalTestingFramework\ObjectManager\ObjectHandlerInterface;
-use Magento\FunctionalTestingFramework\ObjectManagerFactory;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
-use Magento\FunctionalTestingFramework\Util\Validation\NameValidationUtil;
-
-class DataObjectHandler implements ObjectHandlerInterface
+use Magento\Functional_Testing_Framework\Data_Generator\Objects\Entity_Data_Object;
+use Magento\Functional_Testing_Framework\Data_Generator\Parsers\Data_Profile_Schema_Parser;
+use Magento\Functional_Testing_Framework\Data_Generator\Util\Data_Extension_Util;
+use Magento\Functional_Testing_Framework\Exceptions\Test_Framework_Exception;
+use Magento\Functional_Testing_Framework\Exceptions\Xml_Exception;
+use Magento\Functional_Testing_Framework\Object_Manager\Object_Handler_Interface;
+use Magento\Functional_Testing_Framework\Object_Manager_Factory;
+use Magento\Functional_Testing_Framework\Util\Logger\Logging_Util;
+use Magento\Functional_Testing_Framework\Util\Validation\Name_Validation_Util;
+class Data_Object_Handler implements Object_Handler_Interface
 {
     public const _ENTITY = 'entity';
     public const _NAME = 'name';
@@ -39,92 +37,81 @@ class DataObjectHandler implements ObjectHandlerInterface
     public const _REQUIRED_ENTITY = 'requiredEntity';
     public const _FILENAME = 'filename';
     public const DATA_NAME_ERROR_MSG = "Entity names cannot contain non alphanumeric characters.\tData='%s'";
-
     /**
      * The singleton instance of this class
      */
-    private static ?\Magento\FunctionalTestingFramework\DataGenerator\Handlers\DataObjectHandler $INSTANCE = null;
-
+    private static ?\Magento\Functional_Testing_Framework\Data_Generator\Handlers\Data_Object_Handler $INSTANCE = null;
     /**
      * A collection of entity data objects that were seen in XML files and the .env file
      *
      * @var EntityDataObject[] $entityDataObjects
      */
-    private $entityDataObjects = [];
-
+    private $entity_data_objects = [];
     /**
      * Instance of DataExtensionUtil class
      */
-    private readonly \Magento\FunctionalTestingFramework\DataGenerator\Util\DataExtensionUtil $extendUtil;
-
+    private readonly \Magento\Functional_Testing_Framework\Data_Generator\Util\Data_Extension_Util $extend_util;
     /**
      * Validates and keeps track of entity name violations.
      */
-    private readonly \Magento\FunctionalTestingFramework\Util\Validation\NameValidationUtil $entityNameValidator;
-
+    private readonly \Magento\Functional_Testing_Framework\Util\Validation\Name_Validation_Util $entity_name_validator;
     /**
      * Validates and keeps track of entity key violations.
      */
-    private readonly \Magento\FunctionalTestingFramework\Util\Validation\NameValidationUtil $entityKeyValidator;
-
+    private readonly \Magento\Functional_Testing_Framework\Util\Validation\Name_Validation_Util $entity_key_validator;
     /**
      * Constructor
      */
     private function __construct()
     {
-        $parser = ObjectManagerFactory::getObjectManager()->create(DataProfileSchemaParser::class);
-        $parserOutput = $parser->readDataProfiles();
-        if (!$parserOutput) {
+        $parser = Object_Manager_Factory::get_object_manager()->create(Data_Profile_Schema_Parser::class);
+        $parser_output = $parser->read_data_profiles();
+        if (!$parser_output) {
             return;
         }
-        $this->entityNameValidator = new NameValidationUtil();
-        $this->entityKeyValidator = new NameValidationUtil();
-        $this->entityDataObjects = $this->processParserOutput($parserOutput);
-        $this->extendUtil = new DataExtensionUtil();
+        $this->entity_name_validator = new Name_Validation_Util();
+        $this->entity_key_validator = new Name_Validation_Util();
+        $this->entity_data_objects = $this->process_parser_output($parser_output);
+        $this->extend_util = new Data_Extension_Util();
     }
-
     /**
      * Return the singleton instance of this class. Initialize it if needed.
      *
      * @return DataObjectHandler
      * @throws \Exception
      */
-    public static function getInstance()
+    public static function get_instance()
     {
         if (!self::$INSTANCE) {
-            self::$INSTANCE = new DataObjectHandler();
+            self::$INSTANCE = new Data_Object_Handler();
         }
         return self::$INSTANCE;
     }
-
     /**
      * Get an EntityDataObject by name
      *
      * @param string $name The name of the entity you want. Comes from the name attribute in data xml.
      * @return EntityDataObject | null
      */
-    public function getObject($name)
+    public function get_object($name)
     {
-        if (array_key_exists($name, $this->entityDataObjects)) {
-            return $this->extendDataObject($this->entityDataObjects[$name]);
+        if (array_key_exists($name, $this->entity_data_objects)) {
+            return $this->extend_data_object($this->entity_data_objects[$name]);
         }
-
         return null;
     }
-
     /**
      * Get all EntityDataObjects
      *
      * @return EntityDataObject[]
      */
-    public function getAllObjects()
+    public function get_all_objects()
     {
-        foreach ($this->entityDataObjects as $entityName => $entityObject) {
-            $this->entityDataObjects[$entityName] = $this->extendDataObject($entityObject);
+        foreach ($this->entity_data_objects as $entity_name => $entity_object) {
+            $this->entity_data_objects[$entity_name] = $this->extend_data_object($entity_object);
         }
-        return $this->entityDataObjects;
+        return $this->entity_data_objects;
     }
-
     /**
      * Convert the parser output into a collection of EntityDataObjects
      *
@@ -133,175 +120,136 @@ class DataObjectHandler implements ObjectHandlerInterface
      * @throws XmlException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    private function processParserOutput(array $parserOutput): array
+    private function process_parser_output(array $parser_output): array
     {
-        $entityDataObjects = [];
-        $rawEntities = $parserOutput[self::_ENTITY];
-
-        foreach ($rawEntities as $name => $rawEntity) {
+        $entity_data_objects = [];
+        $raw_entities = $parser_output[self::_ENTITY];
+        foreach ($raw_entities as $name => $raw_entity) {
             if (preg_match('/[^a-zA-Z0-9_]/', (string) $name)) {
-                throw new XmlException(sprintf(self::DATA_NAME_ERROR_MSG, $name));
+                throw new Xml_Exception(sprintf(self::DATA_NAME_ERROR_MSG, $name));
             }
-
-            $filename = $rawEntity[self::_FILENAME] ?? null;
-            $this->entityNameValidator->validatePascalCase(
-                $name,
-                NameValidationUtil::DATA_ENTITY_NAME,
-                $filename
-            );
-            $type = $rawEntity[self::_TYPE] ?? null;
+            $filename = $raw_entity[self::_FILENAME] ?? null;
+            $this->entity_name_validator->validate_pascal_case($name, Name_Validation_Util::DATA_ENTITY_NAME, $filename);
+            $type = $raw_entity[self::_TYPE] ?? null;
             $data = [];
             $deprecated = null;
-            $linkedEntities = [];
-            $uniquenessData = [];
+            $linked_entities = [];
+            $uniqueness_data = [];
             $vars = [];
-            $parentEntity = null;
-
-            if (array_key_exists(self::_DATA, $rawEntity)) {
-                $data = $this->processDataElements($rawEntity);
-                $uniquenessData = $this->processUniquenessData($rawEntity);
+            $parent_entity = null;
+            if (array_key_exists(self::_DATA, $raw_entity)) {
+                $data = $this->process_data_elements($raw_entity);
+                $uniqueness_data = $this->process_uniqueness_data($raw_entity);
             }
-
-            if (array_key_exists(self::_REQUIRED_ENTITY, $rawEntity)) {
-                $linkedEntities = $this->processLinkedEntities($rawEntity);
+            if (array_key_exists(self::_REQUIRED_ENTITY, $raw_entity)) {
+                $linked_entities = $this->process_linked_entities($raw_entity);
             }
-
-            if (array_key_exists(self::_ARRAY, $rawEntity)) {
-                $arrays = $rawEntity[self::_ARRAY];
+            if (array_key_exists(self::_ARRAY, $raw_entity)) {
+                $arrays = $raw_entity[self::_ARRAY];
                 foreach ($arrays as $array) {
                     $key = strtolower((string) $array[self::_KEY]);
-                    $data[$key] = $this->processArray($array[self::_ITEM], $data, $key);
+                    $data[$key] = $this->process_array($array[self::_ITEM], $data, $key);
                 }
             }
-
-            if (array_key_exists(self::_VAR, $rawEntity)) {
-                $vars = $this->processVarElements($rawEntity);
+            if (array_key_exists(self::_VAR, $raw_entity)) {
+                $vars = $this->process_var_elements($raw_entity);
             }
-
-            if (array_key_exists(self::_EXTENDS, $rawEntity)) {
-                $parentEntity = $rawEntity[self::_EXTENDS];
+            if (array_key_exists(self::_EXTENDS, $raw_entity)) {
+                $parent_entity = $raw_entity[self::_EXTENDS];
             }
-
-            if (array_key_exists(self::OBJ_DEPRECATED, $rawEntity)) {
-                $deprecated = $rawEntity[self::OBJ_DEPRECATED];
-                LoggingUtil::getInstance()->getLogger(self::class)->deprecation(
-                    "The data entity '{$name}' is deprecated.",
-                    ['fileName' => $filename, 'deprecatedMessage' => $deprecated]
-                );
+            if (array_key_exists(self::OBJ_DEPRECATED, $raw_entity)) {
+                $deprecated = $raw_entity[self::OBJ_DEPRECATED];
+                Logging_Util::get_instance()->get_logger(self::class)->deprecation("The data entity '{$name}' is deprecated.", ['fileName' => $filename, 'deprecatedMessage' => $deprecated]);
             }
-
-            $entityDataObject = new EntityDataObject(
-                $name,
-                $type,
-                $data,
-                $linkedEntities,
-                $uniquenessData,
-                $vars,
-                $parentEntity,
-                $filename,
-                $deprecated
-            );
-
-            $entityDataObjects[$entityDataObject->getName()] = $entityDataObject;
+            $entity_data_object = new Entity_Data_Object($name, $type, $data, $linked_entities, $uniqueness_data, $vars, $parent_entity, $filename, $deprecated);
+            $entity_data_objects[$entity_data_object->get_name()] = $entity_data_object;
         }
-        $this->entityNameValidator->summarize(NameValidationUtil::DATA_ENTITY_NAME);
-        $this->entityKeyValidator->summarize(NameValidationUtil::DATA_ENTITY_KEY);
-        return $entityDataObjects;
+        $this->entity_name_validator->summarize(Name_Validation_Util::DATA_ENTITY_NAME);
+        $this->entity_key_validator->summarize(Name_Validation_Util::DATA_ENTITY_KEY);
+        return $entity_data_objects;
     }
-
     /**
      * Takes an array of items and a top level entity data array and merges in elements from parsed entity definitions.
      *
      * @param array  $arrayItems
      * @param string $key
      */
-    private function processArray($arrayItems, array $data, $key): array
+    private function process_array($array_items, array $data, $key): array
     {
         $items = [];
-        foreach ($arrayItems as $key => $item) {
+        foreach ($array_items as $key => $item) {
             $items[$key] = $item[self::_VALUE];
         }
-
         return array_merge($items, $data[$key] ?? []);
     }
-
     /**
      * Parses <data> elements in an entity, and returns them as an array of "lowerKey"=>value.
      *
      * @param string[] $entityData
      * @return string[]
      */
-    private function processDataElements(array $entityData): array
+    private function process_data_elements(array $entity_data): array
     {
-        $dataValues = [];
-        foreach ($entityData[self::_DATA] as $dataElement) {
-            $originalDataElementKey = $dataElement[self::_KEY];
-            $filename = $entityData[self::_FILENAME] ?? null;
-            $this->entityKeyValidator->validateCamelCase(
-                $originalDataElementKey,
-                NameValidationUtil::DATA_ENTITY_KEY,
-                $filename
-            );
-            $dataElementKey = strtolower((string) $originalDataElementKey);
-            $dataElementValue = $dataElement[self::_VALUE] ?? '';
-            $dataValues[$dataElementKey] = $dataElementValue;
+        $data_values = [];
+        foreach ($entity_data[self::_DATA] as $data_element) {
+            $original_data_element_key = $data_element[self::_KEY];
+            $filename = $entity_data[self::_FILENAME] ?? null;
+            $this->entity_key_validator->validate_camel_case($original_data_element_key, Name_Validation_Util::DATA_ENTITY_KEY, $filename);
+            $data_element_key = strtolower((string) $original_data_element_key);
+            $data_element_value = $data_element[self::_VALUE] ?? '';
+            $data_values[$data_element_key] = $data_element_value;
         }
-        return $dataValues;
+        return $data_values;
     }
-
     /**
      * Parses through <data> elements in an entity to return an array of "DataKey" => "UniquenessAttribute"
      *
      * @param string[] $entityData
      * @return string[]
      */
-    private function processUniquenessData(array $entityData): array
+    private function process_uniqueness_data(array $entity_data): array
     {
-        $uniquenessValues = [];
-        foreach ($entityData[self::_DATA] as $dataElement) {
-            if (array_key_exists(self::_UNIQUE, $dataElement)) {
-                $dataElementKey = strtolower((string) $dataElement[self::_KEY]);
-                $uniquenessValues[$dataElementKey] = $dataElement[self::_UNIQUE];
+        $uniqueness_values = [];
+        foreach ($entity_data[self::_DATA] as $data_element) {
+            if (array_key_exists(self::_UNIQUE, $data_element)) {
+                $data_element_key = strtolower((string) $data_element[self::_KEY]);
+                $uniqueness_values[$data_element_key] = $data_element[self::_UNIQUE];
             }
         }
-        return $uniquenessValues;
+        return $uniqueness_values;
     }
-
     /**
      * Parses <requiredEntity> elements given entity, and returns them as an array of "EntityValue"=>"EntityType"
      *
      * @param string[] $entityData
      * @return string[]
      */
-    private function processLinkedEntities(array $entityData): array
+    private function process_linked_entities(array $entity_data): array
     {
-        $linkedEntities = [];
-        foreach ($entityData[self::_REQUIRED_ENTITY] as $linkedEntity) {
-            $linkedEntityName = $linkedEntity[self::_VALUE];
-            $linkedEntityType = $linkedEntity[self::_TYPE];
-
-            $linkedEntities[$linkedEntityName] = $linkedEntityType;
+        $linked_entities = [];
+        foreach ($entity_data[self::_REQUIRED_ENTITY] as $linked_entity) {
+            $linked_entity_name = $linked_entity[self::_VALUE];
+            $linked_entity_type = $linked_entity[self::_TYPE];
+            $linked_entities[$linked_entity_name] = $linked_entity_type;
         }
-        return $linkedEntities;
+        return $linked_entities;
     }
-
     /**
      * Parses <var> elements in given entity, and returns them as an array of "Key"=> entityType -> entityKey
      *
      * @param string[] $entityData
      * @return string[]
      */
-    private function processVarElements(array $entityData): array
+    private function process_var_elements(array $entity_data): array
     {
         $vars = [];
-        foreach ($entityData[self::_VAR] as $varElement) {
-            $varKey = $varElement[self::_KEY];
-            $varValue = $varElement[self::_ENTITY_TYPE] . self::_SEPARATOR . $varElement[self::_ENTITY_KEY];
-            $vars[$varKey] = $varValue;
+        foreach ($entity_data[self::_VAR] as $var_element) {
+            $var_key = $var_element[self::_KEY];
+            $var_value = $var_element[self::_ENTITY_TYPE] . self::_SEPARATOR . $var_element[self::_ENTITY_KEY];
+            $vars[$var_key] = $var_value;
         }
         return $vars;
     }
-
     /**
      * This method checks if the data object is extended and creates a new data object accordingly
      *
@@ -309,14 +257,14 @@ class DataObjectHandler implements ObjectHandlerInterface
      * @return EntityDataObject
      * @throws TestFrameworkException
      */
-    private function extendDataObject($dataObject)
+    private function extend_data_object($data_object)
     {
-        if ($dataObject->getParentName() !== null) {
-            if ($dataObject->getParentName() === $dataObject->getName()) {
-                throw new TestFrameworkException('Mftf Data can not extend from itself: ' . $dataObject->getName());
+        if ($data_object->get_parent_name() !== null) {
+            if ($data_object->get_parent_name() === $data_object->get_name()) {
+                throw new Test_Framework_Exception('Mftf Data can not extend from itself: ' . $data_object->get_name());
             }
-            return $this->extendUtil->extendEntity($dataObject);
+            return $this->extend_util->extend_entity($data_object);
         }
-        return $dataObject;
+        return $data_object;
     }
 }

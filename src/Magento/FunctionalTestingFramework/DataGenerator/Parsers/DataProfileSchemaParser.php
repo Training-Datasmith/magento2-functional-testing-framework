@@ -1,19 +1,17 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Data_Generator\Parsers;
 
-namespace Magento\FunctionalTestingFramework\DataGenerator\Parsers;
-
-use Magento\FunctionalTestingFramework\Config\DataInterface;
-
+use Magento\Functional_Testing_Framework\Config\Data_Interface;
 /**
  * Class DataProfileSchemaParser
  */
-class DataProfileSchemaParser
+class Data_Profile_Schema_Parser
 {
     /**
      * DataProfileSchemaParser constructor.
@@ -22,17 +20,17 @@ class DataProfileSchemaParser
         /**
          * Data Profiles.
          */
-        private readonly DataInterface $dataProfiles
-    ) {
+        private readonly Data_Interface $data_profiles
+    )
+    {
     }
-
     /**
      * Function to return data as array from data.xml files
      *
      * @return array
      */
-    public function readDataProfiles()
+    public function read_data_profiles()
     {
-        return $this->dataProfiles->get();
+        return $this->data_profiles->get();
     }
 }

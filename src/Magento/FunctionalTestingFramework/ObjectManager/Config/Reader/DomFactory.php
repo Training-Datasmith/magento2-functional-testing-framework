@@ -1,17 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\ObjectManager\Config\Reader;
+namespace Magento\Functional_Testing_Framework\Object_Manager\Config\Reader;
 
 /**
  * Factory class for \Magento\FunctionalTestingFramework\ObjectManager\Config\Reader\Dom
  */
-class DomFactory
+class Dom_Factory
 {
     /**
      * Factory constructor
@@ -22,14 +21,14 @@ class DomFactory
         /**
          * Object Manager instance
          */
-        protected \Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager,
+        protected \Magento\Functional_Testing_Framework\Object_Manager_Interface $object_manager,
         /**
          * Instance name to create
          */
-        protected $instanceName = \Magento\FunctionalTestingFramework\ObjectManager\Config\Reader\Dom::class
-    ) {
+        protected $instance_name = \Magento\Functional_Testing_Framework\Object_Manager\Config\Reader\Dom::class
+    )
+    {
     }
-
     /**
      * Create class instance with specified parameters
      *
@@ -37,6 +36,6 @@ class DomFactory
      */
     public function create(array $data = [])
     {
-        return $this->objectManager->create($this->instanceName, $data);
+        return $this->object_manager->create($this->instance_name, $data);
     }
 }

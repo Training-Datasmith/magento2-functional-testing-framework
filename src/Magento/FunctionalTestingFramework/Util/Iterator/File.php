@@ -1,19 +1,18 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\Util\Iterator;
+namespace Magento\Functional_Testing_Framework\Util\Iterator;
 
 /**
  * Class File
  *
  * @api
  */
-class File extends AbstractIterator
+class File extends Abstract_Iterator
 {
     /**
      * Cached files content
@@ -21,26 +20,23 @@ class File extends AbstractIterator
      * @var array
      */
     protected $cached = [];
-
     /**
      * File constructor.
      */
     public function __construct(array $paths)
     {
         $this->data = $paths;
-        $this->initFirstElement();
+        $this->init_first_element();
     }
-
     /**
      * Return filename of current file object
      *
      * @return string
      */
-    public function getFilename()
+    public function get_filename()
     {
         return $this->data[$this->key()];
     }
-
     /**
      * Get file content
      *
@@ -53,11 +49,10 @@ class File extends AbstractIterator
         }
         return $this->cached[$this->current];
     }
-
     /**
      * Check if current element is valid
      */
-    protected function isValid(): bool
+    protected function is_valid(): bool
     {
         return true;
     }

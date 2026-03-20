@@ -1,35 +1,31 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2019 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Module;
 
-namespace Magento\FunctionalTestingFramework\Module;
-
-use Facebook\WebDriver\Remote\RemoteWebDriver;
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-
+use Facebook\Web_Driver\Remote\Remote_Web_Driver;
+use Magento\Functional_Testing_Framework\Exceptions\Test_Framework_Exception;
 /**
  * MagentoWebDriverDoctor module extends MagentoWebDriver module and is a light weighted module to diagnose webdriver
  * initialization and other setup issues. It uses in memory version of MagentoWebDriver's configuration file.
  */
-class MagentoWebDriverDoctor extends MagentoWebDriver
+class Magento_Web_Driver_Doctor extends Magento_Web_Driver
 {
     public const MAGENTO_CLI_COMMAND = 'info:currency:list';
     public const EXCEPTION_CONTEXT_SELENIUM = 'selenium';
     public const EXCEPTION_CONTEXT_ADMIN = 'admin';
     public const EXCEPTION_CONTEXT_STOREFRONT = 'store';
     public const EXCEPTION_CONTEXT_CLI = 'cli';
-
     /**
      * Remote Web Driver
      *
      * @var RemoteWebDriver
      */
-    private $remoteWebDriver;
-
+    private $remote_web_driver;
     /**
      * Go through parent initialization routines and in addition diagnose potential environment issues
      *
@@ -38,129 +34,91 @@ class MagentoWebDriverDoctor extends MagentoWebDriver
     public function _initialize(): void
     {
         parent::_initialize();
-
         $context = [];
-
         try {
-            $this->connectToSeleniumServer();
-        } catch (TestFrameworkException $e) {
-            $context[self::EXCEPTION_CONTEXT_SELENIUM] = $e->getMessage();
+            $this->connect_to_selenium_server();
+        } catch (Test_Framework_Exception $e) {
+            $context[self::EXCEPTION_CONTEXT_SELENIUM] = $e->get_message();
         }
-
         try {
-            $adminUrl = rtrim(getenv('MAGENTO_BACKEND_BASE_URL'), '/')
-                ?: rtrim(getenv('MAGENTO_BASE_URL'), '/')
-                . '/' . getenv('MAGENTO_BACKEND_NAME') . '/admin';
-            $this->loadPageAtUrl($adminUrl);
+            $admin_url = rtrim(getenv('MAGENTO_BACKEND_BASE_URL'), '/') ?: rtrim(getenv('MAGENTO_BASE_URL'), '/') . '/' . getenv('MAGENTO_BACKEND_NAME') . '/admin';
+            $this->load_page_at_url($admin_url);
         } catch (\Exception $e) {
-            $context[self::EXCEPTION_CONTEXT_ADMIN] = $e->getMessage();
+            $context[self::EXCEPTION_CONTEXT_ADMIN] = $e->get_message();
         }
-
         try {
-            $storeUrl = getenv('MAGENTO_BASE_URL');
-            $this->loadPageAtUrl($storeUrl);
+            $store_url = getenv('MAGENTO_BASE_URL');
+            $this->load_page_at_url($store_url);
         } catch (\Exception $e) {
-            $context[self::EXCEPTION_CONTEXT_STOREFRONT] = $e->getMessage();
+            $context[self::EXCEPTION_CONTEXT_STOREFRONT] = $e->get_message();
         }
-
         try {
-            $this->runMagentoCLI();
+            $this->run_magento_cli();
         } catch (\Exception $e) {
-            $context[self::EXCEPTION_CONTEXT_CLI] = $e->getMessage();
+            $context[self::EXCEPTION_CONTEXT_CLI] = $e->get_message();
         }
-
-        if (null !== $this->remoteWebDriver) {
-            $this->remoteWebDriver->close();
+        if (null !== $this->remote_web_driver) {
+            $this->remote_web_driver->close();
         }
-
         if (!empty($context)) {
-            throw new TestFrameworkException('Exception occurred in MagentoWebDriverDoctor', $context);
+            throw new Test_Framework_Exception('Exception occurred in MagentoWebDriverDoctor', $context);
         }
     }
-
     /**
      * Check connecting to running selenium server
      *
      * @throws TestFrameworkException
      */
-    private function connectToSeleniumServer(): void
+    private function connect_to_selenium_server(): void
     {
         try {
-            $this->remoteWebDriver = RemoteWebDriver::create(
-                $this->wdHost,
-                $this->capabilities,
-                $this->connectionTimeoutInMs,
-                $this->requestTimeoutInMs,
-                $this->config['http_proxy'],
-                $this->config['http_proxy_port']
-            );
-            if (null !== $this->remoteWebDriver) {
+            $this->remote_web_driver = Remote_Web_Driver::create($this->wd_host, $this->capabilities, $this->connection_timeout_in_ms, $this->request_timeout_in_ms, $this->config['http_proxy'], $this->config['http_proxy_port']);
+            if (null !== $this->remote_web_driver) {
                 return;
             }
         } catch (\Exception) {
         }
-
-        throw new TestFrameworkException(
-            "Failed to connect Selenium WebDriver at: {$this->wdHost}.\n"
-            . 'Please make sure that Selenium Server is running.'
-        );
+        throw new Test_Framework_Exception("Failed to connect Selenium WebDriver at: {$this->wd_host}.\n" . 'Please make sure that Selenium Server is running.');
     }
-
     /**
      * Validate loading a web page at url in the browser controlled by selenium
      *
      * @param string $url
      * @throws TestFrameworkException
      */
-    private function loadPageAtUrl(string|array|bool $url): void
+    private function load_page_at_url(string|array|bool $url): void
     {
         try {
-            if (null !== $this->remoteWebDriver) {
+            if (null !== $this->remote_web_driver) {
                 // Open the web page at url first
-                $this->remoteWebDriver->get($url);
-
+                $this->remote_web_driver->get($url);
                 // Execute Javascript to retrieve HTTP response code
-                $script = ''
-                    . 'var xhr = new XMLHttpRequest();'
-                    . "xhr.open('GET', '" . $url . "', false);"
-                    . 'xhr.send(null); '
-                    . 'return xhr.status';
-                $status = $this->remoteWebDriver->executeScript($script);
-
+                $script = '' . 'var xhr = new XMLHttpRequest();' . "xhr.open('GET', '" . $url . "', false);" . 'xhr.send(null); ' . 'return xhr.status';
+                $status = $this->remote_web_driver->execute_script($script);
                 if ($status === 200) {
                     return;
                 }
             }
         } catch (\Exception) {
         }
-
-        throw new TestFrameworkException(
-            "Failed to load page at url: $url\n"
-            . 'Please check Selenium Browser session have access to Magento instance.'
-        );
+        throw new Test_Framework_Exception("Failed to load page at url: {$url}\n" . 'Please check Selenium Browser session have access to Magento instance.');
     }
-
     /**
      * Check running Magento CLI command
      *
      * @throws TestFrameworkException
      */
-    private function runMagentoCLI(): void
+    private function run_magento_cli(): void
     {
         try {
             $regex = '~^.*[\r\n]+.*(?<name>Currency).*(?<code>Code).*~';
-            $output = parent::magentoCLI(self::MAGENTO_CLI_COMMAND);
+            $output = parent::magento_cli(self::MAGENTO_CLI_COMMAND);
             preg_match($regex, $output, $matches);
-
             if (isset($matches['name']) && isset($matches['code'])) {
                 return;
             }
         } catch (\Exception) {
         }
-
-        throw new TestFrameworkException(
-            "Failed to run Magento CLI command\n"
-            . 'Please reference Magento DevDoc to setup command.php and .htaccess files.'
-        );
+        throw new Test_Framework_Exception("Failed to run Magento CLI command\n" . 'Please reference Magento DevDoc to setup command.php and .htaccess files.');
     }
 }

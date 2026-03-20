@@ -1,12 +1,11 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework;
+namespace Magento\Functional_Testing_Framework;
 
 /**
  * Class ObjectManager
@@ -18,7 +17,7 @@ namespace Magento\FunctionalTestingFramework;
  *
  * @api
  */
-class ObjectManager extends \Magento\FunctionalTestingFramework\ObjectManager\ObjectManager
+class Object_Manager extends \Magento\Functional_Testing_Framework\Object_Manager\Object_Manager
 {
     /**
      * Object manager factory.
@@ -26,26 +25,20 @@ class ObjectManager extends \Magento\FunctionalTestingFramework\ObjectManager\Ob
      * @var \Magento\FunctionalTestingFramework\ObjectManager\Factory
      */
     protected $factory;
-
     /**
      * Object manager instance.
      *
      * @var ObjectManager
      */
     protected static $instance;
-
     /**
      * ObjectManager constructor.
      */
-    public function __construct(
-        ?\Magento\FunctionalTestingFramework\ObjectManager\Factory $factory = null,
-        ?\Magento\FunctionalTestingFramework\ObjectManager\ConfigInterface $config = null,
-        array $sharedInstances = []
-    ) {
-        parent::__construct($factory, $config, $sharedInstances);
-        $this->sharedInstances[\Magento\FunctionalTestingFramework\ObjectManager::class] = $this;
+    public function __construct(?\Magento\Functional_Testing_Framework\Object_Manager\Factory $factory = null, ?\Magento\Functional_Testing_Framework\Object_Manager\Config_Interface $config = null, array $shared_instances = [])
+    {
+        parent::__construct($factory, $config, $shared_instances);
+        $this->shared_instances[\Magento\Functional_Testing_Framework\Object_Manager::class] = $this;
     }
-
     /**
      * Get list of parameters for class method
      *
@@ -53,11 +46,10 @@ class ObjectManager extends \Magento\FunctionalTestingFramework\ObjectManager\Ob
      * @param string $method
      * @return array|null
      */
-    public function getParameters($type, $method)
+    public function get_parameters($type, $method)
     {
-        return $this->factory->getParameters($type, $method);
+        return $this->factory->get_parameters($type, $method);
     }
-
     /**
      * Resolve and prepare arguments for class method
      *
@@ -65,11 +57,10 @@ class ObjectManager extends \Magento\FunctionalTestingFramework\ObjectManager\Ob
      * @param string $method
      * @return array
      */
-    public function prepareArguments($object, $method, array $arguments = [])
+    public function prepare_arguments($object, $method, array $arguments = [])
     {
-        return $this->factory->prepareArguments($object, $method, $arguments);
+        return $this->factory->prepare_arguments($object, $method, $arguments);
     }
-
     // @codingStandardsIgnoreStart
     /**
      * Invoke class method with prepared arguments
@@ -86,24 +77,22 @@ class ObjectManager extends \Magento\FunctionalTestingFramework\ObjectManager\Ob
     /**
      * Set object manager instance
      */
-    public static function setInstance(ObjectManager $objectManager): void
+    public static function set_instance(Object_Manager $object_manager): void
     {
-        self::$instance = $objectManager;
+        self::$instance = $object_manager;
     }
-
     /**
      * Retrieve object manager
      *
      * @throws \RuntimeException
      */
-    public static function getInstance(): false|\Magento\FunctionalTestingFramework\ObjectManager
+    public static function get_instance(): false|\Magento\Functional_Testing_Framework\Object_Manager
     {
-        if (!self::$instance instanceof ObjectManager) {
+        if (!self::$instance instanceof Object_Manager) {
             return false;
         }
         return self::$instance;
     }
-
     /**
      * Avoid to serialize Closure properties
      *

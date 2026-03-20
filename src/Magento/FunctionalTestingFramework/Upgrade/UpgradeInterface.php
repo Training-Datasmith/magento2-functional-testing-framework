@@ -1,24 +1,22 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Upgrade;
 
-namespace Magento\FunctionalTestingFramework\Upgrade;
-
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
+use Symfony\Component\Console\Input\Input_Interface;
+use Symfony\Component\Console\Output\Output_Interface;
 /**
  * Upgrade script interface
  */
-interface UpgradeInterface
+interface Upgrade_Interface
 {
     /**
      * Executes upgrade script, returns output.
      * @return string
      */
-    public function execute(InputInterface $input, OutputInterface $output);
+    public function execute(Input_Interface $input, Output_Interface $output);
 }

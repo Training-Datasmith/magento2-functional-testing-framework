@@ -4,29 +4,24 @@
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
+declare (strict_types=1);
+namespace Magento\Functional_Testing_Framework\Console;
 
-declare(strict_types=1);
-
-namespace Magento\FunctionalTestingFramework\Console;
-
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Util\Env\EnvProcessor;
-use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
+use Magento\Functional_Testing_Framework\Exceptions\Test_Framework_Exception;
+use Magento\Functional_Testing_Framework\Util\Env\Env_Processor;
+use Magento\Functional_Testing_Framework\Util\Path\File_Path_Formatter;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Exception\InvalidOptionException;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class SetupEnvCommand extends Command
+use Symfony\Component\Console\Exception\Invalid_Option_Exception;
+use Symfony\Component\Console\Input\Input_Interface;
+use Symfony\Component\Console\Input\Input_Option;
+use Symfony\Component\Console\Output\Output_Interface;
+class Setup_Env_Command extends Command
 {
     private const SUCCESS_EXIT_CODE = 0;
-
     /**
      * Env processor manages .env files.
      */
-    private ?\Magento\FunctionalTestingFramework\Util\Env\EnvProcessor $envProcessor = null;
-
+    private ?\Magento\Functional_Testing_Framework\Util\Env\Env_Processor $env_processor = null;
     /**
      * Configures the current command.
      *
@@ -34,33 +29,30 @@ class SetupEnvCommand extends Command
      */
     protected function configure(): void
     {
-        $this->setName('setup:env')
-            ->setDescription('Generate .env file.');
-        $this->envProcessor = new EnvProcessor(FilePathFormatter::format(TESTS_BP) . '.env');
-        $env = $this->envProcessor->getEnv();
+        $this->set_name('setup:env')->set_description('Generate .env file.');
+        $this->env_processor = new Env_Processor(File_Path_Formatter::format(TESTS_BP) . '.env');
+        $env = $this->env_processor->get_env();
         foreach ($env as $key => $value) {
-            $this->addOption($key, null, InputOption::VALUE_REQUIRED, '', $value);
+            $this->add_option($key, null, Input_Option::VALUE_REQUIRED, '', $value);
         }
     }
-
     /**
      * Executes the current command.
      *
      * @throws \Symfony\Component\Console\Exception\LogicException
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(Input_Interface $input, Output_Interface $output): int
     {
-        $config = $this->envProcessor->getEnv();
-        $userEnv = [];
+        $config = $this->env_processor->get_env();
+        $user_env = [];
         foreach ($config as $key => $value) {
-            if ($input->getOption($key) === '') {
-                throw new InvalidOptionException(sprintf("Parameter $key cannot be empty.", $key));
+            if ($input->get_option($key) === '') {
+                throw new Invalid_Option_Exception(sprintf("Parameter {$key} cannot be empty.", $key));
             }
-            $userEnv[$key] = $input->getOption($key);
+            $user_env[$key] = $input->get_option($key);
         }
-        $this->envProcessor->putEnvFile($userEnv);
+        $this->env_processor->put_env_file($user_env);
         $output->writeln('.env configuration successfully applied.');
-
         return self::SUCCESS_EXIT_CODE;
     }
 }

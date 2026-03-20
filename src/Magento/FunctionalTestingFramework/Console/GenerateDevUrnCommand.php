@@ -5,143 +5,100 @@
  * Copyright 2018 Adobe
  * All Rights Reserved.
  */
+declare (strict_types=1);
+namespace Magento\Functional_Testing_Framework\Console;
 
-declare(strict_types=1);
-
-namespace Magento\FunctionalTestingFramework\Console;
-
-use Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException;
-use Magento\FunctionalTestingFramework\Util\Logger\LoggingUtil;
-use Magento\FunctionalTestingFramework\Util\Path\FilePathFormatter;
+use Magento\Functional_Testing_Framework\Exceptions\Test_Framework_Exception;
+use Magento\Functional_Testing_Framework\Util\Logger\Logging_Util;
+use Magento\Functional_Testing_Framework\Util\Path\File_Path_Formatter;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class GenerateDevUrnCommand extends Command
+use Symfony\Component\Console\Input\Input_Argument;
+use Symfony\Component\Console\Input\Input_Interface;
+use Symfony\Component\Console\Input\Input_Option;
+use Symfony\Component\Console\Output\Output_Interface;
+class Generate_Dev_Urn_Command extends Command
 {
     private const SUCCESS_EXIT_CODE = 0;
     /**
      * Argument for the path to IDE config file
      */
     public const IDE_FILE_PATH_ARGUMENT = 'path';
-
     public const PROJECT_PATH_IDENTIFIER = '$PROJECT_DIR$';
     public const MFTF_SRC_PATH = 'src/Magento/FunctionalTestingFramework/';
-
     /**
      * Configures the current command.
      */
     protected function configure(): void
     {
-        $this->setName('generate:urn-catalog')
-            ->setDescription('Generates the catalog of URNs to *.xsd mappings for the IDE to highlight xml.')
-            ->addArgument(
-                self::IDE_FILE_PATH_ARGUMENT,
-                InputArgument::REQUIRED,
-                'Path to file to output the catalog. For PhpStorm use .idea/misc.xml'
-            )
-            ->addOption(
-                'force',
-                'f',
-                InputOption::VALUE_NONE,
-                'forces creation of misc.xml file if not found in the path given.'
-            );
+        $this->set_name('generate:urn-catalog')->set_description('Generates the catalog of URNs to *.xsd mappings for the IDE to highlight xml.')->add_argument(self::IDE_FILE_PATH_ARGUMENT, Input_Argument::REQUIRED, 'Path to file to output the catalog. For PhpStorm use .idea/misc.xml')->add_option('force', 'f', Input_Option::VALUE_NONE, 'forces creation of misc.xml file if not found in the path given.');
     }
-
     /**
      * Executes the current command.
      *
      * @throws \Magento\FunctionalTestingFramework\Exceptions\TestFrameworkException
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(Input_Interface $input, Output_Interface $output): int
     {
-        $miscXmlFilePath = $input->getArgument(self::IDE_FILE_PATH_ARGUMENT);
-        $miscXmlFile = realpath($miscXmlFilePath);
-        $force = (bool) $input->getOption('force');
-
-        if ($miscXmlFile === false) {
+        $misc_xml_file_path = $input->get_argument(self::IDE_FILE_PATH_ARGUMENT);
+        $misc_xml_file = realpath($misc_xml_file_path);
+        $force = (bool) $input->get_option('force');
+        if ($misc_xml_file === false) {
             if ($force === true) {
                 // create file and refresh realpath
                 $xml = '<project version="4"/>';
-                file_put_contents($miscXmlFilePath, $xml);
-                $miscXmlFile = realpath($miscXmlFilePath);
+                file_put_contents($misc_xml_file_path, $xml);
+                $misc_xml_file = realpath($misc_xml_file_path);
             } else {
-                $exceptionMessage = "misc.xml not found in given path '{$miscXmlFilePath}'";
-                LoggingUtil::getInstance()->getLogger(GenerateDevUrnCommand::class)
-                    ->error($exceptionMessage);
-                throw new TestFrameworkException($exceptionMessage);
+                $exception_message = "misc.xml not found in given path '{$misc_xml_file_path}'";
+                Logging_Util::get_instance()->get_logger(Generate_Dev_Urn_Command::class)->error($exception_message);
+                throw new Test_Framework_Exception($exception_message);
             }
         }
-        $dom = new \DOMDocument('1.0');
-        $dom->preserveWhiteSpace = false;
-        $dom->formatOutput = true;
-        $dom->loadXML(file_get_contents($miscXmlFile));
-
+        $dom = new \Dom_Document('1.0');
+        $dom->preserve_white_space = false;
+        $dom->format_output = true;
+        $dom->load_xml(file_get_contents($misc_xml_file));
         //Locate ProjectResources node, create one if none are found.
-        $nodeForWork = null;
-        foreach ($dom->getElementsByTagName('component') as $child) {
-            if ($child->getAttribute('name') === 'ProjectResources') {
-                $nodeForWork = $child;
+        $node_for_work = null;
+        foreach ($dom->get_elements_by_tag_name('component') as $child) {
+            if ($child->get_attribute('name') === 'ProjectResources') {
+                $node_for_work = $child;
             }
         }
-        if ($nodeForWork === null) {
-            $project = $dom->getElementsByTagName('project')->item(0);
-            $nodeForWork = $dom->createElement('component');
-            $nodeForWork->setAttribute('name', 'ProjectResources');
-            $project->appendChild($nodeForWork);
+        if ($node_for_work === null) {
+            $project = $dom->get_elements_by_tag_name('project')->item(0);
+            $node_for_work = $dom->create_element('component');
+            $node_for_work->set_attribute('name', 'ProjectResources');
+            $project->append_child($node_for_work);
         }
-
         //Extract url=>location mappings that already exist, add MFTF URNs and reappend
         $resources = [];
-        $resourceNodes = $nodeForWork->getElementsByTagName('resource');
-        $resourceCount = $resourceNodes->length;
-        for ($i = 0; $i < $resourceCount; $i++) {
-            $child = $resourceNodes[0];
-            $resources[$child->getAttribute('url')] = $child->getAttribute('location');
-            $child->parentNode->removeChild($child);
+        $resource_nodes = $node_for_work->get_elements_by_tag_name('resource');
+        $resource_count = $resource_nodes->length;
+        for ($i = 0; $i < $resource_count; $i++) {
+            $child = $resource_nodes[0];
+            $resources[$child->get_attribute('url')] = $child->get_attribute('location');
+            $child->parent_node->remove_child($child);
         }
-
-        $resources = array_merge($resources, $this->generateResourcesArray());
-
+        $resources = array_merge($resources, $this->generate_resources_array());
         foreach ($resources as $url => $location) {
-            $resourceNode = $dom->createElement('resource');
-            $resourceNode->setAttribute('url', $url);
-            $resourceNode->setAttribute('location', $location);
-            $nodeForWork->appendChild($resourceNode);
+            $resource_node = $dom->create_element('resource');
+            $resource_node->set_attribute('url', $url);
+            $resource_node->set_attribute('location', $location);
+            $node_for_work->append_child($resource_node);
         }
-
         //Save output
-        $dom->save($miscXmlFile);
-        $output->writeln("MFTF URN mapping successfully added to {$miscXmlFile}.");
-
+        $dom->save($misc_xml_file);
+        $output->writeln("MFTF URN mapping successfully added to {$misc_xml_file}.");
         return self::SUCCESS_EXIT_CODE;
     }
-
     /**
      * Generates urn => location array for all MFTF schema.
      */
-    private function generateResourcesArray(): array
+    private function generate_resources_array(): array
     {
-        return [
-            'urn:magento:mftf:DataGenerator/etc/dataOperation.xsd' =>
-                $this->getResourcePath('DataGenerator/etc/dataOperation.xsd'),
-            'urn:magento:mftf:DataGenerator/etc/dataProfileSchema.xsd' =>
-                $this->getResourcePath('DataGenerator/etc/dataProfileSchema.xsd'),
-            'urn:magento:mftf:Page/etc/PageObject.xsd' =>
-                $this->getResourcePath('Page/etc/PageObject.xsd'),
-            'urn:magento:mftf:Page/etc/SectionObject.xsd' =>
-                $this->getResourcePath('Page/etc/SectionObject.xsd'),
-            'urn:magento:mftf:Test/etc/actionGroupSchema.xsd' =>
-                $this->getResourcePath('Test/etc/actionGroupSchema.xsd'),
-            'urn:magento:mftf:Test/etc/testSchema.xsd' =>
-                $this->getResourcePath('Test/etc/testSchema.xsd'),
-            'urn:magento:mftf:Suite/etc/suiteSchema.xsd' =>
-                $this->getResourcePath('Suite/etc/suiteSchema.xsd'),
-        ];
+        return ['urn:magento:mftf:DataGenerator/etc/dataOperation.xsd' => $this->get_resource_path('DataGenerator/etc/dataOperation.xsd'), 'urn:magento:mftf:DataGenerator/etc/dataProfileSchema.xsd' => $this->get_resource_path('DataGenerator/etc/dataProfileSchema.xsd'), 'urn:magento:mftf:Page/etc/PageObject.xsd' => $this->get_resource_path('Page/etc/PageObject.xsd'), 'urn:magento:mftf:Page/etc/SectionObject.xsd' => $this->get_resource_path('Page/etc/SectionObject.xsd'), 'urn:magento:mftf:Test/etc/actionGroupSchema.xsd' => $this->get_resource_path('Test/etc/actionGroupSchema.xsd'), 'urn:magento:mftf:Test/etc/testSchema.xsd' => $this->get_resource_path('Test/etc/testSchema.xsd'), 'urn:magento:mftf:Suite/etc/suiteSchema.xsd' => $this->get_resource_path('Suite/etc/suiteSchema.xsd')];
     }
-
     /**
      * Returns path (full or PhpStorm project-based) to XSD file
      *
@@ -149,42 +106,36 @@ class GenerateDevUrnCommand extends Command
      * @return string
      * @throws TestFrameworkException
      */
-    private function getResourcePath(string $relativePath)
+    private function get_resource_path(string $relative_path)
     {
-        $urnPath = realpath(FilePathFormatter::format(FW_BP) . self::MFTF_SRC_PATH . $relativePath);
-        $projectRoot = $this->getProjectRootPath();
-
-        if ($projectRoot !== null) {
-            return str_replace($projectRoot, self::PROJECT_PATH_IDENTIFIER, $urnPath);
+        $urn_path = realpath(File_Path_Formatter::format(FW_BP) . self::MFTF_SRC_PATH . $relative_path);
+        $project_root = $this->get_project_root_path();
+        if ($project_root !== null) {
+            return str_replace($project_root, self::PROJECT_PATH_IDENTIFIER, $urn_path);
         }
-
-        return $urnPath;
+        return $urn_path;
     }
-
     /**
      * Returns Project root directory absolute path
      * @TODO Find out how to detect other types of installation
      *
      * @return string|null
      */
-    private function getProjectRootPath(): string|false|null
+    private function get_project_root_path(): string|false|null
     {
-        $frameworkRoot = realpath(__DIR__);
-
-        if ($this->isInstalledByComposer($frameworkRoot)) {
-            return strstr($frameworkRoot, '/vendor/', true);
+        $framework_root = realpath(__DIR__);
+        if ($this->is_installed_by_composer($framework_root)) {
+            return strstr($framework_root, '/vendor/', true);
         }
-
         return null;
     }
-
     /**
      * Determines whether MFTF was installed using Composer
      *
      * @param string $frameworkRoot
      */
-    private function isInstalledByComposer($frameworkRoot): bool
+    private function is_installed_by_composer($framework_root): bool
     {
-        return str_contains($frameworkRoot, '/vendor/');
+        return str_contains($framework_root, '/vendor/');
     }
 }

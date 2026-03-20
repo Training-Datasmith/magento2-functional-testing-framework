@@ -1,41 +1,33 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
+namespace Magento\Functional_Testing_Framework\Object_Manager;
 
-namespace Magento\FunctionalTestingFramework\ObjectManager;
-
-use Magento\FunctionalTestingFramework\System\Code\ClassReader;
-
+use Magento\Functional_Testing_Framework\System\Code\Class_Reader;
 /**
  * Class Factory
  *
  * @internal
  */
-class Factory extends \Magento\FunctionalTestingFramework\ObjectManager\Factory\Dynamic\Developer
+class Factory extends \Magento\Functional_Testing_Framework\Object_Manager\Factory\Dynamic\Developer
 {
     /**
      * Class reader.
      */
-    protected \Magento\FunctionalTestingFramework\System\Code\ClassReader $classReader;
-
+    protected \Magento\Functional_Testing_Framework\System\Code\Class_Reader $class_reader;
     /**
      * Factory constructor.
      * @param array                                                           $globalArguments
      */
-    public function __construct(
-        ConfigInterface $config,
-        ?\Magento\FunctionalTestingFramework\ObjectManagerInterface $objectManager = null,
-        ?DefinitionInterface $definitions = null,
-        $globalArguments = []
-    ) {
-        parent::__construct($config, $objectManager, $definitions, $globalArguments);
-        $this->classReader = new ClassReader();
+    public function __construct(Config_Interface $config, ?\Magento\Functional_Testing_Framework\Object_Manager_Interface $object_manager = null, ?Definition_Interface $definitions = null, $global_arguments = [])
+    {
+        parent::__construct($config, $object_manager, $definitions, $global_arguments);
+        $this->class_reader = new Class_Reader();
     }
-
     // @codingStandardsIgnoreStart
     /**
      * Invoke class method and prepared arguments
@@ -45,16 +37,13 @@ class Factory extends \Magento\FunctionalTestingFramework\ObjectManager\Factory\
      */
     public function invoke($object, $method, array $args = []): mixed
     {
-        $args = $this->prepareArguments($object, $method, $args);
-
+        $args = $this->prepare_arguments($object, $method, $args);
         $type = $object::class;
         $class = new \ReflectionClass($type);
-        $method = $class->getMethod($method);
-
-        return $method->invokeArgs($object, $args);
+        $method = $class->get_method($method);
+        return $method->invoke_args($object, $args);
     }
     // @codingStandardsIgnoreEnd
-
     /**
      * Get list of parameters for class method
      *
@@ -62,11 +51,10 @@ class Factory extends \Magento\FunctionalTestingFramework\ObjectManager\Factory\
      * @param string $method
      * @return array|null
      */
-    public function getParameters($type, $method)
+    public function get_parameters($type, $method)
     {
-        return $this->classReader->getParameters($type, $method);
+        return $this->class_reader->get_parameters($type, $method);
     }
-
     /**
      * Resolve and prepare arguments for class method
      *
@@ -74,18 +62,15 @@ class Factory extends \Magento\FunctionalTestingFramework\ObjectManager\Factory\
      * @param string $method
      * @return array
      */
-    public function prepareArguments($object, $method, array $arguments = [])
+    public function prepare_arguments($object, $method, array $arguments = [])
     {
         $type = $object::class;
-        $parameters = $this->classReader->getParameters($type, $method);
-
+        $parameters = $this->class_reader->get_parameters($type, $method);
         if ($parameters === null) {
             return [];
         }
-
-        return $this->resolveArguments($type, $parameters, $arguments);
+        return $this->resolve_arguments($type, $parameters, $arguments);
     }
-
     /**
      * Resolve constructor arguments
      *
@@ -97,74 +82,59 @@ class Factory extends \Magento\FunctionalTestingFramework\ObjectManager\Factory\
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * Revisited to reduce cyclomatic complexity, left unrefactored for readability
      */
-    protected function resolveArguments($requestedType, array $parameters, array $arguments = []): array
+    protected function resolve_arguments($requested_type, array $parameters, array $arguments = []): array
     {
-        $resolvedArguments = [];
-        $arguments = count($arguments)
-            ? array_replace($this->config->getArguments($requestedType), $arguments)
-            : $this->config->getArguments($requestedType);
+        $resolved_arguments = [];
+        $arguments = count($arguments) ? array_replace($this->config->get_arguments($requested_type), $arguments) : $this->config->get_arguments($requested_type);
         foreach ($parameters as $parameter) {
-            [$paramName, $paramType, $paramRequired, $paramDefault] = $parameter;
+            [$param_name, $param_type, $param_required, $param_default] = $parameter;
             $argument = null;
-            if (array_key_exists($paramName, $arguments)) {
-                $argument = $arguments[$paramName];
-            } elseif (array_key_exists('options', $arguments) && array_key_exists($paramName, $arguments['options'])) {
+            if (array_key_exists($param_name, $arguments)) {
+                $argument = $arguments[$param_name];
+            } elseif (array_key_exists('options', $arguments) && array_key_exists($param_name, $arguments['options'])) {
                 // The parameter name doesn't exist in the arguments, but it is contained in the 'options' argument.
-                $argument = $arguments['options'][$paramName];
-            } else {
-                if ($paramRequired) {
-                    if ($paramType) {
-                        $argument = ['instance' => $paramType];
-                    } else {
-                        $this->creationStack = [];
-                        throw new \BadMethodCallException(
-                            'Missing required argument $' . $paramName . ' of ' . $requestedType . '.'
-                        );
-                    }
+                $argument = $arguments['options'][$param_name];
+            } else if ($param_required) {
+                if ($param_type) {
+                    $argument = ['instance' => $param_type];
                 } else {
-                    $argument = $paramDefault;
+                    $this->creation_stack = [];
+                    throw new \BadMethodCallException('Missing required argument $' . $param_name . ' of ' . $requested_type . '.');
                 }
+            } else {
+                $argument = $param_default;
             }
-            if ($paramType && !is_object($argument) && $argument !== $paramDefault) {
+            if ($param_type && !is_object($argument) && $argument !== $param_default) {
                 if (!is_array($argument)) {
-                    throw new \UnexpectedValueException(
-                        'Invalid parameter configuration provided for $' . $paramName . ' argument of ' . $requestedType
-                    );
+                    throw new \UnexpectedValueException('Invalid parameter configuration provided for $' . $param_name . ' argument of ' . $requested_type);
                 }
                 if (isset($argument['instance']) && !empty($argument['instance'])) {
-                    $argumentType = $argument['instance'];
+                    $argument_type = $argument['instance'];
                     unset($argument['instance']);
                     if (array_key_exists('shared', $argument)) {
-                        $isShared = $argument['shared'];
+                        $is_shared = $argument['shared'];
                         unset($argument['shared']);
                     } else {
-                        $isShared = $this->config->isShared($argumentType);
+                        $is_shared = $this->config->is_shared($argument_type);
                     }
                 } else {
-                    $argumentType = $paramType;
-                    $isShared = $this->config->isShared($argumentType);
+                    $argument_type = $param_type;
+                    $is_shared = $this->config->is_shared($argument_type);
                 }
-
                 $_arguments = !empty($argument) ? $argument : [];
-
-                $argument = $isShared
-                    ? $this->objectManager->get($argumentType)
-                    : $this->objectManager->create($argumentType, $_arguments);
-            } else {
-                if (is_array($argument)) {
-                    if (isset($argument['argument'])) {
-                        $argKey = $argument['argument'];
-                        $argument = $this->globalArguments[$argKey] ?? $paramDefault;
-                    } else {
-                        $this->parseArray($argument);
-                    }
+                $argument = $is_shared ? $this->object_manager->get($argument_type) : $this->object_manager->create($argument_type, $_arguments);
+            } else if (is_array($argument)) {
+                if (isset($argument['argument'])) {
+                    $arg_key = $argument['argument'];
+                    $argument = $this->global_arguments[$arg_key] ?? $param_default;
+                } else {
+                    $this->parse_array($argument);
                 }
             }
-            $resolvedArguments[$paramName] = $argument;
+            $resolved_arguments[$param_name] = $argument;
         }
-        return $resolvedArguments;
+        return $resolved_arguments;
     }
-
     /**
      * Parse array argument
      *
@@ -175,34 +145,28 @@ class Factory extends \Magento\FunctionalTestingFramework\ObjectManager\Factory\
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * Revisited to reduce cyclomatic complexity, left unrefactored for readability
      */
-    protected function parseArray(&$array)
+    protected function parse_array(&$array)
     {
         foreach ($array as $key => $item) {
             if (!is_array($item)) {
                 continue;
             }
             if (isset($item['instance'])) {
-                $itemType = $item['instance'];
-                $isShared = $item['shared'] ?? $this->config->isShared($itemType);
-
+                $item_type = $item['instance'];
+                $is_shared = $item['shared'] ?? $this->config->is_shared($item_type);
                 unset($item['instance']);
                 if (array_key_exists('shared', $item)) {
                     unset($item['shared']);
                 }
-
                 $_arguments = !empty($item) ? $item : [];
-
-                $array[$key] = $isShared
-                    ? $this->objectManager->get($itemType)
-                    : $this->objectManager->create($itemType, $_arguments);
+                $array[$key] = $is_shared ? $this->object_manager->get($item_type) : $this->object_manager->create($item_type, $_arguments);
             } elseif (isset($item['argument'])) {
-                $array[$key] = $this->globalArguments[$item['argument']] ?? null;
+                $array[$key] = $this->global_arguments[$item['argument']] ?? null;
             } else {
-                $this->parseArray($item);
+                $this->parse_array($item);
             }
         }
     }
-
     /**
      * Create instance with call time arguments
      *
@@ -210,30 +174,27 @@ class Factory extends \Magento\FunctionalTestingFramework\ObjectManager\Factory\
      * @return object
      * @throws \Exception
      */
-    public function create($requestedType, array $arguments = [])
+    public function create($requested_type, array $arguments = [])
     {
-        $instanceType = $this->config->getInstanceType($requestedType);
-        $parameters = $this->definitions->getParameters($instanceType);
-
+        $instance_type = $this->config->get_instance_type($requested_type);
+        $parameters = $this->definitions->get_parameters($instance_type);
         if ($parameters === null) {
-            return new $instanceType();
+            return new $instance_type();
         }
-        if (isset($this->creationStack[$requestedType])) {
-            $lastFound = end($this->creationStack);
-            $this->creationStack = [];
-            throw new \LogicException("Circular dependency: {$requestedType} depends on {$lastFound} and vice versa.");
+        if (isset($this->creation_stack[$requested_type])) {
+            $last_found = end($this->creation_stack);
+            $this->creation_stack = [];
+            throw new \LogicException("Circular dependency: {$requested_type} depends on {$last_found} and vice versa.");
         }
-        $this->creationStack[$requestedType] = $requestedType;
+        $this->creation_stack[$requested_type] = $requested_type;
         try {
-            $args = $this->resolveArguments($requestedType, $parameters, $arguments);
-            unset($this->creationStack[$requestedType]);
+            $args = $this->resolve_arguments($requested_type, $parameters, $arguments);
+            unset($this->creation_stack[$requested_type]);
         } catch (\Exception $e) {
-            unset($this->creationStack[$requestedType]);
+            unset($this->creation_stack[$requested_type]);
             throw $e;
         }
-
-        $reflection = new \ReflectionClass($instanceType);
-
-        return $reflection->newInstanceArgs($args);
+        $reflection = new \ReflectionClass($instance_type);
+        return $reflection->new_instance_args($args);
     }
 }

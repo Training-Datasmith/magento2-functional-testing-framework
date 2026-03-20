@@ -1,17 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types=1);
 /**
  * Copyright 2017 Adobe
  * All Rights Reserved.
  */
-
-namespace Magento\FunctionalTestingFramework\Data\Argument;
+namespace Magento\Functional_Testing_Framework\Data\Argument;
 
 /**
  * Interface that encapsulates complexity of expression computation
  */
-interface InterpreterInterface
+interface Interpreter_Interface
 {
     /**
      * Compute and return effective value of an argument
