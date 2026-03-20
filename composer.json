@@ -4,7 +4,12 @@
     "type": "library",
     "version": "5.3.0",
     "license": "AGPL-3.0",
-    "keywords": ["magento", "automation", "functional", "testing"],
+    "keywords": [
+        "magento",
+        "automation",
+        "functional",
+        "testing"
+    ],
     "config": {
         "sort-packages": true
     },
@@ -51,11 +56,13 @@
         "hoa/console": "Enables <pause /> action and interactive console functionality"
     },
     "autoload": {
-        "files": ["src/Magento/FunctionalTestingFramework/_bootstrap.php"],
+        "files": [
+            "src/Magento/FunctionalTestingFramework/_bootstrap.php"
+        ],
         "psr-4": {
-            "Magento\\FunctionalTestingFramework\\": "src/Magento/FunctionalTestingFramework",
+            "Magento\\Functional_Testing_Framework\\": "src/Magento/FunctionalTestingFramework",
             "MFTF\\": "dev/tests/functional/tests/MFTF",
-            "Magento\\FunctionalTestingFramework\\Tests\\Verification\\": "dev/tests/verification/Tests"
+            "Magento\\Functional_Testing_Framework\\Tests\\Verification\\": "dev/tests/verification/Tests"
         }
     },
     "autoload-dev": {
@@ -72,5 +79,7 @@
             "pre-push": "bin/all-checks"
         }
     },
-    "bin": ["bin/mftf"]
+    "bin": [
+        "bin/mftf"
+    ]
 }
